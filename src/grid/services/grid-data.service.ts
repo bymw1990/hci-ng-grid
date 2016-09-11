@@ -16,8 +16,27 @@ export class GridDataService {
 
   handleValueChange(i: number, j: number, value: any) {
     console.log("GridDataService.addDataObserver: " + i + ":" + j + ":" + value);
-    this.inputData[i][this.gridConfigService.gridConfiguration.columnDefinitions[j].field] = value;
-    //this.selectedLocationObservable.subscribe(observer);
+    //this.inputData[i][this.gridConfigService.gridConfiguration.columnDefinitions[j].field] = value;
+    this.setInputData(i, this.gridConfigService.gridConfiguration.columnDefinitions[j].field, value);
+  }
+
+  /**
+   * When a cell value updates, we have a i,j,k position and value.  Now this works for updating our internal
+   * grid data which is flattened, but our input data could have a complex data structure.  An list of Person
+   * may have a field like demographics.firstName which is in its own demographic object within person.
+   *
+   * @param rowIndex
+   * @param field
+   * @param value
+   */
+  setInputData(rowIndex: number, field: string, value: any) {
+    var fields = field.split(".");
+
+    var obj = this.inputData[rowIndex];
+    for (var i = 0; i < fields.length - 1; i++) {
+      obj = obj[fields[i]];
+    }
+    obj[fields[fields.length - 1]] = value;
   }
 
   getRow(i: number): RowData {

@@ -37,6 +37,9 @@ import { DefaultCell } from "./cell/default-cell.component";
  * Events:
  *   Update navigation event to handle click event history and ctrl click to support copy/paste groups of cells
  *
+ * Validation:
+ *   On cell templates or additional value validation thing.  Or custom validation that can be added to cell template for
+ *   real time checking.
  */
 @Component({
   selector: "hci-grid",
@@ -240,18 +243,6 @@ export class GridComponent implements OnInit {
       obj = obj[fields[i]];
     }
     return obj;
-  }*/
-
-  /*getCellData(rowIndex: number, field: String, value: any) {
-    var fields = field.split(".");
-
-    var obj = this.inputData[rowIndex];
-    for (var i = 0; i < fields.length; i++) {
-      obj = obj[fields[i]];
-    }
-    if (obj[fields[fields.length - 1]] !== value) {
-      obj[fields[fields.length - 1]] = value;
-    }
   }*/
 
   cellFocused(o: Object) {

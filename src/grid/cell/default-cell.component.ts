@@ -8,7 +8,7 @@ import { CellTemplate } from "./cell-template.component";
   styles: [ CELL_CSS, `
     .default-cell {
       height: 100%;
-      vertical-align: sub;
+      padding-top: 3px;
     }
   `],
   template: `

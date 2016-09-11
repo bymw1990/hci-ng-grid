@@ -11,8 +11,12 @@ import { Column, DefaultCell, InputCell, DateCell } from "hci-ng2-grid/index";
     <div style="padding: 20px;">
       <div>&lt;tab&gt; through cells</div>
       <div>click on cells</div>
-      <div>after click, ctrl-click on other cells</div>
       <div>up/down/left/right on selected cell</div>
+      <div>modify input cell values and check bound data changes</div>
+      <div>!IP REDOING! after click, ctrl-click on other cells</div>
+    </div>
+    <div style="padding: 20px;">
+      {{dataGridHtml}}
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Test Grid'"
@@ -22,15 +26,30 @@ import { Column, DefaultCell, InputCell, DateCell } from "hci-ng2-grid/index";
                 (onExternalFilter)="callExternalFilter()">
       </hci-grid>
     </div>
-    <div>
-      <span>Bound Data</span>
+    <div style="padding: 20px;">
+      <span style="font-weight: bold;">Bound Data</span>
+      <div style="font-weight: bold;">
+        <span style="width: 100px; display: inline-block;">idPatient</span>
+        <span style="width: 100px; display: inline-block;">firstName</span>
+        <span style="width: 100px; display: inline-block;">lastName</span>
+        <span style="width: 150px; display: inline-block;">dob</span>
+        <span style="width: 100px; display: inline-block;">pcg.nLabs</span>
+        <span style="width: 150px; display: inline-block;">pcg.nested.nLabPath</span>
+      </div>
       <div *ngFor="let row of dataGrid">
-        {{row.idPatient}} {{row.firstName}} {{row.lastName}} {{row.dob}} {{row.pcg.nLabs}} {{row.pcg.nested.nLabPath}}
+        <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
+        <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
+        <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
+        <span style="width: 150px; display: inline-block;">{{row.dob}}</span>
+        <span style="width: 100px; display: inline-block;">{{row.pcg.nLabs}}</span>
+        <span style="width: 150px; display: inline-block;">{{row.pcg.nested.nLabPath}}</span>
       </div>
     </div>
     `
 })
 export class DemoAppComponent {
+
+  dataGridHtml: string = `<hci-grid [title]="'Test Grid'" [inputData]="dataGrid" [columnDefinitions]="dataGridColumns" [externalFiltering]="true" (onExternalFilter)="callExternalFilter()"></hci-grid>`;
 
   dataGrid: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "what": "WHAT?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -46,7 +65,7 @@ export class DemoAppComponent {
     new Column("firstName", "First Name", InputCell),
     new Column("dob", "Date of Birth", DateCell),
     new Column("pcg.nLabs", "# Labs", DefaultCell),
-    new Column("pcg.nested.nLabPath", "# Lab Path", DefaultCell)
+    new Column("pcg.nested.nLabPath", "# Lab Path", InputCell)
   ];
 
   callExternalFilter() {
