@@ -1,4 +1,4 @@
-export { GridModule } from "./grid/grid.component";
+export { GridModule } from "./grid/grid.module";
 export { GridComponent } from "./grid/grid.component";
 export { CellComponent } from "./grid/cell/cell.component";
 export { Column } from "./grid/column";

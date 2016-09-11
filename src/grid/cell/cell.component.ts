@@ -1,7 +1,9 @@
 import { Component, Input, ViewContainerRef, ComponentFactoryResolver, ViewChild, Output, EventEmitter } from "@angular/core";
 
-import { IJ } from "../row-column";
-import { GridService } from "../grid.service";
+import { Point } from "../utils/point";
+import { GridConfigService } from "../services/grid-config.service";
+import { GridEventService } from "../services/grid-event.service";
+import { GridDataService } from "../services/grid-data.service";
 import { CellTemplate } from "./cell-template.component";
 
 /**
@@ -12,7 +14,7 @@ import { CellTemplate } from "./cell-template.component";
 @Component({
   selector: "hci-cell",
   template: `
-    <span #template style="position: absolute; left: -1000px;" (focus)="onFocus();"></span>
+    <span><span #template style="display: none;"></span></span>
   `
 })
 export class CellComponent {
@@ -27,26 +29,32 @@ export class CellComponent {
   @Output() cellFocused: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() onUDLR: EventEmitter<Object> = new EventEmitter<Object>();
 
+  nColumns: number;
   private isViewInitialized: boolean = false;
 
   @ViewChild("template", { read: ViewContainerRef })
   private template: any;
 
   private componentRef: CellTemplate = null;
-  constructor(private resolver: ComponentFactoryResolver, private gridService: GridService) {}
+  constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
 
   ngAfterContentInit() {
+    console.log("CellComponent.ngAfterContentInit");
+    console.log(this.value);
+    this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
+    this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.j].template;
     this.isViewInitialized = true;
     this.createComponent();
 
-    this.gridService.addSelectedLocationObserver((ij) => {
-      console.log("CellComponent.ngAfterInit gridService.addSelectedLocationObserver " + ij.i + "." + ij.j);
+    this.gridEventService.addSelectedLocationObserver((ij) => {
+      console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + ij.i + "." + ij.j);
       if (ij.i === this.i && ij.j === this.j) {
         this.onFocus();
       } else {
         this.onFocusOut();
       }
     });
+    console.log("CellComponent.ngAfterContentInit Done");
   }
 
   /**
@@ -80,6 +88,8 @@ export class CellComponent {
    * event making this parent class aware that the model changed.
    */
   createComponent() {
+    console.log("CellComponent.createComponent");
+    console.log(this.type);
     if(!this.isViewInitialized) {
       return;
     }
@@ -93,7 +103,8 @@ export class CellComponent {
     this.componentRef.valueChange.subscribe((value: Object) => {
       console.log("valueChange");
       console.log(value);
-      this.valueChange.emit(value);
+      //this.valueChange.emit(value);
+      this.gridDataService.handleValueChange(this.i, this.j, value);
     });
     this.componentRef.keyEvent.subscribe((keyCode: number) => {
       console.log("CellComponent subscribe keyEvent");
@@ -101,19 +112,28 @@ export class CellComponent {
     });
     this.componentRef.tabEvent.subscribe((value: boolean) => {
       console.log("CellComponent subscribe tabEvent");
-      this.gridService.tabFrom(new IJ(this.i, this.j));
+      this.gridEventService.tabFrom(new Point(this.i, this.j));
     });
     this.componentRef.inputFocused.subscribe((value: boolean) => {
       console.log("CellComponent subscribe inputFocused");
-      this.gridService.setSelectedLocation(new IJ(this.i, this.j));
+      this.gridEventService.setSelectedLocation(new Point(this.i, this.j));
     });
   }
 
   onKeyDown(keyCode: number) {
     console.log("CellComponent.onKeyDown");
     console.log(event);
-    if (keyCode === 37 || keyCode === 38 || keyCode === 39 || keyCode === 40) {
-      this.onUDLR.emit({ "key": keyCode, "i": this.i, "j": this.j });
+    //if (keyCode === 37 || keyCode === 38 || keyCode === 39 || keyCode === 40) {
+      //this.onUDLR.emit({ "key": keyCode, "i": this.i, "j": this.j });
+    //}
+    if (keyCode === 37) {
+      this.gridEventService.arrowFrom(new Point(this.i, this.j), -1, 0);
+    } else if (keyCode === 39) {
+      this.gridEventService.arrowFrom(new Point(this.i, this.j), 1, 0);
+    } else if (keyCode === 38) {
+      this.gridEventService.arrowFrom(new Point(this.i, this.j), 0, -1);
+    } else if (keyCode === 40) {
+      this.gridEventService.arrowFrom(new Point(this.i, this.j), 0, 1);
     }
   }
 

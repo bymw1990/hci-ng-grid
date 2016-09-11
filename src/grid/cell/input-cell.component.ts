@@ -32,11 +32,6 @@ export class InputCell extends CellTemplate {
 
   onInputKeyDown(event: KeyboardEvent) {
     this.onKeyDown(event);
-    console.log();
-    console.log("selectionStart=" + this.input.nativeElement.selectionStart);
-    console.log("selectionEnd=" + this.input.nativeElement.selectionEnd);
-    console.log("value=" + this.input.nativeElement.value);
-    console.log(this.input);
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
       this.input.nativeElement.blur();

@@ -5,11 +5,16 @@ import { CellTemplate } from "./cell-template.component";
 
 @Component({
   selector: "default-cell",
-  styles: [ CELL_CSS ],
+  styles: [ CELL_CSS, `
+    .default-cell {
+      height: 100%;
+      vertical-align: sub;
+    }
+  `],
   template: `
-    <div (keydown)="onKeyDown($event);" class="btn-group grid-cell-fill" style="width: 100%; height: 100%;">
-        <span class="grid-cell-template" [ngClass]="{ 'focused': focused }">{{ value }}</span>
-    </div>
+    <span (keydown)="onKeyDown($event);" class="grid-cell-template default-cell" [ngClass]="{ 'focused': focused }">
+      {{ value }}
+    </span>
   `
 })
 export class DefaultCell extends CellTemplate {

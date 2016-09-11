@@ -1,15 +1,41 @@
-import { NgModule, Component, OnInit, Input, ElementRef, ViewChild } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter } from "@angular/core";
 
-import { GridService } from "./grid.service";
-import { CellModule } from "./cell/cell.module";
-import { IJ } from "./row-column";
+import { GridDataService } from "./services/grid-data.service";
+import { GridEventService } from "./services/grid-event.service";
+import { GridConfigService } from "./services/grid-config.service";
+import { GridConfiguration } from "./utils/grid-configuration";
+import { Point } from "./utils/point";
+import { RowData } from "./row/row-data";
 import { Column } from "./column";
-import { CellComponent } from "./cell/cell.component";
 import { DefaultCell } from "./cell/default-cell.component";
 
 /**
+ * Thoughts...
+ * data or click represented by three ints
+ * i = rowGroup, j = subRow, k = col
+ * if no grouping, then j always 0.
+ *
+ * group by a, b
+ *   A   B
+ *           x   y   z
+ *           1   2   3
+ *
+ *   grouped data separated into subRow -1?  click on subrow collapses/expands?  not show grouped keys for rest of rows (0 and 1)?
+ *
+ * TODO:
+ * Header:
+ *   Components for rendering different header views.
+ *   Label, Filter, Sort, Filter/Sort, Fill
+ *
+ * Data:
+ *   Service for handling/updating data
+ *   Group by row
+ *
+ * Cells:
+ *   Select/Dropdown
+ *
+ * Events:
+ *   Update navigation event to handle click event history and ctrl click to support copy/paste groups of cells
  *
  */
 @Component({
@@ -71,17 +97,21 @@ import { DefaultCell } from "./cell/default-cell.component";
     <div (keydown)="onKeyDown($event);">
       <div class="grid-header">
         <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
-        <span (click)="print();">{{ title }}</span></div>
+        <span>{{ title }}</span></div>
       <div>
         <span class="grid-cell-header"
               *ngFor="let colHeader of columnDefinitions; let j = index"
               [ngStyle]="{ width: (100 / columnDefinitions.length) + '%' }"
+              (click)="colHeaderOnClick($event);"
               (mousedown)="colHeaderOnMouseDown(j);"
               (mouseup)="colHeaderOnMouseUp(j);">
           {{ colHeader.name }}
         </span>
       </div>
-      <div *ngFor="let row of gridData; let i = index">
+      <hci-row *ngFor="let row of gridData; let i = index" [i]="i">
+        
+      </hci-row>
+      <!--<div *ngFor="let row of gridData; let i = index">
         <hci-cell *ngFor="let cell of row; let j = index"
               [type]="columnDefinitions[j].template"
               [(value)]="gridData[i][j].value"
@@ -93,7 +123,7 @@ import { DefaultCell } from "./cell/default-cell.component";
               class="grid-cell"
               [ngStyle]="{ 'width': (100 / row.length) + '%', 'background-color': (cell._bgColor != null) ? cell._bgColor : 'transparent' }">
         </hci-cell>
-      </div>
+      </div>-->
     </div>
   `
 })
@@ -103,14 +133,23 @@ export class GridComponent implements OnInit {
 
   @Input() title: String;
   @Input() inputData: Object[];
-  @Input() columnDefinitions: Column[];
 
-  gridData: Array<Array<any>> = new Array<Array<any>>();
+  // Grid Configuration
+  @Input() gridConfiguration: GridConfiguration;
+  @Input() columnDefinitions: Column[];
+  @Input() groupBy: string[];
+  @Input() externalFiltering: boolean = false;
+  @Input() externalSorting: boolean = false;
+
+  @Output() onExternalFilter: EventEmitter<Object> = new EventEmitter<Object>();
+
+  gridData: Array<RowData> = new Array<RowData>();
+  nColumns: number;
 
   /* Drag and Drop Columns (from Header) */
   jMouseEntered: number;
 
-  private el: HTMLElement;
+  /*private el: HTMLElement;
   private clickData: Object = {
     "i1": 0,
     "j1": 0,
@@ -118,56 +157,81 @@ export class GridComponent implements OnInit {
     "j2": 0
   };
   private firstClick: Object = null;
-  private secondClick: Object = null;
+  private secondClick: Object = null;*/
 
-  private selectColor: String = "#ddffdd";
-  private multiSelectColor: String = "#ffffdd";
-
-  constructor(el: ElementRef, private gridService: GridService) {
-    this.el = el.nativeElement;
-  }
+  constructor(private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
 
   ngOnInit() {
     console.log("GridComponent.ngOnInit " + this.inputData);
 
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
-      if (this.columnDefinitions[j].template === null) {
-        this.columnDefinitions[j].template = DefaultCell;
-      }
-    }
+    this.gridDataService.data.subscribe((data: Array<RowData>) => {
+      console.log("GridComponent GridDataService.data.subscribe");
+      console.log(data);
+      this.gridData = data;
+    });
 
-    this.createGridData();
+    this.initGridConfiguration();
+    this.gridDataService.setGridData(this.inputData);
 
     console.log(this.gridData);
+  }
+
+  initGridConfiguration() {
+    if (this.gridConfiguration) {
+      this.gridConfigService.gridConfiguration = this.gridConfiguration;
+    }
+    if (this.columnDefinitions) {
+      for (var k = 0; k < this.columnDefinitions.length; k++) {
+        if (this.columnDefinitions[k].template === null) {
+          this.columnDefinitions[k].template = DefaultCell;
+        }
+      }
+      this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
+    } else {
+      console.log("columnDefinitions Required");
+    }
+    if (this.groupBy) {
+      this.gridConfigService.gridConfiguration.groupBy = this.groupBy;
+    }
+    if (this.externalFiltering) {
+      this.gridConfigService.gridConfiguration.externalFiltering = this.externalFiltering;
+    }
+    if (this.externalSorting) {
+      this.gridConfigService.gridConfiguration.externalSorting = this.externalSorting;
+    }
+    this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
+    this.gridEventService.setNColumns(this.nColumns);
   }
 
   ngAfterContentInit() {
     if (this.inputData.length > 0 && this.columnDefinitions.length > 0) {
-      this.gridService.setSelectedLocation(new IJ(0, 0));
+      this.gridEventService.setSelectedLocation(new Point(0, 0));
     }
   }
 
-  print() {
-    console.log("GridComponent.print");
-
-    console.log(this.gridData);
-  }
-
-  createGridData() {
+  /**
+   * InputData is the raw object array passed to this component.  This gets mapped to gridData.
+   * We want to do two things, only push the data in column definitions and also flatten the
+   * data such that a field in gridData may represent a nested object in inputData.
+   * For example, if an array of patientCancerGroups, a field might be "patient.person.firstName".
+   * If this field is passed to the external filter/sort, JPA will know what relationships mush be
+   * built into the query to handle that field even though the queries entity is PatientCancerGroup.
+   */
+  /*createGridData() {
     this.gridData = new Array<Array<any>>();
     for (var i = 0; i < this.inputData.length; i++) {
       this.gridData.push(new Array<any>());
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         console.log("createGridData col " + j);
         console.log(this.columnDefinitions[j]);
-        this.gridData[i][j] = {"value": 0, "_bgColor": null};
+        this.gridData[i][j] = { "value": 0 };
         this.gridData[i][j].value = this.getField(this.inputData[i], this.columnDefinitions[j].field);
-        this.gridData[i][j]._bgColor = "transparent";
       }
     }
-  }
+    this.gridEventService.setSize(this.gridData.length, this.columnDefinitions.length);
+  }*/
 
-  getField(row: Object, field: String) {
+  /*getField(row: Object, field: String) {
     console.log("getField of " + field);
     var fields = field.split(".");
 
@@ -176,9 +240,9 @@ export class GridComponent implements OnInit {
       obj = obj[fields[i]];
     }
     return obj;
-  }
+  }*/
 
-  getCellData(rowIndex: number, field: String, value: any) {
+  /*getCellData(rowIndex: number, field: String, value: any) {
     var fields = field.split(".");
 
     var obj = this.inputData[rowIndex];
@@ -188,7 +252,7 @@ export class GridComponent implements OnInit {
     if (obj[fields[fields.length - 1]] !== value) {
       obj[fields[fields.length - 1]] = value;
     }
-  }
+  }*/
 
   cellFocused(o: Object) {
     console.log("cellFocused");
@@ -198,15 +262,15 @@ export class GridComponent implements OnInit {
   }
 
   /* Mouse and Click Events */
-  resetColors() {
+  /*resetColors() {
     for (var i = 0; i < this.gridData.length; i++) {
       for (var j = 0; j < this.gridData[i].length; j++) {
         this.gridData[i][j]._bgColor = "transparent";
       }
     }
-  }
+  }*/
 
-  setSelectedColor() {
+  /*setSelectedColor() {
     var color: String = this.multiSelectColor;
 
     if (this.clickData["i1"] === this.clickData["i2"] && this.clickData["j1"] === this.clickData["j2"]) {
@@ -218,9 +282,9 @@ export class GridComponent implements OnInit {
         this.gridData[i][j]._bgColor = color;
       }
     }
-  }
+  }*/
 
-  setClickData() {
+  /*setClickData() {
     if (this.secondClick === null) {
       this.clickData["i1"] = this.firstClick["i"];
       this.clickData["i2"] = this.firstClick["i"];
@@ -232,11 +296,11 @@ export class GridComponent implements OnInit {
       this.clickData["j1"] = Math.min(this.firstClick["j"], this.secondClick["j"]);
       this.clickData["j2"] = Math.max(this.firstClick["j"], this.secondClick["j"]);
     }
-  }
+  }*/
 
   cellClick(event: MouseEvent, ii: number, jj: number) {
     console.log("cellClick " + ii + " " + jj);
-    this.gridService.setSelectedLocation(new IJ(ii, jj));
+    this.gridEventService.setSelectedLocation(new Point(ii, jj));
     /*var ctrl: Boolean = true;
     if (event === null) {
       ctrl = false;
@@ -268,10 +332,10 @@ export class GridComponent implements OnInit {
     if (event.ctrlKey && event.keyCode === 67) {
       console.log("Copy Event");
 
-      this.setCopyPaste();
+      //this.setCopyPaste();
 
-      this.copypastearea.nativeElement.select();
-      event.stopPropagation();
+      //this.copypastearea.nativeElement.select();
+      //event.stopPropagation();
     }
   }
 
@@ -297,10 +361,10 @@ export class GridComponent implements OnInit {
     } else if (key === 40) {
       i = i + 1;
     }
-    this.gridService.setSelectedLocation(new IJ(i, j));
+    this.gridEventService.setSelectedLocation(new Point(i, j));
   }
 
-  setCopyPaste() {
+  /*setCopyPaste() {
     var copy: String = "";
 
     for (var i = this.clickData["i1"]; i <= this.clickData["i2"]; i++) {
@@ -313,7 +377,7 @@ export class GridComponent implements OnInit {
       copy = copy + "\n";
     }
     this.copypastearea.nativeElement.value = copy;
-  }
+  }*/
 
   colHeaderOnMouseDown(jj: number) {
     this.jMouseEntered = jj;
@@ -323,17 +387,16 @@ export class GridComponent implements OnInit {
     if (this.jMouseEntered !== jj) {
       var o = this.columnDefinitions.splice(this.jMouseEntered, 1)[0];
       this.columnDefinitions.splice(jj, 0, o);
+      //this.createGridData();
+    }
+  }
 
-      this.createGridData();
+  colHeaderOnClick(event: MouseEvent) {
+    console.log("GridComponent.colHeaderOnClick");
+    if (this.gridConfigService.gridConfiguration.externalFiltering) {
+      this.onExternalFilter.emit(true);
+      //this.createGridData();
     }
   }
 
 }
-
-@NgModule({
-  imports: [ CommonModule, FormsModule, CellModule ],
-  declarations: [ GridComponent, CellComponent ],
-  exports: [ GridComponent, CellComponent ],
-  providers: [ GridService ]
-})
-export class GridModule {}
