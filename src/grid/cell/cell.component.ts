@@ -23,7 +23,7 @@ export class CellComponent {
   @Input() i: number;
   @Input() j: number;
 
-  @Input() value: Object;
+  //@Input() value: Object;
   @Output() valueChange: EventEmitter<Object> = new EventEmitter<Object>();
 
   @Output() cellFocused: EventEmitter<Object> = new EventEmitter<Object>();
@@ -40,7 +40,7 @@ export class CellComponent {
 
   ngAfterContentInit() {
     console.log("CellComponent.ngAfterContentInit");
-    console.log(this.value);
+    //console.log(this.value);
     this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.j].template;
     this.isViewInitialized = true;
@@ -99,13 +99,18 @@ export class CellComponent {
 
     let factory = this.resolver.resolveComponentFactory(this.type);
     this.componentRef = this.template.createComponent(factory).instance;
-    this.componentRef.value = this.value;
-    this.componentRef.valueChange.subscribe((value: Object) => {
-      console.log("valueChange");
-      console.log(value);
-      //this.valueChange.emit(value);
-      this.gridDataService.handleValueChange(this.i, this.j, value);
-    });
+    if (this.componentRef.valueable) {
+      //this.componentRef.value = this.value;
+      this.componentRef.value = this.gridDataService.getCellValue(this.i, this.j);
+      console.log("CellComponent set componentRef value: " + this.componentRef.value);
+
+      this.componentRef.valueChange.subscribe((value: Object) => {
+        console.log("valueChange");
+        console.log(value);
+        //this.valueChange.emit(value);
+        this.gridDataService.handleValueChange(this.i, this.j, value);
+      });
+    }
     this.componentRef.keyEvent.subscribe((keyCode: number) => {
       console.log("CellComponent subscribe keyEvent");
       this.onKeyDown(keyCode);

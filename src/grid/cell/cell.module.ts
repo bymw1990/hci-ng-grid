@@ -4,13 +4,14 @@ import { FormsModule } from "@angular/forms";
 import { DropdownModule } from "ng2-bootstrap/ng2-bootstrap";
 import { DatepickerModule } from "ng2-bootstrap/ng2-bootstrap";
 
-import { DefaultCell } from "./default-cell.component";
+import { LabelCell } from "./label-cell.component";
 import { InputCell } from "./input-cell.component";
 import { DateCell } from "./date-cell.component";
+import { GroupCollapseExpandCell } from "./group-collapse-expand.component";
 
 @NgModule({
     imports: [ CommonModule, FormsModule, DropdownModule, DatepickerModule ],
-    declarations: [ DefaultCell, InputCell, DateCell ],
-    bootstrap: [ DefaultCell, InputCell, DateCell ]
+    declarations: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell ],
+    bootstrap: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell ]
 })
 export class CellModule {}

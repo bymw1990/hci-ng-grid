@@ -18,6 +18,7 @@ export const CELL_CSS = `
 
 export class CellTemplate {
 
+  valueable: boolean = true;
   focused: boolean = false;
   value: Object = null;
   @Output() valueChange: EventEmitter<Object> = new EventEmitter<Object>();

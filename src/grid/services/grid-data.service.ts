@@ -14,9 +14,13 @@ export class GridDataService {
 
   constructor(private gridConfigService: GridConfigService) {}
 
+  getCellValue(i: number, j: number): any {
+    let dataColumnOffset: number = this.gridConfigService.gridConfiguration.nUtilityColumns;
+    return this.gridData[i].data[j - dataColumnOffset].value;
+  }
+
   handleValueChange(i: number, j: number, value: any) {
     console.log("GridDataService.addDataObserver: " + i + ":" + j + ":" + value);
-    //this.inputData[i][this.gridConfigService.gridConfiguration.columnDefinitions[j].field] = value;
     this.setInputData(i, this.gridConfigService.gridConfiguration.columnDefinitions[j].field, value);
   }
 
@@ -51,7 +55,6 @@ export class GridDataService {
   setGridData(inputData: Array<Object>): void {
     console.log("setData");
     this.inputData = inputData;
-    //console.log(this.gridConfigService.gridConfiguration.columnDefinitions);
     let columnDefinitions: Column[] = this.gridConfigService.gridConfiguration.columnDefinitions;
 
     this.gridData = new Array<RowData>();
@@ -59,10 +62,6 @@ export class GridDataService {
       let rowData: Array<any> = new Array<any>();
 
       for (var j = 0; j < columnDefinitions.length; j++) {
-        //console.log("createGridData col " + j);
-        //console.log(this.columnDefinitions[j]);
-        //this.gridData[i][j] = { "value": 0 };
-        //this.gridData[i][j].value = this.getField(this.inputData[i], this.columnDefinitions[j].field);
         rowData.push({ "value": this.getField(inputData[i], columnDefinitions[j].field) });
       }
       let row: RowData = new RowData();
