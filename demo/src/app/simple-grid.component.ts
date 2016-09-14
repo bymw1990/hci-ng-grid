@@ -9,15 +9,6 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <h2>Simple Grid</h2>
     </div>
     <div style="padding: 20px;">
-      <div>&lt;tab&gt; through cells</div>
-      <div>click on cells</div>
-      <div>up/down/left/right on selected cell</div>
-      <div>modify input cell values and check bound data changes</div>
-    </div>
-    <div style="padding: 20px;">
-      {{dataGridHtml}}
-    </div>
-    <div style="padding: 20px;">
       <hci-grid [title]="'Simple Grid'"
                 [inputData]="simpleData"
                 [columnDefinitions]="simpleColumns">

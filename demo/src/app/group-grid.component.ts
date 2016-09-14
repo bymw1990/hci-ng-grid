@@ -15,12 +15,9 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <div>modify input cell values and check bound data changes</div>
     </div>
     <div style="padding: 20px;">
-      {{dataGridHtml}}
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [title]="'Test Grid'"
-                [inputData]="dataGrid"
-                [columnDefinitions]="dataGridColumns"
+      <hci-grid [title]="'Group Grid'"
+                [inputData]="groupData"
+                [columnDefinitions]="groupColumns"
                 [key]="[idPatient]"
                 [groupBy]="['firstName', 'lastName']"
                 [externalFiltering]="true"
@@ -37,7 +34,7 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
         <span style="width: 100px; display: inline-block;">pcg.nLabs</span>
         <span style="width: 150px; display: inline-block;">pcg.nested.nLabPath</span>
       </div>
-      <div *ngFor="let row of dataGrid">
+      <div *ngFor="let row of groupData">
         <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
         <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
         <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
@@ -50,9 +47,7 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
 })
 export class GroupGridComponent {
 
-  dataGridHtml: string = `<hci-grid [title]="'Test Grid'" [inputData]="dataGrid" [columnDefinitions]="dataGridColumns" [externalFiltering]="true" (onExternalFilter)="callExternalFilter()"></hci-grid>`;
-
-  dataGrid: Array<Object> = [
+  groupData: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 121110000000, "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
@@ -61,7 +56,7 @@ export class GroupGridComponent {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
-  dataGridColumns: Column[] = [
+  groupColumns: Column[] = [
     new Column({ field: "idPatient", name: "ID", template: LabelCell, visible: false }),
     new Column({ field: "lastName", name: "Last Name", template: InputCell }),
     new Column({ field: "firstName", name: "First Name", template: InputCell }),
@@ -72,9 +67,9 @@ export class GroupGridComponent {
 
   callExternalFilter() {
     console.log("DemoAppComponent.callExternalFilter: New data from http request.");
-    console.log(this.dataGrid);
-    if (this.dataGrid) {
-      this.dataGrid = this.dataGrid.sort((o1: Object, o2: Object): number => {
+    console.log(this.groupData);
+    if (this.groupData) {
+      this.groupData = this.groupData.sort((o1: Object, o2: Object): number => {
         return o1["firstName"].localeCompare(o2["firstName"]);
       });
     }
