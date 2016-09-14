@@ -20,7 +20,7 @@ export class GridConfiguration {
     this.initColumnDefinitions();
     this.sortColumnDefinitions();
 
-    if (this._groupBy !== null) {
+    /*if (this._groupBy !== null) {
       let groupColumnExists: boolean = false;
       for (var i = 0; i < this._columnDefinitions.length; i++) {
         if (this._columnDefinitions[i].field === "GROUP_COLLAPSE_EXPAND") {
@@ -31,13 +31,13 @@ export class GridConfiguration {
         this._columnDefinitions.push(new Column({ field: "GROUP_COLLAPSE_EXPAND", name: "", sortOrder: -1, template: GroupCollapseExpandCell, isUtility: true, defaultValue: "collapsed" }));
         this.sortColumnDefinitions();
       }
-    }
+    }*/
     let n: number = this._columnDefinitions.length;
     let width: number = 100;
-    if (this._groupBy !== null) {
+    /*if (this._groupBy !== null) {
       width = width - 5;
       n = n - 1;
-    }
+    }*/
     for (var i = 0; i < this._columnDefinitions.length; i++) {
       if (!this._columnDefinitions[i].visible) {
         n = n - 1;
@@ -69,6 +69,7 @@ export class GridConfiguration {
         for (var j = 0; j < this._groupBy.length; j++) {
           if (this._columnDefinitions[i].field === this._groupBy[j]) {
             this._columnDefinitions[i].isGroup = true;
+            this._columnDefinitions[i].visible = false;
             k = j;
             break;
           }

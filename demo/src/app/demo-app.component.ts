@@ -1,21 +1,27 @@
+/*
+ * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
+ */
 import { Component } from "@angular/core";
 
+/**
+ * The demo will route to many different types of grids depending on what features are to be shown.
+ *
+ * Currently there is a simple grid, inline editing, and row grouping.  Each grid will have its own module
+ * route and component.  The component will store the demo data, column definitions, and any other configuration
+ * specific to that grid.
+ */
 @Component({
   selector: "app",
   template: `
     <div style="padding: 20px;">
       <h1>hci-ng2-grid-demo</h1>
     </div>
-    <div style="padding: 20px;">
-      <div (click)="grid = 0">Simple Grid</div>
-      <div (click)="grid = 1">Edit Grid</div>
-      <div (click)="grid = 2">Group Grid</div>
+    <div>
+      <a routerLink="/simple" style="padding: 20px;">Simple Grid</a>
+      <a routerLink="/edit" style="padding: 20px;">Edit Grid</a>
+      <a routerLink="/group" style="padding: 20px;">Group Grid</a>
     </div>
-    <simple-grid *ngIf="grid === 0"></simple-grid>
-    <edit-grid *ngIf="grid === 1"></edit-grid>
-    <group-grid *ngIf="grid === 2"></group-grid>
+    <router-outlet></router-outlet>
     `
 })
-export class DemoAppComponent {
-  grid: number = 0;
-}
+export class DemoAppComponent {}

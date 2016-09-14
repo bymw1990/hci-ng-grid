@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
+ */
 import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter } from "@angular/core";
 
 import { GridDataService } from "./services/grid-data.service";
@@ -49,6 +52,7 @@ import { LabelCell } from "./cell/label-cell.component";
  */
 @Component({
   selector: "hci-grid",
+  providers: [ GridDataService, GridEventService, GridConfigService ],
   styles: [ `
     .grid-header {
       background-color: transparent;

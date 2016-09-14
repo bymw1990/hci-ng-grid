@@ -10,6 +10,10 @@ export class GridEventService {
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
+  constructor() {
+    console.log("GridEventService.constructure");
+  }
+
   setNColumns(nColumns: number) {
     this.nColumns = nColumns;
   }

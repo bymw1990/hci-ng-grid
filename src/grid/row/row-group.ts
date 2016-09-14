@@ -8,6 +8,10 @@ export class RowGroup {
   header: Row = null;
   rows: Array<Row> = new Array<Row>();
 
+  /*compareTo(other: RowGroup, k: number) {
+
+  }*/
+
   add(row: Row) {
     this.rows.push(row);
   }

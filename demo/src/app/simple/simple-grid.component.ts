@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
+import { Column, LabelCell } from "hci-ng2-grid/index";
 
 @Component({
   selector: "simple-grid",

@@ -16,6 +16,17 @@ export class GridDataService {
 
   constructor(private gridConfigService: GridConfigService) {}
 
+  /*filter(k: number, filter: string) {
+    console.log("GridDataService.filter");
+  }
+
+  sort(k: number, asc: boolean) {
+    console.log("GridDataService.sort");
+    this.gridData.sort((o1: RowGroup, o2: RowGroup) => {
+      return o1.compareTo(o2, k);
+    });
+  }*/
+
   getCell(i: number, j: number, k: number): Cell {
     //let dataColumnOffset: number = this.gridConfigService.gridConfiguration.nUtilityColumns;
     if (j === -1) {
