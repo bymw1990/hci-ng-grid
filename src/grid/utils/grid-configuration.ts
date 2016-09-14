@@ -10,6 +10,16 @@ export class GridConfiguration {
   private _externalSorting: boolean = false;
 
   init() {
+    /*for (var i = 0; i < this._columnDefinitions.length; i++) {
+      if (!this._columnDefinitions[i].visible) {
+        this._columnDefinitions[i].sortOrder = -9;
+        //this._nUtilityColumns = this._nUtilityColumns + 1;
+      }
+    }*/
+
+    this.initColumnDefinitions();
+    this.sortColumnDefinitions();
+
     if (this._groupBy !== null) {
       let groupColumnExists: boolean = false;
       for (var i = 0; i < this._columnDefinitions.length; i++) {
@@ -18,7 +28,7 @@ export class GridConfiguration {
         }
       }
       if (!groupColumnExists) {
-        this._columnDefinitions.push(new Column({ field: "GROUP_COLLAPSE_EXPAND", name: "", sortOrder: -1, template: GroupCollapseExpandCell }));
+        this._columnDefinitions.push(new Column({ field: "GROUP_COLLAPSE_EXPAND", name: "", sortOrder: -1, template: GroupCollapseExpandCell, isUtility: true, defaultValue: "collapsed" }));
         this.sortColumnDefinitions();
       }
     }
@@ -29,7 +39,14 @@ export class GridConfiguration {
       n = n - 1;
     }
     for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (this._columnDefinitions[i].sortOrder < 0) {
+      if (!this._columnDefinitions[i].visible) {
+        n = n - 1;
+      }
+    }
+    for (var i = 0; i < this._columnDefinitions.length; i++) {
+      if (!this._columnDefinitions[i].visible) {
+        this._columnDefinitions[i].width = 0;
+      } else if (this._columnDefinitions[i].sortOrder < 0) {
         this._columnDefinitions[i].width = 5;
       } else {
         this._columnDefinitions[i].width = width / n;
@@ -43,13 +60,27 @@ export class GridConfiguration {
 
   set columnDefinitions(columnDefinitions: Column[]) {
     this._columnDefinitions = columnDefinitions;
-    this.initColumnDefinitions();
-    this.sortColumnDefinitions();
   }
 
   initColumnDefinitions() {
     for (var i = 0; i < this._columnDefinitions.length; i++) {
-      this._columnDefinitions[i].sortOrder = i;
+      if (this._groupBy !== null) {
+        let k: number = -1;
+        for (var j = 0; j < this._groupBy.length; j++) {
+          if (this._columnDefinitions[i].field === this._groupBy[j]) {
+            this._columnDefinitions[i].isGroup = true;
+            k = j;
+            break;
+          }
+        }
+        if (k !== -1) {
+          this._columnDefinitions[i].sortOrder = k;
+        } else {
+          this._columnDefinitions[i].sortOrder = this._groupBy.length + i;
+        }
+      } else {
+        this._columnDefinitions[i].sortOrder = i;
+      }
     }
   }
 

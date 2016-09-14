@@ -9,10 +9,13 @@ import { GridConfigService } from "./services/grid-config.service";
 import { RowComponent } from "./row/row.component";
 import { CellModule } from "./cell/cell.module";
 import { CellComponent } from "./cell/cell.component";
+import { IsVisiblePipe } from "./utils/is-visible.pipe";
+import { IsGroupPipe } from "./utils/is-group.pipe";
+import { IsRowVisiblePipe } from "./utils/is-row-visible.pipe";
 
 @NgModule({
   imports: [ CommonModule, FormsModule, CellModule ],
-  declarations: [ GridComponent, RowComponent, CellComponent ],
+  declarations: [ GridComponent, RowComponent, CellComponent, IsVisiblePipe, IsGroupPipe, IsRowVisiblePipe ],
   exports: [ GridComponent, RowComponent, CellComponent ],
   providers: [ GridDataService, GridEventService, GridConfigService ]
 })

@@ -6,7 +6,7 @@ import { Point } from "../utils/point";
 @Injectable()
 export class GridEventService {
   private nColumns: number = 0;
-  private currentLocation: Point = new Point(-1, -1);
+  private currentLocation: Point = new Point(-1, -1, -1);
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
@@ -15,8 +15,8 @@ export class GridEventService {
   }
 
   setSelectedLocation(location: Point) {
-    console.log("GridEventService.setSelectedLocation: " + location.i + "." + location.j);
-    if (this.currentLocation === null || this.currentLocation.i !== location.i || this.currentLocation.j !== location.j) {
+    console.log("GridEventService.setSelectedLocation: " + location.toString());
+    if (this.currentLocation === null || !this.currentLocation.equals(location)) {
       this.currentLocation = location;
       this.selectedLocation.next(location);
     }
@@ -38,13 +38,14 @@ export class GridEventService {
   tabFrom(location: Point) {
     let i: number = location.i;
     let j: number = location.j;
+    let k: number = location.k;
 
     j = j + 1;
     if (j === this.nColumns) {
       j = 0;
       i = i + 1;
     }
-    this.currentLocation = new Point(i, j);
+    this.currentLocation = new Point(i, j, k);
     this.selectedLocation.next(this.currentLocation);
   }
 

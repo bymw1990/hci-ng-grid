@@ -8,13 +8,13 @@
     "start": "webpack-dev-server --config webpack.config.js --hot --inline --progress --port 3000 --watch-poll --content-base src"
   },
   "dependencies": {
-    "@angular/common": "^2.0.0-rc.6",
-    "@angular/compiler": "^2.0.0-rc.6",
-    "@angular/forms": "^2.0.0-rc.6",
-    "@angular/core": "^2.0.0-rc.6",
-    "@angular/platform-browser": "^2.0.0-rc.6",
-    "@angular/platform-browser-dynamic": "^2.0.0-rc.6",
-    "ng2-bootstrap": "1.1.1",
+    "@angular/common": "2.0.0-rc.6",
+    "@angular/compiler": "2.0.0-rc.6",
+    "@angular/core": "2.0.0-rc.6",
+    "@angular/platform-browser": "2.0.0-rc.6",
+    "@angular/platform-browser-dynamic": "2.0.0-rc.6",
+    "@angular/forms": "2.0.0-rc.6",
+    "ng2-bootstrap": "1.1.2",
     "font-awesome": "^4.6.3"
   },
   "devDependencies": {
@@ -36,7 +36,7 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1",
-    "zone.js": "^0.6.12"
+    "zone.js": "^0.6.21"
   },
   "optionalDependencies": {
     "hci-ng2-grid": "^1.0.0"

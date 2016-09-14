@@ -12,13 +12,15 @@ import { CellTemplate } from "./cell-template.component";
     }
   `],
   template: `
-    <span class="grid-cell-template gce-cell" [ngClass]="{ 'focused': focused }">
-      +-
+    <span *ngIf="render" class="grid-cell-template gce-cell" [ngClass]="{ 'focused': focused }">
+      +/-
     </span>
   `
 })
 export class GroupCollapseExpandCell extends CellTemplate {
 
+  render: boolean = false;
+  activeOnRowHeader: boolean = true;
   valueable: boolean = false;
 
   ngOnInit() {

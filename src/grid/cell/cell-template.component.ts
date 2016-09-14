@@ -18,9 +18,11 @@ export const CELL_CSS = `
 
 export class CellTemplate {
 
+  value: Object = null;
+  render: boolean = true;
+  activeOnRowHeader: boolean = false;
   valueable: boolean = true;
   focused: boolean = false;
-  value: Object = null;
   @Output() valueChange: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() keyEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() tabEvent: EventEmitter<boolean> = new EventEmitter<boolean>();

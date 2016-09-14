@@ -5,7 +5,7 @@ import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
 import { GridConfiguration } from "./utils/grid-configuration";
 import { Point } from "./utils/point";
-import { RowData } from "./row/row-data";
+import { RowGroup } from "./row/row-group";
 import { Column } from "./column";
 import { LabelCell } from "./cell/label-cell.component";
 
@@ -36,6 +36,9 @@ import { LabelCell } from "./cell/label-cell.component";
  * Cells:
  *   Select/Dropdown (how to feed dictionary/options to dropdown?)
  *       cell knows its type and can just pull the dropdown config from configservice?
+ *
+ * Columns:
+ *   Fixed columns and the rest horizontally scrollable
  *
  * Events:
  *   Update navigation event to handle click event history and ctrl click to support copy/paste groups of cells
@@ -107,8 +110,9 @@ import { LabelCell } from "./cell/label-cell.component";
       <div style="width: 100%; height: 30px; border: black 1px solid;">
         <span class="grid-cell-header"
               *ngFor="let column of columnDefinitions; let j = index"
-              style="display: inline-block; height: 30px; border: black 1px solid; vertical-align: top;"
-              [ngStyle]="{ width: column.width + '%' }">
+              style="height: 30px; border: black 1px solid; vertical-align: top;"
+              [style.display]="column.visible ? 'inline-block' : 'none'"
+              [style.width]="column.width + '%'">
           {{ column.name }}
         </span>
       </div>
@@ -133,7 +137,7 @@ export class GridComponent implements OnInit {
 
   @Output() onExternalFilter: EventEmitter<Object> = new EventEmitter<Object>();
 
-  gridData: Array<RowData> = new Array<RowData>();
+  gridData: Array<RowGroup> = new Array<RowGroup>();
   nColumns: number;
 
   constructor(private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
@@ -141,7 +145,7 @@ export class GridComponent implements OnInit {
   ngOnInit() {
     console.log("GridComponent.ngOnInit " + this.inputData);
 
-    this.gridDataService.data.subscribe((data: Array<RowData>) => {
+    this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
       console.log("GridComponent GridDataService.data.subscribe");
       console.log(data);
       this.gridData = data;
@@ -185,7 +189,7 @@ export class GridComponent implements OnInit {
 
   ngAfterContentInit() {
     if (this.inputData.length > 0 && this.columnDefinitions.length > 0) {
-      this.gridEventService.setSelectedLocation(new Point(0, 0));
+      this.gridEventService.setSelectedLocation(new Point(0, 0, 0));
     }
   }
 
@@ -193,12 +197,12 @@ export class GridComponent implements OnInit {
     console.log("cellFocused");
     console.log(o);
 
-    this.cellClick(null, o["i"], o["j"]);
+    this.cellClick(null, o["i"], o["j"], o["k"]);
   }
 
-  cellClick(event: MouseEvent, ii: number, jj: number) {
+  cellClick(event: MouseEvent, ii: number, jj: number, kk: number) {
     console.log("cellClick " + ii + " " + jj);
-    this.gridEventService.setSelectedLocation(new Point(ii, jj));
+    this.gridEventService.setSelectedLocation(new Point(ii, jj, kk));
   }
 
   /* Key Events */
@@ -226,6 +230,7 @@ export class GridComponent implements OnInit {
     let key: number = o["key"];
     let i: number = o["i"];
     let j: number = o["j"];
+    let k: number = o["k"];
     if (key === 37) {
       j = Math.max(0, j - 1);
     } else if (key === 38) {
@@ -235,7 +240,7 @@ export class GridComponent implements OnInit {
     } else if (key === 40) {
       i = i + 1;
     }
-    this.gridEventService.setSelectedLocation(new Point(i, j));
+    this.gridEventService.setSelectedLocation(new Point(i, j, k));
   }
 
   colHeaderOnClick(event: MouseEvent) {

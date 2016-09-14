@@ -15,6 +15,7 @@ import { CellTemplate } from "./cell-template.component";
       height: 100%;
       background-color: transparent;
       border: none;
+      text-align: left;
     }
   ` ],
   template: `

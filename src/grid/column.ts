@@ -6,6 +6,9 @@ export class Column {
   private _validator: any;
   private _sortOrder: number;
   private _width: number;
+  private _isGroup: boolean = false;
+  private _isUtility: boolean = false;
+  private _defaultValue: any;
 
   constructor(o: Object) {
     Object.assign(this, o);
@@ -66,4 +69,29 @@ export class Column {
   set width(width: any) {
     this._width = width;
   }
+
+  get isGroup(): boolean {
+    return this._isGroup;
+  }
+
+  set isGroup(isGroup: boolean) {
+    this._isGroup = isGroup;
+  }
+
+  get isUtility(): boolean {
+    return this._isUtility;
+  }
+
+  set isUtility(isUtility: boolean) {
+    this._isUtility = isUtility;
+  }
+
+  get defaultValue(): any {
+    return this._defaultValue;
+  }
+
+  set defaultValue(defaultValue: any) {
+    this._defaultValue = defaultValue;
+  }
+
 }

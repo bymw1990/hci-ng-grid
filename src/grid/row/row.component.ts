@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { RowData } from "./row-data";
+import { RowGroup } from "./row-group";
 import { Column } from "../column";
 import { GridConfigService } from "../services/grid-config.service";
 import { GridDataService } from "../services/grid-data.service";
@@ -18,21 +18,25 @@ const EXPANDED: number = 2;
 @Component({
   selector: "hci-row",
   template: `
-    <div style="width: 100%; height: 30px; border: black 1px solid;">
-      <hci-cell *ngFor="let column of columns; let j = index"
+    <div *ngIf="rowGroup.header !== null" style="width: 100%; height: 30px; border: black 1px solid;">
+      <hci-cell *ngFor="let column of columns | isGroup; let k = index"
+                [i]="i"
+                [j]="-1"
+                [k]="k"
+                style="height: 30px; border: black 1px solid; vertical-align: top;"
+                [style.display]="column.visible ? 'inline-block' : 'none'"
+                [style.width]="column.width + '%'">
+      </hci-cell>
+    </div>
+    <div *ngFor="let row of rowGroup.rows | isRowVisible; let j = index" style="width: 100%; height: 30px; border: black 1px solid;">
+      <hci-cell *ngFor="let column of columns; let k = index"
                 [i]="i"
                 [j]="j"
-                style="display: inline-block; height: 30px; border: black 1px solid; vertical-align: top;"
-                [ngStyle]="{ 'width': column.width + '%' }">
+                [k]="k"
+                style="height: 30px; border: black 1px solid; vertical-align: top;"
+                [style.display]="column.visible ? 'inline-block' : 'none'"
+                [style.width]="column.width + '%'">
       </hci-cell>
-      <!--
-      <hci-cell *ngFor="let cell of rowGroup.data; let j = index"
-               [(value)]="cell.value"
-               [i]="i"
-               [j]="j"
-               style="display: inline-block; height: 30px; border: black 1px solid; vertical-align: top;"
-               [ngStyle]="{ 'width': columns[j].width + '%' }">
-      </hci-cell>-->
     </div>
   `
 })
@@ -41,16 +45,15 @@ export class RowComponent {
   @Input() i: number;
 
   state: number = COLLAPSED;
-  rowGroup: RowData;
+  rowGroup: RowGroup;
   columns: Column[];
 
   constructor(private gridDataService: GridDataService, private gridConfigService: GridConfigService) {}
 
   ngOnInit() {
     console.log("RowComponent.ngOnInit");
-    //this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.columns = this.gridConfigService.gridConfiguration.columnDefinitions;
-    this.rowGroup = this.gridDataService.getRow(this.i);
+    this.rowGroup = this.gridDataService.getRowGroup(this.i);
     console.log(this.i);
     console.log(this.rowGroup);
   }
