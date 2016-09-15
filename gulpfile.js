@@ -58,11 +58,11 @@
    * Schedule a task to push a new build to the demo applications node_modules
    */
   gulp.task("push", ["build"], () => {
-      return gulp.src([
-              "index.+(js|d.ts|js.map)",
-              "src/**/!(*spec).+(js|d.ts|js.map)"
-          ], {"base": "."})
-          .pipe(gulp.dest("demo/node_modules/hci-ng2-grid"));
+    return gulp.src([
+      "index.+(js|d.ts|js.map)",
+      "src/**/!(*spec).+(js|d.ts|js.map)"
+    ], {"base": "."})
+        .pipe(gulp.dest("demo/node_modules/hci-ng2-grid"));
   });
 
   /**
@@ -84,5 +84,3 @@
         .pipe(gulp.dest(paths.ts.dest));
   });
 }());
-
-

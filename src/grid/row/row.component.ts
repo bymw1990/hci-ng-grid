@@ -76,5 +76,6 @@ export class RowComponent {
 
   rowHeaderClick() {
     console.log("RowComponent.rowHeaderClick");
+    this.gridDataService.sort("GROUP_BY");
   }
 }

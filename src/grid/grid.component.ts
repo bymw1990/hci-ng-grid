@@ -108,9 +108,26 @@ import { LabelCell } from "./cell/label-cell.component";
   ` ],
   template: `
     <div (keydown)="onKeyDown($event);">
+      <!-- Title Bar -->
       <div class="grid-header">
         <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
-        <span>{{ title }}</span></div>
+        <span>{{ title }}</span>
+      </div>
+      
+      <!--<div *ngFor="let rowGroup of gridData">
+        <div *ngIf="rowGroup.header !== null" >
+          <span *ngFor="let cell of rowGroup.header.cells">
+            {{ cell.value }}
+          </span>
+        </div>
+        <div *ngFor="let row of rowGroup.rows" >
+          <span *ngFor="let cell of row.cells">
+            {{ cell.value }}
+          </span>
+        </div>
+      </div>-->
+      
+      <!-- Column Headers TODO: add filter/sorting templates -->
       <div style="width: 100%; height: 30px; border: black 1px solid;">
         <span class="grid-cell-header"
               *ngFor="let column of columnDefinitions; let j = index"
@@ -120,7 +137,19 @@ import { LabelCell } from "./cell/label-cell.component";
           {{ column.name }}
         </span>
       </div>
+      
+      <!-- Data Rows -->
       <hci-row *ngFor="let row of gridData; let i = index" [i]="i"></hci-row>
+      
+      <!-- Footer TODO: actually add functionality -->
+      <div style="width: 100%; height: 30px; border: black 1px solid;">
+        <span style="padding-right: 100px;">Showing x of N rows</span>
+        <span><i class="fa fa-fast-backward"></i></span>
+        <span><i class="fa fa-backward"></i></span>
+        <span>10</span>
+        <span><i class="fa fa-forward"></i></span>
+        <span><i class="fa fa-fast-forward"></i></span>
+      </div>
     </div>
   `
 })
@@ -147,18 +176,18 @@ export class GridComponent implements OnInit {
   constructor(private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
 
   ngOnInit() {
-    console.log("GridComponent.ngOnInit " + this.inputData);
+    //console.log("GridComponent.ngOnInit " + this.inputData);
 
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
-      console.log("GridComponent GridDataService.data.subscribe");
-      console.log(data);
+      //console.log("GridComponent GridDataService.data.subscribe");
+      //console.log(data);
       this.gridData = data;
     });
 
     this.initGridConfiguration();
-    this.gridDataService.setGridData(this.inputData);
+    this.gridDataService.setInputData(this.inputData);
 
-    console.log(this.gridData);
+    //console.log(this.gridData);
   }
 
   initGridConfiguration() {
@@ -173,7 +202,7 @@ export class GridComponent implements OnInit {
       }
       this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
     } else {
-      console.log("columnDefinitions Required");
+      //console.log("columnDefinitions Required");
     }
     if (this.groupBy) {
       this.gridConfigService.gridConfiguration.groupBy = this.groupBy;
@@ -198,21 +227,21 @@ export class GridComponent implements OnInit {
   }
 
   cellFocused(o: Object) {
-    console.log("cellFocused");
-    console.log(o);
+    //console.log("cellFocused");
+    //console.log(o);
 
     this.cellClick(null, o["i"], o["j"], o["k"]);
   }
 
   cellClick(event: MouseEvent, ii: number, jj: number, kk: number) {
-    console.log("cellClick " + ii + " " + jj);
+    //console.log("cellClick " + ii + " " + jj);
     this.gridEventService.setSelectedLocation(new Point(ii, jj, kk));
   }
 
   /* Key Events */
   onKeyDown(event: KeyboardEvent) {
     if (event.ctrlKey && event.keyCode === 67) {
-      console.log("Copy Event");
+      //console.log("Copy Event");
 
       //this.setCopyPaste();
 
@@ -229,8 +258,8 @@ export class GridComponent implements OnInit {
    * @param o
    */
   onUDLR(o: Object) {
-    console.log("GridComponent.onUDLR");
-    console.log(o);
+    //console.log("GridComponent.onUDLR");
+    //console.log(o);
     let key: number = o["key"];
     let i: number = o["i"];
     let j: number = o["j"];
@@ -248,7 +277,7 @@ export class GridComponent implements OnInit {
   }
 
   colHeaderOnClick(event: MouseEvent) {
-    console.log("GridComponent.colHeaderOnClick");
+    //console.log("GridComponent.colHeaderOnClick");
     if (this.gridConfigService.gridConfiguration.externalFiltering) {
       this.onExternalFilter.emit(true);
     }

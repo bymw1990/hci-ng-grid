@@ -19,14 +19,17 @@ import { CellTemplate } from "./cell-template.component";
     }
   ` ],
   template: `
-    <div (keydown)="onKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" [ngClass]="{ 'focused': focused }">
+    <div (keydown)="onKeyDown($event);" class="grid-cell-template" [ngClass]="{ 'focused': focused }">
+      {{ value | date }}
+    </div>
+    <!--<div (keydown)="onKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" [ngClass]="{ 'focused': focused }">
       <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled">
         {{ value | date }}
       </button>
       <div class="dropdown-menu" role="menu" aria-labelledby="single-button">
         <datepicker [ngModel]="value" (ngModelChange)="onModelChange($event);" class="grid-cell-template"></datepicker>
       </div>
-    </div>
+    </div>-->
   `
 })
 export class DateCell extends CellTemplate {

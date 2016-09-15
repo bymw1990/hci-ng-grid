@@ -11,7 +11,7 @@ export class GridEventService {
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
   constructor() {
-    console.log("GridEventService.constructure");
+    //console.log("GridEventService.constructure");
   }
 
   setNColumns(nColumns: number) {
@@ -19,7 +19,7 @@ export class GridEventService {
   }
 
   setSelectedLocation(location: Point) {
-    console.log("GridEventService.setSelectedLocation: " + location.toString());
+    //console.log("GridEventService.setSelectedLocation: " + location.toString());
     if (this.currentLocation === null || !this.currentLocation.equals(location)) {
       this.currentLocation = location;
       this.selectedLocation.next(location);
@@ -27,16 +27,16 @@ export class GridEventService {
   }
 
   arrowFrom(location: Point, dx: number, dy: number) {
-    console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
+    //console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
     this.currentLocation = location;
-    console.log(this.currentLocation);
+    //console.log(this.currentLocation);
     this.currentLocation.i = this.currentLocation.i + dy;
     this.currentLocation.j = this.currentLocation.j + dx;
     this.currentLocation.i = Math.max(0, this.currentLocation.i);
     this.currentLocation.j = Math.max(0, this.currentLocation.j);
     this.currentLocation.j = Math.min(this.nColumns - 1, this.currentLocation.j);
     this.selectedLocation.next(this.currentLocation);
-    console.log("GridEventService.arrowFrom Done");
+    //console.log("GridEventService.arrowFrom Done");
   }
 
   tabFrom(location: Point) {
@@ -54,7 +54,7 @@ export class GridEventService {
   }
 
   addSelectedLocationObserver(observer: (location: Point) => void) {
-    console.log("GridEventService.addSelectedLocationObserver");
+    //console.log("GridEventService.addSelectedLocationObserver");
     this.selectedLocationObservable.subscribe(observer);
   }
 }

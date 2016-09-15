@@ -52,11 +52,11 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
 export class GroupGridComponent {
 
   groupData: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 51110000000, "middleName": "A", "gender": "Male", "address": "742 Evergreen Terace", "phone": "7135550001" },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "middleName": "C", "gender": "Female", "address": "111 Spooner St", "phone": "7131110005" },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 321110000000, "middleName": "", "gender": "Male", "address": "123 Wood Ln", "phone": "7132220006" },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "middleName": "B", "gender": "Other", "address": "1555 E 800 S", "phone": "71354440007" },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "middleName": "Z", "gender": "Male", "address": "1 N Canyon Rd", "phone": "7136660008" },
+    { "idPatient": 1, "firstName": "Zane", "lastName": "Zoe", "dob": 111110000000, "middleName": "C", "gender": "Female", "address": "111 Spooner St", "phone": "7131110005" },
+    { "idPatient": 2, "firstName": "Rick", "lastName": "James", "dob": 321110000000, "middleName": "", "gender": "Male", "address": "123 Wood Ln", "phone": "7132220006" },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "middleName": "B", "gender": "Other", "address": "1555 E 800 S", "phone": "71354440007" },
+    { "idPatient": 4, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "middleName": "Z", "gender": "Male", "address": "1 N Canyon Rd", "phone": "7136660008" },
+    { "idPatient": 5, "firstName": "Bob", "lastName": "Smith", "dob": 51110000000, "middleName": "A", "gender": "Male", "address": "742 Evergreen Terace", "phone": "7135550001" },
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 741110000000, "middleName": "", "gender": "Male", "address": "9 S Canyon Rd", "phone": "7137770009" }
   ];
 

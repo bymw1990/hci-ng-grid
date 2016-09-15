@@ -8,9 +8,14 @@ export class RowGroup {
   header: Row = null;
   rows: Array<Row> = new Array<Row>();
 
-  /*compareTo(other: RowGroup, k: number) {
-
-  }*/
+  createHeader(headerColumns: Array<number>) {
+    if (this.rows.length > 0) {
+      this.header = new Row();
+      for (var i = 0; i < headerColumns.length; i++) {
+        this.header.add(new Cell({ value: this.rows[0].get(headerColumns[i]).value }));
+      }
+    }
+  }
 
   add(row: Row) {
     this.rows.push(row);

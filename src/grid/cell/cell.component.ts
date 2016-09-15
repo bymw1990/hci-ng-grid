@@ -42,22 +42,22 @@ export class CellComponent {
   constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
 
   ngAfterContentInit() {
-    console.log("CellComponent.ngAfterContentInit");
-    //console.log(this.value);
+    //console.log("CellComponent.ngAfterContentInit");
+    ////console.log(this.value);
     this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].template;
     this.isViewInitialized = true;
     this.createComponent();
 
     this.gridEventService.addSelectedLocationObserver((location) => {
-      console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + location.toString());
+      //console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + location.toString());
       if (location.equalsIJK(this.i, this.j, this.k)) {
         this.onFocus();
       } else {
         this.onFocusOut();
       }
     });
-    console.log("CellComponent.ngAfterContentInit Done");
+    //console.log("CellComponent.ngAfterContentInit Done");
   }
 
   /**
@@ -66,7 +66,7 @@ export class CellComponent {
    * the input is focused.  In the case of a date, the datepicker popup is opened.
    */
   onFocus() {
-    console.log("Cell.onFocus " + this.i + " " + this.j);
+    //console.log("Cell.onFocus " + this.i + " " + this.j);
     //this.componentRef.element.nativeElement.focus();
     //this.cellFocused.emit({ "i": this.i, "j": this.j });
     this.componentRef.onFocus();
@@ -77,7 +77,7 @@ export class CellComponent {
   }
 
   handleInputFocus() {
-    console.log("handleInputFocus");
+    //console.log("handleInputFocus");
   }
 
   /**
@@ -91,8 +91,8 @@ export class CellComponent {
    * event making this parent class aware that the model changed.
    */
   createComponent() {
-    console.log("CellComponent.createComponent");
-    console.log(this.type);
+    //console.log("CellComponent.createComponent");
+    //console.log(this.type);
     if(!this.isViewInitialized) {
       return;
     }
@@ -120,33 +120,33 @@ export class CellComponent {
       //this.componentRef.value = this.value;
       this.data = this.gridDataService.getCell(this.i, this.j, this.k);
       this.componentRef.value = this.data.value;
-      console.log("CellComponent set componentRef value: " + this.componentRef.value);
+      //console.log("CellComponent set componentRef value: " + this.componentRef.value);
 
       this.componentRef.valueChange.subscribe((value: Object) => {
-        console.log("valueChange");
-        console.log(value);
+        //console.log("valueChange");
+        //console.log(value);
         //this.valueChange.emit(value);
         this.data.value = value;
         this.gridDataService.handleValueChange(this.i, this.j, this.data.key, this.k, value);
       });
     }
     this.componentRef.keyEvent.subscribe((keyCode: number) => {
-      console.log("CellComponent subscribe keyEvent");
+      //console.log("CellComponent subscribe keyEvent");
       this.onKeyDown(keyCode);
     });
     this.componentRef.tabEvent.subscribe((value: boolean) => {
-      console.log("CellComponent subscribe tabEvent");
+      //console.log("CellComponent subscribe tabEvent");
       this.gridEventService.tabFrom(new Point(this.i, this.j, this.k));
     });
     this.componentRef.inputFocused.subscribe((value: boolean) => {
-      console.log("CellComponent subscribe inputFocused");
+      //console.log("CellComponent subscribe inputFocused");
       this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
     });
   }
 
   onKeyDown(keyCode: number) {
-    console.log("CellComponent.onKeyDown");
-    console.log(event);
+    //console.log("CellComponent.onKeyDown");
+    //console.log(event);
     if (keyCode === 37) {
       this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), -1, 0);
     } else if (keyCode === 39) {

@@ -8,6 +8,28 @@ export class Row {
   private _key: any;
   private _visible: boolean = true;
 
+  equals(row: Row, compareIndexes: Array<number>): boolean {
+    if (this.length() !== row.length()) {
+      return false;
+    }
+    let v: number = 0;
+    for (var i = 0; i < compareIndexes.length; i++) {
+      if (typeof this.get(compareIndexes[i]).value === "number") {
+        v = this.get(compareIndexes[i]).value - row.get(compareIndexes[i]).value;
+      } else if (typeof this.get(compareIndexes[i]).value === "string") {
+        if (this.get(compareIndexes[i]).value < row.get(compareIndexes[i]).value) {
+          v = -1;
+        } else if (this.get(compareIndexes[i]).value > row.get(compareIndexes[i]).value) {
+          v = 1;
+        }
+      }
+      if (v !== 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   add(cell: Cell) {
     this.cells.push(cell);
   }

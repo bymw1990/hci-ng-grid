@@ -11,21 +11,17 @@ import { Column } from "../column";
 export class GridDataService {
 
   inputData: Object[];
+  preparedData: Array<Row>;
+
   gridData: Array<RowGroup>;
   data = new Subject<Array<RowGroup>>();
 
+  sortAsc: boolean = true;
+  sortColumn: string = "GROUP_BY";
+
+  columnDefinitions: Column[];
+
   constructor(private gridConfigService: GridConfigService) {}
-
-  /*filter(k: number, filter: string) {
-    console.log("GridDataService.filter");
-  }
-
-  sort(k: number, asc: boolean) {
-    console.log("GridDataService.sort");
-    this.gridData.sort((o1: RowGroup, o2: RowGroup) => {
-      return o1.compareTo(o2, k);
-    });
-  }*/
 
   getCell(i: number, j: number, k: number): Cell {
     //let dataColumnOffset: number = this.gridConfigService.gridConfiguration.nUtilityColumns;
@@ -40,10 +36,10 @@ export class GridDataService {
     console.log("GridDataService.handleValueChange: " + key + ":" + k + ":" + value);
     if (j === -1) {
       for (var n = 0; n < this.gridData[i].length(); n++) {
-        this.setInputData(this.gridData[i].get(n).key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
+        this.setInputDataValue(this.gridData[i].get(n).key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
       }
     } else {
-      this.setInputData(key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
+      this.setInputDataValue(key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
     }
   }
 
@@ -56,11 +52,9 @@ export class GridDataService {
    * @param field
    * @param value
    */
-  setInputData(key: number, field: string, value: any) {
+  setInputDataValue(key: number, field: string, value: any) {
     var fields = field.split(".");
 
-    // Can't get by rowIndex anymore, need to use a key!! oorrrrr... generate a key based on initial position to use as future reference???  hmmmmm....
-    // Would be impervious to any internal filtering/sorting.  Would break if inputData is modified outside of grid but that would be expected, so who cares.
     var obj = this.inputData[key];
     for (var i = 0; i < fields.length - 1; i++) {
       obj = obj[fields[i]];
@@ -72,64 +66,163 @@ export class GridDataService {
     return this.gridData[i];
   }
 
+  prepareData() {
+    console.log("prepareData");
+    this.preparedData = new Array<any>();
+    let columnDefinitions: Column[] = this.gridConfigService.gridConfiguration.columnDefinitions;
+
+    for (var i = 0; i < this.inputData.length; i++) {
+      let row: Row = new Row();
+      row.key = i;
+      let header: Row = null;
+      for (var j = 0; j < columnDefinitions.length; j++) {
+        if (columnDefinitions[j].isUtility) {
+          row.add(new Cell({value: columnDefinitions[j].defaultValue}));
+        } else {
+          row.add(new Cell({value: this.getField(this.inputData[i], columnDefinitions[j].field), key: i}));
+        }
+      }
+      this.preparedData.push(row);
+    }
+  }
+
+  filterPreparedData() {
+    console.log("filterPreparedData");
+  }
+
+  sortPreparedData() {
+    console.log("sortPreparedData");
+    let sortColumns: Array<number> = new Array<number>();
+
+    if (this.sortColumn === "GROUP_BY") {
+      for (var i = 0; i < this.columnDefinitions.length; i++) {
+        if (this.columnDefinitions[i].isGroup) {
+          sortColumns.push(i);
+        }
+      }
+    } else {
+      for (var i = 0; i < this.columnDefinitions.length; i++) {
+        if (this.columnDefinitions[i].field === this.sortColumn) {
+          sortColumns.push(i);
+          break;
+        }
+      }
+    }
+
+    this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
+      let v: number = 0;
+      for (var i = 0; i < sortColumns.length; i++) {
+        if (typeof o1.get(sortColumns[i]).value === "number") {
+          if (this.sortAsc) {
+            v = o1.get(sortColumns[i]).value - o2.get(sortColumns[i]).value;
+          } else {
+            v = o2.get(sortColumns[i]).value - o1.get(sortColumns[i]).value;
+          }
+        } else if (typeof o1.get(sortColumns[i]).value === "string") {
+          if (this.sortAsc) {
+            if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
+              v = -1;
+            } else if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
+              v = 1;
+            }
+          } else {
+            if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
+              v = -1;
+            } else if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
+              v = 1;
+            }
+          }
+        }
+        if (v !== 0) {
+          return v;
+        }
+      }
+      return v;
+    });
+  }
+
+  sort(sortColumn: string) {
+    console.log("sort Start " + this.sortColumn + " " + this.sortAsc);
+
+    if (this.sortColumn == null || this.sortColumn !== sortColumn) {
+      this.sortColumn = sortColumn;
+      this.sortAsc = true;
+    } else {
+      this.sortAsc = !this.sortAsc;
+    }
+    console.log("sort End " + this.sortColumn + " " + this.sortAsc);
+
+    this.initData(false, false, true, false);
+  }
+
+  setInputData(inputData: Array<Object>) {
+    console.log("setInputData");
+    this.inputData = inputData;
+    this.initData(true, true, true, true);
+  }
+
   /**
    * TODO: If groupBy, don't just push rows, but check for pre-existing keys and add those rows to existing rowData.
    *
    * @param inputData
    */
-  setGridData(inputData: Array<Object>): void {
-    console.log("setData");
-    this.inputData = inputData;
-    let columnDefinitions: Column[] = this.gridConfigService.gridConfiguration.columnDefinitions;
+  initData(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
+    console.log("initData");
+    this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
+
+    if (prep) {
+      this.prepareData();
+    }
+    if (filter) {
+      this.filterPreparedData();
+    }
+    if (sort) {
+      this.sortPreparedData();
+    }
+    if (paginate) {
+      //this.paginateData();
+    }
 
     this.gridData = new Array<RowGroup>();
-    for (var i = 0; i < inputData.length; i++) {
-      let row: Row = new Row();
-      row.key = i;
-      let header: Row = null;
-
-      for (var j = 0; j < columnDefinitions.length; j++) {
-        if (columnDefinitions[j].isUtility) {
-          row.add(new Cell({ value: columnDefinitions[j].defaultValue }));
-        } else {
-          row.add(new Cell({ value: this.getField(inputData[i], columnDefinitions[j].field), key: i }));
-        }
-
-        if (columnDefinitions[j].isGroup) {
-          if (header === null) {
-            header = new Row();
-          }
-          header.add(new Cell({ value: this.getField(inputData[i], columnDefinitions[j].field), key: 0 }));
-        } else if (columnDefinitions[j].isUtility) {
-          if (header === null) {
-            header = new Row();
-          }
-          header.add(new Cell({ value: columnDefinitions[j].defaultValue, key: -1 }));
+    if (this.gridConfigService.gridConfiguration.groupBy !== null) {
+      // This is all wrong for sorting... if group by, only search for next common row.
+      // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
+      // lay next to each other
+      let sortColumns: Array<number> = new Array<number>();
+      for (var i = 0; i < this.gridConfigService.gridConfiguration.columnDefinitions.length; i++) {
+        if (this.gridConfigService.gridConfiguration.columnDefinitions[i].isGroup) {
+          sortColumns.push(i);
         }
       }
 
-      let headerExists: boolean = false;
-      if (header !== null) {
-        for (var ii = 0; ii < this.gridData.length; ii++) {
-          if (this.gridData[ii].equals(header)) {
-            this.gridData[ii].add(row);
-            headerExists = true;
+      for (var i = 0; i < this.preparedData.length; i++) {
+        let exists: boolean = false;
+        for (var j = 0; j < this.gridData.length; j++) {
+          if (this.gridData[j].header.equals(this.preparedData[i], sortColumns)) {
+            this.gridData[j].add(this.preparedData[i]);
+            exists = true;
             break;
           }
         }
+        if (!exists) {
+          let rowGroup: RowGroup = new RowGroup();
+          rowGroup.add(this.preparedData[i]);
+          rowGroup.createHeader(sortColumns);
+          this.gridData.push(rowGroup);
+        }
       }
-      if (!headerExists) {
+    } else {
+      for (var i = 0; i < this.preparedData.length; i++) {
         let rowGroup: RowGroup = new RowGroup();
-        rowGroup.setHeader(header);
-        rowGroup.add(row);
+        rowGroup.add(this.preparedData[i]);
         this.gridData.push(rowGroup);
       }
     }
+
     this.data.next(this.gridData);
   }
 
   getField(row: Object, field: String): Object {
-    console.log("getField of " + field);
     var fields = field.split(".");
 
     var obj = row[fields[0]];
