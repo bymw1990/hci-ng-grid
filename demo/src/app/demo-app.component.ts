@@ -20,6 +20,7 @@ import { Component } from "@angular/core";
       <a routerLink="/simple" style="padding: 20px;">Simple Grid</a>
       <a routerLink="/edit" style="padding: 20px;">Edit Grid</a>
       <a routerLink="/group" style="padding: 20px;">Group Grid</a>
+      <a routerLink="/fixed" style="padding: 20px;">Fixed Grid</a>
     </div>
     <router-outlet></router-outlet>
     `

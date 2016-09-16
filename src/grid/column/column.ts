@@ -1,4 +1,5 @@
 export class Column {
+  private _id: number;
   private _field: string;
   private _name: string;
   private _template: any;
@@ -6,12 +7,21 @@ export class Column {
   private _validator: any;
   private _sortOrder: number;
   private _width: number;
+  private _isFixed: boolean = false;
   private _isGroup: boolean = false;
   private _isUtility: boolean = false;
   private _defaultValue: any;
 
   constructor(o: Object) {
     Object.assign(this, o);
+  }
+
+  get id(): number {
+    return this._id;
+  }
+
+  set id(id: number) {
+    this._id = id;
   }
 
   get field(): string {
@@ -68,6 +78,14 @@ export class Column {
 
   set width(width: any) {
     this._width = width;
+  }
+
+  get isFixed(): boolean {
+    return this._isFixed;
+  }
+
+  set isFixed(isFixed: boolean) {
+    this._isFixed = isFixed;
   }
 
   get isGroup(): boolean {

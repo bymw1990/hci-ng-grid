@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
-import { Column } from "../column";
+import { Column } from "../column/column";
 
 @Pipe({
   name: "isVisible"

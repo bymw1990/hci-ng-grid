@@ -1,10 +1,11 @@
-import { Column } from "../column";
+import { Column } from "../column/column";
 import { GroupCollapseExpandCell } from "../cell/group-collapse-expand.component";
 
 export class GridConfiguration {
 
   private _nUtilityColumns: number = 0;
   private _columnDefinitions: Column[];
+  private _fixedColumns: string[] = null;
   private _groupBy: string[] = null;
   private _externalFiltering: boolean = false;
   private _externalSorting: boolean = false;
@@ -32,15 +33,21 @@ export class GridConfiguration {
         this.sortColumnDefinitions();
       }
     }*/
-    let n: number = this._columnDefinitions.length;
-    let width: number = 100;
-    /*if (this._groupBy !== null) {
-      width = width - 5;
-      n = n - 1;
-    }*/
+    let nLeft: number = 0;
+    let wLeft: number = 100;
+    let nRight: number = this._columnDefinitions.length;
+    let wRight: number = 100;
+
     for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (!this._columnDefinitions[i].visible) {
-        n = n - 1;
+      if (this._columnDefinitions[i].sortOrder < 0) {
+        nLeft = nLeft + 1;
+        nRight = nRight - 1;
+        wLeft = wLeft - 10;
+      } else if (this._columnDefinitions[i].isFixed && this._columnDefinitions[i].visible) {
+        nLeft = nLeft + 1;
+        nRight = nRight - 1;
+      } else if (!this._columnDefinitions[i].isFixed && !this._columnDefinitions[i].visible) {
+        nRight = nRight - 1;
       }
     }
     for (var i = 0; i < this._columnDefinitions.length; i++) {
@@ -48,8 +55,10 @@ export class GridConfiguration {
         this._columnDefinitions[i].width = 0;
       } else if (this._columnDefinitions[i].sortOrder < 0) {
         this._columnDefinitions[i].width = 5;
+      } else if (this._columnDefinitions[i].isFixed) {
+        this._columnDefinitions[i].width = wLeft / nLeft;
       } else {
-        this._columnDefinitions[i].width = width / n;
+        this._columnDefinitions[i].width = wRight / nRight;
       }
     }
   }
@@ -63,24 +72,43 @@ export class GridConfiguration {
   }
 
   initColumnDefinitions() {
+    let nGroupBy: number = 0;
+    let nFixedColumns: number = 0;
+    if (this._groupBy !== null) {
+      nGroupBy = this._groupBy.length;
+    }
+    if (this._fixedColumns !== null) {
+      nFixedColumns = this._fixedColumns.length;
+    }
+
     for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (this._groupBy !== null) {
-        let k: number = -1;
-        for (var j = 0; j < this._groupBy.length; j++) {
-          if (this._columnDefinitions[i].field === this._groupBy[j]) {
-            this._columnDefinitions[i].isGroup = true;
-            this._columnDefinitions[i].visible = false;
+      let m: number = 0;
+      let k: number = i;
+      for (var j = 0; j < nGroupBy; j++) {
+        if (this._columnDefinitions[i].field === this._groupBy[j]) {
+          this._columnDefinitions[i].isGroup = true;
+          this._columnDefinitions[i].visible = false;
+          k = j;
+          m = 1;
+          break;
+        }
+      }
+      if (m === 0) {
+        for (var j = 0; j < nFixedColumns; j++) {
+          if (this._columnDefinitions[i].field === this._fixedColumns[j]) {
+            this._columnDefinitions[i].isFixed = true;
             k = j;
+            m = 2;
             break;
           }
         }
-        if (k !== -1) {
-          this._columnDefinitions[i].sortOrder = k;
-        } else {
-          this._columnDefinitions[i].sortOrder = this._groupBy.length + i;
-        }
-      } else {
-        this._columnDefinitions[i].sortOrder = i;
+      }
+      if (m === 0) {
+        this._columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k;
+      } else if (m === 1) {
+        this._columnDefinitions[i].sortOrder = nGroupBy + k;
+      } else if (m === 2) {
+        this._columnDefinitions[i].sortOrder = k;
       }
     }
   }
@@ -95,6 +123,10 @@ export class GridConfiguration {
         return 0;
       }
     });
+
+    for (var i = 0; i < this._columnDefinitions.length; i++) {
+      this._columnDefinitions[i].id = i;
+    }
   }
 
   get groupBy() {
@@ -103,6 +135,14 @@ export class GridConfiguration {
 
   set groupBy(groupBy: string[]) {
     this._groupBy = groupBy;
+  }
+
+  get fixedColumns() {
+    return this._fixedColumns;
+  }
+
+  set fixedColumns(fixedColumns: string[]) {
+    this._fixedColumns = fixedColumns;
   }
 
   get externalFiltering() {

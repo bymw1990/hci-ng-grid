@@ -9,13 +9,15 @@ import { GridComponent } from "./grid.component";
 import { RowComponent } from "./row/row.component";
 import { CellModule } from "./cell/cell.module";
 import { CellComponent } from "./cell/cell.component";
+import { ColumnHeaderComponent } from "./column/column-header.component";
 import { IsVisiblePipe } from "./utils/is-visible.pipe";
 import { IsGroupPipe } from "./utils/is-group.pipe";
+import { IsFixedPipe } from "./utils/is-fixed.pipe";
 import { IsRowVisiblePipe } from "./utils/is-row-visible.pipe";
 
 @NgModule({
   imports: [ CommonModule, FormsModule, CellModule ],
-  declarations: [ GridComponent, RowComponent, CellComponent, IsVisiblePipe, IsGroupPipe, IsRowVisiblePipe ],
+  declarations: [ GridComponent, RowComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe ],
   exports: [ GridComponent ]
 })
 export class GridModule {}

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, HostListener } from "@angular/core";
 
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
@@ -9,7 +9,7 @@ import { GridConfigService } from "./services/grid-config.service";
 import { GridConfiguration } from "./utils/grid-configuration";
 import { Point } from "./utils/point";
 import { RowGroup } from "./row/row-group";
-import { Column } from "./column";
+import { Column } from "./column/column";
 import { LabelCell } from "./cell/label-cell.component";
 
 /**
@@ -128,18 +128,39 @@ import { LabelCell } from "./cell/label-cell.component";
       </div>-->
       
       <!-- Column Headers TODO: add filter/sorting templates -->
-      <div style="width: 100%; height: 30px; border: black 1px solid;">
-        <span class="grid-cell-header"
-              *ngFor="let column of columnDefinitions; let j = index"
-              style="height: 30px; border: black 1px solid; vertical-align: top;"
-              [style.display]="column.visible ? 'inline-block' : 'none'"
-              [style.width]="column.width + '%'">
-          {{ column.name }}
-        </span>
+      <div style="display: inline-block; width: 100%;">
+        <div style="display: inline-block;"
+             [style.width]="nFixedColumns > 0 ? 20 + '%' : '0%'">
+          <div style="width: 100%; height: 30px; border: black 1px solid;">
+            <hci-column-header class="grid-cell-header"
+                  *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
+                  [column]="column"
+                  style="height: 30px; border: black 1px solid; vertical-align: top;"
+                  [style.display]="column.visible ? 'inline-block' : 'none'"
+                  [style.width]="column.width + '%'">
+            </hci-column-header>
+          </div>
+          
+          <!-- Data Rows -->
+          <hci-row *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row>
+        </div>
+        <div style="float: right; overflow-x: scroll;"
+             class="rightDiv"
+             [style.width]="nFixedColumns > 0 ? 80 + '%' : '100%'">
+          <div style="width: 100%; height: 30px; border: black 1px solid;">
+            <hci-column-header class="grid-cell-header"
+                  *ngFor="let column of columnDefinitions | isFixed:false; let j = index"
+                  [column]="column"
+                  style="height: 30px; border: black 1px solid; vertical-align: top;"
+                  [style.display]="column.visible ? 'inline-block' : 'none'"
+                  [style.width]="column.width + '%'">
+            </hci-column-header>
+          </div>
+          
+          <!-- Data Rows -->
+          <hci-row *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="false"></hci-row>
+        </div>
       </div>
-      
-      <!-- Data Rows -->
-      <hci-row *ngFor="let row of gridData; let i = index" [i]="i"></hci-row>
       
       <!-- Footer TODO: actually add functionality -->
       <div style="width: 100%; height: 30px; border: black 1px solid;">
@@ -164,6 +185,7 @@ export class GridComponent implements OnInit {
   @Input() gridConfiguration: GridConfiguration;
   @Input() columnDefinitions: Column[];
   @Input() key: string[];
+  @Input() fixedColumns: string[];
   @Input() groupBy: string[];
   @Input() externalFiltering: boolean = false;
   @Input() externalSorting: boolean = false;
@@ -171,9 +193,10 @@ export class GridComponent implements OnInit {
   @Output() onExternalFilter: EventEmitter<Object> = new EventEmitter<Object>();
 
   gridData: Array<RowGroup> = new Array<RowGroup>();
-  nColumns: number;
+  nFixedColumns: number = 0;
+  nColumns: number = 0;
 
-  constructor(private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
+  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
 
   ngOnInit() {
     //console.log("GridComponent.ngOnInit " + this.inputData);
@@ -204,6 +227,9 @@ export class GridComponent implements OnInit {
     } else {
       //console.log("columnDefinitions Required");
     }
+    if (this.fixedColumns) {
+      this.gridConfigService.gridConfiguration.fixedColumns = this.fixedColumns;
+    }
     if (this.groupBy) {
       this.gridConfigService.gridConfiguration.groupBy = this.groupBy;
     }
@@ -215,6 +241,9 @@ export class GridComponent implements OnInit {
     }
     this.gridConfigService.gridConfiguration.init();
 
+    if (this.gridConfigService.gridConfiguration.fixedColumns != null) {
+      this.nFixedColumns = this.gridConfigService.gridConfiguration.fixedColumns.length;
+    }
     this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
     this.gridEventService.setNColumns(this.nColumns);
@@ -283,4 +312,10 @@ export class GridComponent implements OnInit {
     }
   }
 
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    console.log("window.resize");
+    let rightDiv: HTMLElement = this.el.nativeElement.getElementsByClassName("rightDiv")[0];
+    console.log(rightDiv.offsetWidth);
+  }
 }
