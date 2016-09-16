@@ -104,17 +104,30 @@ export class GridDataService {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
       // lay next to each other
-      let sortColumns: Array<number> = new Array<number>();
+      let groupColumns: Array<number> = new Array<number>();
       for (var i = 0; i < this.gridConfigService.gridConfiguration.columnDefinitions.length; i++) {
         if (this.gridConfigService.gridConfiguration.columnDefinitions[i].isGroup) {
-          sortColumns.push(i);
+          groupColumns.push(i);
         }
       }
 
+      let currentRowGroup: RowGroup = null;
       for (var i = START; i < END; i++) {
-        let exists: boolean = false;
+        if (currentRowGroup === null) {
+          currentRowGroup = new RowGroup();
+          currentRowGroup.add(this.preparedData[i]);
+          currentRowGroup.createHeader(groupColumns);
+        } else if (currentRowGroup.equals(this.preparedData[i], groupColumns)) {
+          currentRowGroup.add(this.preparedData[i]);
+        } else {
+          this.gridData.push(currentRowGroup);
+          currentRowGroup = new RowGroup();
+          currentRowGroup.add(this.preparedData[i]);
+          currentRowGroup.createHeader(groupColumns);
+        }
+        /*let exists: boolean = false;
         for (var j = 0; j < this.gridData.length; j++) {
-          if (this.gridData[j].header.equals(this.preparedData[i], sortColumns)) {
+          if (this.gridData[j].header.equals(this.preparedData[i], groupColumns)) {
             this.gridData[j].add(this.preparedData[i]);
             exists = true;
             break;
@@ -123,9 +136,12 @@ export class GridDataService {
         if (!exists) {
           let rowGroup: RowGroup = new RowGroup();
           rowGroup.add(this.preparedData[i]);
-          rowGroup.createHeader(sortColumns);
+          rowGroup.createHeader(groupColumns);
           this.gridData.push(rowGroup);
-        }
+        }*/
+      }
+      if (currentRowGroup !== null) {
+        this.gridData.push(currentRowGroup);
       }
     } else {
       for (var i = START; i < END; i++) {

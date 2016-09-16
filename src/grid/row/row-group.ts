@@ -37,18 +37,25 @@ export class RowGroup {
     this.header = header;
   }
 
-  equals(otherHeader: Row): boolean {
+  equals(row: Row, compareIndexes: Array<number>): boolean {
     if (this.header == null) {
       return false;
-    } else if (this.header.length() !== otherHeader.length()) {
-      return false;
-    } else {
-      for (var i = 0; i < this.header.length(); i++) {
-        if (this.header.get(i).key === 0 && this.header.get(i).value !== otherHeader.get(i).value) {
-          return false;
+    }
+    let v: number = 0;
+    for (var i = 0; i < compareIndexes.length; i++) {
+      if (typeof this.header.get(i).value === "number") {
+        v = this.header.get(i).value - row.get(compareIndexes[i]).value;
+      } else if (typeof this.header.get(i).value === "string") {
+        if (this.header.get(i).value < row.get(compareIndexes[i]).value) {
+          v = -1;
+        } else if (this.header.get(i).value > row.get(compareIndexes[i]).value) {
+          v = 1;
         }
       }
-      return true;
+      if (v !== 0) {
+        return false;
+      }
     }
+    return true;
   }
 }

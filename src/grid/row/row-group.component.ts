@@ -16,13 +16,13 @@ const EXPANDED: number = 2;
 @Component({
   selector: "hci-row-group",
   template: `
-    <span *ngIf="rowGroup.header !== null"
+    <div *ngIf="rowGroup.header !== null"
          (click)="rowHeaderClick()"
          class="hci-row header"
-         style="padding-top: 3px;">
+         style="padding-top: 3px; border: black 1px solid; width: 100%;">
       <span style="padding-left: 10px;"><i class="fa fa-minus"></i></span><span *ngFor="let cell of rowGroup.header.cells" style="padding-left: 10px;">{{cell.value}}</span>
-    </span>
-    <br *ngIf="rowGroup.header !== null" />
+    </div>
+    <!--<br *ngIf="rowGroup.header !== null" />-->
     <hci-row *ngFor="let row of rowGroup.rows; let j = index"
              [i]="i"
              [j]="j"
