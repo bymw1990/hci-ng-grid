@@ -7,6 +7,7 @@ import { Row } from "../row/row";
 import { RowGroup } from "../row/row-group";
 import { Column } from "../column/column";
 import { SortInfo } from "../utils/sort-info";
+import { PageInfo } from "../utils/page-info";
 
 @Injectable()
 export class GridDataService {
@@ -22,6 +23,9 @@ export class GridDataService {
   sortInfo: SortInfo = new SortInfo();
   sortInfoObserved = new Subject<SortInfo>();
 
+  pageInfo: PageInfo = new PageInfo();
+  pageInfoObserved = new Subject<PageInfo>();
+
   constructor(private gridConfigService: GridConfigService) {}
 
   filterPreparedData() {
@@ -29,6 +33,7 @@ export class GridDataService {
   }
 
   getCell(i: number, j: number, k: number): Cell {
+    //console.log("getCell " + i + " " + j + " " + k);
     //let dataColumnOffset: number = this.gridConfigService.gridConfiguration.nUtilityColumns;
     if (j === -1) {
       return this.gridData[i].getHeader().get(k);
@@ -80,9 +85,19 @@ export class GridDataService {
     if (sort) {
       this.sortPreparedData();
     }
+
+    let START: number = 0;
+    let END: number = this.preparedData.length;
+    this.pageInfo.nDataSize = this.preparedData.length;
+
     if (paginate) {
-      //this.paginateData();
+      START = this.pageInfo.page * this.pageInfo.pageSize;
+      END = Math.min(START + this.pageInfo.pageSize, this.pageInfo.nDataSize);
+      this.pageInfo.nPages = Math.ceil(this.pageInfo.nDataSize / this.pageInfo.pageSize);
+    } else {
+      this.pageInfo.nPages = 1;
     }
+    this.pageInfoObserved.next(this.pageInfo);
 
     this.gridData = new Array<RowGroup>();
     if (this.gridConfigService.gridConfiguration.groupBy !== null) {
@@ -96,7 +111,7 @@ export class GridDataService {
         }
       }
 
-      for (var i = 0; i < this.preparedData.length; i++) {
+      for (var i = START; i < END; i++) {
         let exists: boolean = false;
         for (var j = 0; j < this.gridData.length; j++) {
           if (this.gridData[j].header.equals(this.preparedData[i], sortColumns)) {
@@ -113,7 +128,7 @@ export class GridDataService {
         }
       }
     } else {
-      for (var i = 0; i < this.preparedData.length; i++) {
+      for (var i = START; i < END; i++) {
         let rowGroup: RowGroup = new RowGroup();
         rowGroup.add(this.preparedData[i]);
         this.gridData.push(rowGroup);
@@ -182,7 +197,7 @@ export class GridDataService {
 
     console.log("sort end " + this.sortInfo.column + " " + this.sortInfo.asc);
 
-    this.initData(false, false, true, false);
+    this.initData(false, false, true, true);
   }
 
   sortPreparedData() {

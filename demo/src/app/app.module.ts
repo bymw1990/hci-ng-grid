@@ -7,6 +7,8 @@ import { CommonModule } from "@angular/common";
 
 import { DemoAppComponent } from "./demo-app.component";
 
+import { DataGeneratorService } from "./services/data-generator.service";
+
 import { SimpleGridComponent } from "./simple/simple-grid.component";
 import { EditGridComponent } from "./edit/edit-grid.component";
 import { GroupGridComponent } from "./group/group-grid.component";
@@ -22,6 +24,7 @@ import { GridModule } from "hci-ng2-grid/index";
 @NgModule({
   imports: [ BrowserModule, CommonModule, SimpleGridModule, EditGridModule, GroupGridModule, FixedGridModule, GridModule ],
   declarations: [ DemoAppComponent, SimpleGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent ],
+  providers: [ DataGeneratorService ],
   bootstrap: [ DemoAppComponent ]
 })
 export class AppModule {}

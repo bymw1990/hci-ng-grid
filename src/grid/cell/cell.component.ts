@@ -42,7 +42,7 @@ export class CellComponent {
   constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
 
   ngAfterContentInit() {
-    //console.log("CellComponent.ngAfterContentInit");
+    //console.log("CellComponent.ngAfterContentInit " + this.i + " " + this.j + " " + this.k);
     ////console.log(this.value);
     this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].template;

@@ -6,7 +6,9 @@ export class Column {
   private _visible: boolean = true;
   private _validator: any;
   private _sortOrder: number;
-  private _width: number;
+  private _width: number = 100;
+  private _minWidth: number = 100;
+  private _maxWidth: number = 250;
   private _isFixed: boolean = false;
   private _isGroup: boolean = false;
   private _isUtility: boolean = false;
@@ -64,20 +66,36 @@ export class Column {
     this._validator = validator;
   }
 
-  get sortOrder(): any {
+  get sortOrder(): number {
     return this._sortOrder;
   }
 
-  set sortOrder(sortOrder: any) {
+  set sortOrder(sortOrder: number) {
     this._sortOrder = sortOrder;
   }
 
-  get width(): any {
+  get width(): number {
     return this._width;
   }
 
-  set width(width: any) {
+  set width(width: number) {
     this._width = width;
+  }
+
+  get minWidth(): number {
+    return this._minWidth;
+  }
+
+  set minWidth(minWidth: number) {
+    this._minWidth = minWidth;
+  }
+
+  get maxWidth(): number {
+    return this._maxWidth;
+  }
+
+  set maxWidth(maxWidth: number) {
+    this._maxWidth = maxWidth;
   }
 
   get isFixed(): boolean {

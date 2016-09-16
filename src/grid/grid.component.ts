@@ -11,6 +11,7 @@ import { Point } from "./utils/point";
 import { RowGroup } from "./row/row-group";
 import { Column } from "./column/column";
 import { LabelCell } from "./cell/label-cell.component";
+import { PageInfo } from "./utils/page-info";
 
 /**
  * Thoughts...
@@ -114,60 +115,53 @@ import { LabelCell } from "./cell/label-cell.component";
         <span>{{ title }}</span>
       </div>
       
-      <!--<div *ngFor="let rowGroup of gridData">
-        <div *ngIf="rowGroup.header !== null" >
-          <span *ngFor="let cell of rowGroup.header.cells">
-            {{ cell.value }}
-          </span>
-        </div>
-        <div *ngFor="let row of rowGroup.rows" >
-          <span *ngFor="let cell of row.cells">
-            {{ cell.value }}
-          </span>
-        </div>
-      </div>-->
-      
       <!-- Column Headers TODO: add filter/sorting templates -->
-      <div style="display: inline-block; width: 100%;">
-        <div style="display: inline-block;"
-             [style.width]="nFixedColumns > 0 ? 20 + '%' : '0%'">
+      <div style="display: inline-block; width: 100%; white-space: nowrap; overflow-x: hidden; margin-bottom: -5px; border: black 1px solid;">
+        <div style="vertical-align: top;"
+             [style.display]="nFixedColumns > 0 ? 'inline-block' : 'none'"
+             [style.width]="nFixedColumns > 0 ? (nFixedColumns * 10) + '%' : '0%'"
+             [style.min-width]="fixedMinWidth + 'px'">
           <div style="width: 100%; height: 30px; border: black 1px solid;">
             <hci-column-header class="grid-cell-header"
                   *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
                   [column]="column"
                   style="height: 30px; border: black 1px solid; vertical-align: top;"
                   [style.display]="column.visible ? 'inline-block' : 'none'"
-                  [style.width]="column.width + '%'">
+                  [style.width]="column.width + '%'"
+                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
             </hci-column-header>
           </div>
           
           <!-- Data Rows -->
-          <hci-row *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row>
+          <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row-group>
         </div>
-        <div style="float: right; overflow-x: scroll;"
+        <div style="display: inline-block; overflow-x: scroll; white-space: nowrap; vertical-align: top; margin-left: -4px;"
              class="rightDiv"
-             [style.width]="nFixedColumns > 0 ? 80 + '%' : '100%'">
-          <div style="width: 100%; height: 30px; border: black 1px solid;">
+             [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
+          <!--<div style="width: 100%; height: 30px; border: black 1px solid;">-->
             <hci-column-header class="grid-cell-header"
                   *ngFor="let column of columnDefinitions | isFixed:false; let j = index"
                   [column]="column"
                   style="height: 30px; border: black 1px solid; vertical-align: top;"
                   [style.display]="column.visible ? 'inline-block' : 'none'"
-                  [style.width]="column.width + '%'">
-            </hci-column-header>
-          </div>
+                  [style.width]="column.width + '%'"
+                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+            </hci-column-header><br />
+          <!--</div>-->
           
           <!-- Data Rows -->
-          <hci-row *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="false"></hci-row>
+          <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="false"></hci-row-group>
         </div>
       </div>
       
       <!-- Footer TODO: actually add functionality -->
       <div style="width: 100%; height: 30px; border: black 1px solid;">
-        <span style="padding-right: 100px;">Showing x of N rows</span>
+        <span style="padding-right: 100px;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.nPages }}</span>
         <span><i class="fa fa-fast-backward"></i></span>
         <span><i class="fa fa-backward"></i></span>
-        <span>10</span>
+        <span>{{ pageInfo.pageSize }}</span>
         <span><i class="fa fa-forward"></i></span>
         <span><i class="fa fa-fast-forward"></i></span>
       </div>
@@ -195,6 +189,8 @@ export class GridComponent implements OnInit {
   gridData: Array<RowGroup> = new Array<RowGroup>();
   nFixedColumns: number = 0;
   nColumns: number = 0;
+  fixedMinWidth: number = 0;
+  pageInfo: PageInfo;
 
   constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
 
@@ -202,9 +198,12 @@ export class GridComponent implements OnInit {
     //console.log("GridComponent.ngOnInit " + this.inputData);
 
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
-      //console.log("GridComponent GridDataService.data.subscribe");
+      console.log("GridComponent GridDataService.data.subscribe");
       //console.log(data);
       this.gridData = data;
+    });
+    this.gridDataService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
+      this.pageInfo = pageInfo;
     });
 
     this.initGridConfiguration();
@@ -247,9 +246,17 @@ export class GridComponent implements OnInit {
     this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
     this.gridEventService.setNColumns(this.nColumns);
+    this.fixedMinWidth = 0;
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].isFixed) {
+        this.fixedMinWidth = this.fixedMinWidth + this.columnDefinitions[i].minWidth;
+      }
+    }
   }
 
   ngAfterContentInit() {
+    //this.gridConfigService.gridConfiguration.setDivWidths(this.el.nativeElement.getElementsByClassName("leftDiv")[0].offsetWidth, this.el.nativeElement.getElementsByClassName("rightDiv")[0].offsetWidth);
+
     if (this.inputData.length > 0 && this.columnDefinitions.length > 0) {
       this.gridEventService.setSelectedLocation(new Point(0, 0, 0));
     }
@@ -315,7 +322,6 @@ export class GridComponent implements OnInit {
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     console.log("window.resize");
-    let rightDiv: HTMLElement = this.el.nativeElement.getElementsByClassName("rightDiv")[0];
-    console.log(rightDiv.offsetWidth);
+    //this.gridConfigService.gridConfiguration.setDivWidths(this.el.nativeElement.getElementsByClassName("leftDiv")[0].offsetWidth, this.el.nativeElement.getElementsByClassName("rightDiv")[0].offsetWidth);
   }
 }

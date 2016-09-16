@@ -7,6 +7,7 @@ import { FormsModule } from "@angular/forms";
 
 import { GridComponent } from "./grid.component";
 import { RowComponent } from "./row/row.component";
+import { RowGroupComponent } from "./row/row-group.component";
 import { CellModule } from "./cell/cell.module";
 import { CellComponent } from "./cell/cell.component";
 import { ColumnHeaderComponent } from "./column/column-header.component";
@@ -17,7 +18,7 @@ import { IsRowVisiblePipe } from "./utils/is-row-visible.pipe";
 
 @NgModule({
   imports: [ CommonModule, FormsModule, CellModule ],
-  declarations: [ GridComponent, RowComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe ],
+  declarations: [ GridComponent, RowComponent, RowGroupComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe ],
   exports: [ GridComponent ]
 })
 export class GridModule {}

@@ -10,12 +10,17 @@ import { SortInfo } from "../utils/sort-info";
  */
 @Component({
   selector: "hci-column-header",
+  styles: [`
+    .colSort {
+      float: right;
+    }
+  `],
   template: `
     <span (click)="doSort()">
       {{ column.name }}
-      <i *ngIf="asc === 0" class="fa fa-sort"></i>
-      <i *ngIf="asc === 1" class="fa fa-sort-asc"></i>
-      <i *ngIf="asc === -1" class="fa fa-sort-desc"></i>
+      <i *ngIf="asc === 0" class="fa fa-sort colSort"></i>
+      <i *ngIf="asc === 1" class="fa fa-sort-asc colSort"></i>
+      <i *ngIf="asc === -1" class="fa fa-sort-desc colSort"></i>
     </span>
   `
 })
