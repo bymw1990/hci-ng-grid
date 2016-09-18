@@ -27,7 +27,7 @@ export class FilterGridComponent {
     new Column({ field: "middleName", name: "Middle Name", template: InputCell }),
     new Column({ field: "firstName", name: "First Name", template: InputCell, filterType: "input" }),
     new Column({ field: "dob", name: "Date of Birth", template: DateCell }),
-    new Column({ field: "gender", name: "Gender", template: LabelCell }),
+    new Column({ field: "gender", name: "Gender", template: LabelCell, filterType: "select", filterOptions: [ "", "Female", "Male" ] }),
     new Column({ field: "address", name: "Address", template: LabelCell })
   ];
 

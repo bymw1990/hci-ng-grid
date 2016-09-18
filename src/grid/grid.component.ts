@@ -121,7 +121,6 @@ import { PageInfo } from "./utils/page-info";
              [style.display]="nFixedColumns > 0 ? 'inline-block' : 'none'"
              [style.width]="nFixedColumns > 0 ? (nFixedColumns * 10) + '%' : '0%'"
              [style.min-width]="fixedMinWidth + 'px'">
-          <div style="width: 100%; border: black 1px solid;">
             <hci-column-header class="grid-cell-header"
                   *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
                   [column]="column"
@@ -131,8 +130,7 @@ import { PageInfo } from "./utils/page-info";
                   [style.width]="column.width + '%'"
                   [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                   [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-            </hci-column-header>
-          </div>
+            </hci-column-header><br />
           
           <!-- Data Rows -->
           <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row-group>

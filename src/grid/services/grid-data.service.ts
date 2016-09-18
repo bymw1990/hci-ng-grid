@@ -39,7 +39,7 @@ export class GridDataService {
           continue;
         }
 
-        if (this.columnDefinitions[j].filterType === "input") {
+        if (this.columnDefinitions[j].filterType === "input" || this.columnDefinitions[j].filterType === "select") {
           if (this.preparedData[i].get(j).value === null || this.preparedData[i].get(j).value.toString().indexOf(this.columnDefinitions[j].filterValue) === -1) {
             inc = false;
             break;

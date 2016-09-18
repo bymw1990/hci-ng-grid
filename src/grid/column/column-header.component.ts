@@ -34,7 +34,7 @@ import { SortInfo } from "../utils/sort-info";
     <span *ngIf="column.filterType === 'select'">
       <select [ngModel]="column.filterValue"
               (ngModelChange)="doFilterChange($event)"
-              style="padding-left: 15px; padding-right: 15px;">
+              style="padding-left: 15px; padding-right: 15px; height: 30px; width: 90%;">
         <option *ngFor="let o of column.filterOptions" [ngValue]="o">{{ o }}</option>
       </select>
     </span>

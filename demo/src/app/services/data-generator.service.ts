@@ -15,9 +15,9 @@ export class DataGeneratorService {
 
   generateFixedData(size: number) {
     for (var i = 0; i < size; i++) {
-      let i: number = Math.floor(Math.random() * this._firstNames.length);
-      let gender: string = (i % 2 === 0) ? "Male" : "Female";
-      let firstName: string = this._firstNames[i];
+      let j: number = Math.floor(Math.random() * this._firstNames.length);
+      let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let city: string = this._cities[Math.floor(Math.random() * this._cities.length)];
@@ -37,9 +37,9 @@ export class DataGeneratorService {
 
   generateFilteredData(size: number) {
     for (var i = 0; i < size; i++) {
-      let i: number = Math.floor(Math.random() * this._firstNames.length);
-      let gender: string = (i % 2 === 0) ? "Male" : "Female";
-      let firstName: string = this._firstNames[i];
+      let j: number = Math.floor(Math.random() * this._firstNames.length);
+      let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
