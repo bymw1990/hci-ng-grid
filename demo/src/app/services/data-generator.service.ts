@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class DataGeneratorService {
+  filteredData: Array<Object> = new Array<Object>();
   fixedData: Array<Object> = new Array<Object>();
 
   private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie" ];
@@ -13,8 +14,6 @@ export class DataGeneratorService {
   private _stypes: string[] = [ "Ln", "Rd", "St", "Dr" ];
 
   generateFixedData(size: number) {
-    console.log("generateFixedData idPatient firstName lastName middleName, dob, address, phone");
-    //return Math.random() * (max - min) + min;
     for (var i = 0; i < size; i++) {
       let i: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (i % 2 === 0) ? "Male" : "Female";
@@ -34,5 +33,25 @@ export class DataGeneratorService {
   getFixedData(filters: string[], sort: string, asc: boolean): Array<Object> {
     console.log("getFixedData");
     return this.fixedData;
+  }
+
+  generateFilteredData(size: number) {
+    for (var i = 0; i < size; i++) {
+      let i: number = Math.floor(Math.random() * this._firstNames.length);
+      let gender: string = (i % 2 === 0) ? "Male" : "Female";
+      let firstName: string = this._firstNames[i];
+      let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
+      let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
+      let addy: number = Math.floor(Math.random() * 9800 + 100);
+      let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
+      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+
+      this.filteredData.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
+    }
+  }
+
+  getFilteredData(filters: string[], sort: string, asc: boolean): Array<Object> {
+    console.log("getFilteredData");
+    return this.filteredData;
   }
 }

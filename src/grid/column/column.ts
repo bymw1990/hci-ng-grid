@@ -13,6 +13,9 @@ export class Column {
   private _isGroup: boolean = false;
   private _isUtility: boolean = false;
   private _defaultValue: any;
+  private _filterType: string = null;
+  private _filterOptions: Array<any> = null;
+  private _filterValue: any = null;
 
   constructor(o: Object) {
     Object.assign(this, o);
@@ -128,6 +131,30 @@ export class Column {
 
   set defaultValue(defaultValue: any) {
     this._defaultValue = defaultValue;
+  }
+
+  get filterType(): string {
+    return this._filterType;
+  }
+
+  set filterType(filterType: string) {
+    this._filterType = filterType;
+  }
+
+  get filterOptions(): Array<any> {
+    return this._filterOptions;
+  }
+
+  set filterOptions(filterOptions: Array<any>) {
+    this._filterOptions = filterOptions;
+  }
+
+  get filterValue(): any {
+    return this._filterValue;
+  }
+
+  set filterValue(filterValue: any) {
+    this._filterValue = filterValue;
   }
 
 }

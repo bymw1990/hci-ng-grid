@@ -22,6 +22,22 @@ import { SortInfo } from "../utils/sort-info";
       <i *ngIf="asc === 1" class="fa fa-sort-asc colSort"></i>
       <i *ngIf="asc === -1" class="fa fa-sort-desc colSort"></i>
     </span>
+    <br *ngIf="column.filterType !== null" />
+    <span *ngIf="column.filterType === 'input'">
+      <input [ngModel]="column.filterValue"
+             (ngModelChange)="doFilterChange($event)"
+             style="width: 90%;" />
+      <i class="fa fa-close"
+         (click)="doFilterClear();">
+      </i>
+    </span>
+    <span *ngIf="column.filterType === 'select'">
+      <select [ngModel]="column.filterValue"
+              (ngModelChange)="doFilterChange($event)"
+              style="padding-left: 15px; padding-right: 15px;">
+        <option *ngFor="let o of column.filterOptions" [ngValue]="o">{{ o }}</option>
+      </select>
+    </span>
   `
 })
 export class ColumnHeaderComponent {
@@ -45,6 +61,15 @@ export class ColumnHeaderComponent {
         this.asc = 0;
       }
     });
+  }
+
+  doFilterChange(value: any) {
+    this.column.filterValue = value;
+    this.gridDataService.filter();
+  }
+
+  doFilterClear() {
+    this.doFilterChange("");
   }
 
   doSort() {

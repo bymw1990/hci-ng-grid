@@ -30,6 +30,40 @@ export class GridDataService {
 
   filterPreparedData() {
     console.log("filterPreparedData");
+    let filteredData: Array<Row> = new Array<Row>();
+
+    for (var i = 0; i < this.preparedData.length; i++) {
+      let inc: boolean = true;
+      for (var j = 0; j < this.columnDefinitions.length; j++) {
+        if (this.columnDefinitions[j].filterValue === null || this.columnDefinitions[j].filterValue === "") {
+          continue;
+        }
+
+        if (this.columnDefinitions[j].filterType === "input") {
+          if (this.preparedData[i].get(j).value === null || this.preparedData[i].get(j).value.toString().indexOf(this.columnDefinitions[j].filterValue) === -1) {
+            inc = false;
+            break;
+          }
+        }
+      }
+      if (inc) {
+        filteredData.push(this.preparedData[i]);
+      }
+    }
+    this.preparedData = filteredData;
+  }
+
+  /**
+   * Filtering Steps
+   * Re-init data.
+   * Set page to 0;
+   * Filter
+   * Sort
+   * Paginate
+   */
+  filter() {
+    this.pageInfo.page = 0;
+    this.initData(true, true, true, true);
   }
 
   getCell(i: number, j: number, k: number): Cell {
@@ -199,6 +233,32 @@ export class GridDataService {
     obj[fields[fields.length - 1]] = value;
   }
 
+  setPage(mode: number) {
+    if (mode === -2) {
+      this.pageInfo.page = 0;
+    } else if (mode === -1 && this.pageInfo.page > 0) {
+      this.pageInfo.page = this.pageInfo.page - 1;
+    } else if (mode === 1 && this.pageInfo.page < this.pageInfo.nPages - 1) {
+      this.pageInfo.page = this.pageInfo.page + 1;
+    } else if (mode === 2) {
+      this.pageInfo.page = this.pageInfo.nPages - 1;
+    }
+    this.initData(false, false, false, true);
+  }
+
+  setPageSize(pageSize: number) {
+    this.pageInfo.pageSize = pageSize;
+    this.pageInfo.page = 0;
+    this.initData(false, false, false, true);
+  }
+
+  /**
+   * Sorting Steps
+   * Sort
+   * Paginate (stay on current page)
+   *
+   * @param column
+   */
   sort(column: string) {
     console.log("sort start " + this.sortInfo.column + " " + column + " " + this.sortInfo.asc);
 

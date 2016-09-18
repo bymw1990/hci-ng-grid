@@ -16,11 +16,13 @@ import { Component } from "@angular/core";
     <div style="padding: 20px;">
       <h1>hci-ng2-grid-demo</h1>
     </div>
-    <div>
-      <a routerLink="/simple" style="padding: 20px;">Simple Grid</a>
-      <a routerLink="/edit" style="padding: 20px;">Edit Grid</a>
-      <a routerLink="/group" style="padding: 20px;">Group Grid</a>
-      <a routerLink="/fixed" style="padding: 20px;">Fixed Grid</a>
+    <div style="padding-left: 20px;">
+      <span>Examples: </span>
+      <a routerLink="/simple" style="padding: 20px;">Simple</a>
+      <a routerLink="/edit" style="padding: 20px;">Inline Edit</a>
+      <a routerLink="/group" style="padding: 20px;">Grouping</a>
+      <a routerLink="/fixed" style="padding: 20px;">Fixed Columns</a>
+      <a routerLink="/filter" style="padding: 20px;">Filtering</a>
     </div>
     <router-outlet></router-outlet>
     `

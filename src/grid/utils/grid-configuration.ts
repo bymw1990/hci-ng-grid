@@ -81,7 +81,18 @@ export class GridConfiguration {
       nFixedColumns = this._fixedColumns.length;
     }
 
+    let hasFilter: boolean = false;
     for (var i = 0; i < this._columnDefinitions.length; i++) {
+      if (this._columnDefinitions[i].filterType !== null) {
+        hasFilter = true;
+      }
+    }
+
+    for (var i = 0; i < this._columnDefinitions.length; i++) {
+      if (this._columnDefinitions[i].filterType === null && hasFilter) {
+        this._columnDefinitions[i].filterType = "";
+      }
+
       let m: number = 0;
       let k: number = i;
       for (var j = 0; j < nGroupBy; j++) {
