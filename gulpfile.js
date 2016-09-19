@@ -10,6 +10,8 @@
   const tsc = require("gulp-tsc");
   const typings = require("gulp-typings");
   const Server = require('karma').Server;
+  const parseArgs = require("minimist");
+  const fs = require("fs");
   const paths = {
     ts: {
       src: [
@@ -58,11 +60,18 @@
    * Schedule a task to push a new build to the demo applications node_modules
    */
   gulp.task("push", ["build"], () => {
-    return gulp.src([
-      "index.+(js|d.ts|js.map)",
-      "src/**/!(*spec).+(js|d.ts|js.map)"
-    ], {"base": "."})
-        .pipe(gulp.dest("demo/node_modules/hci-ng2-grid"));
+    const demoPath = "demo/node_modules/hci-ng2-grid";
+    const options = parseArgs(process.argv.slice(2), {
+      boolean: "depCheck"
+    });
+
+    if((options.depCheck && !fs.existsSync(demoPath)) || !options.depCheck) {
+      return gulp.src([
+        "index.+(js|d.ts|js.map)",
+        "src/**/!(*spec).+(js|d.ts|js.map)"
+      ], {"base": "."})
+          .pipe(gulp.dest(demoPath));
+    }
   });
 
   /**
@@ -71,6 +80,7 @@
   gulp.task("build", ["clean", "tslint", "typings"], () => {
     return gulp.src(paths.ts.src)
         .pipe(tsc({
+          tscPath: "node_modules/typescript/lib/tsc",
           target: "es5",
           module: "commonjs",
           moduleResolution: "node",
@@ -79,7 +89,8 @@
           experimentalDecorators: true,
           noImplicitAny: false,
           noEmitHelpers: false,
-          declaration: true
+          declaration: true,
+          outDir: "./"
         }))
         .pipe(gulp.dest(paths.ts.dest));
   });
