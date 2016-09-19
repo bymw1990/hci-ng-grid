@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, HostListener, OnChanges, SimpleChange } from "@angular/core";
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
 
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
@@ -171,7 +171,7 @@ import { PageInfo } from "./utils/page-info";
     </div>
   `
 })
-export class GridComponent implements OnInit {
+export class GridComponent implements OnInit, OnChanges {
 
   @ViewChild("copypastearea") copypastearea: any;
 
@@ -295,7 +295,7 @@ export class GridComponent implements OnInit {
     }
   }
 
-  cellFocused(o: Object) {
+  /*cellFocused(o: Object) {
     //console.log("cellFocused");
     //console.log(o);
 
@@ -305,7 +305,7 @@ export class GridComponent implements OnInit {
   cellClick(event: MouseEvent, ii: number, jj: number, kk: number) {
     //console.log("cellClick " + ii + " " + jj);
     this.gridEventService.setSelectedLocation(new Point(ii, jj, kk));
-  }
+  }*/
 
   /* Key Events */
   onKeyDown(event: KeyboardEvent) {
@@ -352,9 +352,4 @@ export class GridComponent implements OnInit {
     }
   }
 
-  @HostListener("window:resize", ["$event"])
-  onResize(event) {
-    console.log("window.resize");
-    //this.gridConfigService.gridConfiguration.setDivWidths(this.el.nativeElement.getElementsByClassName("leftDiv")[0].offsetWidth, this.el.nativeElement.getElementsByClassName("rightDiv")[0].offsetWidth);
-  }
 }

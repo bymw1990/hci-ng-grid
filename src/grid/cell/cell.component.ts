@@ -16,7 +16,7 @@ import { LabelCell } from "./label-cell.component";
 @Component({
   selector: "hci-cell",
   template: `
-    <span><span #template style="display: none;"></span></span>
+    <span (click)="cellClick($event)"><span #template style="display: none;"></span></span>
   `
 })
 export class CellComponent {
@@ -57,7 +57,12 @@ export class CellComponent {
         this.onFocusOut();
       }
     });
+    this.onFocusOut();
     //console.log("CellComponent.ngAfterContentInit Done");
+  }
+
+  cellClick(event: MouseEvent) {
+    this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
   }
 
   /**

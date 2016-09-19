@@ -10,8 +10,8 @@ import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
       <h2>Filter Grid</h2>
     </div>
     <div style="padding-left: 20px;">
-      <a (click)="initData();">Refresh Data</a><br />
-      <input [(ngModel)]="dataSize" />
+      <a (click)="initData();">Re-generate Data</a><br />
+      <span>Size: </span><input [(ngModel)]="dataSize" />
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Filter Grid'"
