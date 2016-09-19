@@ -9,6 +9,10 @@ import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
     <div style="padding: 20px;">
       <h2>Filter Grid</h2>
     </div>
+    <div style="padding-left: 20px;">
+      <a (click)="initData();">Refresh Data</a><br />
+      <input [(ngModel)]="dataSize" />
+    </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Filter Grid'"
                 [inputData]="filteredData"
@@ -19,6 +23,7 @@ import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
 })
 export class FilterGridComponent {
 
+  dataSize: number = 250;
   filteredData: Array<Object>;
 
   filteredColumns: Column[] = [
@@ -34,8 +39,11 @@ export class FilterGridComponent {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.dataGeneratorService.generateFilteredData(250);
-    this.filteredData = this.dataGeneratorService.getFilteredData(null, null, null);
+    this.initData();
   }
 
+  initData() {
+    this.dataGeneratorService.generateFilteredData(this.dataSize);
+    this.filteredData = this.dataGeneratorService.getFilteredData(null, null, null);
+  }
 }

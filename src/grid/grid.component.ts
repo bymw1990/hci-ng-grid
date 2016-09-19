@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, HostListener } from "@angular/core";
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, HostListener, OnChanges, SimpleChange } from "@angular/core";
 
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
@@ -196,6 +196,7 @@ export class GridComponent implements OnInit {
   nColumns: number = 0;
   fixedMinWidth: number = 0;
   pageInfo: PageInfo;
+  initialized: boolean = false;
 
   constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
 
@@ -213,8 +214,15 @@ export class GridComponent implements OnInit {
 
     this.initGridConfiguration();
     this.gridDataService.setInputData(this.inputData);
+    this.initialized = true;
 
     //console.log(this.gridData);
+  }
+
+  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+    if (this.initialized && changes["inputData"]) {
+      this.gridDataService.setInputData(this.inputData);
+    }
   }
 
   doPageFirst() {

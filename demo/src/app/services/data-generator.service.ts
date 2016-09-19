@@ -14,6 +14,7 @@ export class DataGeneratorService {
   private _stypes: string[] = [ "Ln", "Rd", "St", "Dr" ];
 
   generateFixedData(size: number) {
+    this.fixedData = new Array<Object>();
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -36,6 +37,7 @@ export class DataGeneratorService {
   }
 
   generateFilteredData(size: number) {
+    this.filteredData = new Array<Object>();
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -51,7 +53,7 @@ export class DataGeneratorService {
   }
 
   getFilteredData(filters: string[], sort: string, asc: boolean): Array<Object> {
-    console.log("getFilteredData");
+    console.log("getFilteredData " + this.filteredData.length);
     return this.filteredData;
   }
 }

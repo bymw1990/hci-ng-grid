@@ -4,6 +4,7 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 
 import { DemoAppComponent } from "./demo-app.component";
 
@@ -24,7 +25,7 @@ import { FilterGridModule } from "./filter/filter-grid.module";
 import { GridModule } from "hci-ng2-grid/index";
 
 @NgModule({
-  imports: [ BrowserModule, CommonModule, SimpleGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, GridModule ],
+  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, GridModule ],
   declarations: [ DemoAppComponent, SimpleGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent ],
   providers: [ DataGeneratorService ],
   bootstrap: [ DemoAppComponent ]
