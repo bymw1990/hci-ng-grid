@@ -3,6 +3,8 @@
  */
 import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
 
+import { DragulaService } from "ng2-dragula/ng2-dragula";
+
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
@@ -198,10 +200,13 @@ export class GridComponent implements OnInit, OnChanges {
   pageInfo: PageInfo;
   initialized: boolean = false;
 
-  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService) {}
+  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private dragulaService: DragulaService) {}
 
   ngOnInit() {
     //console.log("GridComponent.ngOnInit " + this.inputData);
+    this.dragulaService.dropModel.subscribe((value) => {
+      this.gridDataService.setInputData(this.inputData);
+    });
 
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
       console.log("GridComponent GridDataService.data.subscribe");

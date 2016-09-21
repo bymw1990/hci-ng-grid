@@ -5,6 +5,8 @@ import { NgModule, ModuleWithProviders } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 
+import { DragulaService } from "ng2-dragula/ng2-dragula";
+
 import { GridComponent } from "./grid.component";
 import { RowComponent } from "./row/row.component";
 import { RowGroupComponent } from "./row/row-group.component";
@@ -19,6 +21,7 @@ import { IsRowVisiblePipe } from "./utils/is-row-visible.pipe";
 @NgModule({
   imports: [ CommonModule, FormsModule, CellModule ],
   declarations: [ GridComponent, RowComponent, RowGroupComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe ],
+  providers: [ DragulaService ],
   exports: [ GridComponent ]
 })
 export class GridModule {}

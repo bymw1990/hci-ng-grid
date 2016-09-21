@@ -23,6 +23,7 @@ import { Component } from "@angular/core";
       <a routerLink="/group" style="padding: 20px;">Grouping</a>
       <a routerLink="/fixed" style="padding: 20px;">Fixed Columns</a>
       <a routerLink="/filter" style="padding: 20px;">Filtering</a>
+      <a routerLink="/dragdrop" style="padding: 20px;">Drag n Drop</a>
     </div>
     <router-outlet></router-outlet>
     `
