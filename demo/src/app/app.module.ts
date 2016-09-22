@@ -18,6 +18,7 @@ import { GroupGridComponent } from "./group/group-grid.component";
 import { FixedGridComponent } from "./fixed/fixed-grid.component";
 import { FilterGridComponent } from "./filter/filter-grid.component";
 import { DragDropGridComponent } from "./dragdrop/dragdrop-grid.component";
+import { ExternalGridComponent } from "./external/external-grid.component";
 
 import { SimpleGridModule } from "./simple/simple-grid.module";
 import { EditGridModule } from "./edit/edit-grid.module";
@@ -25,12 +26,13 @@ import { GroupGridModule } from "./group/group-grid.module";
 import { FixedGridModule } from "./fixed/fixed-grid.module";
 import { FilterGridModule } from "./filter/filter-grid.module";
 import { DragDropGridModule } from "./dragdrop/dragdrop-grid.module";
+import { ExternalGridModule } from "./external/external-grid.module";
 
 import { GridModule } from "hci-ng2-grid/index";
 
 @NgModule({
-  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, GridModule ],
-  declarations: [ DemoAppComponent, SimpleGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, DragulaDirective ],
+  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, GridModule ],
+  declarations: [ DemoAppComponent, SimpleGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, DragulaDirective ],
   providers: [ DataGeneratorService, DragulaService ],
   bootstrap: [ DemoAppComponent ]
 })

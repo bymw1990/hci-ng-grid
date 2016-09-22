@@ -19,9 +19,7 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
                 [inputData]="groupData"
                 [columnDefinitions]="groupColumns"
                 [key]="[idPatient]"
-                [groupBy]="['firstName', 'lastName']"
-                [externalFiltering]="true"
-                (onExternalFilter)="callExternalFilter()">
+                [groupBy]="['firstName', 'lastName']">
       </hci-grid>
     </div>
     <div style="padding: 20px;">
@@ -70,15 +68,4 @@ export class GroupGridComponent {
     new Column({ field: "address", name: "Address", template: LabelCell }),
     new Column({ field: "phone", name: "Phone", template: InputCell })
   ];
-
-  callExternalFilter() {
-    console.log("DemoAppComponent.callExternalFilter: New data from http request.");
-    console.log(this.groupData);
-    if (this.groupData) {
-      this.groupData = this.groupData.sort((o1: Object, o2: Object): number => {
-        return o1["firstName"].localeCompare(o2["firstName"]);
-      });
-    }
-    console.log("DemoAppComponent.callExternalFilter: Done.");
-  }
 }

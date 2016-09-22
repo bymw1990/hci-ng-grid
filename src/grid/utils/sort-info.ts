@@ -1,6 +1,6 @@
 export class SortInfo {
   private _asc: boolean = true;
-  private _column: string = null;
+  private _field: string = null;
 
   get asc(): boolean {
     return this._asc;
@@ -10,11 +10,11 @@ export class SortInfo {
     this._asc = asc;
   }
 
-  get column(): string {
-    return this._column;
+  get field(): string {
+    return this._field;
   }
 
-  set column(column: string) {
-    this._column = column;
+  set field(field: string) {
+    this._field = field;
   }
 }

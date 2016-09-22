@@ -51,7 +51,7 @@ export class ColumnHeaderComponent {
 
   ngOnInit() {
     this.gridDataService.sortInfoObserved.subscribe((sortInfo: SortInfo) => {
-      if (this.column.field === sortInfo.column) {
+      if (this.column.field === sortInfo.field) {
         if (sortInfo.asc) {
           this.asc = 1;
         } else {

@@ -8,6 +8,8 @@ import { RowGroup } from "../row/row-group";
 import { Column } from "../column/column";
 import { SortInfo } from "../utils/sort-info";
 import { PageInfo } from "../utils/page-info";
+import { FilterInfo } from "../utils/filter-info";
+import { ExternalInfo } from "../utils/external-info";
 
 @Injectable()
 export class GridDataService {
@@ -25,6 +27,10 @@ export class GridDataService {
 
   pageInfo: PageInfo = new PageInfo();
   pageInfoObserved = new Subject<PageInfo>();
+
+  externalFilterObserved = new Subject<ExternalInfo>();
+  externalSortObserved = new Subject<ExternalInfo>();
+  externalPageObserved = new Subject<ExternalInfo>();
 
   constructor(private gridConfigService: GridConfigService) {}
 
@@ -62,8 +68,21 @@ export class GridDataService {
    * Paginate
    */
   filter() {
-    this.pageInfo.page = 0;
-    this.initData(true, true, true, true);
+    if(this.gridConfigService.gridConfiguration.externalFiltering) {
+      let filterInfo: Array<FilterInfo> = new Array<FilterInfo>();
+      for (var j = 0; j < this.columnDefinitions.length; j++) {
+        if (this.columnDefinitions[j].filterValue !== null && this.columnDefinitions[j].filterValue !== "") {
+          filterInfo.push(new FilterInfo(this.columnDefinitions[j].field, this.columnDefinitions[j].filterValue));
+        }
+      }
+
+      this.pageInfo.page = 0;
+
+      this.externalFilterObserved.next(new ExternalInfo(filterInfo, null, null));
+    } else {
+      this.pageInfo.page = 0;
+      this.initData(true, true, true, true);
+    }
   }
 
   getCell(i: number, j: number, k: number): Cell {
@@ -259,11 +278,11 @@ export class GridDataService {
    *
    * @param column
    */
-  sort(column: string) {
-    console.log("sort start " + this.sortInfo.column + " " + column + " " + this.sortInfo.asc);
+  sort(field: string) {
+    console.log("sort start " + this.sortInfo.field + " " + field + " " + this.sortInfo.asc);
 
-    if (this.sortInfo.column === null || this.sortInfo.column !== column) {
-      this.sortInfo.column = column;
+    if (this.sortInfo.field === null || this.sortInfo.field !== field) {
+      this.sortInfo.field = field;
       this.sortInfo.asc = true;
     } else {
       this.sortInfo.asc = !this.sortInfo.asc;
@@ -271,7 +290,7 @@ export class GridDataService {
 
     this.sortInfoObserved.next(this.sortInfo);
 
-    console.log("sort end " + this.sortInfo.column + " " + this.sortInfo.asc);
+    console.log("sort end " + this.sortInfo.field + " " + this.sortInfo.asc);
 
     this.initData(false, false, true, true);
   }
@@ -280,11 +299,11 @@ export class GridDataService {
     console.log("sortPreparedData");
     let sortColumns: Array<number> = new Array<number>();
 
-    if (this.sortInfo.column === null && this.gridConfigService.gridConfiguration.groupBy !== null) {
-      this.sortInfo.column = "GROUP_BY";
+    if (this.sortInfo.field === null && this.gridConfigService.gridConfiguration.groupBy !== null) {
+      this.sortInfo.field = "GROUP_BY";
     }
 
-    if (this.sortInfo.column === "GROUP_BY") {
+    if (this.sortInfo.field === "GROUP_BY") {
       for (var i = 0; i < this.columnDefinitions.length; i++) {
         if (this.columnDefinitions[i].isGroup) {
           sortColumns.push(i);
@@ -292,7 +311,7 @@ export class GridDataService {
       }
     } else {
       for (var i = 0; i < this.columnDefinitions.length; i++) {
-        if (this.columnDefinitions[i].field === this.sortInfo.column) {
+        if (this.columnDefinitions[i].field === this.sortInfo.field) {
           sortColumns.push(i);
           break;
         }

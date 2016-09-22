@@ -9,6 +9,7 @@ export class GridConfiguration {
   private _groupBy: string[] = null;
   private _externalFiltering: boolean = false;
   private _externalSorting: boolean = false;
+  private _externalPaging: boolean = false;
 
   init() {
     /*for (var i = 0; i < this._columnDefinitions.length; i++) {
@@ -170,6 +171,14 @@ export class GridConfiguration {
 
   set externalSorting(externalSorting: boolean) {
     this._externalSorting = externalSorting;
+  }
+
+  get externalPaging() {
+    return this._externalPaging;
+  }
+
+  set externalPaging(externalPaging: boolean) {
+    this._externalPaging = externalPaging;
   }
 
   get nUtilityColumns() {

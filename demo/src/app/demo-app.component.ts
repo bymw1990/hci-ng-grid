@@ -24,6 +24,7 @@ import { Component } from "@angular/core";
       <a routerLink="/fixed" style="padding: 20px;">Fixed Columns</a>
       <a routerLink="/filter" style="padding: 20px;">Filtering</a>
       <a routerLink="/dragdrop" style="padding: 20px;">Drag n Drop</a>
+      <a routerLink="/external" style="padding: 20px;">External Sort/Filter/Page</a>
     </div>
     <router-outlet></router-outlet>
     `

@@ -14,6 +14,7 @@ import { RowGroup } from "./row/row-group";
 import { Column } from "./column/column";
 import { LabelCell } from "./cell/label-cell.component";
 import { PageInfo } from "./utils/page-info";
+import { ExternalInfo } from "./utils/external-info";
 
 /**
  * Thoughts...
@@ -190,6 +191,8 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() externalSorting: boolean = false;
 
   @Output() onExternalFilter: EventEmitter<Object> = new EventEmitter<Object>();
+  @Output() onExternalSort: EventEmitter<Object> = new EventEmitter<Object>();
+  @Output() onExternalPage: EventEmitter<Object> = new EventEmitter<Object>();
 
   pageSize: number = 10;
   pageSizes: number[] = [ 10, 25, 50 ];
@@ -215,6 +218,15 @@ export class GridComponent implements OnInit, OnChanges {
     });
     this.gridDataService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
       this.pageInfo = pageInfo;
+    });
+    this.gridDataService.externalFilterObserved.subscribe((externalInfo: ExternalInfo) => {
+      this.onExternalFilter.emit(externalInfo);
+    });
+    this.gridDataService.externalSortObserved.subscribe((externalInfo: ExternalInfo) => {
+      this.onExternalSort.emit(externalInfo);
+    });
+    this.gridDataService.externalPageObserved.subscribe((externalInfo: ExternalInfo) => {
+      this.onExternalPage.emit(externalInfo);
     });
 
     this.initGridConfiguration();
@@ -300,18 +312,6 @@ export class GridComponent implements OnInit, OnChanges {
     }
   }
 
-  /*cellFocused(o: Object) {
-    //console.log("cellFocused");
-    //console.log(o);
-
-    this.cellClick(null, o["i"], o["j"], o["k"]);
-  }
-
-  cellClick(event: MouseEvent, ii: number, jj: number, kk: number) {
-    //console.log("cellClick " + ii + " " + jj);
-    this.gridEventService.setSelectedLocation(new Point(ii, jj, kk));
-  }*/
-
   /* Key Events */
   onKeyDown(event: KeyboardEvent) {
     if (event.ctrlKey && event.keyCode === 67) {
@@ -348,13 +348,6 @@ export class GridComponent implements OnInit, OnChanges {
       i = i + 1;
     }
     this.gridEventService.setSelectedLocation(new Point(i, j, k));
-  }
-
-  colHeaderOnClick(event: MouseEvent) {
-    //console.log("GridComponent.colHeaderOnClick");
-    if (this.gridConfigService.gridConfiguration.externalFiltering) {
-      this.onExternalFilter.emit(true);
-    }
   }
 
 }
