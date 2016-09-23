@@ -88,6 +88,7 @@ export class DataGeneratorService {
    * @returns {Array<Object>}
    */
   getExternalData(externalInfo: Object): Array<Object> {
+    console.log("getExternalData");
     if (externalInfo === null) {
       return this.externalData;
     }
@@ -113,19 +114,19 @@ export class DataGeneratorService {
     }
 
     if (sort !== null) {
-      this.filteredData = this.filteredData.sort((a: Object, b: Object) => {
-        if (sort["asc"]) {
-          if (a[sort["field"]] < b[sort["field"]]) {
+      filtered = filtered.sort((a: Object, b: Object) => {
+        if (sort["_asc"]) {
+          if (a[sort["_field"]] < b[sort["_field"]]) {
             return -1;
-          } else if (a[sort["field"]] < b[sort["field"]]) {
+          } else if (a[sort["_field"]] < b[sort["_field"]]) {
             return 1;
           } else {
             return 0;
           }
         } else {
-          if (a[sort["field"]] > b[sort["field"]]) {
+          if (a[sort["_field"]] > b[sort["_field"]]) {
             return -1;
-          } else if (a[sort["field"]] < b[sort["field"]]) {
+          } else if (a[sort["_field"]] < b[sort["_field"]]) {
             return 1;
           } else {
             return 0;

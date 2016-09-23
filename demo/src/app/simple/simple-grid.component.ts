@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column, LabelCell } from "hci-ng2-grid/index";
+import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
 
 @Component({
   selector: "simple-grid",
@@ -31,7 +31,7 @@ export class SimpleGridComponent {
     new Column({ field: "idPatient", name: "ID", template: LabelCell, visible: false }),
     new Column({ field: "lastName", name: "Last Name", template: LabelCell }),
     new Column({ field: "firstName", name: "First Name", template: LabelCell }),
-    new Column({ field: "dob", name: "Date of Birth", template: LabelCell }),
+    new Column({ field: "dob", name: "Date of Birth", template: DateCell }),
     new Column({ field: "pcg.nLabs", name: "# Labs", template: LabelCell }),
     new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: LabelCell })
   ];

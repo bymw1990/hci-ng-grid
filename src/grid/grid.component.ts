@@ -179,7 +179,7 @@ export class GridComponent implements OnInit, OnChanges {
   @ViewChild("copypastearea") copypastearea: any;
 
   @Input() title: String;
-  @Input() inputData: Object[];
+  @Input() inputData: Object[] = null;
 
   // Grid Configuration
   @Input() gridConfiguration: GridConfiguration;
@@ -189,10 +189,8 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() groupBy: string[];
   @Input() externalFiltering: boolean = false;
   @Input() externalSorting: boolean = false;
-
-  @Output() onExternalFilter: EventEmitter<Object> = new EventEmitter<Object>();
-  @Output() onExternalSort: EventEmitter<Object> = new EventEmitter<Object>();
-  @Output() onExternalPage: EventEmitter<Object> = new EventEmitter<Object>();
+  @Input() externalPaging: boolean = false;
+  @Input() externalDataCall: Function;
 
   pageSize: number = 10;
   pageSizes: number[] = [ 10, 25, 50 ];
@@ -211,6 +209,8 @@ export class GridComponent implements OnInit, OnChanges {
       this.gridDataService.setInputData(this.inputData);
     });
 
+    this.pageInfo = this.gridDataService.pageInfo;
+
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
       console.log("GridComponent GridDataService.data.subscribe");
       //console.log(data);
@@ -219,21 +219,20 @@ export class GridComponent implements OnInit, OnChanges {
     this.gridDataService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
       this.pageInfo = pageInfo;
     });
-    this.gridDataService.externalFilterObserved.subscribe((externalInfo: ExternalInfo) => {
-      this.onExternalFilter.emit(externalInfo);
-    });
-    this.gridDataService.externalSortObserved.subscribe((externalInfo: ExternalInfo) => {
-      this.onExternalSort.emit(externalInfo);
-    });
-    this.gridDataService.externalPageObserved.subscribe((externalInfo: ExternalInfo) => {
-      this.onExternalPage.emit(externalInfo);
+    this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
+      let externalData: Array<Object> = this.externalDataCall(externalInfo);
+      console.log("Return externalData");
+      this.gridDataService.setInputData(externalData);
     });
 
     this.initGridConfiguration();
-    this.gridDataService.setInputData(this.inputData);
-    this.initialized = true;
+    if (this.externalDataCall) {
+      this.gridDataService.setInputData(this.externalDataCall(new ExternalInfo(null, null, this.pageInfo)));
+    } else if (this.inputData) {
+      this.gridDataService.setInputData(this.inputData);
+    }
 
-    //console.log(this.gridData);
+    this.initialized = true;
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
@@ -288,6 +287,9 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.externalSorting) {
       this.gridConfigService.gridConfiguration.externalSorting = this.externalSorting;
     }
+    if (this.externalPaging) {
+      this.gridConfigService.gridConfiguration.externalPaging = this.externalPaging;
+    }
     this.gridConfigService.gridConfiguration.init();
 
     if (this.gridConfigService.gridConfiguration.fixedColumns != null) {
@@ -301,14 +303,6 @@ export class GridComponent implements OnInit, OnChanges {
       if (this.columnDefinitions[i].isFixed) {
         this.fixedMinWidth = this.fixedMinWidth + this.columnDefinitions[i].minWidth;
       }
-    }
-  }
-
-  ngAfterContentInit() {
-    //this.gridConfigService.gridConfiguration.setDivWidths(this.el.nativeElement.getElementsByClassName("leftDiv")[0].offsetWidth, this.el.nativeElement.getElementsByClassName("rightDiv")[0].offsetWidth);
-
-    if (this.inputData.length > 0 && this.columnDefinitions.length > 0) {
-      this.gridEventService.setSelectedLocation(new Point(0, 0, 0));
     }
   }
 

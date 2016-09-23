@@ -10,6 +10,8 @@ export class GridConfiguration {
   private _externalFiltering: boolean = false;
   private _externalSorting: boolean = false;
   private _externalPaging: boolean = false;
+  private _pageSize: number = 10;
+  private _pageSizes: number[] = [ 10, 25, 50 ];
 
   init() {
     /*for (var i = 0; i < this._columnDefinitions.length; i++) {
@@ -141,7 +143,7 @@ export class GridConfiguration {
     }
   }
 
-  get groupBy() {
+  get groupBy(): string[] {
     return this._groupBy;
   }
 
@@ -149,7 +151,7 @@ export class GridConfiguration {
     this._groupBy = groupBy;
   }
 
-  get fixedColumns() {
+  get fixedColumns(): string[] {
     return this._fixedColumns;
   }
 
@@ -157,7 +159,7 @@ export class GridConfiguration {
     this._fixedColumns = fixedColumns;
   }
 
-  get externalFiltering() {
+  get externalFiltering(): boolean {
     return this._externalFiltering;
   }
 
@@ -165,7 +167,7 @@ export class GridConfiguration {
     this._externalFiltering = externalFiltering;
   }
 
-  get externalSorting() {
+  get externalSorting(): boolean {
     return this._externalSorting;
   }
 
@@ -173,7 +175,7 @@ export class GridConfiguration {
     this._externalSorting = externalSorting;
   }
 
-  get externalPaging() {
+  get externalPaging(): boolean {
     return this._externalPaging;
   }
 
@@ -181,11 +183,27 @@ export class GridConfiguration {
     this._externalPaging = externalPaging;
   }
 
-  get nUtilityColumns() {
+  get nUtilityColumns(): number {
     return this._nUtilityColumns;
   }
 
   set nUtilityColumns(nUtilityColumns: number) {
     this._nUtilityColumns = nUtilityColumns;
+  }
+
+  get pageSize(): number {
+    return this._pageSize;
+  }
+
+  set pageSize(pageSize: number) {
+    this._pageSize = pageSize;
+  }
+
+  get pageSizes(): number[] {
+    return this._pageSizes;
+  }
+
+  set pageSizes(pageSizes: number[]) {
+    this._pageSizes = pageSizes;
   }
 }

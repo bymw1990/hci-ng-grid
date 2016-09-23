@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
 import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
@@ -9,26 +9,24 @@ import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
     <div style="padding: 20px;">
       <h2>External Grid</h2>
     </div>
-    <div style="padding-left: 20px;">
-      <a (click)="initData();">Re-generate Data</a><br />
-      <span>Size: </span><input [(ngModel)]="dataSize" />
-    </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'External Grid'"
-                [inputData]="externalData"
-                [columnDefinitions]="externalColumns"
+                [columnDefinitions]="columns"
+                [externalDataCall]="boundDataCall"
                 [externalFiltering]="true"
-                (onExternalFilter)="callExternalFilter($event)">
+                [externalSorting]="true"
+                [externalPaging]="true">
       </hci-grid>
     </div>
     `
 })
-export class ExternalGridComponent {
+export class ExternalGridComponent implements OnInit {
 
   dataSize: number = 250;
-  externalData: Array<Object>;
 
-  externalColumns: Column[] = [
+  public boundDataCall: Function;
+
+  columns: Column[] = [
     new Column({ field: "idPatient", name: "ID", template: LabelCell }),
     new Column({ field: "lastName", name: "Last Name", template: InputCell, filterType: "input" }),
     new Column({ field: "middleName", name: "Middle Name", template: InputCell }),
@@ -41,17 +39,14 @@ export class ExternalGridComponent {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.initData();
-  }
-
-  initData() {
+    console.log("ExternalGridComponent.ngOnInit");
+    this.boundDataCall = this.dataCall.bind(this);
     this.dataGeneratorService.generateExternalData(this.dataSize);
-    this.externalData = this.dataGeneratorService.getExternalData(null);
   }
 
-  callExternalFilter(externalInfo: Object) {
-    console.log("DemoAppComponent.callExternalFilter: New data from http request.");
+  public dataCall(externalInfo: Object): Array<Object> {
+    console.log("dataCall");
     console.log(externalInfo);
-    this.externalData = this.dataGeneratorService.getExternalData(externalInfo);
+    return this.dataGeneratorService.getExternalData(externalInfo);
   }
 }
