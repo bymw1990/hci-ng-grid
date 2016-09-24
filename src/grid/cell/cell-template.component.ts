@@ -36,8 +36,8 @@ export class CellTemplate {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    console.log("CellTemplate.onKeyDown");
-    if (event.keyCode === 38 || event.keyCode === 40) {
+    //console.log("CellTemplate.onKeyDown");
+    if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
       this.keyEvent.emit(event.keyCode);
     } else if (event.keyCode === 9) {
       // Tab

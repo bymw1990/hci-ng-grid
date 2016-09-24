@@ -31,7 +31,8 @@ export class InputCell extends CellTemplate {
   }
 
   onInputKeyDown(event: KeyboardEvent) {
-    this.onKeyDown(event);
+    console.log("InputCell.onInputKeyDown " + event.keyCode);
+    event.stopPropagation();
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
       this.input.nativeElement.blur();
@@ -39,6 +40,8 @@ export class InputCell extends CellTemplate {
     } else if (event.keyCode === 39 && this.input.nativeElement.selectionStart === this.input.nativeElement.value.length) {
       this.input.nativeElement.blur();
       this.keyEvent.emit(39);
+    } else if (event.keyCode !== 37 && event.keyCode !== 39) {
+      this.onKeyDown(event);
     }
   }
 }

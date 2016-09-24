@@ -142,7 +142,7 @@ import { ExternalInfo } from "./utils/external-info";
              class="rightDiv"
              [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
             <hci-column-header class="grid-cell-header"
-                  *ngFor="let column of columnDefinitions | isFixed:false; let j = index"
+                  *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
                   [column]="column"
                   style="height: 30px; border: black 1px solid; vertical-align: top;"
                   [style.display]="column.visible ? 'inline-block' : 'none'"
@@ -308,6 +308,7 @@ export class GridComponent implements OnInit, OnChanges {
 
   /* Key Events */
   onKeyDown(event: KeyboardEvent) {
+    //console.log("GridComponent.onKeyDown");
     if (event.ctrlKey && event.keyCode === 67) {
       //console.log("Copy Event");
 

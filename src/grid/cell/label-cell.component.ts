@@ -19,12 +19,12 @@ import { CellTemplate } from "./cell-template.component";
 })
 export class LabelCell extends CellTemplate {
 
-  onKeyDown(event: KeyboardEvent) {
+  /*onKeyDown(event: KeyboardEvent) {
     console.log("LabelCell.onKeyDown");
     if (event.keyCode === 9) {
       event.preventDefault();
       this.tabEvent.emit(true);
     }
-  }
+  }*/
 
 }

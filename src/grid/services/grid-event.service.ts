@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs/Rx";
 
+import { GridConfigService } from "./grid-config.service";
 import { Point } from "../utils/point";
 
 @Injectable()
@@ -10,9 +11,7 @@ export class GridEventService {
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
-  constructor() {
-    //console.log("GridEventService.constructure");
-  }
+  constructor(private gridConfigService: GridConfigService) {}
 
   setNColumns(nColumns: number) {
     this.nColumns = nColumns;
@@ -35,7 +34,12 @@ export class GridEventService {
     this.currentLocation.k = this.currentLocation.k + dx;
     this.currentLocation.i = Math.max(0, this.currentLocation.i);
     this.currentLocation.k = Math.max(0, this.currentLocation.k);
-    this.currentLocation.k = Math.min(this.nColumns - 1, this.currentLocation.k);
+
+    if (this.currentLocation.k === this.nColumns) {
+      this.currentLocation.k = 0;
+      this.currentLocation.i = this.currentLocation.i + 1;
+    }
+
     this.selectedLocation.next(this.currentLocation);
     //console.log("GridEventService.arrowFrom Done");
   }

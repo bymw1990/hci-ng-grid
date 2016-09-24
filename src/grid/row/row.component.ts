@@ -7,7 +7,7 @@ import { GridDataService } from "../services/grid-data.service";
 @Component({
   selector: "hci-row",
   template: `
-    <hci-cell *ngFor="let column of columns | isFixed:fixed"
+    <hci-cell *ngFor="let column of columns | isFixed:fixed | isVisible"
               [i]="i"
               [j]="j"
               [k]="column.id"
