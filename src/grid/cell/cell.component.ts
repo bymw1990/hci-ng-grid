@@ -1,4 +1,4 @@
-import { Component, Input, ViewContainerRef, ElementRef, ComponentFactoryResolver, ViewChild, Output, EventEmitter } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, ViewContainerRef, ElementRef, ComponentFactoryResolver, ViewChild, Output, EventEmitter } from "@angular/core";
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
@@ -18,7 +18,8 @@ import { LabelCell } from "./label-cell.component";
   template: `
     <input #focuser style="position: absolute; left: -1000px;" (focus)="onFocuser();" (keydown)="onFocuserKeyDown($event)" />
     <span (click)="cellClick($event)"><span #template style="display: none;"></span></span>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CellComponent {
 
@@ -32,7 +33,8 @@ export class CellComponent {
   @Output() cellFocused: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() onUDLR: EventEmitter<Object> = new EventEmitter<Object>();
 
-  nColumns: number;
+  format: string = null;
+
   private isViewInitialized: boolean = false;
 
   @ViewChild("template", { read: ViewContainerRef })
@@ -45,10 +47,8 @@ export class CellComponent {
   constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
 
   ngAfterContentInit() {
-    //console.log("CellComponent.ngAfterContentInit " + this.i + " " + this.j + " " + this.k);
-    ////console.log(this.value);
-    this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].template;
+    this.format = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].format;
     this.isViewInitialized = true;
     this.createComponent();
 
@@ -69,7 +69,9 @@ export class CellComponent {
   }
 
   cellClick(event: MouseEvent) {
-    this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
+    if (this.gridConfigService.gridConfiguration.cellSelect) {
+      this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
+    }
   }
 
   onFocuser() {
@@ -131,6 +133,8 @@ export class CellComponent {
     if (this.j === -1 && this.componentRef.activeOnRowHeader) {
       this.componentRef.render = true;
     }
+
+    this.componentRef.setFormat(this.format);
 
     if (setIsGroup) {
       this.componentRef.valueable = false;

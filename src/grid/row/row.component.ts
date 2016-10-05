@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
 import { Column } from "../column/column";
 import { GridConfigService } from "../services/grid-config.service";
@@ -8,6 +8,7 @@ import { GridDataService } from "../services/grid-data.service";
   selector: "hci-row",
   template: `
     <hci-cell *ngFor="let column of columns | isFixed:fixed | isVisible"
+              (dblclick)="onDoubleClick($event)"
               [i]="i"
               [j]="j"
               [k]="column.id"
@@ -18,7 +19,8 @@ import { GridDataService } from "../services/grid-data.service";
               [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
     </hci-cell>
     <br />
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RowComponent {
 
@@ -32,6 +34,10 @@ export class RowComponent {
   ngOnInit() {
     //console.log("RowComponent.ngOnInit " + this.i + " " + this.j);
     this.columns = this.gridConfigService.gridConfiguration.columnDefinitions;
+  }
+
+  onDoubleClick(event: Event) {
+    this.gridDataService.doubleClickRow(this.i, this.j);
   }
 
 }

@@ -4,7 +4,7 @@ import { CELL_CSS } from "./cell-template.component";
 import { CellTemplate } from "./cell-template.component";
 
 @Component({
-  selector: "group-collapse-expand-cell",
+  selector: "hci-grid-cell-group-expand-collapse",
   styles: [ CELL_CSS, `
     .gce-cell {
       height: 100%;

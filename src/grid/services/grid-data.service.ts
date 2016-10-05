@@ -32,9 +32,15 @@ export class GridDataService {
 
   externalInfoObserved = new Subject<ExternalInfo>();
 
+  doubleClickObserved = new Subject<Object>();
+
   constructor(private gridConfigService: GridConfigService) {
     this.pageInfo.page = 0;
     this.pageInfo.pageSize = this.gridConfigService.gridConfiguration.pageSize;
+  }
+
+  doubleClickRow(i: number, j: number) {
+    this.doubleClickObserved.next(this.gridData[i].rows[j]);
   }
 
   /**

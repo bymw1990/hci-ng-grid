@@ -8,7 +8,7 @@ import { CellTemplate } from "./cell-template.component";
  * bootstrap dropdown.
  */
 @Component({
-  selector: "date-cell",
+  selector: "hci-grid-cell-date",
   styles: [ CELL_CSS, `
     .date-cell {
       width: 100%;

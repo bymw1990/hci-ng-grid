@@ -1,8 +1,10 @@
 export class Column {
   private _id: number;
+  private _isKey: boolean = false;
   private _field: string;
   private _name: string;
   private _template: any;
+  private _format: string = null;
   private _visible: boolean = true;
   private _validator: any;
   private _sortOrder: number;
@@ -29,6 +31,14 @@ export class Column {
     this._id = id;
   }
 
+  get isKey(): boolean {
+    return this._isKey;
+  }
+
+  set isKey(isKey: boolean) {
+    this._isKey = isKey;
+  }
+
   get field(): string {
     return this._field;
   }
@@ -51,6 +61,14 @@ export class Column {
 
   set template(template: any) {
     this._template = template;
+  }
+
+  get format(): string {
+    return this._format;
+  }
+
+  set format(format: string) {
+    this._format = format;
   }
 
   get visible(): boolean {

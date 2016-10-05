@@ -18,9 +18,10 @@ import { Component } from "@angular/core";
     </div>
     <div style="padding-left: 20px;">
       <span>Examples: </span>
-      <a routerLink="/simple" style="padding: 20px;">Simple</a>
+      <a routerLink="/simple" style="padding: 20px;">Basic</a>
+      <a routerLink="/select" style="padding: 20px;">Row Select</a>
       <a routerLink="/edit" style="padding: 20px;">Inline Edit</a>
-      <a routerLink="/group" style="padding: 20px;">Grouping</a>
+      <a routerLink="/group" style="padding: 20px;">Row Grouping</a>
       <a routerLink="/fixed" style="padding: 20px;">Fixed Columns</a>
       <a routerLink="/filter" style="padding: 20px;">Filtering</a>
       <a routerLink="/dragdrop" style="padding: 20px;">Drag n Drop</a>

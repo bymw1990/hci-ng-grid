@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 
 import { RowGroup } from "./row-group";
 import { GridConfigService } from "../services/grid-config.service";
@@ -28,7 +28,8 @@ const EXPANDED: number = 2;
              [j]="j"
              [fixed]="fixed">
     </hci-row>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RowGroupComponent {
 

@@ -18,7 +18,6 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <hci-grid [title]="'Group Grid'"
                 [inputData]="groupData"
                 [columnDefinitions]="groupColumns"
-                [key]="[idPatient]"
                 [groupBy]="['firstName', 'lastName']">
       </hci-grid>
     </div>

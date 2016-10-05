@@ -1,8 +1,11 @@
 import { Column } from "../column/column";
-import { GroupCollapseExpandCell } from "../cell/group-collapse-expand.component";
+import { RowSelectCellComponent } from "../cell/row-select-cell.component";
 
 export class GridConfiguration {
 
+  private _rowSelect: boolean = false;
+  private _cellSelect: boolean = false;
+  private _keyNavigation: boolean = false;
   private _nUtilityColumns: number = 0;
   private _columnDefinitions: Column[];
   private _fixedColumns: string[] = null;
@@ -14,28 +17,9 @@ export class GridConfiguration {
   private _pageSizes: number[] = [ 10, 25, 50 ];
 
   init() {
-    /*for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (!this._columnDefinitions[i].visible) {
-        this._columnDefinitions[i].sortOrder = -9;
-        //this._nUtilityColumns = this._nUtilityColumns + 1;
-      }
-    }*/
-
     this.initColumnDefinitions();
     this.sortColumnDefinitions();
 
-    /*if (this._groupBy !== null) {
-      let groupColumnExists: boolean = false;
-      for (var i = 0; i < this._columnDefinitions.length; i++) {
-        if (this._columnDefinitions[i].field === "GROUP_COLLAPSE_EXPAND") {
-          groupColumnExists = true;
-        }
-      }
-      if (!groupColumnExists) {
-        this._columnDefinitions.push(new Column({ field: "GROUP_COLLAPSE_EXPAND", name: "", sortOrder: -1, template: GroupCollapseExpandCell, isUtility: true, defaultValue: "collapsed" }));
-        this.sortColumnDefinitions();
-      }
-    }*/
     let nLeft: number = 0;
     let wLeft: number = 100;
     let nRight: number = this._columnDefinitions.length;
@@ -74,6 +58,16 @@ export class GridConfiguration {
     this._columnDefinitions = columnDefinitions;
   }
 
+  getKeyColumns(): Array<number> {
+    let keys: Array<number> = new Array<number>();
+    for (var i = 0; i < this._columnDefinitions.length; i++) {
+      if (this._columnDefinitions[i].isKey) {
+        keys.push(i);
+      }
+    }
+    return keys;
+  }
+
   initColumnDefinitions() {
     let nGroupBy: number = 0;
     let nFixedColumns: number = 0;
@@ -82,6 +76,13 @@ export class GridConfiguration {
     }
     if (this._fixedColumns !== null) {
       nFixedColumns = this._fixedColumns.length;
+    }
+
+    if (this._rowSelect) {
+      let rowSelectColumn: Column = new Column({ name: "", template: RowSelectCellComponent, minWidth: 30, maxWidth: 30 });
+      rowSelectColumn.sortOrder = -10;
+      rowSelectColumn.isUtility = true;
+      this._columnDefinitions.push(rowSelectColumn);
     }
 
     let hasFilter: boolean = false;
@@ -94,6 +95,10 @@ export class GridConfiguration {
     for (var i = 0; i < this._columnDefinitions.length; i++) {
       if (this._columnDefinitions[i].filterType === null && hasFilter) {
         this._columnDefinitions[i].filterType = "";
+      }
+
+      if (this._columnDefinitions[i].isUtility) {
+        continue;
       }
 
       let m: number = 0;
@@ -117,6 +122,7 @@ export class GridConfiguration {
           }
         }
       }
+
       if (m === 0) {
         this._columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k;
       } else if (m === 1) {
@@ -141,6 +147,22 @@ export class GridConfiguration {
     for (var i = 0; i < this._columnDefinitions.length; i++) {
       this._columnDefinitions[i].id = i;
     }
+  }
+
+  get cellSelect(): boolean {
+    return this._cellSelect;
+  }
+
+  set cellSelect(cellSelect: boolean) {
+    this._cellSelect = cellSelect;
+  }
+
+  get rowSelect(): boolean {
+    return this._rowSelect;
+  }
+
+  set rowSelect(rowSelect: boolean) {
+    this._rowSelect = rowSelect;
   }
 
   get groupBy(): string[] {
@@ -181,6 +203,14 @@ export class GridConfiguration {
 
   set externalPaging(externalPaging: boolean) {
     this._externalPaging = externalPaging;
+  }
+
+  get keyNavigation(): boolean {
+    return this._keyNavigation;
+  }
+
+  set keyNavigation(keyNavigation: boolean) {
+    this._keyNavigation = keyNavigation;
   }
 
   get nUtilityColumns(): number {

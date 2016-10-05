@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
 
 import { DragulaService } from "ng2-dragula/ng2-dragula";
 
@@ -10,6 +10,7 @@ import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
 import { GridConfiguration } from "./utils/grid-configuration";
 import { Point } from "./utils/point";
+import { Row } from "./row/row";
 import { RowGroup } from "./row/row-group";
 import { Column } from "./column/column";
 import { LabelCell } from "./cell/label-cell.component";
@@ -30,29 +31,13 @@ import { ExternalInfo } from "./utils/external-info";
  *   grouped data separated into subRow -1?  click on subrow collapses/expands?  not show grouped keys for rest of rows (0 and 1)?
  *
  * TODO:
- * Header:
- *   Components for rendering different header views.
- *   Label, Filter, Sort, Filter/Sort, Fill
+ * Selection:
+ *   Add column for multiple row selection
  *
- * Data:
- *   Service for handling/updating data
- *   Group by row
- *   If row groups are hidden/expanded or the filtering/sorting (in the grid data) is different from input data, need
- *   some kind of key definition to set data.
- *
- * Cells:
- *   Select/Dropdown (how to feed dictionary/options to dropdown?)
- *       cell knows its type and can just pull the dropdown config from configservice?
- *
- * Columns:
- *   Fixed columns and the rest horizontally scrollable
- *
- * Events:
- *   Update navigation event to handle click event history and ctrl click to support copy/paste groups of cells
- *
- * Validation:
- *   On cell templates or additional value validation thing.  Or custom validation that can be added to cell template for
- *   real time checking.
+ * Key Nav:
+ *   Improve key nav for all cell types.
+ *   Handle row grouping
+ *   Key nav as config option
  */
 @Component({
   selector: "hci-grid",
@@ -112,51 +97,59 @@ import { ExternalInfo } from "./utils/external-info";
   ` ],
   template: `
     <div (keydown)="onKeyDown($event);">
+      <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
+      
       <!-- Title Bar -->
-      <div class="grid-header">
-        <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
+      <div *ngIf="title !== null" class="grid-header">
         <span>{{ title }}</span>
       </div>
       
-      <!-- Column Headers TODO: add filter/sorting templates -->
+      <!-- Content -->
       <div style="display: inline-block; width: 100%; white-space: nowrap; overflow-x: hidden; margin-bottom: -5px; border: black 1px solid;">
+      
+        <!-- Left (Fixed) Content -->
         <div style="vertical-align: top;"
              [style.display]="nFixedColumns > 0 ? 'inline-block' : 'none'"
              [style.width]="nFixedColumns > 0 ? (nFixedColumns * 10) + '%' : '0%'"
              [style.min-width]="fixedMinWidth + 'px'">
-            <hci-column-header class="grid-cell-header"
-                  *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
-                  [column]="column"
-                  style="height: 30px; border: black 1px solid; vertical-align: top;"
-                  [style.display]="column.visible ? 'inline-block' : 'none'"
-                  [style.height]="column.filterType === null ? '30px' : '60px'"
-                  [style.width]="column.width + '%'"
-                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-            </hci-column-header><br />
+          <!-- Left Headers -->
+          <hci-column-header class="grid-cell-header"
+                             *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
+                             [column]="column"
+                             style="height: 30px; border: black 1px solid; vertical-align: top;"
+                             [style.display]="column.visible ? 'inline-block' : 'none'"
+                             [style.height]="column.filterType === null ? '30px' : '60px'"
+                             [style.width]="column.width + '%'"
+                             [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                             [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+          </hci-column-header><br />
           
-          <!-- Data Rows -->
+          <!-- Left Data Rows -->
           <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row-group>
         </div>
+        
+        <!-- Right (Main) Content -->
         <div style="display: inline-block; overflow-x: scroll; white-space: nowrap; vertical-align: top; margin-left: -4px;"
              class="rightDiv"
              [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
-            <hci-column-header class="grid-cell-header"
-                  *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
-                  [column]="column"
-                  style="height: 30px; border: black 1px solid; vertical-align: top;"
-                  [style.display]="column.visible ? 'inline-block' : 'none'"
-                  [style.height]="column.filterType === null ? '30px' : '60px'"
-                  [style.width]="column.width + '%'"
-                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-            </hci-column-header><br />
+          <!-- Right Headers -->
+          <hci-column-header class="grid-cell-header"
+                             *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
+                             [column]="column"
+                             style="height: 30px; border: black 1px solid; vertical-align: top;"
+                             [style.display]="column.visible ? 'inline-block' : 'none'"
+                             [style.height]="column.filterType === null ? '30px' : '60px'"
+                             [style.width]="column.width + '%'"
+                             [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                             [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+          </hci-column-header><br />
           
-          <!-- Data Rows -->
+          <!-- Right Data Rows -->
           <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="false"></hci-row-group>
         </div>
       </div>
       
+      <!-- Footer -->
       <div style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
         <span style="float: left; font-weight: bold;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.nPages }}</span>
         <span style="text-align; middle;">
@@ -172,25 +165,28 @@ import { ExternalInfo } from "./utils/external-info";
         </span>
       </div>
     </div>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent implements OnInit, OnChanges {
 
   @ViewChild("copypastearea") copypastearea: any;
 
-  @Input() title: String;
+  @Input() title: string = null;
   @Input() inputData: Object[] = null;
 
   // Grid Configuration
-  @Input() gridConfiguration: GridConfiguration;
+  @Input() cellSelect: boolean = false;
   @Input() columnDefinitions: Column[];
-  @Input() key: string[];
-  @Input() fixedColumns: string[];
-  @Input() groupBy: string[];
+  @Input() onExternalDataCall: Function;
   @Input() externalFiltering: boolean = false;
-  @Input() externalSorting: boolean = false;
   @Input() externalPaging: boolean = false;
-  @Input() externalDataCall: Function;
+  @Input() externalSorting: boolean = false;
+  @Input() fixedColumns: string[];
+  @Input() gridConfiguration: GridConfiguration;
+  @Input() groupBy: string[];
+  @Input() onRowDoubleClick: Function;
+  @Input() rowSelect: boolean = false;
 
   pageSize: number = 10;
   pageSizes: number[] = [ 10, 25, 50 ];
@@ -203,31 +199,54 @@ export class GridComponent implements OnInit, OnChanges {
 
   constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private dragulaService: DragulaService) {}
 
+  /**
+   * Setup listeners and pass inputs to services (particularly the config service).
+   */
   ngOnInit() {
-    //console.log("GridComponent.ngOnInit " + this.inputData);
     this.dragulaService.dropModel.subscribe((value) => {
       this.gridDataService.setInputData(this.inputData);
     });
 
-    this.pageInfo = this.gridDataService.pageInfo;
-
+    /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
-      console.log("GridComponent GridDataService.data.subscribe");
-      //console.log(data);
       this.gridData = data;
     });
+
+    /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
     this.gridDataService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
       this.pageInfo = pageInfo;
     });
-    this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
-      let externalData: Array<Object> = this.externalDataCall(externalInfo);
-      console.log("Return externalData");
-      this.gridDataService.setInputData(externalData);
-    });
+
+    /* Listen to changes in Sort/Filter/Page.
+    If there is an onExternalDataCall defined, send that info to that provided function. */
+    if (this.onExternalDataCall) {
+      this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
+        let externalData: Array<Object> = this.onExternalDataCall(externalInfo);
+        console.log("Return externalData");
+        this.gridDataService.setInputData(externalData);
+      });
+    }
+
+    /* If onRowDoubleClick is provided, then listen and send to function. */
+    if (this.onRowDoubleClick) {
+      this.gridDataService.doubleClickObserved.subscribe((row: Row) => {
+        let keys: number[] = this.gridConfigService.gridConfiguration.getKeyColumns();
+        if (keys.length === 0) {
+          return;
+        } else {
+          this.onRowDoubleClick(row.cells[keys[0]].value);
+        }
+      });
+    }
 
     this.initGridConfiguration();
-    if (this.externalDataCall) {
-      this.gridDataService.setInputData(this.externalDataCall(new ExternalInfo(null, null, this.pageInfo)));
+
+    /* Get initial page Info */
+    this.pageInfo = this.gridDataService.pageInfo;
+
+    /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
+    if (this.onExternalDataCall) {
+      this.gridDataService.setInputData(this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)));
     } else if (this.inputData) {
       this.gridDataService.setInputData(this.inputData);
     }
@@ -275,6 +294,9 @@ export class GridComponent implements OnInit, OnChanges {
     } else {
       //console.log("columnDefinitions Required");
     }
+    if (this.cellSelect) {
+      this.gridConfigService.gridConfiguration.cellSelect = this.cellSelect;
+    }
     if (this.fixedColumns) {
       this.gridConfigService.gridConfiguration.fixedColumns = this.fixedColumns;
     }
@@ -290,6 +312,10 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.externalPaging) {
       this.gridConfigService.gridConfiguration.externalPaging = this.externalPaging;
     }
+    if (this.rowSelect) {
+      this.gridConfigService.gridConfiguration.rowSelect = this.rowSelect;
+    }
+
     this.gridConfigService.gridConfiguration.init();
 
     if (this.gridConfigService.gridConfiguration.fixedColumns != null) {

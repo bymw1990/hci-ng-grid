@@ -8,10 +8,11 @@ import { LabelCell } from "./label-cell.component";
 import { InputCell } from "./input-cell.component";
 import { DateCell } from "./date-cell.component";
 import { GroupCollapseExpandCell } from "./group-collapse-expand.component";
+import { RowSelectCellComponent } from "./row-select-cell.component";
 
 @NgModule({
     imports: [ CommonModule, FormsModule, DropdownModule, DatepickerModule ],
-    declarations: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell ],
-    bootstrap: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell ]
+    declarations: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ],
+    bootstrap: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ]
 })
 export class CellModule {}

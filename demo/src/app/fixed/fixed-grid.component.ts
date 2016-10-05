@@ -19,7 +19,6 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <hci-grid [title]="'Fixed Grid'"
                 [inputData]="fixedData"
                 [columnDefinitions]="fixedColumns"
-                [key]="[idPatient]"
                 [fixedColumns]="['firstName', 'lastName']"
                 [externalFiltering]="true"
                 (onExternalFilter)="callExternalFilter()">

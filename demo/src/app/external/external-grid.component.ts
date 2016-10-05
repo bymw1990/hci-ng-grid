@@ -12,7 +12,7 @@ import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
     <div style="padding: 20px;">
       <hci-grid [title]="'External Grid'"
                 [columnDefinitions]="columns"
-                [externalDataCall]="boundDataCall"
+                [onExternalDataCall]="onExternalDataCall"
                 [externalFiltering]="true"
                 [externalSorting]="true"
                 [externalPaging]="true">
@@ -24,7 +24,7 @@ export class ExternalGridComponent implements OnInit {
 
   dataSize: number = 250;
 
-  public boundDataCall: Function;
+  public onExternalDataCall: Function;
 
   columns: Column[] = [
     new Column({ field: "idPatient", name: "ID", template: LabelCell }),
@@ -40,11 +40,11 @@ export class ExternalGridComponent implements OnInit {
 
   ngOnInit() {
     console.log("ExternalGridComponent.ngOnInit");
-    this.boundDataCall = this.dataCall.bind(this);
+    this.onExternalDataCall = this.handleExternalDataCall.bind(this);
     this.dataGeneratorService.generateExternalData(this.dataSize);
   }
 
-  public dataCall(externalInfo: Object): Array<Object> {
+  public handleExternalDataCall(externalInfo: Object): Array<Object> {
     console.log("dataCall");
     console.log(externalInfo);
     return this.dataGeneratorService.getExternalData(externalInfo);

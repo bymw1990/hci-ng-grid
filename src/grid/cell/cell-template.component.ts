@@ -20,6 +20,8 @@ export class CellTemplate {
 
   value: Object = null;
   render: boolean = true;
+  format: string = null;
+  formatType: string = null;
   activeOnRowHeader: boolean = false;
   valueable: boolean = true;
   focused: boolean = false;
@@ -57,6 +59,23 @@ export class CellTemplate {
   handleFocus() {
     if (!this.focused) {
       this.inputFocused.emit(true);
+    }
+  }
+
+  setFormat(format: string) {
+    if (format === null) {
+      return;
+    }
+
+    try {
+      let a: string[] = format.split(":");
+      if (a.length !== 2) {
+        return;
+      }
+      this.formatType = a[0];
+      this.format = a[1];
+    } catch (e) {
+      // Ignore
     }
   }
 

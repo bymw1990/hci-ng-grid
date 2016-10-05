@@ -4,7 +4,7 @@ import { CELL_CSS } from "./cell-template.component";
 import { CellTemplate } from "./cell-template.component";
 
 @Component({
-  selector: "input-cell",
+  selector: "hci-grid-cell-input",
   styles: [ CELL_CSS, `
     .input-cell {
       border: none;

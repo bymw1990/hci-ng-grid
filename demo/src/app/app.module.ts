@@ -13,6 +13,7 @@ import { DemoAppComponent } from "./demo-app.component";
 import { DataGeneratorService } from "./services/data-generator.service";
 
 import { SimpleGridComponent } from "./simple/simple-grid.component";
+import { SelectGridComponent } from "./select/select-grid.component";
 import { EditGridComponent } from "./edit/edit-grid.component";
 import { GroupGridComponent } from "./group/group-grid.component";
 import { FixedGridComponent } from "./fixed/fixed-grid.component";
@@ -21,6 +22,7 @@ import { DragDropGridComponent } from "./dragdrop/dragdrop-grid.component";
 import { ExternalGridComponent } from "./external/external-grid.component";
 
 import { SimpleGridModule } from "./simple/simple-grid.module";
+import { SelectGridModule } from "./select/select-grid.module";
 import { EditGridModule } from "./edit/edit-grid.module";
 import { GroupGridModule } from "./group/group-grid.module";
 import { FixedGridModule } from "./fixed/fixed-grid.module";
@@ -31,8 +33,8 @@ import { ExternalGridModule } from "./external/external-grid.module";
 import { GridModule } from "hci-ng2-grid/index";
 
 @NgModule({
-  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, GridModule ],
-  declarations: [ DemoAppComponent, SimpleGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, DragulaDirective ],
+  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, GridModule ],
+  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, DragulaDirective ],
   providers: [ DataGeneratorService, DragulaService ],
   bootstrap: [ DemoAppComponent ]
 })

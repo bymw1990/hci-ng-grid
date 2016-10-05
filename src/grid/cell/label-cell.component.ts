@@ -4,7 +4,7 @@ import { CELL_CSS } from "./cell-template.component";
 import { CellTemplate } from "./cell-template.component";
 
 @Component({
-  selector: "label-cell",
+  selector: "hci-grid-cell-label",
   styles: [ CELL_CSS, `
     .label-cell {
       height: 100%;
@@ -13,18 +13,9 @@ import { CellTemplate } from "./cell-template.component";
   `],
   template: `
     <span (keydown)="onKeyDown($event);" class="grid-cell-template label-cell" [ngClass]="{ 'focused': focused }">
-      {{ value }}
+      <span *ngIf="formatType === null">{{ value }}</span>
+      <span *ngIf="formatType === 'date'">{{ value | date:format }}</span>
     </span>
   `
 })
-export class LabelCell extends CellTemplate {
-
-  /*onKeyDown(event: KeyboardEvent) {
-    console.log("LabelCell.onKeyDown");
-    if (event.keyCode === 9) {
-      event.preventDefault();
-      this.tabEvent.emit(true);
-    }
-  }*/
-
-}
+export class LabelCell extends CellTemplate {}
