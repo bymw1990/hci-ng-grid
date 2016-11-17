@@ -8,7 +8,8 @@ import { ExternalData, ExternalInfo } from "hci-ng2-grid/index";
 export class DataGeneratorService {
   filteredData: Array<Object> = new Array<Object>();
   fixedData: Array<Object> = new Array<Object>();
-  externalData: Array<Object> = new Array<Object>();
+  externalData1: Array<Object> = new Array<Object>();
+  externalData2: Array<Object> = new Array<Object>();
 
   private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie" ];
   private _lastNames: string[] = [ "Black", "Brown", "Grey", "Khan", "Smith", "White" ];
@@ -62,10 +63,10 @@ export class DataGeneratorService {
     return this.filteredData;
   }
 
-  generateExternalData(size: number) {
-    console.log("generateExternalData");
+  generateExternalData1(size: number) {
+    console.log("generateExternalData1");
 
-    this.externalData = new Array<Object>();
+    this.externalData1 = new Array<Object>();
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -76,7 +77,7 @@ export class DataGeneratorService {
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
       let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
 
-      this.externalData.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
+      this.externalData1.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
     }
   }
 
@@ -88,9 +89,9 @@ export class DataGeneratorService {
    * @param externalInfo
    * @returns {ExternalData}
    */
-  getExternalData(externalInfo: ExternalInfo): ExternalData {
+  getExternalData1(externalInfo: ExternalInfo): ExternalData {
     console.log("getExternalData");
-    let returnData: ExternalData = new ExternalData(this.externalData, externalInfo);
+    let returnData: ExternalData = new ExternalData(this.externalData1, externalInfo);
 
     if (externalInfo === null) {
       return returnData;
@@ -101,17 +102,17 @@ export class DataGeneratorService {
 
     let filtered: Array<Object> = new Array<Object>();
     if (filters === null) {
-      filtered = this.externalData;
+      filtered = this.externalData1;
     } else {
-      for (var i = 0; i < this.externalData.length; i++) {
+      for (var i = 0; i < this.externalData1.length; i++) {
         let add: boolean = true;
         for (var j = 0; j < filters.length; j++) {
-          if (this.externalData[i][filters[j]["_field"]].indexOf(filters[j]["_value"]) === -1) {
+          if (this.externalData1[i][filters[j]["_field"]].indexOf(filters[j]["_value"]) === -1) {
             add = false;
           }
         }
         if (add) {
-          filtered.push(this.externalData[i]);
+          filtered.push(this.externalData1[i]);
         }
       }
     }
@@ -163,4 +164,85 @@ export class DataGeneratorService {
     returnData.data = data;
     return returnData;
   }
+
+  generateExternalData2(size: number) {
+    console.log("generateExternalData1");
+
+    this.externalData2 = new Array<Object>();
+    for (var i = 0; i < size; i++) {
+      let j: number = Math.floor(Math.random() * this._firstNames.length);
+      let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let firstName: string = this._firstNames[j];
+      let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
+      let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
+      let addy: number = Math.floor(Math.random() * 9800 + 100);
+      let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
+      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+
+      this.externalData2.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
+    }
+  }
+
+  /**
+   * Designed to mimic a backend service.  The grid will send the current filtering/sorting/paging information.  In cases
+   * I foresee, if any component is external, they should all be, but build this thing assuming separate cases.
+   * To mimic, basically we handle any case where we set the "external flag" for the grid configuration.
+   *
+   * @param externalInfo
+   * @returns {ExternalData}
+   */
+  getExternalData2(externalInfo: ExternalInfo): ExternalData {
+    console.log("getExternalData");
+    let returnData: ExternalData = new ExternalData(this.externalData2, externalInfo);
+
+    if (externalInfo === null) {
+      return returnData;
+    }
+    let filters: any = externalInfo["_filter"];
+    let sort: any = externalInfo["_sort"];
+
+    let filtered: Array<Object> = new Array<Object>();
+    if (filters === null) {
+      filtered = this.externalData2;
+    } else {
+      for (var i = 0; i < this.externalData2.length; i++) {
+        let add: boolean = true;
+        for (var j = 0; j < filters.length; j++) {
+          if (this.externalData2[i][filters[j]["_field"]].indexOf(filters[j]["_value"]) === -1) {
+            add = false;
+          }
+        }
+        if (add) {
+          filtered.push(this.externalData2[i]);
+        }
+      }
+    }
+
+    if (sort !== null) {
+      filtered = filtered.sort((a: Object, b: Object) => {
+        if (sort["_asc"]) {
+          if (a[sort["_field"]] < b[sort["_field"]]) {
+            return -1;
+          } else if (a[sort["_field"]] < b[sort["_field"]]) {
+            return 1;
+          } else {
+            return 0;
+          }
+        } else {
+          if (a[sort["_field"]] > b[sort["_field"]]) {
+            return -1;
+          } else if (a[sort["_field"]] < b[sort["_field"]]) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+      });
+    }
+
+    returnData.externalInfo.page.nDataSize = filtered.length;
+    returnData.data = filtered;
+    return returnData;
+  }
+
 }

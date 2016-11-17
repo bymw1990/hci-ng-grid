@@ -22,7 +22,7 @@ import { Column, LabelCell } from "hci-ng2-grid/index";
     <div style="padding: 20px;">
       <span style="font-size: 28px; font-weight: bold;">Multiple Row Select</span>
     </div>
-    <div style="padding: 20px;">
+    <div style="padding: 20px; margin-bottom: 100px;">
       <hci-grid [inputData]="data2"
                 [columnDefinitions]="columns2"
                 [rowSelect]="true">

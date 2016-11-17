@@ -130,8 +130,9 @@ import { ExternalData } from "./utils/external-data";
         </div>
         
         <!-- Right (Main) Content -->
-        <div style="display: inline-block; overflow-x: scroll; white-space: nowrap; vertical-align: top; margin-left: -4px;"
+        <div style="display: inline-block; overflow-x: scroll; white-space: nowrap; vertical-align: top;"
              class="rightDiv"
+             [style.margin-left]="nFixedColumns > 0 ? '-4px' : '0px'"
              [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
           <!-- Right Headers -->
           <hci-column-header class="grid-cell-header"
