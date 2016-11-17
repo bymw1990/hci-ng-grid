@@ -6,3 +6,5 @@ export { CellModule } from "./src/grid";
 export { LabelCell } from "./src/grid";
 export { InputCell } from "./src/grid";
 export { DateCell } from "./src/grid";
+export { ExternalData } from "./src/grid";
+export { ExternalInfo } from "./src/grid";

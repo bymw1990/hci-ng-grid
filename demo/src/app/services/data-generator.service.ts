@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { ExternalData, ExternalInfo } from "hci-ng2-grid/index";
 
 /**
  * Automatically generate different types of data to test filtering/paging and the such for various size data sets.
@@ -62,6 +63,8 @@ export class DataGeneratorService {
   }
 
   generateExternalData(size: number) {
+    console.log("generateExternalData");
+
     this.externalData = new Array<Object>();
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
@@ -82,15 +85,15 @@ export class DataGeneratorService {
    * I foresee, if any component is external, they should all be, but build this thing assuming separate cases.
    * To mimic, basically we handle any case where we set the "external flag" for the grid configuration.
    *
-   * TODO: The backend (if paging) will need to return the total array length.
-   *
    * @param externalInfo
-   * @returns {Array<Object>}
+   * @returns {ExternalData}
    */
-  getExternalData(externalInfo: Object): Array<Object> {
+  getExternalData(externalInfo: ExternalInfo): ExternalData {
     console.log("getExternalData");
+    let returnData: ExternalData = new ExternalData(this.externalData, externalInfo);
+
     if (externalInfo === null) {
-      return this.externalData;
+      return returnData;
     }
     let filters: any = externalInfo["_filter"];
     let sort: any = externalInfo["_sort"];
@@ -136,7 +139,8 @@ export class DataGeneratorService {
     }
 
     if (pageInfo === null) {
-      return filtered;
+      returnData.data = filtered;
+      return returnData;
     }
 
     let data: Array<Object> = new Array<Object>();
@@ -145,13 +149,18 @@ export class DataGeneratorService {
     let pageSize: number = pageInfo["_pageSize"];
 
     let n: number = filtered.length;
+    returnData.externalInfo.page.nDataSize = n;
+    returnData.externalInfo.page.nPages = Math.ceil(n / pageSize);
+
     if (page * pageSize > n - 1) {
-      return data;
+      returnData.data = data;
+      return returnData;
     }
 
     for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
       data.push(filtered[i]);
     }
-    return data;
+    returnData.data = data;
+    return returnData;
   }
 }

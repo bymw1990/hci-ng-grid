@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
-import { Column, DateCell, LabelCell, InputCell } from "hci-ng2-grid/index";
+import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } from "hci-ng2-grid/index";
 
 @Component({
   selector: "external-grid",
@@ -44,7 +44,7 @@ export class ExternalGridComponent implements OnInit {
     this.dataGeneratorService.generateExternalData(this.dataSize);
   }
 
-  public handleExternalDataCall(externalInfo: Object): Array<Object> {
+  public handleExternalDataCall(externalInfo: ExternalInfo): ExternalData {
     console.log("dataCall");
     console.log(externalInfo);
     return this.dataGeneratorService.getExternalData(externalInfo);

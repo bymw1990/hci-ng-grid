@@ -16,6 +16,7 @@ import { Column } from "./column/column";
 import { LabelCell } from "./cell/label-cell.component";
 import { PageInfo } from "./utils/page-info";
 import { ExternalInfo } from "./utils/external-info";
+import { ExternalData } from "./utils/external-data";
 
 /**
  * Thoughts...
@@ -221,9 +222,15 @@ export class GridComponent implements OnInit, OnChanges {
     If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
       this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
-        let externalData: Array<Object> = this.onExternalDataCall(externalInfo);
+        let externalData: ExternalData = this.onExternalDataCall(externalInfo);
         console.log("Return externalData");
-        this.gridDataService.setInputData(externalData);
+
+        if (externalData.externalInfo === null) {
+          this.gridDataService.pageInfo.nPages = 1;
+        } else {
+          this.gridDataService.pageInfo = externalData.externalInfo.page;
+        }
+        this.gridDataService.setInputData(externalData.data);
       });
     }
 
@@ -246,7 +253,9 @@ export class GridComponent implements OnInit, OnChanges {
 
     /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
     if (this.onExternalDataCall) {
-      this.gridDataService.setInputData(this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)));
+      let externalData: ExternalData = this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo));
+      this.gridDataService.pageInfo = externalData.externalInfo.page;
+      this.gridDataService.setInputData(externalData.data);
     } else if (this.inputData) {
       this.gridDataService.setInputData(this.inputData);
     }

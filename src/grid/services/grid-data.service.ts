@@ -168,7 +168,7 @@ export class GridDataService {
       START = this.pageInfo.page * this.pageInfo.pageSize;
       END = Math.min(START + this.pageInfo.pageSize, this.pageInfo.nDataSize);
       this.pageInfo.nPages = Math.ceil(this.pageInfo.nDataSize / this.pageInfo.pageSize);
-    } else {
+    } else if (!this.gridConfigService.gridConfiguration.externalPaging) {
       this.pageInfo.nPages = 1;
     }
     this.pageInfoObserved.next(this.pageInfo);
