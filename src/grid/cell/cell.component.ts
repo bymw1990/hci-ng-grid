@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, ViewContainerRef, ElementRef, ComponentFactoryResolver, ViewChild, Output, EventEmitter } from "@angular/core";
+import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from "@angular/core";
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
@@ -18,8 +18,7 @@ import { LabelCell } from "./label-cell.component";
   template: `
     <input #focuser style="position: absolute; left: -1000px;" (focus)="onFocuser();" (keydown)="onFocuserKeyDown($event)" />
     <span (click)="cellClick($event)"><span #template style="display: none;"></span></span>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `
 })
 export class CellComponent {
 
@@ -44,7 +43,7 @@ export class CellComponent {
 
   private data: Cell;
   private componentRef: CellTemplate = null;
-  constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
+  constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService, private changeDetectorRef: ChangeDetectorRef) {}
 
   ngAfterContentInit() {
     this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].template;
@@ -52,7 +51,7 @@ export class CellComponent {
     this.isViewInitialized = true;
     this.createComponent();
 
-    this.gridEventService.addSelectedLocationObserver((location) => {
+    this.gridEventService.getSelectedLocationObservable().subscribe((location) => {
       //console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + location.toString());
       if (location.equalsIJK(this.i, this.j, this.k)) {
         if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
@@ -88,18 +87,16 @@ export class CellComponent {
    * the input is focused.  In the case of a date, the datepicker popup is opened.
    */
   onFocus() {
-    //console.log("Cell.onFocus " + this.i + " " + this.j);
-    //this.componentRef.element.nativeElement.focus();
-    //this.cellFocused.emit({ "i": this.i, "j": this.j });
     if (this.type === LabelCell) {
       this.focuser.nativeElement.focus();
-    } else {
-      this.componentRef.onFocus();
     }
+    this.componentRef.onFocus();
+    this.changeDetectorRef.markForCheck();
   }
 
   onFocusOut() {
     this.componentRef.onFocusOut();
+    this.changeDetectorRef.markForCheck();
   }
 
   /**
@@ -185,6 +182,7 @@ export class CellComponent {
   }
 
   onFocuserKeyDown(event: KeyboardEvent) {
+    this.focuser.nativeElement.blur();
     this.onKeyDown(event.keyCode);
   }
 

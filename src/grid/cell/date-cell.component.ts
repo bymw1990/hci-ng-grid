@@ -17,14 +17,27 @@ import { CellTemplate } from "./cell-template.component";
       border: none;
       text-align: left;
     }
+    .grid-cell-date {
+      background-color: transparent;
+      padding-left: 8px;
+      position: fixed;
+    }
+    .negate-dropdown-menu.dropdown-menu {
+      position: fixed;
+      top: auto;
+      left: auto;
+      padding: 0px;
+      margin: 0px;
+      border: none;
+    }
   ` ],
   template: `
-    <div (keydown)="onKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [ngClass]="{ 'focused': focused }">
+    <div (keydown)="onDateKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [class.focused]="focused">
       <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled">
         {{ value | date }}
       </button>
-      <div #datepickerParent dropdownMenu role="menu" class="dropdown-menu" role="menu" aria-labelledby="single-button">
-        <datepicker [ngModel]="value" (ngModelChange)="onModelChange($event);" class="grid-cell-template"></datepicker>
+      <div #datepickerParent dropdownMenu role="menu" role="menu" aria-labelledby="single-button" class="negate-dropdown-menu">
+        <datepicker [ngModel]="value" (ngModelChange)="onModelChange($event);" class="grid-cell-date"></datepicker>
       </div>
     </div>
   `
@@ -38,9 +51,11 @@ export class DateCell extends CellTemplate {
   public status: { isopen: boolean } = { isopen: false };
 
   onToggle() {
+    this.handleFocus();
+
     if (this.status.isopen) {
       //console.log(this.datepickerParent.nativeElement.getElementsByClassName("grid-cell-template"));
-      console.log(this.datepickerParent.nativeElement.getElementsByClassName("active"));
+      //console.log(this.datepickerParent.nativeElement.getElementsByClassName("active"));
       this.datepickerParent.nativeElement.getElementsByClassName("active")[0].focus();
     }
   }
@@ -74,12 +89,11 @@ export class DateCell extends CellTemplate {
     this.status.isopen = !this.status.isopen;
   }
 
-  /*onKeyDown(event: KeyboardEvent) {
-    console.log("DateCell.onKeyDown");
-    if (event.keyCode === 9) {
-      event.preventDefault();
+  onDateKeyDown(event: KeyboardEvent) {
+    console.log("DateCell.onDateKeyDown");
+    if (event.keyCode === 9 || event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
       this.datepickerbutton.nativeElement.blur();
-      this.tabEvent.emit(true);
+      this.onKeyDown(event);
     }
-  }*/
+  }
 }

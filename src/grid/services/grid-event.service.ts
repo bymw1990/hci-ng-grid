@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs/Rx";
+import { Subject, Observable } from "rxjs/Rx";
 
 import { GridConfigService } from "./grid-config.service";
 import { Point } from "../utils/point";
@@ -61,5 +61,9 @@ export class GridEventService {
   addSelectedLocationObserver(observer: (location: Point) => void) {
     //console.log("GridEventService.addSelectedLocationObserver");
     this.selectedLocationObservable.subscribe(observer);
+  }
+
+  getSelectedLocationObservable(): Observable<Point> {
+    return this.selectedLocationObservable;
   }
 }

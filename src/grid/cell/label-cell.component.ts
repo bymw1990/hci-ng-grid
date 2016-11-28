@@ -12,7 +12,7 @@ import { CellTemplate } from "./cell-template.component";
     }
   `],
   template: `
-    <span (keydown)="onKeyDown($event);" class="grid-cell-template label-cell" [ngClass]="{ 'focused': focused }">
+    <span (keydown)="onKeyDown($event)" (click)="onClick($event)" class="grid-cell-template label-cell" [class.focused]="focused">
       <span *ngIf="formatType === null">{{ value }}</span>
       <span *ngIf="formatType === 'date'">{{ value | date:format }}</span>
     </span>

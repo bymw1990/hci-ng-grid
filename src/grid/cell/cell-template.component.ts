@@ -1,4 +1,4 @@
-import { Output, EventEmitter } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 export const CELL_CSS = `
   .grid-cell-template {
@@ -8,14 +8,17 @@ export const CELL_CSS = `
     background-color: transparent;
     padding-left: 8px;
   }
-  .grid-cell-template.focused {
-    background-color: #ccddff;
-  }
   .grid-cell-template.selected {
     background-color: #ffff99;
   }
+  .grid-cell-template.focused {
+    background-color: #ccddff;
+  }
 `;
 
+@Component({
+  selector: "hci-cell-template-abstract"
+})
 export class CellTemplate {
 
   value: Object = null;
@@ -24,7 +27,8 @@ export class CellTemplate {
   formatType: string = null;
   activeOnRowHeader: boolean = false;
   valueable: boolean = true;
-  focused: boolean = false;
+  @Input() focused: boolean = false;
+
   @Output() valueChange: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() keyEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() tabEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -37,8 +41,12 @@ export class CellTemplate {
     this.valueChange.emit(value);
   }
 
+  onClick(event: MouseEvent) {
+    this.handleFocus();
+  }
+
   onKeyDown(event: KeyboardEvent) {
-    //console.log("CellTemplate.onKeyDown");
+    console.log("CellTemplate.onKeyDown");
     if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
       this.keyEvent.emit(event.keyCode);
     } else if (event.keyCode === 9) {
@@ -49,10 +57,12 @@ export class CellTemplate {
   }
 
   onFocus() {
+    //console.log("CellTemplate.onFocus");
     this.focused = true;
   }
 
   onFocusOut() {
+    //console.log("CellTemplate.onFocusOut");
     this.focused = false;
   }
 
