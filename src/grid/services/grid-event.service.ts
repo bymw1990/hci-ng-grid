@@ -25,42 +25,39 @@ export class GridEventService {
     }
   }
 
+  /**
+   * Changes the current location based on the location passed to it plus the direction of the arrow key.  For example,
+   * dx=-1 and dy=0 in the case of a left arrow click.  If the new location is greater than the number of columns, then
+   * move to the next row down.  If the column is NOT visible, then keep iterating dx+1 until there is a visible one.
+   *
+   * TODO: Support row group cases (j > 0)
+   *
+   * @param location
+   * @param dx
+   * @param dy
+   */
   arrowFrom(location: Point, dx: number, dy: number) {
     //console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
     this.currentLocation = location;
-    //console.log(this.currentLocation);
-    this.currentLocation.i = this.currentLocation.i + dy;
-    //this.currentLocation.j = this.currentLocation.j;
-    this.currentLocation.k = this.currentLocation.k + dx;
-    this.currentLocation.i = Math.max(0, this.currentLocation.i);
-    this.currentLocation.k = Math.max(0, this.currentLocation.k);
 
-    if (this.currentLocation.k === this.nColumns) {
-      this.currentLocation.k = 0;
-      this.currentLocation.i = this.currentLocation.i + 1;
-    }
+    do {
+      this.currentLocation.i = this.currentLocation.i + dy;
+      this.currentLocation.k = this.currentLocation.k + dx;
+      this.currentLocation.i = Math.max(0, this.currentLocation.i);
+      this.currentLocation.k = Math.max(0, this.currentLocation.k);
+      if (this.currentLocation.k === this.nColumns) {
+        this.currentLocation.k = 0;
+        this.currentLocation.i = this.currentLocation.i + 1;
+      }
+    } while (!this.gridConfigService.gridConfiguration.columnDefinitions[this.currentLocation.k].visible);
+
+    console.log("GridEventService.arrowFrom Done " + this.currentLocation.toString());
 
     this.selectedLocation.next(this.currentLocation);
-    //console.log("GridEventService.arrowFrom Done");
   }
 
   tabFrom(location: Point) {
-    let i: number = location.i;
-    let j: number = location.j;
-    let k: number = location.k;
-
-    k = k + 1;
-    if (k === this.nColumns) {
-      k = 0;
-      i = i + 1;
-    }
-    this.currentLocation = new Point(i, j, k);
-    this.selectedLocation.next(this.currentLocation);
-  }
-
-  addSelectedLocationObserver(observer: (location: Point) => void) {
-    //console.log("GridEventService.addSelectedLocationObserver");
-    this.selectedLocationObservable.subscribe(observer);
+    this.arrowFrom(location, 1, 0);
   }
 
   getSelectedLocationObservable(): Observable<Point> {
