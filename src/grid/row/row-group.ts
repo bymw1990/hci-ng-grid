@@ -25,18 +25,6 @@ export class RowGroup {
     return this.rows.length;
   }
 
-  get(j: number): Row {
-    return this.rows[j];
-  }
-
-  getHeader(): Row {
-    return this.header;
-  }
-
-  setHeader(header: Row) {
-    this.header = header;
-  }
-
   equals(row: Row, compareIndexes: Array<number>): boolean {
     if (this.header == null) {
       return false;
@@ -58,4 +46,17 @@ export class RowGroup {
     }
     return true;
   }
+
+  get(j: number): Row {
+    return this.rows[j];
+  }
+
+  getHeader(): Row {
+    return this.header;
+  }
+
+  setHeader(header: Row) {
+    this.header = header;
+  }
+
 }

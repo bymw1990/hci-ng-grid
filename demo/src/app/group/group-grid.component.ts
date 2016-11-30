@@ -9,16 +9,14 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <h2>Group Grid</h2>
     </div>
     <div style="padding: 20px;">
-      <div>&lt;tab&gt; through cells</div>
-      <div>click on cells</div>
-      <div>up/down/left/right on selected cell</div>
-      <div>modify input cell values and check bound data changes</div>
+      <div>Click on row header to change sort based on row group.</div>
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Group Grid'"
                 [inputData]="groupData"
                 [columnDefinitions]="groupColumns"
-                [groupBy]="['firstName', 'lastName']">
+                [groupBy]="['firstName', 'lastName']"
+                [cellSelect]="true">
       </hci-grid>
     </div>
     <div style="padding: 20px;">

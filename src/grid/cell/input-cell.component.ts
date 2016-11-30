@@ -31,7 +31,7 @@ export class InputCell extends CellTemplate {
   }
 
   onInputKeyDown(event: KeyboardEvent) {
-    console.log("InputCell.onInputKeyDown " + event.keyCode);
+    //console.log("InputCell.onInputKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
       event.stopPropagation();

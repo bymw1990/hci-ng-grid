@@ -17,7 +17,8 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
     <div style="padding: 20px;">
       <hci-grid [title]="'Edit Grid'"
                 [inputData]="editData"
-                [columnDefinitions]="editColumns">
+                [columnDefinitions]="editColumns"
+                [cellSelect]="true">
       </hci-grid>
     </div>
     <div style="padding: 20px;">

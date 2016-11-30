@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Subject, Observable } from "rxjs/Rx";
 
 import { GridConfigService } from "./grid-config.service";
+import { GridDataService } from "./grid-data.service";
 import { Point } from "../utils/point";
 
 @Injectable()
@@ -11,13 +12,16 @@ export class GridEventService {
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
-  constructor(private gridConfigService: GridConfigService) {}
+  constructor(private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
 
   setNColumns(nColumns: number) {
     this.nColumns = nColumns;
   }
 
   setSelectedLocation(location: Point) {
+    if (!this.gridConfigService.gridConfiguration.cellSelect) {
+      return;
+    }
     console.log("GridEventService.setSelectedLocation: " + location);
 
     if (location === null) {
@@ -41,21 +45,49 @@ export class GridEventService {
    * @param dy
    */
   arrowFrom(location: Point, dx: number, dy: number) {
-    //console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
+    if (!this.gridConfigService.gridConfiguration.cellSelect) {
+      return;
+    }
+    console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
     this.currentLocation = location;
 
     do {
-      this.currentLocation.i = this.currentLocation.i + dy;
-      this.currentLocation.k = this.currentLocation.k + dx;
-      this.currentLocation.i = Math.max(0, this.currentLocation.i);
-      this.currentLocation.k = Math.max(0, this.currentLocation.k);
-      if (this.currentLocation.k === this.nColumns) {
-        this.currentLocation.k = 0;
-        this.currentLocation.i = this.currentLocation.i + 1;
-      }
-    } while (!this.gridConfigService.gridConfiguration.columnDefinitions[this.currentLocation.k].visible);
+      if (dy > 0 && this.gridDataService.getRowGroup(this.currentLocation.i).length() === this.currentLocation.j + dy) {
+        this.currentLocation.i = this.currentLocation.i + dy;
+        this.currentLocation.j = 0;
+      } else if (dy > 0) {
+        this.currentLocation.j = this.currentLocation.j + dy;
+      } else if (dy < 0 && this.currentLocation.j > 0) {
+        this.currentLocation.j = this.currentLocation.j + dy;
+      } else if (dy < 0 && this.currentLocation.j === 0) {
+        this.currentLocation.i = this.currentLocation.i + dy;
+        if (this.currentLocation.i < 0) {
+          this.currentLocation = new Point(-1, 0, -1);
+        } else {
+          this.currentLocation.j = this.gridDataService.getRowGroup(this.currentLocation.i).length() - 1;
+        }
+      } else if (dx !== 0) {
+        this.currentLocation.k = this.currentLocation.k + dx;
+        this.currentLocation.i = Math.max(0, this.currentLocation.i);
+        this.currentLocation.j = Math.max(0, this.currentLocation.j);
+        this.currentLocation.k = Math.max(0, this.currentLocation.k);
 
-    console.log("GridEventService.arrowFrom Done " + this.currentLocation.toString());
+        if (this.currentLocation.k === this.nColumns) {
+          this.currentLocation.k = 0;
+
+          if (this.gridDataService.getRowGroup(this.currentLocation.i).length() === this.currentLocation.j + 1) {
+            this.currentLocation.i = this.currentLocation.i + 1;
+            this.currentLocation.j = 0;
+          } else {
+            this.currentLocation.j = this.currentLocation.j + 1;
+          }
+        }
+      }
+    } while (this.currentLocation.k >= 0 && !this.gridConfigService.gridConfiguration.columnDefinitions[this.currentLocation.k].visible);
+
+    if (this.gridDataService.getRowGroup(this.currentLocation.i) === null) {
+      this.currentLocation = new Point(-1, 0, -1);
+    }
 
     this.selectedLocation.next(this.currentLocation);
   }
