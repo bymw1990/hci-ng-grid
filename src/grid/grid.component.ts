@@ -32,11 +32,8 @@ import { ExternalData } from "./utils/external-data";
  *   grouped data separated into subRow -1?  click on subrow collapses/expands?  not show grouped keys for rest of rows (0 and 1)?
  *
  * TODO:
- * Selection:
- *   Add column for multiple row selection
  *
  * Key Nav:
- *   Improve key nav for all cell types.
  *   Handle row grouping
  *   Key nav as config option
  */
@@ -262,6 +259,7 @@ export class GridComponent implements OnInit, OnChanges {
     }
 
     this.initialized = true;
+    this.gridEventService.setSelectedLocation(null);
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
@@ -353,32 +351,6 @@ export class GridComponent implements OnInit, OnChanges {
       //this.copypastearea.nativeElement.select();
       //event.stopPropagation();
     }
-  }
-
-  /**
-   * Currently, only allow up and down.  Want left/right to go between characters in input (unless check cursor position)
-   * { key, i, j }
-   * 37 = Left, 38 = Up, 39 = Right, 40 = Down
-   *
-   * @param o
-   */
-  onUDLR(o: Object) {
-    //console.log("GridComponent.onUDLR");
-    //console.log(o);
-    let key: number = o["key"];
-    let i: number = o["i"];
-    let j: number = o["j"];
-    let k: number = o["k"];
-    if (key === 37) {
-      j = Math.max(0, j - 1);
-    } else if (key === 38) {
-      i = Math.max(0, i - 1);
-    } else if (key === 39) {
-      j = j + 1;
-    } else if (key === 40) {
-      i = i + 1;
-    }
-    this.gridEventService.setSelectedLocation(new Point(i, j, k));
   }
 
 }

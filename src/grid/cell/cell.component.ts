@@ -53,7 +53,9 @@ export class CellComponent {
 
     this.gridEventService.getSelectedLocationObservable().subscribe((location) => {
       //console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + location.toString());
-      if (location.equalsIJK(this.i, this.j, this.k)) {
+      if (location === null) {
+        this.onFocusOut();
+      } else if (location.equalsIJK(this.i, this.j, this.k)) {
         console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver Equals " + location.toString());
         if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
           this.onFocus();
@@ -161,7 +163,7 @@ export class CellComponent {
       this.gridEventService.tabFrom(new Point(this.i, this.j, this.k));
     });
     this.componentRef.inputFocused.subscribe((value: boolean) => {
-      //console.log("CellComponent subscribe inputFocused");
+      console.log("CellComponent subscribe inputFocused");
       this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
     });
   }

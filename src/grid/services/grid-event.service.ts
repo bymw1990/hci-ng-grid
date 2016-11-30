@@ -18,8 +18,12 @@ export class GridEventService {
   }
 
   setSelectedLocation(location: Point) {
-    console.log("GridEventService.setSelectedLocation: " + location.toString());
-    if (this.currentLocation === null || !this.currentLocation.equals(location)) {
+    console.log("GridEventService.setSelectedLocation: " + location);
+
+    if (location === null) {
+      this.currentLocation = location;
+      this.selectedLocation.next(location);
+    } else if (this.currentLocation === null || !this.currentLocation.equals(location)) {
       this.currentLocation = location;
       this.selectedLocation.next(location);
     }

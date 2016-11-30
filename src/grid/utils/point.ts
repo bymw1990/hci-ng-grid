@@ -10,7 +10,11 @@ export class Point {
   }
 
   equals(other: Point): boolean {
-    return this._i === other.i && this._j === other.j && this._k === other.k;
+    if (other === null) {
+      return false;
+    } else {
+      return this._i === other.i && this._j === other.j && this._k === other.k;
+    }
   }
 
   equalsIJK(i: number, j: number, k: number): boolean {

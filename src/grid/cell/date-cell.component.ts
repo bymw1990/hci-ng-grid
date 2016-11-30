@@ -33,7 +33,7 @@ import { CellTemplate } from "./cell-template.component";
   ` ],
   template: `
     <div (keydown)="onDateKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [class.focused]="focused">
-      <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled">
+      <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled" (click)="handleFocus()">
         {{ value | date }}
       </button>
       <div #datepickerParent dropdownMenu role="menu" role="menu" aria-labelledby="single-button" class="negate-dropdown-menu">
@@ -51,12 +51,10 @@ export class DateCell extends CellTemplate {
   public status: { isopen: boolean } = { isopen: false };
 
   onToggle() {
-    this.handleFocus();
-
     if (this.status.isopen) {
-      //console.log(this.datepickerParent.nativeElement.getElementsByClassName("grid-cell-template"));
-      //console.log(this.datepickerParent.nativeElement.getElementsByClassName("active"));
       this.datepickerParent.nativeElement.getElementsByClassName("active")[0].focus();
+    } else {
+      this.onFocusOut();
     }
   }
 
@@ -82,6 +80,12 @@ export class DateCell extends CellTemplate {
     super.onFocus();
     this.datepickerbutton.nativeElement.focus();
     //this.datepicker.nativeElement.focus();
+  }
+
+  onFocusOut() {
+    //console.log("CellTemplate.onFocusOut");
+    this.focused = false;
+    this.datepickerbutton.nativeElement.blur();
   }
 
   focus() {
