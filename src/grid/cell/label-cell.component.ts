@@ -18,4 +18,6 @@ import { CellTemplate } from "./cell-template.component";
     </span>
   `
 })
-export class LabelCell extends CellTemplate {}
+export class LabelCell extends CellTemplate {
+  handleClick: boolean = true;
+}

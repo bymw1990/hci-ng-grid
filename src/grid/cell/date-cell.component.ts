@@ -33,7 +33,7 @@ import { CellTemplate } from "./cell-template.component";
   ` ],
   template: `
     <div (keydown)="onDateKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [class.focused]="focused">
-      <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled" (click)="handleFocus()">
+      <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled" (click)="onClick($event)">
         {{ value | date }}
       </button>
       <div #datepickerParent dropdownMenu role="menu" role="menu" aria-labelledby="single-button" class="negate-dropdown-menu">
@@ -47,6 +47,7 @@ export class DateCell extends CellTemplate {
   @ViewChild("datepickerbutton") datepickerbutton: ElementRef;
   @ViewChild("datepickerParent") datepickerParent: ElementRef;
 
+  handleClick: boolean = true;
   public disabled: boolean = false;
   public status: { isopen: boolean } = { isopen: false };
 

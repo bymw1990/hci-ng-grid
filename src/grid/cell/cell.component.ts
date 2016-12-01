@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, Eve
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
+import { EventMeta } from "../utils/event-meta";
 import { GridConfigService } from "../services/grid-config.service";
 import { GridEventService } from "../services/grid-event.service";
 import { GridDataService } from "../services/grid-data.service";
@@ -52,7 +53,19 @@ export class CellComponent {
     this.createComponent();
 
     if (this.gridConfigService.gridConfiguration.cellSelect) {
-      this.gridEventService.getSelectedLocationObservable().subscribe((location) => {
+      this.gridEventService.getSelecetdRangeObservable().subscribe((range) => {
+        if (range === null) {
+          this.onFocusOut();
+        } else if (range.contains(new Point(this.i, this.j, this.k))) {
+          if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
+            this.onFocus();
+          }
+        } else {
+          this.onFocusOut();
+        }
+      });
+
+      /*this.gridEventService.getSelectedLocationObservable().subscribe((location) => {
         //console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + location.toString());
         if (location === null) {
           this.onFocusOut();
@@ -66,15 +79,16 @@ export class CellComponent {
         } else {
           this.onFocusOut();
         }
-      });
+      });*/
+
       this.onFocusOut();
     }
     //console.log("CellComponent.ngAfterContentInit Done");
   }
 
   cellClick(event: MouseEvent) {
-    if (this.gridConfigService.gridConfiguration.cellSelect) {
-      this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
+    if (this.gridConfigService.gridConfiguration.cellSelect && !this.componentRef.handleClick) {
+      this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
     }
   }
 
@@ -162,11 +176,15 @@ export class CellComponent {
     });
     this.componentRef.tabEvent.subscribe((value: boolean) => {
       //console.log("CellComponent subscribe tabEvent");
-      this.gridEventService.tabFrom(new Point(this.i, this.j, this.k));
+      this.gridEventService.tabFrom(new Point(this.i, this.j, this.k), null);
     });
-    this.componentRef.inputFocused.subscribe((value: boolean) => {
+    this.componentRef.inputFocused.subscribe((eventMeta: EventMeta) => {
       console.log("CellComponent subscribe inputFocused");
-      this.gridEventService.setSelectedLocation(new Point(this.i, this.j, this.k));
+      this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), eventMeta);
+    });
+    this.componentRef.clickEvent.subscribe((eventMeta: EventMeta) => {
+      console.log("CellComponent subscribe clickEvent");
+      this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), eventMeta);
     });
   }
 
@@ -174,13 +192,13 @@ export class CellComponent {
     //console.log("CellComponent.onKeyDown");
     //console.log(event);
     if (keyCode === 37) {
-      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), -1, 0);
+      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), -1, 0, null);
     } else if (keyCode === 39) {
-      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), 1, 0);
+      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), 1, 0, null);
     } else if (keyCode === 38) {
-      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), 0, -1);
+      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), 0, -1, null);
     } else if (keyCode === 40) {
-      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), 0, 1);
+      this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), 0, 1, null);
     } else if (keyCode === 9) {
       this.onFocusOut();
     }

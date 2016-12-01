@@ -4,6 +4,8 @@ import { Subject, Observable } from "rxjs/Rx";
 import { GridConfigService } from "./grid-config.service";
 import { GridDataService } from "./grid-data.service";
 import { Point } from "../utils/point";
+import { Range } from "../utils/range";
+import { EventMeta } from "../utils/event-meta";
 
 @Injectable()
 export class GridEventService {
@@ -12,24 +14,57 @@ export class GridEventService {
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
+  private currentRange: Range = null;
+  private selectedRange = new Subject<Range>();
+  private selectedRangeObservable = this.selectedRange.asObservable();
+
   constructor(private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
 
   setNColumns(nColumns: number) {
     this.nColumns = nColumns;
   }
 
-  setSelectedLocation(location: Point) {
+  setSelectedLocation(location: Point, eventMeta: EventMeta) {
     if (!this.gridConfigService.gridConfiguration.cellSelect) {
       return;
     }
-    console.log("GridEventService.setSelectedLocation: " + location);
+    console.log("GridEventService.setSelectedLocation: " + location + " " + eventMeta);
 
-    if (location === null) {
+    /*if (location === null) {
       this.currentLocation = location;
       this.selectedLocation.next(location);
     } else if (this.currentLocation === null || !this.currentLocation.equals(location)) {
       this.currentLocation = location;
       this.selectedLocation.next(location);
+    }*/
+
+    if (this.currentRange == null) {
+      this.currentRange = new Range(location, location);
+      this.selectedRange.next(this.currentRange);
+    } else if (eventMeta == null || eventMeta.isNull()) {
+      this.currentRange.setInitial(location);
+      this.selectedRange.next(this.currentRange);
+    } else if (eventMeta.ctrl) {
+      this.currentRange.update(location);
+      this.selectedRange.next(this.currentRange);
+    }
+  }
+
+  setSelectedRange(location: Point, eventMeta: EventMeta) {
+    if (!this.gridConfigService.gridConfiguration.cellSelect) {
+      return;
+    }
+    console.log("GridEventService.setSelectedRange: Update " + this.currentRange + " With " + location + ", " + eventMeta);
+
+    if (this.currentRange == null) {
+      this.currentRange = new Range(location, location);
+      this.selectedRange.next(this.currentRange);
+    } else if (eventMeta == null || eventMeta.isNull()) {
+      this.currentRange.setInitial(location);
+      this.selectedRange.next(this.currentRange);
+    } else if (eventMeta.ctrl) {
+      this.currentRange.update(location);
+      this.selectedRange.next(this.currentRange);
     }
   }
 
@@ -44,7 +79,7 @@ export class GridEventService {
    * @param dx
    * @param dy
    */
-  arrowFrom(location: Point, dx: number, dy: number) {
+  arrowFrom(location: Point, dx: number, dy: number, eventMeta: EventMeta) {
     if (!this.gridConfigService.gridConfiguration.cellSelect) {
       return;
     }
@@ -92,11 +127,15 @@ export class GridEventService {
     this.selectedLocation.next(this.currentLocation);
   }
 
-  tabFrom(location: Point) {
-    this.arrowFrom(location, 1, 0);
+  tabFrom(location: Point, eventMeta: EventMeta) {
+    this.arrowFrom(location, 1, 0, eventMeta);
   }
 
   getSelectedLocationObservable(): Observable<Point> {
     return this.selectedLocationObservable;
+  }
+
+  getSelecetdRangeObservable(): Observable<Range> {
+    return this.selectedRangeObservable;
   }
 }

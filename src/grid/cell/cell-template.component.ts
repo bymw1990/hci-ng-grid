@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { EventMeta } from "../utils/event-meta";
+
 export const CELL_CSS = `
   .grid-cell-template {
     display: inline-block;
@@ -27,12 +29,16 @@ export class CellTemplate {
   formatType: string = null;
   activeOnRowHeader: boolean = false;
   valueable: boolean = true;
+
+  handleClick: boolean = false;
+
   @Input() focused: boolean = false;
 
   @Output() valueChange: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() keyEvent: EventEmitter<number> = new EventEmitter<number>();
   @Output() tabEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() inputFocused: EventEmitter<Object> = new EventEmitter<Object>();
+  @Output() clickEvent: EventEmitter<Object> = new EventEmitter<Object>();
 
   onModelChange(value: Object) {
     console.log("InputCell.onKeyDown");
@@ -42,7 +48,10 @@ export class CellTemplate {
   }
 
   onClick(event: MouseEvent) {
-    this.handleFocus();
+    console.log("CellTemplate.onClick");
+    event.stopPropagation();
+    event.preventDefault();
+    this.clickEvent.emit(new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -66,9 +75,9 @@ export class CellTemplate {
     this.focused = false;
   }
 
-  handleFocus() {
+  handleFocus(eventMeta: EventMeta) {
     if (!this.focused) {
-      this.inputFocused.emit(true);
+      this.inputFocused.emit(eventMeta);
     }
   }
 

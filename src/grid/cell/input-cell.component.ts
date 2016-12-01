@@ -11,7 +11,7 @@ import { CellTemplate } from "./cell-template.component";
     }
   ` ],
   template: `
-    <input #input [ngModel]="value" (ngModelChange)="onModelChange($event);" (click)="handleClick($event)" (focus)="handleFocus()" (keydown)="onInputKeyDown($event);" class="grid-cell-template input-cell" [ngClass]="{ 'focused': focused }" />
+    <input #input [ngModel]="value" (ngModelChange)="onModelChange($event);" (click)="onClick($event)" (keydown)="onInputKeyDown($event);" class="grid-cell-template input-cell" [ngClass]="{ 'focused': focused }" />
   `
 })
 export class InputCell extends CellTemplate {
@@ -26,7 +26,7 @@ export class InputCell extends CellTemplate {
     this.input.nativeElement.focus();
   }
 
-  handleClick(event: MouseEvent) {
+  inputClick(event: MouseEvent) {
     event.preventDefault();
   }
 

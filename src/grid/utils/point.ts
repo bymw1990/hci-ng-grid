@@ -21,6 +21,46 @@ export class Point {
     return this._i === i && this._j === j && this._k === k;
   }
 
+  greaterThan(other: Point) {
+    if (this._k > other.k) {
+      if (this._i === other.i) {
+        return this._j >= other.j;
+      } else {
+        return this._i >= other.i;
+      }
+    } else if (this._i > other.i) {
+      return this._k >= other.k;
+    } else if (this._i === other.i && this._j > other.j) {
+      return this._k >= other.k;
+    } else {
+      return false;
+    }
+  }
+
+  greaterThanOrEqual(other: Point) {
+    return this.greaterThan(other) || this.equals(other);
+  }
+
+  lessThan(other: Point) {
+    if (this._k < other.k) {
+      if (this._i === other.i) {
+        return this._j <= other.j;
+      } else {
+        return this._i <= other.i;
+      }
+    } else if (this._i < other.i) {
+      return this._k <= other.k;
+    } else if (this._i === other.i && this._j < other.j) {
+      return this._k <= other.k;
+    } else {
+      return false;
+    }
+  }
+
+  lessThanOrEqual(other: Point) {
+    return this.lessThan(other) || this.equals(other);
+  }
+
   get i(): number {
     return this._i;
   }

@@ -259,7 +259,7 @@ export class GridComponent implements OnInit, OnChanges {
     }
 
     this.initialized = true;
-    this.gridEventService.setSelectedLocation(null);
+    this.gridEventService.setSelectedLocation(null, null);
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
