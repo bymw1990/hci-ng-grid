@@ -10,7 +10,7 @@ export class Column {
   private _sortOrder: number;
   private _width: number = 100;
   private _minWidth: number = 100;
-  private _maxWidth: number = 250;
+  private _maxWidth: number = 500;
   private _isFixed: boolean = false;
   private _isGroup: boolean = false;
   private _isUtility: boolean = false;
