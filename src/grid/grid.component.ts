@@ -9,7 +9,7 @@ import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
 import { GridConfiguration } from "./utils/grid-configuration";
-import { Point } from "./utils/point";
+import { Range } from "./utils/range";
 import { Row } from "./row/row";
 import { RowGroup } from "./row/row-group";
 import { Column } from "./column/column";
@@ -342,14 +342,32 @@ export class GridComponent implements OnInit, OnChanges {
 
   /* Key Events */
   onKeyDown(event: KeyboardEvent) {
-    //console.log("GridComponent.onKeyDown");
+    console.log("GridComponent.onKeyDown");
     if (event.ctrlKey && event.keyCode === 67) {
-      //console.log("Copy Event");
+      console.log("Copy Event");
 
-      //this.setCopyPaste();
+      let range: Range = this.gridEventService.currentRange;
+      if (range != null && !range.min.equals(range.max)) {
+        let copy: string = "";
 
-      //this.copypastearea.nativeElement.select();
-      //event.stopPropagation();
+        for (var i = range.min.i; i <= range.max.i; i++) {
+          for (var j = range.min.j; j <= range.max.j; j++) {
+            for (var k = range.min.k; k <= range.max.k; k++) {
+              copy += this.gridDataService.getRowGroup(i).get(j).get(k).value + "\t";
+            }
+            copy += "\r\n";
+          }
+        }
+
+        this.copypastearea.nativeElement.value = copy;
+        this.copypastearea.nativeElement.select();
+        event.stopPropagation();
+      }
+    } else if (event.ctrlKey && event.keyCode === 86) {
+      console.log("Paste Event");
+      this.copypastearea.nativeElement.select();
+      let paste: string = this.copypastearea.nativeElement.value;
+      console.log(paste);
     }
   }
 

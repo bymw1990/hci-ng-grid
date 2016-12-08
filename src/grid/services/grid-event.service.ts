@@ -14,11 +14,15 @@ export class GridEventService {
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
-  private currentRange: Range = null;
+  private _currentRange: Range = null;
   private selectedRange = new Subject<Range>();
   private selectedRangeObservable = this.selectedRange.asObservable();
 
   constructor(private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
+
+  get currentRange(): Range {
+    return this._currentRange;
+  }
 
   setNColumns(nColumns: number) {
     this.nColumns = nColumns;
@@ -38,15 +42,15 @@ export class GridEventService {
       this.selectedLocation.next(location);
     }*/
 
-    if (this.currentRange == null) {
-      this.currentRange = new Range(location, location);
-      this.selectedRange.next(this.currentRange);
+    if (this._currentRange == null) {
+      this._currentRange = new Range(location, location);
+      this.selectedRange.next(this._currentRange);
     } else if (eventMeta == null || eventMeta.isNull()) {
-      this.currentRange.setInitial(location);
-      this.selectedRange.next(this.currentRange);
+      this._currentRange.setInitial(location);
+      this.selectedRange.next(this._currentRange);
     } else if (eventMeta.ctrl) {
-      this.currentRange.update(location);
-      this.selectedRange.next(this.currentRange);
+      this._currentRange.update(location);
+      this.selectedRange.next(this._currentRange);
     }
   }
 
@@ -54,17 +58,17 @@ export class GridEventService {
     if (!this.gridConfigService.gridConfiguration.cellSelect) {
       return;
     }
-    console.log("GridEventService.setSelectedRange: Update " + this.currentRange + " With " + location + ", " + eventMeta);
+    console.log("GridEventService.setSelectedRange: Update " + this._currentRange + " With " + location + ", " + eventMeta);
 
-    if (this.currentRange == null) {
-      this.currentRange = new Range(location, location);
-      this.selectedRange.next(this.currentRange);
+    if (this._currentRange == null) {
+      this._currentRange = new Range(location, location);
+      this.selectedRange.next(this._currentRange);
     } else if (eventMeta == null || eventMeta.isNull()) {
-      this.currentRange.setInitial(location);
-      this.selectedRange.next(this.currentRange);
+      this._currentRange.setInitial(location);
+      this.selectedRange.next(this._currentRange);
     } else if (eventMeta.ctrl) {
-      this.currentRange.update(location);
-      this.selectedRange.next(this.currentRange);
+      this._currentRange.update(location);
+      this.selectedRange.next(this._currentRange);
     }
   }
 
