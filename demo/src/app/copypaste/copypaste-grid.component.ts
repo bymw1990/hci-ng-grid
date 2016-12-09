@@ -9,13 +9,22 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <h2>Copy Paste Demo</h2>
     </div>
     <div style="padding: 20px;">
-      <div>Click on a cell and ctrl-click on another to select a range of cells</div>
-      <div>Use ctrl-c to copy those cell data</div>
-      <div>Try paste into Excel</div>
-      <div></div>
-      <div>Try copy array of cells in Excel</div>
-      <div>Click on a cell and ctrl-v</div>
-      <div>Look at cell data and bound data change</div>
+      <div style="width: 45%; display: inline-block;">
+        <span style="font-size: larger; font-weight: bold;">To copy</span>
+        <ul>
+            <li>Click on a cell and ctrl-click on another to select a range of cells</li>
+            <li>Use ctrl-c to copy those cell data</li>
+            <li>Try paste into Excel</li>
+        </ul>
+      </div>
+      <div style="width: 45%; display: inline-block;">
+        <span style="font-size: larger; font-weight: bold;">To paste</span>
+        <ul>
+          <li>Try copy array of cells in Excel</li>
+          <li>Click on a cell and ctrl-v</li>
+          <li>Look at cell data and bound data change</li>
+        </ul>
+      </div>
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Copy Paste Grid'"

@@ -77,25 +77,23 @@ export class CellComponent {
         }
       });
 
-      /*this.gridEventService.getSelectedLocationObservable().subscribe((location) => {
-        //console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver " + location.toString());
+      this.gridEventService.getSelectedLocationObservable().subscribe((location) => {
         if (location === null) {
           this.onFocusOut();
         } else if (location.equalsIJK(this.i, this.j, this.k)) {
-          console.log("CellComponent.ngAfterInit gridEventService.addSelectedLocationObserver Equals " + location.toString());
+          console.log("CellComponent.ngAfterInit gridEventService.selectedLocationObservable Equals " + location.toString());
           if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
             this.onFocus();
           } else {
-            this.gridEventService.arrowFrom(location, 1, 0);
+            this.gridEventService.arrowFrom(location, 1, 0, null);
           }
         } else {
           this.onFocusOut();
         }
-      });*/
+      });
 
       this.onFocusOut();
     }
-    //console.log("CellComponent.ngAfterContentInit Done");
   }
 
   cellClick(event: MouseEvent) {

@@ -10,7 +10,7 @@ import { EventMeta } from "../utils/event-meta";
 @Injectable()
 export class GridEventService {
   private nColumns: number = 0;
-  private currentLocation: Point = new Point(-1, 0, -1);
+  private _currentLocation: Point = new Point(-1, 0, -1);
   private selectedLocation = new Subject<Point>();
   private selectedLocationObservable = this.selectedLocation.asObservable();
 
@@ -35,10 +35,10 @@ export class GridEventService {
     console.log("GridEventService.setSelectedLocation: " + location + " " + eventMeta);
 
     /*if (location === null) {
-      this.currentLocation = location;
+      this._currentLocation = location;
       this.selectedLocation.next(location);
-    } else if (this.currentLocation === null || !this.currentLocation.equals(location)) {
-      this.currentLocation = location;
+    } else if (this._currentLocation === null || !this._currentLocation.equals(location)) {
+      this._currentLocation = location;
       this.selectedLocation.next(location);
     }*/
 
@@ -60,6 +60,8 @@ export class GridEventService {
     }
     console.log("GridEventService.setSelectedRange: Update " + this._currentRange + " With " + location + ", " + eventMeta);
 
+    this._currentLocation = location;
+
     if (this._currentRange == null) {
       this._currentRange = new Range(location, location);
       this.selectedRange.next(this._currentRange);
@@ -77,8 +79,6 @@ export class GridEventService {
    * dx=-1 and dy=0 in the case of a left arrow click.  If the new location is greater than the number of columns, then
    * move to the next row down.  If the column is NOT visible, then keep iterating dx+1 until there is a visible one.
    *
-   * TODO: Support row group cases (j > 0)
-   *
    * @param location
    * @param dx
    * @param dy
@@ -88,47 +88,47 @@ export class GridEventService {
       return;
     }
     console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
-    this.currentLocation = location;
+    this._currentLocation = location;
 
     do {
-      if (dy > 0 && this.gridDataService.getRowGroup(this.currentLocation.i).length() === this.currentLocation.j + dy) {
-        this.currentLocation.i = this.currentLocation.i + dy;
-        this.currentLocation.j = 0;
+      if (dy > 0 && this.gridDataService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + dy) {
+        this._currentLocation.i = this._currentLocation.i + dy;
+        this._currentLocation.j = 0;
       } else if (dy > 0) {
-        this.currentLocation.j = this.currentLocation.j + dy;
-      } else if (dy < 0 && this.currentLocation.j > 0) {
-        this.currentLocation.j = this.currentLocation.j + dy;
-      } else if (dy < 0 && this.currentLocation.j === 0) {
-        this.currentLocation.i = this.currentLocation.i + dy;
-        if (this.currentLocation.i < 0) {
-          this.currentLocation = new Point(-1, 0, -1);
+        this._currentLocation.j = this._currentLocation.j + dy;
+      } else if (dy < 0 && this._currentLocation.j > 0) {
+        this._currentLocation.j = this._currentLocation.j + dy;
+      } else if (dy < 0 && this._currentLocation.j === 0) {
+        this._currentLocation.i = this._currentLocation.i + dy;
+        if (this._currentLocation.i < 0) {
+          this._currentLocation = new Point(-1, 0, -1);
         } else {
-          this.currentLocation.j = this.gridDataService.getRowGroup(this.currentLocation.i).length() - 1;
+          this._currentLocation.j = this.gridDataService.getRowGroup(this._currentLocation.i).length() - 1;
         }
       } else if (dx !== 0) {
-        this.currentLocation.k = this.currentLocation.k + dx;
-        this.currentLocation.i = Math.max(0, this.currentLocation.i);
-        this.currentLocation.j = Math.max(0, this.currentLocation.j);
-        this.currentLocation.k = Math.max(0, this.currentLocation.k);
+        this._currentLocation.k = this._currentLocation.k + dx;
+        this._currentLocation.i = Math.max(0, this._currentLocation.i);
+        this._currentLocation.j = Math.max(0, this._currentLocation.j);
+        this._currentLocation.k = Math.max(0, this._currentLocation.k);
 
-        if (this.currentLocation.k === this.nColumns) {
-          this.currentLocation.k = 0;
+        if (this._currentLocation.k === this.nColumns) {
+          this._currentLocation.k = 0;
 
-          if (this.gridDataService.getRowGroup(this.currentLocation.i).length() === this.currentLocation.j + 1) {
-            this.currentLocation.i = this.currentLocation.i + 1;
-            this.currentLocation.j = 0;
+          if (this.gridDataService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + 1) {
+            this._currentLocation.i = this._currentLocation.i + 1;
+            this._currentLocation.j = 0;
           } else {
-            this.currentLocation.j = this.currentLocation.j + 1;
+            this._currentLocation.j = this._currentLocation.j + 1;
           }
         }
       }
-    } while (this.currentLocation.k >= 0 && !this.gridConfigService.gridConfiguration.columnDefinitions[this.currentLocation.k].visible);
+    } while (this._currentLocation.k >= 0 && !this.gridConfigService.gridConfiguration.columnDefinitions[this._currentLocation.k].visible);
 
-    if (this.gridDataService.getRowGroup(this.currentLocation.i) === null) {
-      this.currentLocation = new Point(-1, 0, -1);
+    if (this.gridDataService.getRowGroup(this._currentLocation.i) === null) {
+      this._currentLocation = new Point(-1, 0, -1);
     }
 
-    this.selectedLocation.next(this.currentLocation);
+    this.selectedLocation.next(this._currentLocation);
   }
 
   tabFrom(location: Point, eventMeta: EventMeta) {
