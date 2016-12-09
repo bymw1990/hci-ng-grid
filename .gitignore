@@ -4,9 +4,9 @@
 /node_modules/
 /demo/node_modules/
 /demo/typings/
-/demo/**/*.js
-/demo/**/*.js.map
-/demo/**/*.d.ts
+/demo/src/**/*.js
+/demo/src/**/*.js.map
+/demo/src/**/*.d.ts
 /src/**/*.js
 /src/**/*.js.map
 /src/**/*.d.ts
