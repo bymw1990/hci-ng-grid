@@ -353,9 +353,16 @@ export class GridComponent implements OnInit, OnChanges {
         for (var i = range.min.i; i <= range.max.i; i++) {
           for (var j = range.min.j; j <= range.max.j; j++) {
             for (var k = range.min.k; k <= range.max.k; k++) {
-              copy += this.gridDataService.getRowGroup(i).get(j).get(k).value + "\t";
+              copy += this.gridDataService.getRowGroup(i).get(j).get(k).value;
+              if (k < range.max.k) {
+                copy += "\t";
+              }
             }
-            copy += "\r\n";
+            if (i < range.max.i) {
+              copy += "\r\n";
+            } else if (i === range.max.i && j < range.max.j) {
+              copy += "\r\n";
+            }
           }
         }
 
