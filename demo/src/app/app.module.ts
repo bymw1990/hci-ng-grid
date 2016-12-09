@@ -21,6 +21,7 @@ import { FilterGridComponent } from "./filter/filter-grid.component";
 import { DragDropGridComponent } from "./dragdrop/dragdrop-grid.component";
 import { ExternalGridComponent } from "./external/external-grid.component";
 import { CopyPasteGridComponent } from "./copypaste/copypaste-grid.component";
+import { AlertsGridComponent } from "./alerts/alerts-grid.component";
 
 import { SimpleGridModule } from "./simple/simple-grid.module";
 import { SelectGridModule } from "./select/select-grid.module";
@@ -31,12 +32,13 @@ import { FilterGridModule } from "./filter/filter-grid.module";
 import { DragDropGridModule } from "./dragdrop/dragdrop-grid.module";
 import { ExternalGridModule } from "./external/external-grid.module";
 import { CopyPasteGridModule } from "./copypaste/copypaste-grid.module";
+import { AlertsGridModule } from "./alerts/alerts-grid.module";
 
 import { GridModule } from "hci-ng2-grid/index";
 
 @NgModule({
-  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, CopyPasteGridModule, GridModule ],
-  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, CopyPasteGridComponent, DragulaDirective ],
+  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, CopyPasteGridModule, AlertsGridModule, GridModule ],
+  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, CopyPasteGridComponent, AlertsGridComponent, DragulaDirective ],
   providers: [ DataGeneratorService, DragulaService ],
   bootstrap: [ DemoAppComponent ]
 })

@@ -20,6 +20,7 @@ import { Component } from "@angular/core";
       <div style="padding-left: 10px;">
         <span style="font-weight: bold;">Examples: </span>
         <a routerLink="/simple" style="padding: 20px;">Basic</a>
+        <a routerLink="/alerts" style="padding: 20px;">Alerts</a>
         <a routerLink="/select" style="padding: 20px;">Row Select</a>
         <a routerLink="/copypaste" style="padding: 20px;">Copy/Paste</a>
         <a routerLink="/edit" style="padding: 20px;">Inline Edit and Key Nav</a>

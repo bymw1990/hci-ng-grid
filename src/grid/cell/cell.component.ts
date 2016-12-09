@@ -24,7 +24,7 @@ import { LabelCell } from "./label-cell.component";
 })
 export class CellComponent {
 
-  @Input() type: any;
+  @Input() type: any = LabelCell;
   @Input() i: number;
   @Input() j: number;
   @Input() k: number;

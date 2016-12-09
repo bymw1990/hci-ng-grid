@@ -8,6 +8,7 @@ import { DragulaService } from "ng2-dragula/ng2-dragula";
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
+import { GridMessageService } from "./services/grid-message.service";
 import { GridConfiguration } from "./utils/grid-configuration";
 import { Point } from "./utils/point";
 import { Range } from "./utils/range";
@@ -32,15 +33,10 @@ import { ExternalData } from "./utils/external-data";
  *
  *   grouped data separated into subRow -1?  click on subrow collapses/expands?  not show grouped keys for rest of rows (0 and 1)?
  *
- * TODO:
- *
- * Key Nav:
- *   Handle row grouping
- *   Key nav as config option
  */
 @Component({
   selector: "hci-grid",
-  providers: [ GridDataService, GridEventService, GridConfigService ],
+  providers: [ GridDataService, GridEventService, GridConfigService, GridMessageService ],
   styles: [ `
     .grid-header {
       background-color: transparent;
@@ -178,6 +174,7 @@ export class GridComponent implements OnInit, OnChanges {
   // Grid Configuration
   @Input() cellSelect: boolean = false;
   @Input() columnDefinitions: Column[];
+  @Input() onAlert: Function;
   @Input() onExternalDataCall: Function;
   @Input() externalFiltering: boolean = false;
   @Input() externalPaging: boolean = false;
@@ -185,6 +182,7 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() fixedColumns: string[];
   @Input() gridConfiguration: GridConfiguration;
   @Input() groupBy: string[];
+  @Input() level: string;
   @Input() onRowDoubleClick: Function;
   @Input() rowSelect: boolean = false;
 
@@ -197,12 +195,16 @@ export class GridComponent implements OnInit, OnChanges {
   pageInfo: PageInfo;
   initialized: boolean = false;
 
-  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private dragulaService: DragulaService) {}
+  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService, private dragulaService: DragulaService) {}
 
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
    */
   ngOnInit() {
+    if (this.level) {
+      this.gridMessageService.setLevel(this.level);
+    }
+
     this.dragulaService.dropModel.subscribe((value) => {
       this.gridDataService.setInputData(this.inputData);
     });
@@ -230,6 +232,12 @@ export class GridComponent implements OnInit, OnChanges {
           this.gridDataService.pageInfo = externalData.externalInfo.page;
         }
         this.gridDataService.setInputData(externalData.data);
+      });
+    }
+
+    if (this.onAlert) {
+      this.gridMessageService.messageObservable.subscribe((message: string) => {
+        this.onAlert(message);
       });
     }
 
@@ -343,9 +351,9 @@ export class GridComponent implements OnInit, OnChanges {
 
   /* Key Events */
   onKeyDown(event: KeyboardEvent) {
-    console.log("GridComponent.onKeyDown");
+    this.gridMessageService.debug("GridComponent.onKeyDown");
     if (event.ctrlKey && event.keyCode === 67) {
-      console.log("Copy Event");
+      this.gridMessageService.debug("Copy Event");
 
       let range: Range = this.gridEventService.currentRange;
       if (range != null && !range.min.equals(range.max)) {
@@ -375,14 +383,14 @@ export class GridComponent implements OnInit, OnChanges {
       this.copypastearea.nativeElement.select();
       let paste: string = this.copypastearea.nativeElement.value;
 
-      console.log("Paste Event: " + paste);
+      this.gridMessageService.debug("Paste Event: " + paste);
 
       let range: Range = this.gridEventService.currentRange;
       if (range === null) {
-        console.warn("No cell selected to paste");
+        this.gridMessageService.warn("No cell selected to paste");
         return;
       } else if (paste === null || paste === "") {
-        console.warn("No data to paste");
+        this.gridMessageService.warn("No data to paste");
         return;
       }
 
