@@ -205,7 +205,9 @@ export class CellComponent {
   }
 
   onFocuserKeyDown(event: KeyboardEvent) {
-    this.focuser.nativeElement.blur();
+    if (this.type !== LabelCell) {
+      this.focuser.nativeElement.blur();
+    }
     this.onKeyDown(event.keyCode);
   }
 

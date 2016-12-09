@@ -3,21 +3,20 @@ import { Component } from "@angular/core";
 import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
 
 @Component({
-  selector: "edit-grid",
+  selector: "copy-paste-grid",
   template: `
     <div style="padding: 20px;">
-      <h2>Edit Grid</h2>
+      <h2>Copy Paste Demo</h2>
     </div>
     <div style="padding: 20px;">
-      <div>&lt;tab&gt; through cells</div>
-      <div>click on cells</div>
-      <div>up/down/left/right on selected cell</div>
-      <div>modify input cell values and check bound data changes</div>
+      <div>Click on a cell and ctrl-click on another to select a range of cells</div>
+      <div>Use ctrl-c to copy those cell data</div>
+      <div>Try paste into Excel</div>
     </div>
     <div style="padding: 20px;">
-      <hci-grid [title]="'Edit Grid'"
-                [inputData]="editData"
-                [columnDefinitions]="editColumns"
+      <hci-grid [title]="'Copy Paste Grid'"
+                [inputData]="copyPasteData"
+                [columnDefinitions]="copyPasteColumns"
                 [cellSelect]="true">
       </hci-grid>
     </div>
@@ -44,9 +43,9 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
     </div>
     `
 })
-export class EditGridComponent {
+export class CopyPasteGridComponent {
 
-  editData: Array<Object> = [
+  copyPasteData: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 121110000000, "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
@@ -55,7 +54,7 @@ export class EditGridComponent {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
-  editColumns: Column[] = [
+  copyPasteColumns: Column[] = [
     new Column({ field: "idPatient", name: "ID", template: LabelCell, visible: false }),
     new Column({ field: "lastName", name: "Last Name", template: InputCell }),
     new Column({ field: "firstName", name: "First Name", template: InputCell }),
