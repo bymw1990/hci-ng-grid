@@ -9,18 +9,23 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <h2>Copy Paste Demo</h2>
     </div>
     <div style="padding: 20px;">
+      <div style="margin-bottom: 10px;">
+        Cells can be selected as a 2d array and the data copied.  Columns will be delimited with a \t and rows will be
+        delimited with \n.  Similarly, pasted data will be parsed with \n and then with \t.  This is how spreadsheet tools
+        such as Excel expect data when copy/pasting multiple cells.
+      </div>
       <div style="width: 45%; display: inline-block;">
         <span style="font-size: larger; font-weight: bold;">To copy</span>
         <ul>
             <li>Click on a cell and ctrl-click on another to select a range of cells</li>
             <li>Use ctrl-c to copy those cell data</li>
-            <li>Try paste into Excel</li>
+            <li>In Excel select cell and ctrl-v</li>
         </ul>
       </div>
       <div style="width: 45%; display: inline-block;">
         <span style="font-size: larger; font-weight: bold;">To paste</span>
         <ul>
-          <li>Try copy array of cells in Excel</li>
+          <li>In Excel ctrl-c an array of cells</li>
           <li>Click on a cell and ctrl-v</li>
           <li>Look at cell data and bound data change</li>
         </ul>

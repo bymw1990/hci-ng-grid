@@ -360,9 +360,9 @@ export class GridComponent implements OnInit, OnChanges {
               }
             }
             if (i < range.max.i) {
-              copy += "\r\n";
+              copy += "\n";
             } else if (i === range.max.i && j < range.max.j) {
-              copy += "\r\n";
+              copy += "\n";
             }
           }
         }
