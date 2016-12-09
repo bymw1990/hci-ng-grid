@@ -9,6 +9,7 @@ import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
 import { GridConfiguration } from "./utils/grid-configuration";
+import { Point } from "./utils/point";
 import { Range } from "./utils/range";
 import { Row } from "./row/row";
 import { RowGroup } from "./row/row-group";
@@ -371,10 +372,49 @@ export class GridComponent implements OnInit, OnChanges {
         event.stopPropagation();
       }
     } else if (event.ctrlKey && event.keyCode === 86) {
-      console.log("Paste Event");
       this.copypastearea.nativeElement.select();
       let paste: string = this.copypastearea.nativeElement.value;
-      console.log(paste);
+
+      console.log("Paste Event: " + paste);
+
+      let range: Range = this.gridEventService.currentRange;
+      if (range === null) {
+        console.warn("No cell selected to paste");
+        return;
+      } else if (paste === null || paste === "") {
+        console.warn("No data to paste");
+        return;
+      }
+
+      let i = range.min.i;
+      let j = range.min.j;
+      let k = range.min.k;
+      let cols: string[] = null;
+
+      if (paste.endsWith("\n")) {
+        paste = paste.substr(0, paste.length - 1);
+      }
+      let rows: string[] = paste.split("\n");
+      for (var ii = 0; ii < rows.length; ii++) {
+        cols = rows[ii].split("\t");
+        for (var kk = 0; kk < cols.length; kk++) {
+          this.gridDataService.getRowGroup(i).get(j).get(k).value = cols[kk];
+          k = k + 1;
+        }
+
+        if (this.gridDataService.getRowGroup(i).get(j + 1) != null) {
+          j = j + 1;
+        } else {
+          i = i + 1;
+          j = 0;
+        }
+        k = range.min.k;
+        if (this.gridDataService.getRowGroup(i) == null) {
+          break;
+        }
+      }
+
+      this.gridDataService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
     }
   }
 

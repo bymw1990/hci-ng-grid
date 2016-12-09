@@ -12,6 +12,10 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
       <div>Click on a cell and ctrl-click on another to select a range of cells</div>
       <div>Use ctrl-c to copy those cell data</div>
       <div>Try paste into Excel</div>
+      <div></div>
+      <div>Try copy array of cells in Excel</div>
+      <div>Click on a cell and ctrl-v</div>
+      <div>Look at cell data and bound data change</div>
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Copy Paste Grid'"
@@ -32,7 +36,7 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
         <span style="width: 100px; display: inline-block;">pcg.nLabs</span>
         <span style="width: 150px; display: inline-block;">pcg.nested.nLabPath</span>
       </div>
-      <div *ngFor="let row of editData">
+      <div *ngFor="let row of copyPasteData">
         <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
         <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
         <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>

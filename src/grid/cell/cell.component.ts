@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, Eve
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
+import { Range } from "../utils/range";
 import { EventMeta } from "../utils/event-meta";
 import { GridConfigService } from "../services/grid-config.service";
 import { GridEventService } from "../services/grid-event.service";
@@ -51,6 +52,17 @@ export class CellComponent {
     this.format = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].format;
     this.isViewInitialized = true;
     this.createComponent();
+
+    this.gridDataService.cellDataUpdateObserved.subscribe((range) => {
+      if (range != null && range.contains(new Point(this.i, this.j, this.k))) {
+        if (this.componentRef.valueable) {
+          this.data = this.gridDataService.getCell(this.i, this.j, this.k);
+          this.componentRef.value = this.data.value;
+          this.gridDataService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+          this.changeDetectorRef.markForCheck();
+        }
+      }
+    });
 
     if (this.gridConfigService.gridConfiguration.cellSelect) {
       this.gridEventService.getSelecetdRangeObservable().subscribe((range) => {

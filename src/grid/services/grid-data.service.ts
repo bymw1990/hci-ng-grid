@@ -6,6 +6,7 @@ import { Cell } from "../cell/cell";
 import { Row } from "../row/row";
 import { RowGroup } from "../row/row-group";
 import { Column } from "../column/column";
+import { Range } from "../utils/range";
 import { SortInfo } from "../utils/sort-info";
 import { PageInfo } from "../utils/page-info";
 import { FilterInfo } from "../utils/filter-info";
@@ -34,9 +35,15 @@ export class GridDataService {
 
   doubleClickObserved = new Subject<Object>();
 
+  cellDataUpdateObserved = new Subject<Range>();
+
   constructor(private gridConfigService: GridConfigService) {
     this.pageInfo.page = 0;
     this.pageInfo.pageSize = this.gridConfigService.gridConfiguration.pageSize;
+  }
+
+  cellDataUpdate(range: Range) {
+    this.cellDataUpdateObserved.next(range);
   }
 
   doubleClickRow(i: number, j: number) {
