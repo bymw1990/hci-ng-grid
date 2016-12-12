@@ -100,7 +100,7 @@ import { ExternalData } from "./utils/external-data";
       </div>
       
       <!-- Content -->
-      <div style="display: inline-block; width: 100%; white-space: nowrap; overflow-x: hidden; margin-bottom: -5px; border: black 1px solid;">
+      <div style="display: inline-block; width: 100%; white-space: nowrap; overflow-x: auto; margin-bottom: -5px; border: black 1px solid;">
       
         <!-- Left (Fixed) Content -->
         <div style="vertical-align: top;"
@@ -109,16 +109,16 @@ import { ExternalData } from "./utils/external-data";
              [style.min-width]="fixedMinWidth + 'px'">
           <!-- Left Headers -->
           <div *ngIf="columnHeaders">
-          <hci-column-header class="grid-cell-header"
-                             *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
-                             [column]="column"
-                             style="height: 30px; border: black 1px solid; vertical-align: top;"
-                             [style.display]="column.visible ? 'inline-block' : 'none'"
-                             [style.height]="column.filterType === null ? '30px' : '60px'"
-                             [style.width]="column.width + '%'"
-                             [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                             [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-          </hci-column-header><br />
+            <hci-column-header class="grid-cell-header"
+                               *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
+                               [column]="column"
+                               style="height: 30px; border: black 1px solid; vertical-align: top;"
+                               [style.display]="column.visible ? 'inline-block' : 'none'"
+                               [style.height]="column.filterType === null ? '30px' : '60px'"
+                               [style.width]="column.width + '%'"
+                               [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                               [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+            </hci-column-header><br />
           </div>
           
           <!-- Left Data Rows -->
@@ -126,22 +126,22 @@ import { ExternalData } from "./utils/external-data";
         </div>
         
         <!-- Right (Main) Content -->
-        <div style="display: inline-block; overflow-x: scroll; white-space: nowrap; vertical-align: top;"
+        <div style="display: inline-block; overflow-x: auto; overflow-y: hidden; white-space: nowrap; vertical-align: top;"
              class="rightDiv"
              [style.margin-left]="nFixedColumns > 0 ? '-4px' : '0px'"
              [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
           <!-- Right Headers -->
           <div *ngIf="columnHeaders">
-          <hci-column-header class="grid-cell-header"
-                             *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
-                             [column]="column"
-                             style="height: 30px; border: black 1px solid; vertical-align: top;"
-                             [style.display]="column.visible ? 'inline-block' : 'none'"
-                             [style.height]="column.filterType === null ? '30px' : '60px'"
-                             [style.width]="column.width + '%'"
-                             [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                             [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-          </hci-column-header><br />
+            <hci-column-header class="grid-cell-header"
+                               *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
+                               [column]="column"
+                               style="height: 30px; border: black 1px solid; vertical-align: top;"
+                               [style.display]="column.visible ? 'inline-block' : 'none'"
+                               [style.height]="column.filterType === null ? '30px' : '60px'"
+                               [style.width]="column.width + '%'"
+                               [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                               [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+            </hci-column-header><br />
           </div>
           
           <!-- Right Data Rows -->
@@ -187,7 +187,7 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() fixedColumns: string[];
   @Input() gridConfiguration: GridConfiguration;
   @Input() groupBy: string[];
-  @Input() level: string;
+  @Input() level: string = null;
   @Input() onRowDoubleClick: Function;
   @Input() rowSelect: boolean = false;
   @Input() pageSize: number = 10;

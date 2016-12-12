@@ -17,8 +17,7 @@ import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } fr
         size is updated, or the next page is selected, this external function is called to retrieve the data.
     </div>
     <div style="padding: 20px;">
-      <hci-grid [title]="'External Grid'"
-                [columnDefinitions]="columns1"
+      <hci-grid [columnDefinitions]="columns1"
                 [onExternalDataCall]="onExternalDataCall1"
                 [externalFiltering]="true"
                 [externalSorting]="true"
@@ -35,8 +34,7 @@ import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } fr
         which leaves the paging to the grid.
     </div>
     <div style="padding: 20px; margin-bottom: 100px;">
-      <hci-grid [title]="'External Grid'"
-                [columnDefinitions]="columns2"
+      <hci-grid [columnDefinitions]="columns2"
                 [onExternalDataCall]="onExternalDataCall2"
                 [externalFiltering]="true"
                 [externalSorting]="true"

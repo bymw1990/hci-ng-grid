@@ -53,6 +53,7 @@ export class GridMessageService {
     } else if (level === "DEBUG") {
       this._level = DEBUG;
     }
+    console.log(this._level);
   }
 
 }

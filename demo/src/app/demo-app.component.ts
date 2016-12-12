@@ -17,18 +17,42 @@ import { Component } from "@angular/core";
       <div style="padding: 10px;">
         <h1>hci-ng2-grid-demo</h1>
       </div>
-      <div style="padding-left: 10px;">
-        <span style="font-weight: bold;">Examples: </span>
-        <a routerLink="/simple" style="padding: 20px;">Basic</a>
-        <a routerLink="/alerts" style="padding: 20px;">Alerts</a>
-        <a routerLink="/select" style="padding: 20px;">Row Select</a>
-        <a routerLink="/copypaste" style="padding: 20px;">Copy/Paste</a>
-        <a routerLink="/edit" style="padding: 20px;">Inline Edit and Key Nav</a>
-        <a routerLink="/group" style="padding: 20px;">Row Grouping</a>
-        <a routerLink="/fixed" style="padding: 20px;">Fixed Columns</a>
-        <a routerLink="/filter" style="padding: 20px;">Filtering</a>
-        <a routerLink="/dragdrop" style="padding: 20px;">Drag n Drop</a>
-        <a routerLink="/external" style="padding: 20px;">External Sort/Filter/Page</a>
+      <div style="padding-left: 10px; display: inline-block; width: 100%;">
+        <div style="width: 10%; display: inline-block; vertical-align: top;">
+            <span style="font-weight: bold;">Examples: </span>
+        </div>
+        <div style="width: 80%; display: inline-block;">
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/simple">Basic</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/alerts">Alerts</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/select">Row Select</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/copypaste">Copy/Paste</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/edit">Inline Edit and Key Nav</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/group">Row Grouping</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/fixed">Fixed Columns</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/filter">Filtering</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/dragdrop">Drag n Drop</a>
+          </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/external">External Sort/Filter/Page</a>
+          </div>
+        </div>
       </div>
     </div>
     <router-outlet></router-outlet>
