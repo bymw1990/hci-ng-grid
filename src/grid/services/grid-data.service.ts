@@ -291,7 +291,7 @@ export class GridDataService {
     if (this.gridConfigService.gridConfiguration.externalPaging) {
       this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.gridConfiguration.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, true);
+      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, this.pageInfo.pageSize !== 0);
     }
   }
 

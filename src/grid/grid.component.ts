@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { ChangeDetectionStrategy, Component, OnInit, Input, Output, ElementRef, ViewChild, EventEmitter, OnChanges, SimpleChange } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild } from "@angular/core";
 
 import { DragulaService } from "ng2-dragula/ng2-dragula";
 
@@ -108,6 +108,7 @@ import { ExternalData } from "./utils/external-data";
              [style.width]="nFixedColumns > 0 ? (nFixedColumns * 10) + '%' : '0%'"
              [style.min-width]="fixedMinWidth + 'px'">
           <!-- Left Headers -->
+          <div *ngIf="columnHeaders">
           <hci-column-header class="grid-cell-header"
                              *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
                              [column]="column"
@@ -118,6 +119,7 @@ import { ExternalData } from "./utils/external-data";
                              [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                              [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
           </hci-column-header><br />
+          </div>
           
           <!-- Left Data Rows -->
           <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row-group>
@@ -129,6 +131,7 @@ import { ExternalData } from "./utils/external-data";
              [style.margin-left]="nFixedColumns > 0 ? '-4px' : '0px'"
              [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
           <!-- Right Headers -->
+          <div *ngIf="columnHeaders">
           <hci-column-header class="grid-cell-header"
                              *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
                              [column]="column"
@@ -139,6 +142,7 @@ import { ExternalData } from "./utils/external-data";
                              [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                              [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
           </hci-column-header><br />
+          </div>
           
           <!-- Right Data Rows -->
           <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="false"></hci-row-group>
@@ -146,7 +150,8 @@ import { ExternalData } from "./utils/external-data";
       </div>
       
       <!-- Footer -->
-      <div style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
+      <div *ngIf="pageSize > 0"
+           style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
         <span style="float: left; font-weight: bold;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.nPages }}</span>
         <span style="text-align; middle;">
           <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
@@ -185,8 +190,8 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() level: string;
   @Input() onRowDoubleClick: Function;
   @Input() rowSelect: boolean = false;
+  @Input() pageSize: number = 10;
 
-  pageSize: number = 10;
   pageSizes: number[] = [ 10, 25, 50 ];
   gridData: Array<RowGroup> = new Array<RowGroup>();
   nFixedColumns: number = 0;
@@ -194,6 +199,7 @@ export class GridComponent implements OnInit, OnChanges {
   fixedMinWidth: number = 0;
   pageInfo: PageInfo;
   initialized: boolean = false;
+  columnHeaders: boolean = false;
 
   constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService, private dragulaService: DragulaService) {}
 
@@ -332,8 +338,13 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.rowSelect) {
       this.gridConfigService.gridConfiguration.rowSelect = this.rowSelect;
     }
+    if (this.pageSize) {
+      this.gridConfigService.gridConfiguration.pageSize = this.pageSize;
+    }
 
     this.gridConfigService.gridConfiguration.init();
+
+    this.columnHeaders = this.gridConfigService.gridConfiguration.columnHeaders;
 
     if (this.gridConfigService.gridConfiguration.fixedColumns != null) {
       this.nFixedColumns = this.gridConfigService.gridConfiguration.fixedColumns.length;

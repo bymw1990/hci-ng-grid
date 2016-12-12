@@ -3,6 +3,7 @@ import { RowSelectCellComponent } from "../cell/row-select-cell.component";
 
 export class GridConfiguration {
 
+  private _columnHeaders: boolean = true;
   private _rowSelect: boolean = false;
   private _cellSelect: boolean = false;
   private _keyNavigation: boolean = false;
@@ -92,7 +93,11 @@ export class GridConfiguration {
       }
     }
 
+    this._columnHeaders = false;
     for (var i = 0; i < this._columnDefinitions.length; i++) {
+      if (this._columnDefinitions[i].name !== null) {
+        this._columnHeaders = true;
+      }
       if (this._columnDefinitions[i].filterType === null && hasFilter) {
         this._columnDefinitions[i].filterType = "";
       }
@@ -203,6 +208,14 @@ export class GridConfiguration {
 
   set externalPaging(externalPaging: boolean) {
     this._externalPaging = externalPaging;
+  }
+
+  get columnHeaders(): boolean {
+    return this._columnHeaders;
+  }
+
+  set columnHeaders(columnHeaders: boolean) {
+    this._columnHeaders = columnHeaders;
   }
 
   get keyNavigation(): boolean {

@@ -2,7 +2,7 @@ export class Column {
   private _id: number;
   private _isKey: boolean = false;
   private _field: string;
-  private _name: string;
+  private _name: string = null;
   private _template: any;
   private _format: string = null;
   private _visible: boolean = true;

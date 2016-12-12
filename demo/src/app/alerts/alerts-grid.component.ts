@@ -6,7 +6,7 @@ import { Column, LabelCell } from "hci-ng2-grid/index";
   selector: "alerts-grid",
   template: `
     <div style="padding: 20px;">
-      <h2>Alert Popup</h2>
+      <span style="font-size: 28px; font-weight: bold;">Alert Popup</span>
     </div>
     <div style="padding: 20px;">
         Try copying a range of cells and pasting in the bottom right corner.  There will be a toast warning indicating

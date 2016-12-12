@@ -1,4 +1,4 @@
-# Angular 2 Grid Library
+# HCI's Angular 2 Grid Library
 
 ## Intro
     This grid is designed to be a full featured grid that can handle nearly anything that complex data tables may be expected to support.  By default, the grid is simple and basic, but becomes full featured through configuration.
