@@ -15,14 +15,14 @@
     "@angular/platform-browser-dynamic": "^2.1.0",
     "@angular/forms": "^2.1.0",
     "@angular/router": "^3.1.0",
-    "@types/jasmine": "2.2.33",
-    "@types/node": "6.0.38",
-    "@types/webpack": "1.12.34",
     "ng2-bootstrap": "^1.1.16",
     "ng2-dragula": "^1.2.1",
     "font-awesome": "^4.6.3"
   },
   "devDependencies": {
+    "@types/core-js": "^0.9.34",
+    "@types/jasmine": "^2.5.38",
+    "@types/node": "^6.0.48",
     "copy-webpack-plugin": "^3.0.1",
     "core-js": "^2.4.1",
     "css-loader": "^0.23.1",

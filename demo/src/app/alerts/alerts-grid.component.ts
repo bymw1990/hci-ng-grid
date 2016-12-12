@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 
 import { Column, LabelCell } from "hci-ng2-grid/index";
 
@@ -9,17 +9,24 @@ import { Column, LabelCell } from "hci-ng2-grid/index";
       <h2>Alert Popup</h2>
     </div>
     <div style="padding: 20px;">
-        TODO
+        Try copying a range of cells and pasting in the bottom right corner.  There will be a toast warning indicating
+        that the paste is not valid.  This type of logging of errors and warnings is how I see the messaging service being
+        used.<br />
+        Here we use a basic toast with a four second hide delay to post errors and warnings.
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Alerts Grid'"
                 [inputData]="data1"
                 [columnDefinitions]="columns1"
-                [onAlert]="onAlertCall1"
+                [level]="WARN"
+                [onAlert]="onWarningOrError"
                 [cellSelect]="true">
       </hci-grid>
-      <div>
-        {{ message1 }}
+      <div style="position: absolute; top: 0px; left: 50%; width: 50%;">
+        <div *ngFor="let message of messages"
+             style="font-weight: bold; padding: 8px; border: black 1px solid; background-color: #ffeeee; border-radius: 8px;">
+           {{ message }}
+        </div>
       </div>
     </div>
     <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
@@ -27,30 +34,33 @@ import { Column, LabelCell } from "hci-ng2-grid/index";
       <span style="font-size: 28px; font-weight: bold;">Logging Grid</span>
     </div>
     <div style="padding: 20px;">
-        The previous example had alerts filter/sort/page.  Here we have alerts filter and sort, but paging is left
-        to the grid.  So our service applies filters and sorts to the data and always returns the full remaining dataset
-        which leaves the paging to the grid.
+        Here we set the level to debug and add any new message to the top of a text area.  This won't be used in the full
+        release.  Will plan to just use the messaging service to broadcast errors and warnings.
     </div>
     <div style="padding: 20px; margin-bottom: 100px;">
       <hci-grid [title]="'Alerts Grid'"
                 [inputData]="data2"
                 [columnDefinitions]="columns2"
                 [level]="DEBUG"
-                [onAlert]="onAlertCall2">
+                [onAlert]="onDebug"
+                [cellSelect]="true">
       </hci-grid>
-      <div>
-        {{ message2 }}
+      <div style="margin-top: 20px;">
+        <span style="font-weight: bold;">Log</span>
+        <br />
+        <textarea #log style="width: 100%; height: 200px; font-size: 12px;"></textarea>
       </div>
     </div>
     `
 })
 export class AlertsGridComponent implements OnInit {
 
-  message1: string = "";
-  message2: string = "";
+  @ViewChild("log") log: any;
 
-  public onAlertCall1: Function;
-  public onAlertCall2: Function;
+  messages: Array<string> = new Array<string>();
+
+  public onWarningOrError: Function;
+  public onDebug: Function;
 
   data1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -90,17 +100,42 @@ export class AlertsGridComponent implements OnInit {
 
   ngOnInit() {
     console.log("AlertsGridComponent.ngOnInit");
-    this.onAlertCall1 = this.handleAlertCall1.bind(this);
-    this.onAlertCall2 = this.handleAlertCall2.bind(this);
+    this.onWarningOrError = this.handleWarningOrError.bind(this);
+    this.onDebug = this.handleDebug.bind(this);
   }
 
-  public handleAlertCall1(message: string): void {
-    console.log("handleAlertCall1");
-    this.message1 = message;
+  public handleWarningOrError(message: string): void {
+    this.messages.splice(0, 0, message);
+
+    this.trimMessages();
+
+    setTimeout(() => {
+      this.removeMessage(message);
+    }, 4000);
   }
 
-  public handleAlertCall2(message: string): void {
-    console.log("handleAlertCall2");
-    this.message2 = message;
+  public trimMessages() {
+    if (this.messages.length > 6) {
+      this.messages.splice(6, this.messages.length - 6);
+    }
+  }
+
+  public removeMessage(message: string) {
+    let i: number = null;
+
+    for (i = this.messages.length - 1; i >= 0; i--) {
+      if (this.messages[i] === message) {
+        break;
+      }
+    }
+    if (i === 0) {
+      this.messages = new Array<string>();
+    } else {
+      this.messages.splice(i, 1);
+    }
+  }
+
+  public handleDebug(message: string): void {
+    this.log.nativeElement.value = message + "\n" + this.log.nativeElement.value;
   }
 }

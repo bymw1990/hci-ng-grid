@@ -402,27 +402,64 @@ export class GridComponent implements OnInit, OnChanges {
       if (paste.endsWith("\n")) {
         paste = paste.substr(0, paste.length - 1);
       }
+
+      let allowPaste: boolean = true;
       let rows: string[] = paste.split("\n");
       for (var ii = 0; ii < rows.length; ii++) {
         cols = rows[ii].split("\t");
         for (var kk = 0; kk < cols.length; kk++) {
-          this.gridDataService.getRowGroup(i).get(j).get(k).value = cols[kk];
+          if (this.gridDataService.getRowGroup(i) == null) {
+            allowPaste = false;
+            break;
+          } else if (this.gridDataService.getRowGroup(i).get(j) == null) {
+            allowPaste = false;
+            break;
+          } else if (this.gridDataService.getRowGroup(i).get(j).get(k) == null) {
+            allowPaste = false;
+            break;
+          }
           k = k + 1;
         }
-
-        if (this.gridDataService.getRowGroup(i).get(j + 1) != null) {
+        if (!allowPaste) {
+          break;
+        } else if (this.gridDataService.getRowGroup(i).get(j + 1) != null) {
           j = j + 1;
         } else {
           i = i + 1;
           j = 0;
         }
         k = range.min.k;
-        if (this.gridDataService.getRowGroup(i) == null) {
+        if (this.gridDataService.getRowGroup(i) == null && ii !== rows.length - 1) {
+          allowPaste = false;
           break;
         }
       }
 
-      this.gridDataService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
+      i = range.min.i;
+      j = range.min.j;
+      k = range.min.k;
+
+      if (allowPaste) {
+        for (var ii = 0; ii < rows.length; ii++) {
+          cols = rows[ii].split("\t");
+          for (var kk = 0; kk < cols.length; kk++) {
+            this.gridDataService.getRowGroup(i).get(j).get(k).value = cols[kk];
+            k = k + 1;
+          }
+
+          if (this.gridDataService.getRowGroup(i).get(j + 1) != null) {
+            j = j + 1;
+          } else {
+            i = i + 1;
+            j = 0;
+          }
+          k = range.min.k;
+        }
+
+        this.gridDataService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
+      } else {
+        this.gridMessageService.warn("Paste went out of range");
+      }
     }
   }
 
