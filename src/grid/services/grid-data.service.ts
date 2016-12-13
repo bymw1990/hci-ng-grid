@@ -249,11 +249,11 @@ export class GridDataService {
       this.pageInfo.pageSize = 25;
     }
 
-    if (this.columnDefinitions === null && this.inputData.length > 0) {
+    if (this.gridConfigService.gridConfiguration.columnDefinitions === null && this.inputData.length > 0) {
       this.columnDefinitions = new Array<Column>();
       let keys: Array<string> = Object.keys(this.inputData[0]);
       for (var i = 0; i < keys.length; i++) {
-        this.columnDefinitions.push(new Column({ "field": keys[i], "template": LabelCell }));
+        this.columnDefinitions.push(new Column({ field: keys[i], template: LabelCell }));
         this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
       }
       return true;

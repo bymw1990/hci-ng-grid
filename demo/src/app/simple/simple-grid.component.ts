@@ -30,7 +30,7 @@ import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
       <h2>Even More Simple Grid</h2>
     </div>
     <div style="padding: 20px;">
-      Here the only thing passed in is the data.  Visible data columns are created automatically based on every key
+      Here the only thing passed in is the data.  Visible label columns are created automatically based on every key
       in the object.
     </div>
     <div style="padding: 20px;">
