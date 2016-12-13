@@ -178,7 +178,7 @@ export class GridComponent implements OnInit, OnChanges {
 
   // Grid Configuration
   @Input() cellSelect: boolean = false;
-  @Input() columnDefinitions: Column[];
+  @Input() columnDefinitions: Column[] = null;
   @Input() onAlert: Function;
   @Input() onExternalDataCall: Function;
   @Input() externalFiltering: boolean = false;
@@ -190,9 +190,9 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() level: string = null;
   @Input() onRowDoubleClick: Function;
   @Input() rowSelect: boolean = false;
-  @Input() pageSize: number = 10;
+  @Input() pageSize: number = -1;
+  @Input() pageSizes: number[] = [ 10, 25, 50 ];
 
-  pageSizes: number[] = [ 10, 25, 50 ];
   gridData: Array<RowGroup> = new Array<RowGroup>();
   nFixedColumns: number = 0;
   nColumns: number = 0;
@@ -230,7 +230,6 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.onExternalDataCall) {
       this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
         let externalData: ExternalData = this.onExternalDataCall(externalInfo);
-        console.log("Return externalData");
 
         if (externalData.externalInfo === null) {
           this.gridDataService.pageInfo.nPages = 1;
@@ -270,7 +269,11 @@ export class GridComponent implements OnInit, OnChanges {
       this.gridDataService.pageInfo = externalData.externalInfo.page;
       this.gridDataService.setInputData(externalData.data);
     } else if (this.inputData) {
-      this.gridDataService.setInputData(this.inputData);
+      if (this.gridDataService.setInputData(this.inputData)) {
+        this.gridConfigService.gridConfiguration.init();
+        this.postinitGridConfiguration();
+      }
+      this.gridDataService.setInputDataInit();
     }
 
     this.initialized = true;
@@ -280,6 +283,7 @@ export class GridComponent implements OnInit, OnChanges {
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
     if (this.initialized && changes["inputData"]) {
       this.gridDataService.setInputData(this.inputData);
+      this.gridDataService.setInputDataInit();
     }
   }
 
@@ -314,8 +318,6 @@ export class GridComponent implements OnInit, OnChanges {
         }
       }
       this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
-    } else {
-      //console.log("columnDefinitions Required");
     }
     if (this.cellSelect) {
       this.gridConfigService.gridConfiguration.cellSelect = this.cellSelect;
@@ -340,22 +342,28 @@ export class GridComponent implements OnInit, OnChanges {
     }
     if (this.pageSize) {
       this.gridConfigService.gridConfiguration.pageSize = this.pageSize;
+      this.gridDataService.pageInfo.pageSize = this.pageSize;
     }
 
     this.gridConfigService.gridConfiguration.init();
+    this.postinitGridConfiguration();
+  }
 
-    this.columnHeaders = this.gridConfigService.gridConfiguration.columnHeaders;
+  postinitGridConfiguration() {
+    if (this.gridConfigService.gridConfiguration.columnDefinitions !== null) {
+      this.columnHeaders = this.gridConfigService.gridConfiguration.columnHeaders;
 
-    if (this.gridConfigService.gridConfiguration.fixedColumns != null) {
-      this.nFixedColumns = this.gridConfigService.gridConfiguration.fixedColumns.length;
-    }
-    this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
-    this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
-    this.gridEventService.setNColumns(this.nColumns);
-    this.fixedMinWidth = 0;
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].isFixed) {
-        this.fixedMinWidth = this.fixedMinWidth + this.columnDefinitions[i].minWidth;
+      if (this.gridConfigService.gridConfiguration.fixedColumns != null) {
+        this.nFixedColumns = this.gridConfigService.gridConfiguration.fixedColumns.length;
+      }
+      this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
+      this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
+      this.gridEventService.setNColumns(this.nColumns);
+      this.fixedMinWidth = 0;
+      for (var i = 0; i < this.columnDefinitions.length; i++) {
+        if (this.columnDefinitions[i].isFixed) {
+          this.fixedMinWidth = this.fixedMinWidth + this.columnDefinitions[i].minWidth;
+        }
       }
     }
   }

@@ -7,6 +7,7 @@ import { ExternalData, ExternalInfo } from "hci-ng2-grid/index";
 @Injectable()
 export class DataGeneratorService {
   filteredData: Array<Object> = new Array<Object>();
+  pagingData: Array<Object> = new Array<Object>();
   fixedData: Array<Object> = new Array<Object>();
   externalData1: Array<Object> = new Array<Object>();
   externalData2: Array<Object> = new Array<Object>();
@@ -61,6 +62,27 @@ export class DataGeneratorService {
   getFilteredData(filters: string[], sort: string, asc: boolean): Array<Object> {
     console.log("getFilteredData " + this.filteredData.length);
     return this.filteredData;
+  }
+
+  generatePagingData(size: number) {
+    this.pagingData = new Array<Object>();
+    for (var i = 0; i < size; i++) {
+      let j: number = Math.floor(Math.random() * this._firstNames.length);
+      let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let firstName: string = this._firstNames[j];
+      let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
+      let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
+      let addy: number = Math.floor(Math.random() * 9800 + 100);
+      let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
+      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+
+      this.pagingData.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
+    }
+  }
+
+  getPagingData(filters: string[], sort: string, asc: boolean): Array<Object> {
+    console.log("getPagingData " + this.pagingData.length);
+    return this.pagingData;
   }
 
   generateExternalData1(size: number) {

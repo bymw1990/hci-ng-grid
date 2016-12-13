@@ -22,6 +22,7 @@ import { DragDropGridComponent } from "./dragdrop/dragdrop-grid.component";
 import { ExternalGridComponent } from "./external/external-grid.component";
 import { CopyPasteGridComponent } from "./copypaste/copypaste-grid.component";
 import { AlertsGridComponent } from "./alerts/alerts-grid.component";
+import { PagingGridComponent } from "./paging/paging-grid.component";
 
 import { SimpleGridModule } from "./simple/simple-grid.module";
 import { SelectGridModule } from "./select/select-grid.module";
@@ -33,12 +34,13 @@ import { DragDropGridModule } from "./dragdrop/dragdrop-grid.module";
 import { ExternalGridModule } from "./external/external-grid.module";
 import { CopyPasteGridModule } from "./copypaste/copypaste-grid.module";
 import { AlertsGridModule } from "./alerts/alerts-grid.module";
+import { PagingGridModule } from "./paging/paging-grid.module";
 
 import { GridModule } from "hci-ng2-grid/index";
 
 @NgModule({
-  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, CopyPasteGridModule, AlertsGridModule, GridModule ],
-  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, CopyPasteGridComponent, AlertsGridComponent, DragulaDirective ],
+  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, CopyPasteGridModule, AlertsGridModule, PagingGridModule, GridModule ],
+  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, CopyPasteGridComponent, AlertsGridComponent, PagingGridComponent, DragulaDirective ],
   providers: [ DataGeneratorService, DragulaService ],
   bootstrap: [ DemoAppComponent ]
 })

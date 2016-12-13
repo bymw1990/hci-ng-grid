@@ -8,16 +8,19 @@ export class GridConfiguration {
   private _cellSelect: boolean = false;
   private _keyNavigation: boolean = false;
   private _nUtilityColumns: number = 0;
-  private _columnDefinitions: Column[];
+  private _columnDefinitions: Column[] = null;
   private _fixedColumns: string[] = null;
   private _groupBy: string[] = null;
   private _externalFiltering: boolean = false;
   private _externalSorting: boolean = false;
   private _externalPaging: boolean = false;
-  private _pageSize: number = 10;
+  private _pageSize: number = -1;
   private _pageSizes: number[] = [ 10, 25, 50 ];
 
   init() {
+    if (this._columnDefinitions === null) {
+      return;
+    }
     this.initColumnDefinitions();
     this.sortColumnDefinitions();
 

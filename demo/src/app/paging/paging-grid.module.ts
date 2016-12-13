@@ -4,14 +4,14 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { FilterGridComponent } from "./filter-grid.component";
+import { PagingGridComponent } from "./paging-grid.component";
 
 const routes: Routes = [
-  { path: "filter", component: FilterGridComponent }
+    { path: "paging", component: PagingGridComponent }
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ]
+    imports: [ RouterModule.forRoot(routes) ],
+    exports: [ RouterModule ]
 })
-export class FilterGridModule {}
+export class PagingGridModule {}

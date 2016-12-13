@@ -3,6 +3,7 @@ import { Subject } from "rxjs/Rx";
 
 import { GridConfigService } from "./grid-config.service";
 import { Cell } from "../cell/cell";
+import { LabelCell } from "../cell/label-cell.component";
 import { Row } from "../row/row";
 import { RowGroup } from "../row/row-group";
 import { Column } from "../column/column";
@@ -21,7 +22,8 @@ export class GridDataService {
   gridData: Array<RowGroup>;
   data = new Subject<Array<RowGroup>>();
 
-  columnDefinitions: Column[];
+  columnDefinitions: Column[] = null;
+  refreshGridInit: boolean = false;
 
   filterInfo: Array<FilterInfo> = new Array<FilterInfo>();
 
@@ -32,9 +34,7 @@ export class GridDataService {
   pageInfoObserved = new Subject<PageInfo>();
 
   externalInfoObserved = new Subject<ExternalInfo>();
-
   doubleClickObserved = new Subject<Object>();
-
   cellDataUpdateObserved = new Subject<Range>();
 
   constructor(private gridConfigService: GridConfigService) {
@@ -171,7 +171,7 @@ export class GridDataService {
     let END: number = this.preparedData.length;
     this.pageInfo.nDataSize = this.preparedData.length;
 
-    if (paginate) {
+    if (paginate && this.pageInfo.pageSize > 0) {
       START = this.pageInfo.page * this.pageInfo.pageSize;
       END = Math.min(START + this.pageInfo.pageSize, this.pageInfo.nDataSize);
       this.pageInfo.nPages = Math.ceil(this.pageInfo.nDataSize / this.pageInfo.pageSize);
@@ -241,9 +241,28 @@ export class GridDataService {
     }
   }
 
-  setInputData(inputData: Array<Object>) {
+  setInputData(inputData: Array<Object>): boolean {
     console.log("setInputData");
     this.inputData = inputData;
+
+    if (this.pageInfo.pageSize === -1 && this.inputData.length > 100) {
+      this.pageInfo.pageSize = 25;
+    }
+
+    if (this.columnDefinitions === null && this.inputData.length > 0) {
+      this.columnDefinitions = new Array<Column>();
+      let keys: Array<string> = Object.keys(this.inputData[0]);
+      for (var i = 0; i < keys.length; i++) {
+        this.columnDefinitions.push(new Column({ "field": keys[i], "template": LabelCell }));
+        this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  setInputDataInit() {
     this.initData(true, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, !this.gridConfigService.gridConfiguration.externalPaging);
   }
 
@@ -291,7 +310,7 @@ export class GridDataService {
     if (this.gridConfigService.gridConfiguration.externalPaging) {
       this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.gridConfiguration.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, this.pageInfo.pageSize !== 0);
+      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, this.pageInfo.pageSize > 0);
     }
   }
 

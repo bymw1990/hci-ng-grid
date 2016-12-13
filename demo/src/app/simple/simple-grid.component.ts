@@ -15,12 +15,26 @@ import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
       </hci-grid>
     </div>
     <div style="padding: 20px;">
-      <h2>Even More Simple Grid</h2>
+      <h2>More Simple Grid</h2>
+    </div>
+    <div style="padding: 20px;">
+      Here we pass the data array and column definitions.  The column definitions specify the complex data path and the
+      template type and that is all.  There is no filtering, header, sorting or paging.
     </div>
     <div style="padding: 20px;">
       <hci-grid [inputData]="simpleData2"
-                [columnDefinitions]="simpleColumns2"
-                [pageSize]="0">
+                [columnDefinitions]="simpleColumns2">
+      </hci-grid>
+    </div>
+    <div style="padding: 20px;">
+      <h2>Even More Simple Grid</h2>
+    </div>
+    <div style="padding: 20px;">
+      Here the only thing passed in is the data.  Visible data columns are created automatically based on every key
+      in the object.
+    </div>
+    <div style="padding: 20px;">
+      <hci-grid [inputData]="simpleData3">
       </hci-grid>
     </div>
     `
@@ -60,6 +74,15 @@ export class SimpleGridComponent {
     new Column({ field: "dob", template: DateCell }),
     new Column({ field: "pcg.nLabs", template: LabelCell }),
     new Column({ field: "pcg.nested.nLabPath", template: LabelCell })
+  ];
+
+  simpleData3: Array<Object> = [
+    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith" },
+    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe" },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James" },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James"},
+    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth" },
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne" }
   ];
 
 }
