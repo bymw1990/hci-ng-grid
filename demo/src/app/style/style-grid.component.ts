@@ -44,7 +44,7 @@ import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
   `,
     styles: [ `
     .grid1 .hci-grid-row-even {
-      background-color: #eeeeee;
+      background-color: #eeffee;
     }
     .grid1 .hci-grid-row-odd {
       background-color: #eeeeff;
