@@ -55,6 +55,9 @@ import { Component } from "@angular/core";
           <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
             <a routerLink="/external">External Sort/Filter/Page</a>
           </div>
+          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
+            <a routerLink="/style">Custom Styling</a>
+          </div>
         </div>
       </div>
     </div>

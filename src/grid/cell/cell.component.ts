@@ -19,11 +19,15 @@ import { LabelCell } from "./label-cell.component";
   selector: "hci-cell",
   template: `
     <input #focuser style="position: absolute; left: -1000px;" (focus)="onFocuser();" (keydown)="onFocuserKeyDown($event)" />
-    <span (click)="cellClick($event)">
+    <div (click)="cellClick($event)"
+         class="hci-grid-cell-parent">
       <span #template style="display: none;"></span>
-    </span>
+    </div>
   `,
   styles: [ `
+    .hci-grid-cell-parent {
+      height: 100%;
+    }
     .hci-grid-cell-template {
       display: inline-block;
       width: 100%;

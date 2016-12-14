@@ -21,7 +21,7 @@ import { Column, LabelCell } from "hci-ng2-grid/index";
                 [onAlert]="onWarningOrError"
                 [cellSelect]="true">
       </hci-grid>
-      <div style="position: absolute; top: 0px; left: 50%; width: 50%;">
+      <div style="position: fixed; top: 0px; left: 50%; width: 50%;">
         <div *ngFor="let message of messages"
              style="font-weight: bold; padding: 8px; border: black 1px solid; background-color: #ffeeee; border-radius: 8px;">
            {{ message }}
