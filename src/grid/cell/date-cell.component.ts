@@ -1,6 +1,5 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
+import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/core";
 
-import { CELL_CSS } from "./cell-template.component";
 import { CellTemplate } from "./cell-template.component";
 
 /**
@@ -9,15 +8,25 @@ import { CellTemplate } from "./cell-template.component";
  */
 @Component({
   selector: "hci-grid-cell-date",
-  styles: [ CELL_CSS, `
-    .date-cell {
+  template: `
+    <div (keydown)="onDateKeyDown($event);" class="hci-grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [class.focused]="focused">
+      <button #datepickerbutton id="single-button" type="button" class="hci-cell-datebutton" dropdownToggle [disabled]="disabled" (click)="onClick($event)">
+        {{ value | date }}
+      </button>
+      <div #datepickerParent dropdownMenu role="menu" role="menu" aria-labelledby="single-button" class="negate-dropdown-menu">
+        <datepicker [ngModel]="value" (ngModelChange)="onModelChange($event);" class="hci-cell-datepicker"></datepicker>
+      </div>
+    </div>
+  `,
+  styles: [ `
+    .hci-cell-datebutton {
       width: 100%;
       height: 100%;
       background-color: transparent;
       border: none;
       text-align: left;
     }
-    .grid-cell-date {
+    .hci-cell-datepicker {
       background-color: transparent;
       padding-left: 8px;
       position: fixed;
@@ -31,16 +40,7 @@ import { CellTemplate } from "./cell-template.component";
       border: none;
     }
   ` ],
-  template: `
-    <div (keydown)="onDateKeyDown($event);" class="grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [class.focused]="focused">
-      <button #datepickerbutton id="single-button" type="button" class="date-cell" dropdownToggle [disabled]="disabled" (click)="onClick($event)">
-        {{ value | date }}
-      </button>
-      <div #datepickerParent dropdownMenu role="menu" role="menu" aria-labelledby="single-button" class="negate-dropdown-menu">
-        <datepicker [ngModel]="value" (ngModelChange)="onModelChange($event);" class="grid-cell-date"></datepicker>
-      </div>
-    </div>
-  `
+  encapsulation: ViewEncapsulation.None,
 })
 export class DateCell extends CellTemplate {
 

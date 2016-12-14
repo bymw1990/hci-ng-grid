@@ -1,21 +1,21 @@
-import { Component } from "@angular/core";
+import { Component, ViewEncapsulation } from "@angular/core";
 
-import { CELL_CSS } from "./cell-template.component";
 import { CellTemplate } from "./cell-template.component";
 
 @Component({
   selector: "hci-grid-cell-group-expand-collapse",
-  styles: [ CELL_CSS, `
-    .gce-cell {
+  styles: [ `
+    .hci-cell-gce {
       height: 100%;
       padding-top: 3px;
     }
   `],
   template: `
-    <span *ngIf="render" class="grid-cell-template gce-cell" [ngClass]="{ 'focused': focused }">
+    <span *ngIf="render" class="hci-grid-cell-template hci-cell-gce" [ngClass]="{ 'focused': focused }">
       +/-
     </span>
-  `
+  `,
+  encapsulation: ViewEncapsulation.None,
 })
 export class GroupCollapseExpandCell extends CellTemplate {
 
@@ -23,7 +23,4 @@ export class GroupCollapseExpandCell extends CellTemplate {
   activeOnRowHeader: boolean = true;
   valueable: boolean = false;
 
-  ngOnInit() {
-    console.log("GroupCollapseExpandCell.ngOnInit");
-  }
 }

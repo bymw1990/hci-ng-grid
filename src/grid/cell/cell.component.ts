@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from "@angular/core";
+import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, Output, ViewChild, ViewContainerRef, ViewEncapsulation } from "@angular/core";
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
@@ -11,7 +11,7 @@ import { CellTemplate } from "./cell-template.component";
 import { LabelCell } from "./label-cell.component";
 
 /**
- * A Cell represents an i and j position in a grid.  This component binds the grid data for that position.  Rendering of
+ * A Cell represents an i, j, and k position in a grid.  This component binds the grid data for that position.  Rendering of
  * the data is left to a dynamically generated template which extends the CellTemplate class.  By default the DefaultCell
  * class is used which simply renders the value in a span.
  */
@@ -19,8 +19,26 @@ import { LabelCell } from "./label-cell.component";
   selector: "hci-cell",
   template: `
     <input #focuser style="position: absolute; left: -1000px;" (focus)="onFocuser();" (keydown)="onFocuserKeyDown($event)" />
-    <span (click)="cellClick($event)"><span #template style="display: none;"></span></span>
-  `
+    <span (click)="cellClick($event)">
+      <span #template style="display: none;"></span>
+    </span>
+  `,
+  styles: [ `
+    .hci-grid-cell-template {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      padding-left: 8px;
+    }
+    .hci-grid-cell-template.selected {
+      background-color: #ffff99;
+    }
+    .hci-grid-cell-template.focused {
+      background-color: #ccddff;
+    }
+  ` ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CellComponent {
 

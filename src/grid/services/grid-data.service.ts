@@ -245,8 +245,8 @@ export class GridDataService {
     console.log("setInputData");
     this.inputData = inputData;
 
-    if (this.pageInfo.pageSize === -1 && this.inputData.length > 100) {
-      this.pageInfo.pageSize = 25;
+    if (this.pageInfo.pageSize === -1 && this.inputData.length > 50) {
+      this.pageInfo.pageSize = 10;
     }
 
     if (this.gridConfigService.gridConfiguration.columnDefinitions === null && this.inputData.length > 0) {

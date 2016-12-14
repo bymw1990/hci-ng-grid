@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
 
 import { Column } from "../column/column";
 import { GridConfigService } from "../services/grid-config.service";
@@ -12,7 +12,9 @@ import { GridDataService } from "../services/grid-data.service";
               [i]="i"
               [j]="j"
               [k]="column.id"
-              style="height: 30px; border: black 1px solid; vertical-align: top;"
+              class="hci-grid-cell hci-grid-row-height"
+              [class.hci-grid-row-odd]="i % 2 === 1"
+              [class.hci-grid-row-even]="i % 2 === 0"
               [style.display]="column.visible ? 'inline-block' : 'none'"
               [style.width]="column.width + '%'"
               [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
@@ -20,6 +22,19 @@ import { GridDataService } from "../services/grid-data.service";
     </hci-cell>
     <br />
   `,
+  styles: [ `
+    .hci-grid-row-odd {
+      background-color: transparent;
+    }
+    .hci-grid-row-even {
+      background-color: #eeeeee;
+    }
+    .hci-grid-cell {
+      border: black 1px solid;
+      vertical-align: top;
+    }
+  ` ],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RowComponent {

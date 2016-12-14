@@ -2,22 +2,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { EventMeta } from "../utils/event-meta";
 
-export const CELL_CSS = `
-  .grid-cell-template {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    padding-left: 8px;
-  }
-  .grid-cell-template.selected {
-    background-color: #ffff99;
-  }
-  .grid-cell-template.focused {
-    background-color: #ccddff;
-  }
-`;
-
 @Component({
   selector: "hci-cell-template-abstract"
 })

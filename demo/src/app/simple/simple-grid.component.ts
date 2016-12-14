@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewEncapsulation } from "@angular/core";
 
 import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
 
@@ -34,10 +34,16 @@ import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
       in the object.
     </div>
     <div style="padding: 20px;">
-      <hci-grid [inputData]="simpleData3">
+      <hci-grid [inputData]="simpleData3" class="yellow-grid">
       </hci-grid>
     </div>
-    `
+  `,
+  styles: [ `
+    .yellow-grid .hci-cell-label {
+      background-color: yellow;
+    }
+  ` ],
+  encapsulation: ViewEncapsulation.None
 })
 export class SimpleGridComponent {
 

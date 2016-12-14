@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { DragulaService } from "ng2-dragula/ng2-dragula";
 
@@ -37,65 +37,12 @@ import { ExternalData } from "./utils/external-data";
 @Component({
   selector: "hci-grid",
   providers: [ GridDataService, GridEventService, GridConfigService, GridMessageService ],
-  styles: [ `
-    .grid-header {
-      background-color: transparent;
-      color: black;
-      padding: 10px;
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
-      border: black 1px solid;
-      font-weight: bold;
-      font-size: large;
-    }
-    .grid-header-button {
-      float: right;
-      margin-top: -5px;
-    }
-    .grid-cell {
-      display: inline-block;
-      border: black 1px solid;
-      height: 40px;
-      vertical-align: top;
-    }
-    .grid-cell-template {
-      width: 100%;
-      padding: 5px;
-      background-color: transparent;
-      display: inline-block;
-    }
-    .grid-cell-edit {
-      display: inline-block;
-    }
-    .grid-cell-header {
-      display: inline-block;
-      padding: 5px;
-      border: black 1px solid;
-      font-weight: bold;
-      background-color: transparent;
-      color: black;
-    }
-    .grid-cell-header-first {
-      border-top-left-radius: 0px;
-    }
-    .grid-cell-header-last {
-      border-top-right-radius: 0px;
-    }
-    .grid-input {
-      width: 100%;
-    }
-    .grid-cell-fill {
-      width: 100%;
-      height: 100%;
-      background-color: transparent;
-    }
-  ` ],
   template: `
     <div (keydown)="onKeyDown($event);">
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="title !== null" class="grid-header">
+      <div *ngIf="title !== null" class="hci-grid-header">
         <span>{{ title }}</span>
       </div>
       
@@ -109,10 +56,9 @@ import { ExternalData } from "./utils/external-data";
              [style.min-width]="fixedMinWidth + 'px'">
           <!-- Left Headers -->
           <div *ngIf="columnHeaders">
-            <hci-column-header class="grid-cell-header"
+            <hci-column-header class="hci-grid-column-header hci-grid-row-height"
                                *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
                                [column]="column"
-                               style="height: 30px; border: black 1px solid; vertical-align: top;"
                                [style.display]="column.visible ? 'inline-block' : 'none'"
                                [style.height]="column.filterType === null ? '30px' : '60px'"
                                [style.width]="column.width + '%'"
@@ -132,12 +78,12 @@ import { ExternalData } from "./utils/external-data";
              [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
           <!-- Right Headers -->
           <div *ngIf="columnHeaders">
-            <hci-column-header class="grid-cell-header"
-                               *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
+            <hci-column-header *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
                                [column]="column"
-                               style="height: 30px; border: black 1px solid; vertical-align: top;"
+                               class="hci-grid-column-header hci-grid-row-height"
+                               [class.hci-grid-row-height]="column.filterType === null"
+                               [class.hci-grid-row-height-filter]="column.filterType !== null"
                                [style.display]="column.visible ? 'inline-block' : 'none'"
-                               [style.height]="column.filterType === null ? '30px' : '60px'"
                                [style.width]="column.width + '%'"
                                [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
@@ -167,6 +113,34 @@ import { ExternalData } from "./utils/external-data";
       </div>
     </div>
   `,
+  styles: [ `
+    .hci-grid-header {
+      background-color: transparent;
+      color: black;
+      padding: 10px;
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      border: black 1px solid;
+      font-weight: bold;
+      font-size: large;
+    }
+    .hci-grid-column-header {
+      display: inline-block;
+      padding: 5px;
+      border: black 1px solid;
+      font-weight: bold;
+      background-color: transparent;
+      color: black;
+      vertical-align: top;
+    }
+    .hci-grid-row-height {
+      height: 30px;
+    }
+    .hci-grid-row-height-filter {
+      height: 60px;
+    }
+  ` ],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent implements OnInit, OnChanges {
@@ -237,6 +211,9 @@ export class GridComponent implements OnInit, OnChanges {
           this.gridDataService.pageInfo = externalData.externalInfo.page;
         }
         this.gridDataService.setInputData(externalData.data);
+
+        this.pageInfo = this.gridDataService.pageInfo;
+        this.pageSize = this.gridDataService.pageInfo.pageSize;
       });
     }
 
@@ -275,6 +252,9 @@ export class GridComponent implements OnInit, OnChanges {
       }
       this.gridDataService.setInputDataInit();
     }
+
+    this.pageInfo = this.gridDataService.pageInfo;
+    this.pageSize = this.gridDataService.pageInfo.pageSize;
 
     this.initialized = true;
     this.gridEventService.setSelectedLocation(null, null);

@@ -1,18 +1,24 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/core";
 
-import { CELL_CSS } from "./cell-template.component";
 import { CellTemplate } from "./cell-template.component";
 
 @Component({
   selector: "hci-grid-cell-input",
-  styles: [ CELL_CSS, `
-    .input-cell {
+  styles: [ `
+    .hci-grid-cell-input {
       border: none;
     }
   ` ],
   template: `
-    <input #input [ngModel]="value" (ngModelChange)="onModelChange($event);" (click)="onClick($event)" (keydown)="onInputKeyDown($event);" class="grid-cell-template input-cell" [ngClass]="{ 'focused': focused }" />
-  `
+    <input #input
+           [ngModel]="value"
+           (ngModelChange)="onModelChange($event);"
+           (click)="onClick($event)"
+           (keydown)="onInputKeyDown($event);"
+           class="hci-grid-cell-template hci-grid-cell-input"
+           [ngClass]="{ 'focused': focused }" />
+  `,
+  encapsulation: ViewEncapsulation.None,
 })
 export class InputCell extends CellTemplate {
 

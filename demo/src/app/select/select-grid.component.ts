@@ -25,10 +25,12 @@ import { Column, LabelCell } from "hci-ng2-grid/index";
     <div style="padding: 20px; margin-bottom: 100px;">
       <hci-grid [inputData]="data2"
                 [columnDefinitions]="columns2"
-                [rowSelect]="true">
+                [rowSelect]="true"
+                [cellSelect]="true"
+                class="WHAT">
       </hci-grid>
     </div>
-    `
+  `
 })
 export class SelectGridComponent {
 

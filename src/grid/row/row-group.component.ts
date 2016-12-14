@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
 
 import { RowGroup } from "./row-group";
 import { GridConfigService } from "../services/grid-config.service";
@@ -18,17 +18,32 @@ const EXPANDED: number = 2;
   template: `
     <div *ngIf="rowGroup.header !== null"
          (click)="rowHeaderClick()"
-         class="hci-row header"
-         style="padding-top: 3px; border: black 1px solid; width: 100%;">
-      <span style="padding-left: 10px;"><i class="fa fa-minus"></i></span><span *ngFor="let cell of rowGroup.header.cells" style="padding-left: 10px;">{{cell.value}}</span>
+         class="hci-grid-row-group-header">
+      <span style="padding-left: 10px;">
+        <i class="fa fa-minus"></i>
+      </span>
+      <span *ngFor="let cell of rowGroup.header.cells"
+            class="hci-grid-row-group-column-header">
+        {{cell.value}}
+      </span>
     </div>
-    <!--<br *ngIf="rowGroup.header !== null" />-->
     <hci-row *ngFor="let row of rowGroup.rows; let j = index"
              [i]="i"
              [j]="j"
              [fixed]="fixed">
     </hci-row>
   `,
+  styles: [ `
+    .hci-grid-row-group-header {
+      padding-top: 3px;
+      border: black 1px solid;
+      width: 100%;
+    }
+    .hci-grid-row-group-column-header {
+      padding-left: 10px;
+    }
+  ` ],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RowGroupComponent {
