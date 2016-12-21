@@ -39,7 +39,6 @@ export class DataGeneratorService {
   }
 
   getFixedData(filters: string[], sort: string, asc: boolean): Array<Object> {
-    console.log("getFixedData");
     return this.fixedData;
   }
 
@@ -60,7 +59,6 @@ export class DataGeneratorService {
   }
 
   getFilteredData(filters: string[], sort: string, asc: boolean): Array<Object> {
-    console.log("getFilteredData " + this.filteredData.length);
     return this.filteredData;
   }
 
@@ -81,13 +79,10 @@ export class DataGeneratorService {
   }
 
   getPagingData(filters: string[], sort: string, asc: boolean): Array<Object> {
-    console.log("getPagingData " + this.pagingData.length);
     return this.pagingData;
   }
 
   generateExternalData1(size: number) {
-    console.log("generateExternalData1");
-
     this.externalData1 = new Array<Object>();
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
@@ -112,7 +107,6 @@ export class DataGeneratorService {
    * @returns {ExternalData}
    */
   getExternalData1(externalInfo: ExternalInfo): ExternalData {
-    console.log("getExternalData");
     let returnData: ExternalData = new ExternalData(this.externalData1, externalInfo);
 
     if (externalInfo === null) {
@@ -188,8 +182,6 @@ export class DataGeneratorService {
   }
 
   generateExternalData2(size: number) {
-    console.log("generateExternalData1");
-
     this.externalData2 = new Array<Object>();
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
@@ -214,7 +206,6 @@ export class DataGeneratorService {
    * @returns {ExternalData}
    */
   getExternalData2(externalInfo: ExternalInfo): ExternalData {
-    console.log("getExternalData");
     let returnData: ExternalData = new ExternalData(this.externalData2, externalInfo);
 
     if (externalInfo === null) {

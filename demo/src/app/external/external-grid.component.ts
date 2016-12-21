@@ -73,7 +73,6 @@ export class ExternalGridComponent implements OnInit {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    console.log("ExternalGridComponent.ngOnInit");
     this.onExternalDataCall1 = this.handleExternalDataCall1.bind(this);
     this.dataGeneratorService.generateExternalData1(this.dataSize);
     this.onExternalDataCall2 = this.handleExternalDataCall2.bind(this);
@@ -81,14 +80,10 @@ export class ExternalGridComponent implements OnInit {
   }
 
   public handleExternalDataCall1(externalInfo: ExternalInfo): ExternalData {
-    console.log("dataCall");
-    console.log(externalInfo);
     return this.dataGeneratorService.getExternalData1(externalInfo);
   }
 
   public handleExternalDataCall2(externalInfo: ExternalInfo): ExternalData {
-    console.log("dataCall");
-    console.log(externalInfo);
     return this.dataGeneratorService.getExternalData2(externalInfo);
   }
 }

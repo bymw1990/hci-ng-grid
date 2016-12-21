@@ -25,21 +25,17 @@ export class CellTemplate {
   @Output() clickEvent: EventEmitter<Object> = new EventEmitter<Object>();
 
   onModelChange(value: Object) {
-    console.log("InputCell.onKeyDown");
-
     this.value = value;
     this.valueChange.emit(value);
   }
 
   onClick(event: MouseEvent) {
-    console.log("CellTemplate.onClick");
     event.stopPropagation();
     event.preventDefault();
     this.clickEvent.emit(new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
   }
 
   onKeyDown(event: KeyboardEvent) {
-    console.log("CellTemplate.onKeyDown");
     if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
       this.keyEvent.emit(event.keyCode);
     } else if (event.keyCode === 9) {

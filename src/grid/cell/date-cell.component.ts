@@ -68,8 +68,6 @@ export class DateCell extends CellTemplate {
    * @param value
    */
   onModelChange(value: Object) {
-    console.log("DateCell.onKeyDown");
-
     if (value instanceof Date) {
       var ms: number = value.getTime();
       this.value = ms;
@@ -90,12 +88,10 @@ export class DateCell extends CellTemplate {
   }
 
   focus() {
-    console.log("DateCell.focus");
     this.status.isopen = !this.status.isopen;
   }
 
   onDateKeyDown(event: KeyboardEvent) {
-    console.log("DateCell.onDateKeyDown");
     if (event.keyCode === 9 || event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
       this.datepickerbutton.nativeElement.blur();
       this.onKeyDown(event);

@@ -86,7 +86,6 @@ export class GridDataService {
    * TODO: Make filter case insensitive.
    */
   filterPreparedData() {
-    console.log("filterPreparedData");
     let filteredData: Array<Row> = new Array<Row>();
 
     for (var i = 0; i < this.preparedData.length; i++) {
@@ -135,7 +134,6 @@ export class GridDataService {
   }
 
   handleValueChange(i: number, j: number, key: number, k: number, value: any) {
-    console.log("GridDataService.handleValueChange: " + key + ":" + k + ":" + value);
     if (j === -1) {
       for (var n = 0; n < this.gridData[i].length(); n++) {
         this.setInputDataValue(this.gridData[i].get(n).key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
@@ -151,7 +149,6 @@ export class GridDataService {
    * @param inputData
    */
   initData(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
-    console.log("initData");
     this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
     if (this.inputData === null) {
       return;
@@ -222,7 +219,6 @@ export class GridDataService {
   }
 
   prepareData() {
-    console.log("prepareData");
     this.preparedData = new Array<any>();
     let columnDefinitions: Column[] = this.gridConfigService.gridConfiguration.columnDefinitions;
 
@@ -242,7 +238,6 @@ export class GridDataService {
   }
 
   setInputData(inputData: Array<Object>): boolean {
-    console.log("setInputData");
     this.inputData = inputData;
 
     if (this.pageInfo.pageSize === -1 && this.inputData.length > 50) {
@@ -338,7 +333,6 @@ export class GridDataService {
   }
 
   sortPreparedData() {
-    console.log("sortPreparedData");
     let sortColumns: Array<number> = new Array<number>();
 
     if (this.sortInfo.field === null && this.gridConfigService.gridConfiguration.groupBy !== null) {

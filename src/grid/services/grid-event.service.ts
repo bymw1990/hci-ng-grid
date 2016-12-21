@@ -32,15 +32,6 @@ export class GridEventService {
     if (!this.gridConfigService.gridConfiguration.cellSelect) {
       return;
     }
-    console.log("GridEventService.setSelectedLocation: " + location + " " + eventMeta);
-
-    /*if (location === null) {
-      this._currentLocation = location;
-      this.selectedLocation.next(location);
-    } else if (this._currentLocation === null || !this._currentLocation.equals(location)) {
-      this._currentLocation = location;
-      this.selectedLocation.next(location);
-    }*/
 
     if (this._currentRange == null) {
       this._currentRange = new Range(location, location);
@@ -58,8 +49,6 @@ export class GridEventService {
     if (!this.gridConfigService.gridConfiguration.cellSelect) {
       return;
     }
-    console.log("GridEventService.setSelectedRange: Update " + this._currentRange + " With " + location + ", " + eventMeta);
-
     this._currentLocation = location;
 
     if (this._currentRange == null) {
@@ -87,7 +76,6 @@ export class GridEventService {
     if (!this.gridConfigService.gridConfiguration.cellSelect) {
       return;
     }
-    console.log("GridEventService.arrowFrom: " + location.toString() + ":" + dx + ":" + dy);
     this._currentLocation = location;
 
     do {

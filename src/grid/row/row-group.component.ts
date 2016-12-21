@@ -61,7 +61,6 @@ export class RowGroupComponent {
   }
 
   rowHeaderClick() {
-    console.log("RowComponent.rowHeaderClick");
     this.gridDataService.sort("GROUP_BY");
   }
 }

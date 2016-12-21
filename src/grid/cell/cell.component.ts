@@ -103,7 +103,6 @@ export class CellComponent {
         if (location === null) {
           this.onFocusOut();
         } else if (location.equalsIJK(this.i, this.j, this.k)) {
-          console.log("CellComponent.ngAfterInit gridEventService.selectedLocationObservable Equals " + location.toString());
           if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
             this.onFocus();
           } else {
@@ -211,11 +210,9 @@ export class CellComponent {
       this.gridEventService.tabFrom(new Point(this.i, this.j, this.k), null);
     });
     this.componentRef.inputFocused.subscribe((eventMeta: EventMeta) => {
-      console.log("CellComponent subscribe inputFocused");
       this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), eventMeta);
     });
     this.componentRef.clickEvent.subscribe((eventMeta: EventMeta) => {
-      console.log("CellComponent subscribe clickEvent");
       this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), eventMeta);
     });
   }

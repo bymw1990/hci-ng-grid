@@ -79,7 +79,6 @@ export class SelectGridComponent {
   }
 
   public handleRowDoubleClick(id: Object): void {
-    console.log("SelectGridComponent.handleRowDoubleClick");
     this.clickedData = id;
   }
 }

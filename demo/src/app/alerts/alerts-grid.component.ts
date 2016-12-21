@@ -97,7 +97,6 @@ export class AlertsGridComponent implements OnInit {
   ];
 
   ngOnInit() {
-    console.log("AlertsGridComponent.ngOnInit");
     this.onWarningOrError = this.handleWarningOrError.bind(this);
     this.onDebug = this.handleDebug.bind(this);
   }
