@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core";
 
-import { Column, DateCell, LabelCell } from "hci-ng2-grid/index";
+import { Column, DateCell, LabelCell } from "hci-ng-grid/index";
 
 @Component({
     selector: "style-grid",

@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
-import { Column, LabelCell, InputCell, DateCell } from "hci-ng2-grid/index";
+import { Column, LabelCell, InputCell, DateCell } from "hci-ng-grid/index";
 
 @Component({
   selector: "fixed-grid",

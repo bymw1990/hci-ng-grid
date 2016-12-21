@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 
-import { Column, LabelCell } from "hci-ng2-grid/index";
+import { Column, LabelCell } from "hci-ng-grid/index";
 
 @Component({
   selector: "alerts-grid",

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ExternalData, ExternalInfo } from "hci-ng2-grid/index";
+import { ExternalData, ExternalInfo } from "hci-ng-grid/index";
 
 /**
  * Automatically generate different types of data to test filtering/paging and the such for various size data sets.

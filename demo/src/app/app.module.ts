@@ -38,7 +38,7 @@ import { AlertsGridModule } from "./alerts/alerts-grid.module";
 import { PagingGridModule } from "./paging/paging-grid.module";
 import { StyleGridModule } from "./style/style-grid.module";
 
-import { GridModule } from "hci-ng2-grid/index";
+import { GridModule } from "hci-ng-grid/index";
 
 @NgModule({
   imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, CopyPasteGridModule, AlertsGridModule, PagingGridModule, StyleGridModule, GridModule ],

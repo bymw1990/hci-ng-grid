@@ -8,14 +8,15 @@
   const del = require("del");
   const tslint = require("gulp-tslint");
   const tsc = require("gulp-tsc");
-  const typings = require("gulp-typings");
+  const tsconfig = require("./tsconfig.json");
   const Server = require('karma').Server;
   const parseArgs = require("minimist");
   const fs = require("fs");
+  const tslintConfig = "tslint.json";
   const paths = {
     ts: {
       src: [
-        "typings/index.d.ts", "index.ts", "src/**/*.spec.ts"
+        "index.ts", "src/**/*.spec.ts"
       ],
       dest: ""
     }
@@ -35,16 +36,10 @@
    * Run the linter for Typescript static analysis.
    */
   gulp.task("tslint", function () {
-    return gulp.src(["./index.ts", "./src/**/*.ts"]).pipe(tslint({
-      formatter: "verbose"
+    return gulp.src(["./src/**/*.ts", "*.ts"]).pipe(tslint({
+      formatter: "verbose",
+      configuration: tslintConfig
     })).pipe(tslint.report());
-  });
-
-  /**
-   * Schedule the typings processor to generate any missing third party API declarations.
-   */
-  gulp.task("typings", () => {
-    return gulp.src("./typings.json").pipe(typings());
   });
 
   /**
@@ -60,7 +55,7 @@
    * Schedule a task to push a new build to the demo applications node_modules
    */
   gulp.task("push", ["build"], () => {
-    const demoPath = "demo/node_modules/hci-ng2-grid";
+    const demoPath = "demo/node_modules/hci-ng-grid";
     const options = parseArgs(process.argv.slice(2), {
       boolean: "depCheck"
     });
@@ -77,21 +72,9 @@
   /**
    * Schedule Typescript transpiling.
    */
-  gulp.task("build", ["clean", "tslint", "typings"], () => {
+  gulp.task("build", ["clean", "tslint"], () => {
     return gulp.src(paths.ts.src)
-        .pipe(tsc({
-          tscPath: "node_modules/typescript/lib/tsc",
-          target: "es5",
-          module: "commonjs",
-          moduleResolution: "node",
-          sourceMap: true,
-          emitDecoratorMetadata: true,
-          experimentalDecorators: true,
-          noImplicitAny: false,
-          noEmitHelpers: false,
-          declaration: true,
-          outDir: "./"
-        }))
+        .pipe(tsc(tsconfig.compilerOptions))
         .pipe(gulp.dest(paths.ts.dest));
   });
 }());

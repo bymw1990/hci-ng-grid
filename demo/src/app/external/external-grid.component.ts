@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
-import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } from "hci-ng2-grid/index";
+import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } from "hci-ng-grid/index";
 
 @Component({
   selector: "external-grid",
