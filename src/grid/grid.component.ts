@@ -3,8 +3,6 @@
  */
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
 
-import { DragulaService } from "ng2-dragula/ng2-dragula";
-
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
 import { GridConfigService } from "./services/grid-config.service";
@@ -175,7 +173,7 @@ export class GridComponent implements OnInit, OnChanges {
   initialized: boolean = false;
   columnHeaders: boolean = false;
 
-  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService, private dragulaService: DragulaService) {}
+  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
 
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
@@ -184,10 +182,6 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.level) {
       this.gridMessageService.setLevel(this.level);
     }
-
-    this.dragulaService.dropModel.subscribe((value) => {
-      this.gridDataService.setInputData(this.inputData);
-    });
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {

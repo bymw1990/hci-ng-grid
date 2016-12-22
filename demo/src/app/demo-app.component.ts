@@ -50,9 +50,6 @@ import { Component } from "@angular/core";
             <a routerLink="/paging">Paging</a>
           </div>
           <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/dragdrop">Drag n Drop</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
             <a routerLink="/external">External Sort/Filter/Page</a>
           </div>
           <div style="width: 24%; display: inline-block; padding-bottom: 5px;">

@@ -6,9 +6,6 @@ import { BrowserModule } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 
-import { DragulaDirective } from "ng2-dragula/ng2-dragula";
-import { DragulaService } from "ng2-dragula/ng2-dragula";
-
 import { DemoAppComponent } from "./demo-app.component";
 import { DataGeneratorService } from "./services/data-generator.service";
 
@@ -18,7 +15,6 @@ import { EditGridComponent } from "./edit/edit-grid.component";
 import { GroupGridComponent } from "./group/group-grid.component";
 import { FixedGridComponent } from "./fixed/fixed-grid.component";
 import { FilterGridComponent } from "./filter/filter-grid.component";
-import { DragDropGridComponent } from "./dragdrop/dragdrop-grid.component";
 import { ExternalGridComponent } from "./external/external-grid.component";
 import { CopyPasteGridComponent } from "./copypaste/copypaste-grid.component";
 import { AlertsGridComponent } from "./alerts/alerts-grid.component";
@@ -31,7 +27,6 @@ import { EditGridModule } from "./edit/edit-grid.module";
 import { GroupGridModule } from "./group/group-grid.module";
 import { FixedGridModule } from "./fixed/fixed-grid.module";
 import { FilterGridModule } from "./filter/filter-grid.module";
-import { DragDropGridModule } from "./dragdrop/dragdrop-grid.module";
 import { ExternalGridModule } from "./external/external-grid.module";
 import { CopyPasteGridModule } from "./copypaste/copypaste-grid.module";
 import { AlertsGridModule } from "./alerts/alerts-grid.module";
@@ -41,9 +36,9 @@ import { StyleGridModule } from "./style/style-grid.module";
 import { GridModule } from "hci-ng-grid/index";
 
 @NgModule({
-  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, DragDropGridModule, ExternalGridModule, CopyPasteGridModule, AlertsGridModule, PagingGridModule, StyleGridModule, GridModule ],
-  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, DragDropGridComponent, ExternalGridComponent, CopyPasteGridComponent, AlertsGridComponent, PagingGridComponent, StyleGridComponent, DragulaDirective ],
-  providers: [ DataGeneratorService, DragulaService ],
+  imports: [ BrowserModule, CommonModule, FormsModule, SimpleGridModule, SelectGridModule, EditGridModule, GroupGridModule, FixedGridModule, FilterGridModule, ExternalGridModule, CopyPasteGridModule, AlertsGridModule, PagingGridModule, StyleGridModule, GridModule ],
+  declarations: [ DemoAppComponent, SimpleGridComponent, SelectGridComponent, EditGridComponent, GroupGridComponent, FixedGridComponent, FilterGridComponent, ExternalGridComponent, CopyPasteGridComponent, AlertsGridComponent, PagingGridComponent, StyleGridComponent ],
+  providers: [ DataGeneratorService ],
   bootstrap: [ DemoAppComponent ]
 })
 export class AppModule {}

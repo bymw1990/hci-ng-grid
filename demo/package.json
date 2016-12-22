@@ -15,7 +15,6 @@
     "@angular/forms": "^2.2.0",
     "@angular/router": "^3.1.0",
     "ng2-bootstrap": "^1.1.16",
-    "ng2-dragula": "^1.2.1",
     "font-awesome": "^4.6.3"
   },
   "devDependencies": {
@@ -43,6 +42,6 @@
     "zone.js": "^0.7.2"
   },
   "optionalDependencies": {
-    "hci-ng-grid": "^1.0.0"
+    "hci-ng-grid": "1.0.0-alpha.1"
   }
 }
