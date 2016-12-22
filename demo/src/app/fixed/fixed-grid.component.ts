@@ -19,9 +19,7 @@ import { Column, LabelCell, InputCell, DateCell } from "hci-ng-grid/index";
       <hci-grid [title]="'Fixed Grid'"
                 [inputData]="fixedData"
                 [columnDefinitions]="fixedColumns"
-                [fixedColumns]="['firstName', 'lastName']"
-                [externalFiltering]="true"
-                (onExternalFilter)="callExternalFilter()">
+                [fixedColumns]="['firstName', 'lastName']">
       </hci-grid>
     </div>
     <div style="padding: 20px;">
@@ -72,7 +70,4 @@ export class FixedGridComponent {
     this.fixedData = this.dataGeneratorService.getFixedData(null, null, null);
   }
 
-  callExternalFilter() {
-    console.log("FixedGridComponent.callExternalFilter");
-  }
 }

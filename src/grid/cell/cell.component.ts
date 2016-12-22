@@ -160,8 +160,6 @@ export class CellComponent {
    * event making this parent class aware that the model changed.
    */
   createComponent() {
-    //console.log("CellComponent.createComponent");
-    //console.log(this.type);
     if(!this.isViewInitialized) {
       return;
     }
@@ -188,25 +186,18 @@ export class CellComponent {
     }
 
     if (this.componentRef.valueable) {
-      //this.componentRef.value = this.value;
       this.data = this.gridDataService.getCell(this.i, this.j, this.k);
       this.componentRef.value = this.data.value;
-      //console.log("CellComponent set componentRef value: " + this.componentRef.value);
 
       this.componentRef.valueChange.subscribe((value: Object) => {
-        //console.log("valueChange");
-        //console.log(value);
-        //this.valueChange.emit(value);
         this.data.value = value;
         this.gridDataService.handleValueChange(this.i, this.j, this.data.key, this.k, value);
       });
     }
     this.componentRef.keyEvent.subscribe((keyCode: number) => {
-      //console.log("CellComponent subscribe keyEvent");
       this.onKeyDown(keyCode);
     });
     this.componentRef.tabEvent.subscribe((value: boolean) => {
-      //console.log("CellComponent subscribe tabEvent");
       this.gridEventService.tabFrom(new Point(this.i, this.j, this.k), null);
     });
     this.componentRef.inputFocused.subscribe((eventMeta: EventMeta) => {
@@ -218,8 +209,6 @@ export class CellComponent {
   }
 
   onKeyDown(keyCode: number) {
-    //console.log("CellComponent.onKeyDown");
-    //console.log(event);
     if (keyCode === 37) {
       this.gridEventService.arrowFrom(new Point(this.i, this.j, this.k), -1, 0, null);
     } else if (keyCode === 39) {
