@@ -21,7 +21,8 @@ import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } fr
                 [onExternalDataCall]="onExternalDataCall1"
                 [externalFiltering]="true"
                 [externalSorting]="true"
-                [externalPaging]="true">
+                [externalPaging]="true"
+                [pageSize]="10">
       </hci-grid>
     </div>
     <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
@@ -38,7 +39,8 @@ import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } fr
                 [onExternalDataCall]="onExternalDataCall2"
                 [externalFiltering]="true"
                 [externalSorting]="true"
-                [externalPaging]="false">
+                [externalPaging]="false"
+                [pageSize]="10">
       </hci-grid>
     </div>
     `
@@ -73,17 +75,26 @@ export class ExternalGridComponent implements OnInit {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.onExternalDataCall1 = this.handleExternalDataCall1.bind(this);
     this.dataGeneratorService.generateExternalData1(this.dataSize);
-    this.onExternalDataCall2 = this.handleExternalDataCall2.bind(this);
     this.dataGeneratorService.generateExternalData2(this.dataSize);
+
+    this.onExternalDataCall1 = this.handleExternalDataCall1.bind(this);
+    this.onExternalDataCall2 = this.handleExternalDataCall2.bind(this);
   }
 
-  public handleExternalDataCall1(externalInfo: ExternalInfo): ExternalData {
-    return this.dataGeneratorService.getExternalData1(externalInfo);
+  public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
+    return new Promise((resolve, reject) => {
+      this.dataGeneratorService.getExternalData1(externalInfo).subscribe((externalData: ExternalData) => {
+        resolve(externalData);
+      });
+    });
   }
 
-  public handleExternalDataCall2(externalInfo: ExternalInfo): ExternalData {
-    return this.dataGeneratorService.getExternalData2(externalInfo);
+  public handleExternalDataCall2(externalInfo: ExternalInfo): Promise<ExternalData> {
+    return new Promise((resolve, reject) => {
+      this.dataGeneratorService.getExternalData2(externalInfo).subscribe((externalData: ExternalData) => {
+        resolve(externalData);
+      });
+    });
   }
 }

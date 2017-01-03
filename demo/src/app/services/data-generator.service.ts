@@ -1,4 +1,6 @@
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs/Rx";
+
 import { ExternalData, ExternalInfo } from "hci-ng-grid/index";
 
 /**
@@ -106,11 +108,9 @@ export class DataGeneratorService {
    * @param externalInfo
    * @returns {ExternalData}
    */
-  getExternalData1(externalInfo: ExternalInfo): ExternalData {
-    let returnData: ExternalData = new ExternalData(this.externalData1, externalInfo);
-
+  getExternalData1(externalInfo: ExternalInfo): Observable<ExternalData> {
     if (externalInfo === null) {
-      return returnData;
+      return Observable.create(observer => { observer.next(new ExternalData(this.externalData1, externalInfo)); });
     }
     let filters: any = externalInfo["_filter"];
     let sort: any = externalInfo["_sort"];
@@ -156,8 +156,7 @@ export class DataGeneratorService {
     }
 
     if (pageInfo === null) {
-      returnData.data = filtered;
-      return returnData;
+      return Observable.create(observer => { observer.next(new ExternalData(filtered, externalInfo)); });
     }
 
     let data: Array<Object> = new Array<Object>();
@@ -166,19 +165,25 @@ export class DataGeneratorService {
     let pageSize: number = pageInfo["_pageSize"];
 
     let n: number = filtered.length;
-    returnData.externalInfo.page.nDataSize = n;
-    returnData.externalInfo.page.nPages = Math.ceil(n / pageSize);
-
-    if (page * pageSize > n - 1) {
-      returnData.data = data;
-      return returnData;
+    externalInfo.page.nDataSize = n;
+    if (externalInfo.page.pageSize > 0) {
+      externalInfo.page.nPages = Math.ceil(n / pageSize);
+    } else {
+      externalInfo.page.nPages = 1;
     }
 
-    for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
-      data.push(filtered[i]);
+    if (pageSize > 0) {
+      if (page * pageSize > n - 1) {
+        return Observable.create(observer => { observer.next(new ExternalData(data, externalInfo)); });
+      }
+
+      for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
+        data.push(filtered[i]);
+      }
+      return Observable.create(observer => { observer.next(new ExternalData(data, externalInfo)); });
+    } else {
+      return Observable.create(observer => { observer.next(new ExternalData(filtered, externalInfo)); });
     }
-    returnData.data = data;
-    return returnData;
   }
 
   generateExternalData2(size: number) {
@@ -205,11 +210,9 @@ export class DataGeneratorService {
    * @param externalInfo
    * @returns {ExternalData}
    */
-  getExternalData2(externalInfo: ExternalInfo): ExternalData {
-    let returnData: ExternalData = new ExternalData(this.externalData2, externalInfo);
-
+  getExternalData2(externalInfo: ExternalInfo): Observable<ExternalData> {
     if (externalInfo === null) {
-      return returnData;
+      return new Observable<ExternalData>(observer => observer.next(new ExternalData(this.externalData2, externalInfo)));
     }
     let filters: any = externalInfo["_filter"];
     let sort: any = externalInfo["_sort"];
@@ -253,9 +256,8 @@ export class DataGeneratorService {
       });
     }
 
-    returnData.externalInfo.page.nDataSize = filtered.length;
-    returnData.data = filtered;
-    return returnData;
+    externalInfo.page.nDataSize = filtered.length;
+    return new Observable<ExternalData>(observer => observer.next(new ExternalData(filtered, externalInfo)));
   }
 
 }

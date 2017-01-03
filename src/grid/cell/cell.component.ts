@@ -67,6 +67,7 @@ export class CellComponent {
 
   private data: Cell;
   private componentRef: CellTemplate = null;
+
   constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService, private changeDetectorRef: ChangeDetectorRef) {}
 
   ngAfterContentInit() {

@@ -110,8 +110,6 @@ export class GridDataService {
   }
 
   getCell(i: number, j: number, k: number): Cell {
-    //console.log("getCell " + i + " " + j + " " + k);
-    //let dataColumnOffset: number = this.gridConfigService.gridConfiguration.nUtilityColumns;
     if (j === -1) {
       return this.gridData[i].getHeader().get(k);
     } else {

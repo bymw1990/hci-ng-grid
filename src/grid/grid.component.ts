@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
@@ -169,11 +169,11 @@ export class GridComponent implements OnInit, OnChanges {
   nFixedColumns: number = 0;
   nColumns: number = 0;
   fixedMinWidth: number = 0;
-  pageInfo: PageInfo;
+  pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
   columnHeaders: boolean = false;
 
-  constructor(private el: ElementRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
+  constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
 
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
@@ -186,6 +186,7 @@ export class GridComponent implements OnInit, OnChanges {
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
       this.gridData = data;
+      this.changeDetectorRef.markForCheck();
     });
 
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
@@ -197,17 +198,18 @@ export class GridComponent implements OnInit, OnChanges {
     If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
       this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
-        let externalData: ExternalData = this.onExternalDataCall(externalInfo);
+        this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
+          if (externalData.externalInfo === null) {
+            this.gridDataService.pageInfo.nPages = 1;
+          } else {
+            this.gridDataService.pageInfo = externalData.externalInfo.page;
+          }
+          this.gridDataService.setInputData(externalData.data);
+          this.gridDataService.setInputDataInit();
 
-        if (externalData.externalInfo === null) {
-          this.gridDataService.pageInfo.nPages = 1;
-        } else {
-          this.gridDataService.pageInfo = externalData.externalInfo.page;
-        }
-        this.gridDataService.setInputData(externalData.data);
-
-        this.pageInfo = this.gridDataService.pageInfo;
-        this.pageSize = this.gridDataService.pageInfo.pageSize;
+          this.pageInfo = this.gridDataService.pageInfo;
+          this.pageSize = this.gridDataService.pageInfo.pageSize;
+        });
       });
     }
 
@@ -236,17 +238,23 @@ export class GridComponent implements OnInit, OnChanges {
 
     /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
     if (this.onExternalDataCall) {
-      let externalData: ExternalData = this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo));
-      this.gridDataService.pageInfo = externalData.externalInfo.page;
-      this.gridDataService.setInputData(externalData.data);
+      this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
+        this.gridDataService.pageInfo = externalData.externalInfo.page;
+        this.gridDataService.setInputData(externalData.data);
+        this.gridDataService.setInputDataInit();
+        this.postInit();
+      });
     } else if (this.inputData) {
       if (this.gridDataService.setInputData(this.inputData)) {
         this.gridConfigService.gridConfiguration.init();
-        this.postinitGridConfiguration();
+        this.postInitGridConfiguration();
       }
       this.gridDataService.setInputDataInit();
+      this.postInit();
     }
+  }
 
+  postInit() {
     this.pageInfo = this.gridDataService.pageInfo;
     this.pageSize = this.gridDataService.pageInfo.pageSize;
 
@@ -320,10 +328,10 @@ export class GridComponent implements OnInit, OnChanges {
     }
 
     this.gridConfigService.gridConfiguration.init();
-    this.postinitGridConfiguration();
+    this.postInitGridConfiguration();
   }
 
-  postinitGridConfiguration() {
+  postInitGridConfiguration() {
     if (this.gridConfigService.gridConfiguration.columnDefinitions !== null) {
       this.columnHeaders = this.gridConfigService.gridConfiguration.columnHeaders;
 
