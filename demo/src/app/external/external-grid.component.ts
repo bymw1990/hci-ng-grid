@@ -14,7 +14,8 @@ import { Column, DateCell, LabelCell, InputCell, ExternalData, ExternalInfo } fr
         containing filtering/sorting/paging info.  Our data service applies the sorts/filters/pages to return a subset
         of data back to the grid.  This service mimics what a backend query would do with the same information.<br />
         In this demo we specify external call for all filter/sort/paging.  So any time a filter is changed, the page
-        size is updated, or the next page is selected, this external function is called to retrieve the data.
+        size is updated, or the next page is selected, this external function is called to retrieve the data.<br />
+        To simulate an api call, a delay of 1 s has been added.
     </div>
     <div style="padding: 20px;">
       <hci-grid [columnDefinitions]="columns1"
@@ -85,7 +86,9 @@ export class ExternalGridComponent implements OnInit {
   public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
     return new Promise((resolve, reject) => {
       this.dataGeneratorService.getExternalData1(externalInfo).subscribe((externalData: ExternalData) => {
-        resolve(externalData);
+        setTimeout(() =>
+          resolve(externalData), 1000
+        );
       });
     });
   }

@@ -1,5 +1,5 @@
 <a name="1.0.0"></a>
-# [1.0.0](http://ri-source.hci.utah.edu/hcidevs/hci-ng2-grid)
+# [1.0.0](http://ri-source.hci.utah.edu/hcidevs/hci-ng-grid)
 
 ### Bug Fixes
 

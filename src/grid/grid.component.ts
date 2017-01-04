@@ -37,6 +37,11 @@ import { ExternalData } from "./utils/external-data";
   providers: [ GridDataService, GridEventService, GridConfigService, GridMessageService ],
   template: `
     <div (keydown)="onKeyDown($event);">
+      <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy">
+        <div class="hci-grid-busy-div">
+          <i class="fa fa-refresh fa-spin fa-3x fa-fw hci-grid-busy-icon"></i>
+        </div>
+      </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
@@ -137,6 +142,19 @@ import { ExternalData } from "./utils/external-data";
     .hci-grid-row-height-filter {
       height: 60px;
     }
+    .hci-grid-busy {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    .hci-grid-busy-div {
+      position: fixed;
+      margin-left: 50%;
+      margin-top: 5%;
+    }
+    .hci-grid-busy-icon {
+      color: red;
+    }
   ` ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -172,6 +190,7 @@ export class GridComponent implements OnInit, OnChanges {
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
   columnHeaders: boolean = false;
+  busy: boolean = false;
 
   constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
 
@@ -186,6 +205,7 @@ export class GridComponent implements OnInit, OnChanges {
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
       this.gridData = data;
+      this.busy = false;
       this.changeDetectorRef.markForCheck();
     });
 
@@ -198,6 +218,8 @@ export class GridComponent implements OnInit, OnChanges {
     If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
       this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
+        this.busy = true;
+        this.changeDetectorRef.markForCheck();
         this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
           if (externalData.externalInfo === null) {
             this.gridDataService.pageInfo.nPages = 1;
@@ -238,6 +260,8 @@ export class GridComponent implements OnInit, OnChanges {
 
     /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
     if (this.onExternalDataCall) {
+      this.busy = true;
+      this.changeDetectorRef.markForCheck();
       this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
         this.gridDataService.pageInfo = externalData.externalInfo.page;
         this.gridDataService.setInputData(externalData.data);

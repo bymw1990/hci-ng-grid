@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, Eve
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
-import { Range } from "../utils/range";
 import { EventMeta } from "../utils/event-meta";
 import { GridConfigService } from "../services/grid-config.service";
 import { GridEventService } from "../services/grid-event.service";
