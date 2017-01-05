@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, Output, ViewChild, ViewContainerRef, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, Output, Type, ViewChild, ViewContainerRef, ViewEncapsulation } from "@angular/core";
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
@@ -42,10 +42,11 @@ import { LabelCell } from "./label-cell.component";
     }
   ` ],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CellComponent {
 
-  @Input() type: any = LabelCell;
+  @Input() type: string = "LabelCell";
   @Input() i: number;
   @Input() j: number;
   @Input() k: number;
@@ -124,7 +125,7 @@ export class CellComponent {
   }
 
   onFocuser() {
-    if (this.type === LabelCell) {
+    if (this.type === "LabelCell") {
       this.componentRef.onFocus();
     } else {
       this.componentRef.onFocus();
@@ -137,7 +138,7 @@ export class CellComponent {
    * the input is focused.  In the case of a date, the datepicker popup is opened.
    */
   onFocus() {
-    if (this.type === LabelCell) {
+    if (this.type === "LabelCell") {
       this.focuser.nativeElement.focus();
     }
     this.componentRef.onFocus();
@@ -169,11 +170,14 @@ export class CellComponent {
 
     let setIsGroup: boolean = false;
     if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].isGroup && this.j !== -1) {
-      this.type = LabelCell;
+      this.type = "LabelCell";
       setIsGroup = true;
     }
 
-    let factory = this.resolver.resolveComponentFactory(this.type);
+    var factories = Array.from(this.resolver["_factories"].keys());
+    var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
+
+    let factory = this.resolver.resolveComponentFactory(factoryClass);
     this.componentRef = this.template.createComponent(factory).instance;
     if (this.j === -1 && this.componentRef.activeOnRowHeader) {
       this.componentRef.render = true;
@@ -223,7 +227,7 @@ export class CellComponent {
   }
 
   onFocuserKeyDown(event: KeyboardEvent) {
-    if (this.type !== LabelCell) {
+    if (this.type !== "LabelCell") {
       this.focuser.nativeElement.blur();
     }
     this.onKeyDown(event.keyCode);

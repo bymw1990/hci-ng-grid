@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
-import { Column, DateCell, LabelCell, InputCell } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid/index";
 
 @Component({
     selector: "paging-grid",
@@ -29,13 +29,13 @@ export class PagingGridComponent {
     pagingData: Array<Object>;
 
     pagingColumns: Column[] = [
-        new Column({ field: "idPatient", name: "ID", template: LabelCell }),
-        new Column({ field: "lastName", name: "Last Name", template: InputCell }),
-        new Column({ field: "middleName", name: "Middle Name", template: InputCell }),
-        new Column({ field: "firstName", name: "First Name", template: InputCell }),
-        new Column({ field: "dob", name: "Date of Birth", template: DateCell }),
-        new Column({ field: "gender", name: "Gender", template: LabelCell }),
-        new Column({ field: "address", name: "Address", template: LabelCell })
+        new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),
+        new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
+        new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
+        new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
+        new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
+        new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
+        new Column({ field: "address", name: "Address", template: "LabelCell" })
     ];
 
     constructor(private dataGeneratorService: DataGeneratorService) {}

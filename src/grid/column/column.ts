@@ -1,9 +1,13 @@
+import { QueryList } from "@angular/core";
+
+import { ColumnDefComponent } from "./column-def.component";
+
 export class Column {
   private _id: number;
   private _isKey: boolean = false;
   private _field: string;
   private _name: string = null;
-  private _template: any;
+  private _template: string = "LabelCell";
   private _format: string = null;
   private _visible: boolean = true;
   private _validator: any;
@@ -19,8 +23,28 @@ export class Column {
   private _filterOptions: Array<any> = null;
   private _filterValue: any = null;
 
-  constructor(o: Object) {
-    Object.assign(this, o);
+  static getColumns(columnDefComponents: QueryList<ColumnDefComponent>): Column[] {
+    let columns: Column[] = new Array<Column>();
+    let columnDefs: ColumnDefComponent[] = <ColumnDefComponent[]> columnDefComponents.toArray();
+    for (var i = 0; i < columnDefs.length; i++) {
+      let column: Column = new Column(null);
+
+      column.field = columnDefs[i].field;
+      column.name = columnDefs[i].name;
+      column.width = columnDefs[i].width;
+      column.template = columnDefs[i].template;
+
+      columns.push(column);
+    }
+    return columns;
+  }
+
+  constructor(param: any) {
+    if (param !== null) {
+      if (param instanceof Object) {
+        Object.assign(this, <Object> param);
+      }
+    }
   }
 
   get id(): number {

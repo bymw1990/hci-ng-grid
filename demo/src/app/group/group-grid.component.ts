@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column, LabelCell, InputCell, DateCell } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid/index";
 
 @Component({
   selector: "group-grid",
@@ -56,13 +56,13 @@ export class GroupGridComponent {
   ];
 
   groupColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: LabelCell, visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: InputCell }),
-    new Column({ field: "middleName", name: "Middle Name", template: InputCell }),
-    new Column({ field: "firstName", name: "First Name", template: InputCell }),
-    new Column({ field: "dob", name: "Date of Birth", template: DateCell }),
-    new Column({ field: "gender", name: "Gender", template: LabelCell }),
-    new Column({ field: "address", name: "Address", template: LabelCell }),
-    new Column({ field: "phone", name: "Phone", template: InputCell })
+    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
+    new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
+    new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
+    new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
+    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
+    new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
+    new Column({ field: "address", name: "Address", template: "LabelCell" }),
+    new Column({ field: "phone", name: "Phone", template: "InputCell" })
   ];
 }

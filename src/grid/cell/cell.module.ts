@@ -13,6 +13,7 @@ import { RowSelectCellComponent } from "./row-select-cell.component";
 @NgModule({
     imports: [ CommonModule, FormsModule, DropdownModule, DatepickerModule ],
     declarations: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ],
-    bootstrap: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ]
+    bootstrap: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ],
+    exports: [ DateCell ]
 })
 export class CellModule {}

@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core";
 
-import { Column, DateCell, LabelCell } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid/index";
 
 @Component({
     selector: "style-grid",
@@ -79,12 +79,12 @@ export class StyleGridComponent {
     ];
 
     styleColumns1: Column[] = [
-        new Column({ field: "idPatient", name: "ID", template: LabelCell, visible: false }),
-        new Column({ field: "lastName", name: "Last Name", template: LabelCell }),
-        new Column({ field: "firstName", name: "First Name", template: LabelCell }),
-        new Column({ field: "dob", name: "Date of Birth", template: DateCell }),
-        new Column({ field: "pcg.nLabs", name: "# Labs", template: LabelCell }),
-        new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: LabelCell })
+        new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
+        new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
+        new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
+        new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
+        new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
+        new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "LabelCell" })
     ];
 
     styleData2: Array<Object> = [
@@ -97,11 +97,11 @@ export class StyleGridComponent {
     ];
 
     styleColumns2: Column[] = [
-        new Column({ field: "lastName", template: LabelCell }),
-        new Column({ field: "firstName", template: LabelCell }),
-        new Column({ field: "dob", template: DateCell }),
-        new Column({ field: "pcg.nLabs", template: LabelCell }),
-        new Column({ field: "pcg.nested.nLabPath", template: LabelCell })
+        new Column({ field: "lastName", template: "LabelCell" }),
+        new Column({ field: "firstName", template: "LabelCell" }),
+        new Column({ field: "dob", template: "DateCell" }),
+        new Column({ field: "pcg.nLabs", template: "LabelCell" }),
+        new Column({ field: "pcg.nested.nLabPath", template: "LabelCell" })
     ];
 
     styleData3: Array<Object> = [

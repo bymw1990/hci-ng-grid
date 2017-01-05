@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnInit, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { GridDataService } from "./services/grid-data.service";
 import { GridEventService } from "./services/grid-event.service";
@@ -17,6 +17,7 @@ import { LabelCell } from "./cell/label-cell.component";
 import { PageInfo } from "./utils/page-info";
 import { ExternalInfo } from "./utils/external-info";
 import { ExternalData } from "./utils/external-data";
+import { ColumnDefComponent } from "./column/column-def.component";
 
 /**
  * Thoughts...
@@ -159,7 +160,7 @@ import { ExternalData } from "./utils/external-data";
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GridComponent implements OnInit, OnChanges {
+export class GridComponent implements OnChanges {
 
   @ViewChild("copypastearea") copypastearea: any;
 
@@ -183,6 +184,8 @@ export class GridComponent implements OnInit, OnChanges {
   @Input() pageSize: number = -1;
   @Input() pageSizes: number[] = [ 10, 25, 50 ];
 
+  @ContentChildren(ColumnDefComponent) columnDefComponents: QueryList<ColumnDefComponent>;
+
   gridData: Array<RowGroup> = new Array<RowGroup>();
   nFixedColumns: number = 0;
   nColumns: number = 0;
@@ -197,7 +200,7 @@ export class GridComponent implements OnInit, OnChanges {
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
    */
-  ngOnInit() {
+  ngAfterContentInit() {
     if (this.level) {
       this.gridMessageService.setLevel(this.level);
     }
@@ -317,10 +320,15 @@ export class GridComponent implements OnInit, OnChanges {
     if (this.gridConfiguration) {
       this.gridConfigService.gridConfiguration = this.gridConfiguration;
     }
+
+    /* If columns are defined in the template, then use those and disregard those defined in typescript (if they also exist). */
+    if (this.columnDefComponents && this.columnDefComponents.length > 0) {
+      this.columnDefinitions = Column.getColumns(this.columnDefComponents);
+    }
     if (this.columnDefinitions) {
       for (var k = 0; k < this.columnDefinitions.length; k++) {
         if (this.columnDefinitions[k].template === null) {
-          this.columnDefinitions[k].template = LabelCell;
+          this.columnDefinitions[k].template = "LabelCell";
         }
       }
       this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;

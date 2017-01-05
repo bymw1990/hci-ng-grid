@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column, LabelCell, InputCell, DateCell } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid/index";
 
 @Component({
   selector: "edit-grid",
@@ -56,12 +56,12 @@ export class EditGridComponent {
   ];
 
   editColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: LabelCell, visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: InputCell }),
-    new Column({ field: "firstName", name: "First Name", template: InputCell }),
-    new Column({ field: "dob", name: "Date of Birth", template: DateCell }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: LabelCell }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: InputCell })
+    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
+    new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
+    new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
+    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
+    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
+    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "InputCell" })
   ];
 
 }

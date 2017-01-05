@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column, LabelCell } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid/index";
 
 @Component({
   selector: "select-grid",
@@ -26,8 +26,7 @@ import { Column, LabelCell } from "hci-ng-grid/index";
       <hci-grid [inputData]="data2"
                 [columnDefinitions]="columns2"
                 [rowSelect]="true"
-                [cellSelect]="true"
-                class="WHAT">
+                [cellSelect]="true">
       </hci-grid>
     </div>
   `
@@ -48,12 +47,12 @@ export class SelectGridComponent {
   ];
 
   columns1: Column[] = [
-    new Column({ isKey: true, field: "idPatient", name: "ID", template: LabelCell, visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: LabelCell }),
-    new Column({ field: "firstName", name: "First Name", template: LabelCell }),
-    new Column({ field: "dob", name: "Date of Birth", template: LabelCell, format: "date:shortDate" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: LabelCell }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: LabelCell })
+    new Column({ isKey: true, field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
+    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
+    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
+    new Column({ field: "dob", name: "Date of Birth", template: "LabelCell", format: "date:shortDate" }),
+    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
+    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "LabelCell" })
   ];
 
   data2: Array<Object> = [
@@ -66,12 +65,12 @@ export class SelectGridComponent {
   ];
 
   columns2: Column[] = [
-    new Column({ isKey: true, field: "idPatient", name: "ID", template: LabelCell, visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: LabelCell }),
-    new Column({ field: "firstName", name: "First Name", template: LabelCell }),
-    new Column({ field: "dob", name: "Date of Birth", template: LabelCell, format: "date:shortDate" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: LabelCell }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: LabelCell })
+    new Column({ isKey: true, field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
+    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
+    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
+    new Column({ field: "dob", name: "Date of Birth", template: "LabelCell", format: "date:shortDate" }),
+    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
+    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "LabelCell" })
   ];
 
   ngOnInit() {

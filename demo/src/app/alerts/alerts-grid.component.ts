@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 
-import { Column, LabelCell } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid/index";
 
 @Component({
   selector: "alerts-grid",
@@ -70,12 +70,12 @@ export class AlertsGridComponent implements OnInit {
   ];
 
   columns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: LabelCell }),
-    new Column({ field: "lastName", name: "Last Name", template: LabelCell }),
-    new Column({ field: "middleName", name: "Middle Name", template: LabelCell }),
-    new Column({ field: "firstName", name: "First Name", template: LabelCell }),
-    new Column({ field: "gender", name: "Gender", template: LabelCell }),
-    new Column({ field: "address", name: "Address", template: LabelCell })
+    new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),
+    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
+    new Column({ field: "middleName", name: "Middle Name", template: "LabelCell" }),
+    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
+    new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
+    new Column({ field: "address", name: "Address", template: "LabelCell" })
   ];
 
   data2: Array<Object> = [
@@ -88,12 +88,12 @@ export class AlertsGridComponent implements OnInit {
   ];
 
   columns2: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: LabelCell }),
-    new Column({ field: "lastName", name: "Last Name", template: LabelCell }),
-    new Column({ field: "middleName", name: "Middle Name", template: LabelCell }),
-    new Column({ field: "firstName", name: "First Name", template: LabelCell }),
-    new Column({ field: "gender", name: "Gender", template: LabelCell }),
-    new Column({ field: "address", name: "Address", template: LabelCell })
+    new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),
+    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
+    new Column({ field: "middleName", name: "Middle Name", template: "LabelCell" }),
+    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
+    new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
+    new Column({ field: "address", name: "Address", template: "LabelCell" })
   ];
 
   ngOnInit() {
