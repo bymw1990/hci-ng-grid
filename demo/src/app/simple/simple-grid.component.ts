@@ -25,7 +25,9 @@ import { Column } from "hci-ng-grid/index";
       <hci-grid [inputData]="simpleData2">
         <column-def [field]="'lastName'"></column-def>
         <column-def [field]="'firstName'"></column-def>
-        <column-def [field]="'dob'" [template]="'DateCell'"></column-def>
+        <column-def [field]="'dob'">
+          <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+        </column-def>
         <column-def [field]="'pcg.nLabs'"></column-def>
         <column-def [field]="'pcg.nested.nLabPath'"></column-def>
       </hci-grid>

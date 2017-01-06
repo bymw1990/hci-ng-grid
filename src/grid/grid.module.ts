@@ -16,11 +16,12 @@ import { IsGroupPipe } from "./utils/is-group.pipe";
 import { IsFixedPipe } from "./utils/is-fixed.pipe";
 import { IsRowVisiblePipe } from "./utils/is-row-visible.pipe";
 import { ColumnDefComponent } from "./column/column-def.component";
+import { DateCell } from "./cell/date-cell.component";
 
 @NgModule({
   imports: [ CommonModule, FormsModule, CellModule ],
   declarations: [ GridComponent, RowComponent, RowGroupComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe, ColumnDefComponent ],
   providers: [ ],
-  exports: [ GridComponent, ColumnDefComponent ]
+  exports: [ GridComponent, ColumnDefComponent, DateCell ]
 })
 export class GridModule {}

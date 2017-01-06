@@ -65,6 +65,7 @@ export class CellComponent {
 
   @ViewChild("focuser") private focuser: ElementRef;
 
+  private component: any = null;
   private data: Cell;
   private componentRef: CellTemplate = null;
 
@@ -72,6 +73,7 @@ export class CellComponent {
 
   ngAfterContentInit() {
     this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].template;
+    this.component = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].component;
     this.format = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].format;
     this.isViewInitialized = true;
     this.createComponent();
@@ -174,11 +176,21 @@ export class CellComponent {
       setIsGroup = true;
     }
 
-    var factories = Array.from(this.resolver["_factories"].keys());
-    var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
+    if (this.component) {
+      var factories = Array.from(this.resolver["_factories"].keys());
+      var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.component.constructor.name);
 
-    let factory = this.resolver.resolveComponentFactory(factoryClass);
-    this.componentRef = this.template.createComponent(factory).instance;
+      let factory = this.resolver.resolveComponentFactory(factoryClass);
+      this.componentRef = this.template.createComponent(factory).instance;
+      this.componentRef.setValues(this.component);
+    } else {
+      var factories = Array.from(this.resolver["_factories"].keys());
+      var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
+
+      let factory = this.resolver.resolveComponentFactory(factoryClass);
+      this.componentRef = this.template.createComponent(factory).instance;
+    }
+
     if (this.j === -1 && this.componentRef.activeOnRowHeader) {
       this.componentRef.render = true;
     }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 
 import { CellTemplate } from "./cell-template.component";
 
@@ -11,7 +11,7 @@ import { CellTemplate } from "./cell-template.component";
   template: `
     <div (keydown)="onDateKeyDown($event);" class="hci-grid-cell-template" dropdown [(isOpen)]="status.isopen" (onToggle)="onToggle();" [class.focused]="focused">
       <button #datepickerbutton id="single-button" type="button" class="hci-cell-datebutton" dropdownToggle [disabled]="disabled" (click)="onClick($event)">
-        {{ value | date }}
+        {{ value | date:dateFormat }}
       </button>
       <div #datepickerParent dropdownMenu role="menu" role="menu" aria-labelledby="single-button" class="negate-dropdown-menu">
         <datepicker [ngModel]="value" (ngModelChange)="onModelChange($event);" class="hci-cell-datepicker"></datepicker>
@@ -44,12 +44,18 @@ import { CellTemplate } from "./cell-template.component";
 })
 export class DateCell extends CellTemplate {
 
+  @Input() dateFormat: string = "mediumDate";
+
   @ViewChild("datepickerbutton") datepickerbutton: ElementRef;
   @ViewChild("datepickerParent") datepickerParent: ElementRef;
 
   handleClick: boolean = true;
   public disabled: boolean = false;
   public status: { isopen: boolean } = { isopen: false };
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {
+    super();
+  }
 
   onToggle() {
     if (this.status.isopen) {
@@ -96,5 +102,12 @@ export class DateCell extends CellTemplate {
       this.datepickerbutton.nativeElement.blur();
       this.onKeyDown(event);
     }
+  }
+
+  setValues(o: Object) {
+    if (o["dateFormat"]) {
+      this.dateFormat = o["dateFormat"];
+    }
+    this.changeDetectorRef.markForCheck();
   }
 }

@@ -22,6 +22,7 @@ export class Column {
   private _filterType: string = null;
   private _filterOptions: Array<any> = null;
   private _filterValue: any = null;
+  private _component: any = null;
 
   static getColumns(columnDefComponents: QueryList<ColumnDefComponent>): Column[] {
     let columns: Column[] = new Array<Column>();
@@ -33,6 +34,7 @@ export class Column {
       column.name = columnDefs[i].name;
       column.width = columnDefs[i].width;
       column.template = columnDefs[i].template;
+      column.component = columnDefs[i].component;
 
       columns.push(column);
     }
@@ -197,6 +199,14 @@ export class Column {
 
   set filterValue(filterValue: any) {
     this._filterValue = filterValue;
+  }
+
+  get component(): any {
+    return this._component;
+  }
+
+  set component(component: any) {
+    this._component = component;
   }
 
 }

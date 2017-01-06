@@ -1,6 +1,6 @@
-import { Component, ContentChildren, Input, QueryList } from "@angular/core";
+import { Component, ContentChildren, ElementRef, Input, QueryList } from "@angular/core";
 
-//import { CellTemplate } from "../cell/cell-template.component";
+import { CellTemplate } from "../cell/cell-template.component";
 import { DateCell } from "../cell/date-cell.component";
 
 @Component({
@@ -13,12 +13,13 @@ export class ColumnDefComponent {
     @Input() width: number = 100;
     @Input() template: string = "LabelCell";
 
-    /*@ContentChildren(DateCell) templates: QueryList<any>;
+    @ContentChildren("template") templates: QueryList<any>;
+
+    component: any = null;
 
     ngAfterContentInit() {
-        console.log(this.templates);
         if (this.templates && this.templates.length === 1) {
-            this.template = this.templates[0];
+            this.component = this.templates.toArray()[0];
         }
-    }*/
+    }
 }

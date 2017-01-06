@@ -78,4 +78,8 @@ export class CellTemplate {
     }
   }
 
+  setValues(o: Object) {
+    // For sub classes
+  }
+
 }
