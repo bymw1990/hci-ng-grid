@@ -1,19 +1,19 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { DropdownModule } from "ng2-bootstrap/ng2-bootstrap";
-import { DatepickerModule } from "ng2-bootstrap/ng2-bootstrap";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { LabelCell } from "./label-cell.component";
 import { InputCell } from "./input-cell.component";
 import { DateCell } from "./date-cell.component";
+import { DatePickerCell } from "./date-picker-cell.component";
 import { GroupCollapseExpandCell } from "./group-collapse-expand.component";
 import { RowSelectCellComponent } from "./row-select-cell.component";
 
 @NgModule({
-    imports: [ CommonModule, FormsModule, DropdownModule, DatepickerModule ],
-    declarations: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ],
-    bootstrap: [ LabelCell, InputCell, DateCell, GroupCollapseExpandCell, RowSelectCellComponent ],
-    exports: [ DateCell ]
+    imports: [ CommonModule, FormsModule, NgbModule.forRoot() ],
+    declarations: [ LabelCell, InputCell, DateCell, DatePickerCell, GroupCollapseExpandCell, RowSelectCellComponent ],
+    bootstrap: [ LabelCell, InputCell, DateCell, DatePickerCell, GroupCollapseExpandCell, RowSelectCellComponent ],
+    exports: [ DateCell, DatePickerCell ]
 })
 export class CellModule {}

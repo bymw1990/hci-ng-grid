@@ -82,7 +82,7 @@ export class CellComponent {
       if (range != null && range.contains(new Point(this.i, this.j, this.k))) {
         if (this.componentRef.valueable) {
           this.data = this.gridDataService.getCell(this.i, this.j, this.k);
-          this.componentRef.value = this.data.value;
+          this.componentRef.setValue(this.data.value);
           this.gridDataService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
           this.changeDetectorRef.markForCheck();
         }
@@ -203,7 +203,7 @@ export class CellComponent {
 
     if (this.componentRef.valueable) {
       this.data = this.gridDataService.getCell(this.i, this.j, this.k);
-      this.componentRef.value = this.data.value;
+      this.componentRef.setValue(this.data.value);
 
       this.componentRef.valueChange.subscribe((value: Object) => {
         this.data.value = value;

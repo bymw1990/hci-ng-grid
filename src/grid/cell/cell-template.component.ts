@@ -78,6 +78,10 @@ export class CellTemplate {
     }
   }
 
+  setValue(value: Object) {
+    this.value = value;
+  }
+
   setValues(o: Object) {
     // For sub classes
   }
