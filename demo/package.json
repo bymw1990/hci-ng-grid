@@ -44,6 +44,6 @@
     "zone.js": "^0.7.6"
   },
   "optionalDependencies": {
-    "hci-ng-grid": "1.0.0-alpha.4"
+    "hci-ng-grid": "1.0.0-alpha.5"
   }
 }

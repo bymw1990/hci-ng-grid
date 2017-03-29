@@ -1,35 +1,35 @@
 export class PageInfo {
 
-  private _page: number = 0;
-  private _pageSize: number = 10;
-  private _nDataSize: number = 0;
-  private _nPages: number = 0;
+  public page: number = 0;
+  public pageSize: number = 10;
+  public dataSize: number = 0;
+  public numPages: number = 0;
 
-  get page(): number {
-    return this._page;
+  getPage(): number {
+    return this.page;
   }
-  set page(page: number) {
-    this._page = page;
-  }
-
-  get pageSize(): number {
-    return this._pageSize;
-  }
-  set pageSize(pageSize: number) {
-    this._pageSize = pageSize;
+  setPage(page: number) {
+    this.page = page;
   }
 
-  get nDataSize(): number {
-    return this._nDataSize;
+  getPageSize(): number {
+    return this.pageSize;
   }
-  set nDataSize(nDataSize: number) {
-    this._nDataSize = nDataSize;
+  setPageSize(pageSize: number) {
+    this.pageSize = pageSize;
   }
 
-  get nPages(): number {
-    return this._nPages;
+  getDataSize(): number {
+    return this.dataSize;
   }
-  set nPages(nPages: number) {
-    this._nPages = nPages;
+  setDataSize(dataSize: number) {
+    this.dataSize = dataSize;
+  }
+
+  getNumPages(): number {
+    return this.numPages;
+  }
+  setNumPages(numPages: number) {
+    this.numPages = numPages;
   }
 }

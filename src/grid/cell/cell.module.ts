@@ -14,6 +14,6 @@ import { RowSelectCellComponent } from "./row-select-cell.component";
     imports: [ CommonModule, FormsModule, NgbModule.forRoot() ],
     declarations: [ LabelCell, InputCell, DateCell, DatePickerCell, GroupCollapseExpandCell, RowSelectCellComponent ],
     bootstrap: [ LabelCell, InputCell, DateCell, DatePickerCell, GroupCollapseExpandCell, RowSelectCellComponent ],
-    exports: [ DateCell, DatePickerCell ]
+    exports: [ LabelCell, InputCell, DateCell, DatePickerCell ]
 })
 export class CellModule {}

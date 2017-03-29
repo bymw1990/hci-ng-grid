@@ -2,28 +2,28 @@ import { ExternalInfo } from "./external-info";
 
 export class ExternalData {
 
-  private _data: Array<Object>;
-  private _externalInfo: ExternalInfo;
+  public data: Array<Object>;
+  public externalInfo: ExternalInfo;
 
   constructor(data: Array<Object>, externalInfo: ExternalInfo) {
-    this._data = data;
-    this._externalInfo = externalInfo;
+    this.data = data;
+    this.externalInfo = externalInfo;
   }
 
-  get data(): Array<Object> {
-    return this._data;
+  getData(): Array<Object> {
+    return this.data;
   }
 
-  set data(data: Array<Object>) {
-    this._data = data;
+  setData(data: Array<Object>) {
+    this.data = data;
   }
 
-  get externalInfo(): ExternalInfo {
-    return this._externalInfo;
+  getExternalInfo(): ExternalInfo {
+    return this.externalInfo;
   }
 
-  set externalInfo(externalInfo: ExternalInfo) {
-    this._externalInfo = externalInfo;
+  setExternalInfo(externalInfo: ExternalInfo) {
+    this.externalInfo = externalInfo;
   }
 
 }

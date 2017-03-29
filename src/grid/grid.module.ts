@@ -16,6 +16,8 @@ import { IsGroupPipe } from "./utils/is-group.pipe";
 import { IsFixedPipe } from "./utils/is-fixed.pipe";
 import { IsRowVisiblePipe } from "./utils/is-row-visible.pipe";
 import { ColumnDefComponent } from "./column/column-def.component";
+import { LabelCell } from "./cell/label-cell.component";
+import { InputCell } from "./cell/input-cell.component";
 import { DateCell } from "./cell/date-cell.component";
 import { DatePickerCell } from "./cell/date-picker-cell.component";
 
@@ -23,6 +25,6 @@ import { DatePickerCell } from "./cell/date-picker-cell.component";
   imports: [ CommonModule, FormsModule, CellModule ],
   declarations: [ GridComponent, RowComponent, RowGroupComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe, ColumnDefComponent ],
   providers: [ ],
-  exports: [ GridComponent, ColumnDefComponent, DateCell, DatePickerCell ]
+  exports: [ GridComponent, ColumnDefComponent, LabelCell, InputCell, DateCell, DatePickerCell ]
 })
 export class GridModule {}

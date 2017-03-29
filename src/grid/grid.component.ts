@@ -102,7 +102,7 @@ import { ColumnDefComponent } from "./column/column-def.component";
       <!-- Footer -->
       <div *ngIf="pageSize > 0"
            style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
-        <span style="float: left; font-weight: bold;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.nPages }}</span>
+        <span style="float: left; font-weight: bold;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.numPages }}</span>
         <span style="text-align; middle;">
           <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
           <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-backward"></i></span>
@@ -225,15 +225,15 @@ export class GridComponent implements OnChanges {
         this.changeDetectorRef.markForCheck();
         this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
           if (externalData.externalInfo === null) {
-            this.gridDataService.pageInfo.nPages = 1;
+            this.gridDataService.pageInfo.setNumPages(1);
           } else {
-            this.gridDataService.pageInfo = externalData.externalInfo.page;
+            this.gridDataService.pageInfo = externalData.externalInfo.getPage();
           }
           this.gridDataService.setInputData(externalData.data);
           this.gridDataService.setInputDataInit();
 
           this.pageInfo = this.gridDataService.pageInfo;
-          this.pageSize = this.gridDataService.pageInfo.pageSize;
+          this.pageSize = this.gridDataService.pageInfo.getPageSize();
         });
       });
     }
@@ -266,8 +266,8 @@ export class GridComponent implements OnChanges {
       this.busy = true;
       this.changeDetectorRef.markForCheck();
       this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
-        this.gridDataService.pageInfo = externalData.externalInfo.page;
-        this.gridDataService.setInputData(externalData.data);
+        this.gridDataService.pageInfo = externalData.getExternalInfo().getPage();
+        this.gridDataService.setInputData(externalData.getData());
         this.gridDataService.setInputDataInit();
         this.postInit();
       });
@@ -283,7 +283,7 @@ export class GridComponent implements OnChanges {
 
   postInit() {
     this.pageInfo = this.gridDataService.pageInfo;
-    this.pageSize = this.gridDataService.pageInfo.pageSize;
+    this.pageSize = this.gridDataService.pageInfo.getPageSize();
 
     this.initialized = true;
     this.gridEventService.setSelectedLocation(null, null);
@@ -356,7 +356,7 @@ export class GridComponent implements OnChanges {
     }
     if (this.pageSize) {
       this.gridConfigService.gridConfiguration.pageSize = this.pageSize;
-      this.gridDataService.pageInfo.pageSize = this.pageSize;
+      this.gridDataService.pageInfo.setPageSize(this.pageSize);
     }
 
     this.gridConfigService.gridConfiguration.init();

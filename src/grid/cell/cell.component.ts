@@ -34,6 +34,9 @@ import { LabelCell } from "./label-cell.component";
       background-color: transparent;
       padding-left: 8px;
     }
+    .hci-grid-cell-template.ng-invalid {
+      background-color: #ffeeee;
+    }
     .hci-grid-cell-template.selected {
       background-color: #ffff99;
     }

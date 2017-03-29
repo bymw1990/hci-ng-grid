@@ -1,15 +1,15 @@
 {
   "name": "hci-ng-grid",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "Comprehensive angular grid component",
   "main": "index.js",
-  "repository": "http://ri-source.hci.utah.edu/hcidevs/hci-ng-grid.git",
+  "repository": "https://ri-source.hci.utah.edu/hcidevs/hci-ng-grid.git",
   "scripts": {
     "build": "gulp build",
     "prepublish": "npm run build"
   },
   "publishConfig": {
-    "registry": "http://ri-artifact.hci.utah.edu/artifactory/api/npm/hci-npm-local"
+    "registry": "https://ri-artifact.hci.utah.edu/artifactory/api/npm/hci-npm-local"
   },
   "files": [
     "index.+(js|d.ts|js.map)",
@@ -23,7 +23,7 @@
     "@angular/platform-browser-dynamic": "^2.4.4",
     "@angular/forms": "^2.4.4",
     "@ng-bootstrap/ng-bootstrap": "1.0.0-alpha.20",
-    "@types/core-js": "^0.9.35",
+    "@types/core-js": "0.9.35",
     "@types/jasmine": "^2.5.42",
     "@types/node": "^6.0.48",
     "core-js": "^2.4.1",
@@ -51,6 +51,6 @@
     "tslint": "^3.14.0",
     "typescript": "2.1.6",
     "typings": "2.1.0",
-    "zone.js": "^0.7.6"
+    "zone.js": "^0.8.5"
   }
 }

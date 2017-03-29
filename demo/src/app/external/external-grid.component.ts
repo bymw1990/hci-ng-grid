@@ -24,6 +24,25 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
                 [externalSorting]="true"
                 [externalPaging]="true"
                 [pageSize]="10">
+        <column-def [field]="'idPatient'" [name]="'ID'"></column-def>
+        <column-def [field]="'lastName'" [name]="'Last Name'" filterType="'input'">
+            <hci-grid-cell-input #template></hci-grid-cell-input>
+        </column-def>
+        <column-def [field]="'middleName'" [name]="'Middle Name'" filterType="'input'">
+            <hci-grid-cell-input #template></hci-grid-cell-input>
+        </column-def>
+        <column-def [field]="'firstName'" [name]="'First Name'" filterType="'input'">
+            <hci-grid-cell-input #template></hci-grid-cell-input>
+        </column-def>
+        <column-def [field]="'dob'" [name]="'Date of Birth'">
+            <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+        </column-def>
+        <column-def [field]="'gender'" [name]="'Gender'" filterType="'select'" filterOptions="[ '', 'Female', 'Male' ]">
+            <hci-grid-cell-input #template></hci-grid-cell-input>
+        </column-def>
+        <column-def [field]="'address'" [name]="'Address'">
+            <hci-grid-cell-input #template></hci-grid-cell-input>
+        </column-def>
       </hci-grid>
     </div>
     <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
@@ -52,16 +71,6 @@ export class ExternalGridComponent implements OnInit {
 
   public onExternalDataCall1: Function;
   public onExternalDataCall2: Function;
-
-  columns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),
-    new Column({ field: "lastName", name: "Last Name", template: "LabelCell", filterType: "input" }),
-    new Column({ field: "middleName", name: "Middle Name", template: "LabelCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "LabelCell", filterType: "input" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
-    new Column({ field: "gender", name: "Gender", template: "LabelCell", filterType: "select", filterOptions: [ "", "Female", "Male" ] }),
-    new Column({ field: "address", name: "Address", template: "LabelCell" })
-  ];
 
   columns2: Column[] = [
     new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),

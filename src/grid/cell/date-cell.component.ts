@@ -15,8 +15,8 @@ import { CellTemplate } from "./cell-template.component";
            (ngModelChange)="onModelChange($event);"
            (click)="onClick($event)"
            (keydown)="onInputKeyDown($event);"
-           placeholder="Jan 1, 2017"
-           pattern="[A-Z][a-z][a-z] [0-9]{1,2}, [0-9]{4}"
+           placeholder="dateFormat"
+           pattern="pattern"
            class="hci-grid-cell-template hci-grid-cell-date"
            [ngClass]="{ 'focused': focused }" />
   `,
@@ -24,16 +24,13 @@ import { CellTemplate } from "./cell-template.component";
     .hci-grid-cell-date {
       border: none;
     }
-    
-    .hci-grid-cell-date.ng-invalid {
-      background-color: lightcoral;
-    }
   ` ],
   encapsulation: ViewEncapsulation.None,
 })
 export class DateCell extends CellTemplate {
 
-  @Input() dateFormat: string = "mediumDate";
+  @Input() pattern: string = "[A-Z][a-z][a-z] [0-9]{1,2}, [0-9]{4}";
+  @Input() dateFormat: string = "MMM D, YYYY";
 
   @ViewChild("input") input: ElementRef;
 
@@ -87,6 +84,6 @@ export class DateCell extends CellTemplate {
   }
 
   setValue(value: Object) {
-    this.formattedValue = moment((new Date(value))).format("MMM D, YYYY");
+    this.formattedValue = moment((new Date(value))).format(this.dateFormat);
   }
 }

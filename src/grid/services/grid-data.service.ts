@@ -38,8 +38,8 @@ export class GridDataService {
   cellDataUpdateObserved = new Subject<Range>();
 
   constructor(private gridConfigService: GridConfigService) {
-    this.pageInfo.page = 0;
-    this.pageInfo.pageSize = this.gridConfigService.gridConfiguration.pageSize;
+    this.pageInfo.setPage(0);
+    this.pageInfo.setPageSize(this.gridConfigService.gridConfiguration.pageSize);
   }
 
   cellDataUpdate(range: Range) {
@@ -73,11 +73,11 @@ export class GridDataService {
         }
       }
 
-      this.pageInfo.page = 0;
+      this.pageInfo.setPage(0);
 
       this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, (this.gridConfigService.gridConfiguration.externalPaging) ? this.pageInfo : null));
     } else {
-      this.pageInfo.page = 0;
+      this.pageInfo.setPage(0);
       this.initData(true, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, !this.gridConfigService.gridConfiguration.externalPaging);
     }
   }
@@ -164,14 +164,14 @@ export class GridDataService {
 
     let START: number = 0;
     let END: number = this.preparedData.length;
-    this.pageInfo.nDataSize = this.preparedData.length;
+    this.pageInfo.setDataSize(this.preparedData.length);
 
-    if (paginate && this.pageInfo.pageSize > 0) {
-      START = this.pageInfo.page * this.pageInfo.pageSize;
-      END = Math.min(START + this.pageInfo.pageSize, this.pageInfo.nDataSize);
-      this.pageInfo.nPages = Math.ceil(this.pageInfo.nDataSize / this.pageInfo.pageSize);
+    if (paginate && this.pageInfo.getPageSize() > 0) {
+      START = this.pageInfo.getPage() * this.pageInfo.getPageSize();
+      END = Math.min(START + this.pageInfo.getPageSize(), this.pageInfo.getDataSize());
+      this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
     } else if (!this.gridConfigService.gridConfiguration.externalPaging) {
-      this.pageInfo.nPages = 1;
+      this.pageInfo.setNumPages(1);
     }
     this.pageInfoObserved.next(this.pageInfo);
 
@@ -238,8 +238,8 @@ export class GridDataService {
   setInputData(inputData: Array<Object>): boolean {
     this.inputData = inputData;
 
-    if (this.pageInfo.pageSize === -1 && this.inputData.length > 50) {
-      this.pageInfo.pageSize = 10;
+    if (this.pageInfo.getPageSize() === -1 && this.inputData.length > 50) {
+      this.pageInfo.setPageSize(10);
     }
 
     if (this.gridConfigService.gridConfiguration.columnDefinitions === null && this.inputData.length > 0) {
@@ -280,13 +280,13 @@ export class GridDataService {
 
   setPage(mode: number) {
     if (mode === -2) {
-      this.pageInfo.page = 0;
+      this.pageInfo.setPage(0);
     } else if (mode === -1 && this.pageInfo.page > 0) {
-      this.pageInfo.page = this.pageInfo.page - 1;
-    } else if (mode === 1 && this.pageInfo.page < this.pageInfo.nPages - 1) {
-      this.pageInfo.page = this.pageInfo.page + 1;
+      this.pageInfo.setPage(this.pageInfo.getPage() - 1);
+    } else if (mode === 1 && this.pageInfo.getPage() < this.pageInfo.getNumPages() - 1) {
+      this.pageInfo.setPage(this.pageInfo.getPage() + 1);
     } else if (mode === 2) {
-      this.pageInfo.page = this.pageInfo.nPages - 1;
+      this.pageInfo.setPage(this.pageInfo.getNumPages() - 1);
     }
 
     if (this.gridConfigService.gridConfiguration.externalPaging) {
@@ -297,13 +297,13 @@ export class GridDataService {
   }
 
   setPageSize(pageSize: number) {
-    this.pageInfo.pageSize = pageSize;
-    this.pageInfo.page = 0;
+    this.pageInfo.setPageSize(pageSize);
+    this.pageInfo.setPage(0);
 
     if (this.gridConfigService.gridConfiguration.externalPaging) {
       this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.gridConfiguration.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, this.pageInfo.pageSize > 0);
+      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, this.pageInfo.getPageSize() > 0);
     }
   }
 

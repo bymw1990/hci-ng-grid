@@ -1,25 +1,25 @@
 export class FilterInfo {
-  private _field: string = null;
-  private _value: any = null;
+  public field: string = null;
+  public value: any = null;
 
   constructor(field: string, value: any) {
-    this._field = field;
-    this._value = value;
+    this.field = field;
+    this.value = value;
   }
 
-  get field(): string {
-    return this._field;
+  getField(): string {
+    return this.field;
   }
 
-  set field(field: string) {
-    this._field = field;
+  setField(field: string) {
+    this.field = field;
   }
 
-  get value(): any {
-    return this._value;
+  getValue(): any {
+    return this.value;
   }
 
-  set value(value: any) {
-    this._value = value;
+  setValue(value: any) {
+    this.value = value;
   }
 }

@@ -3,37 +3,37 @@ import { PageInfo } from "./page-info";
 import { SortInfo } from "./sort-info";
 
 export class ExternalInfo {
-  private _filter: Array<FilterInfo>;
-  private _sort: SortInfo;
-  private _page: PageInfo;
+  public filter: Array<FilterInfo>;
+  public sort: SortInfo;
+  public page: PageInfo;
 
   constructor(filter: Array<FilterInfo>, sort: SortInfo, page: PageInfo) {
-    this._filter = filter;
-    this._sort = sort;
-    this._page = page;
+    this.filter = filter;
+    this.sort = sort;
+    this.page = page;
   }
 
-  get filter(): Array<FilterInfo> {
-    return this._filter;
+  getFilter(): Array<FilterInfo> {
+    return this.filter;
   }
 
-  set filter(filter: Array<FilterInfo>) {
-    this._filter = filter;
+  setFilter(filter: Array<FilterInfo>) {
+    this.filter = filter;
   }
 
-  get sort(): SortInfo {
-    return this._sort;
+  getSort(): SortInfo {
+    return this.sort;
   }
 
-  set sort(sort: SortInfo) {
-    this._sort = sort;
+  setSort(sort: SortInfo) {
+    this.sort = sort;
   }
 
-  get page(): PageInfo {
-    return this._page;
+  getPage(): PageInfo {
+    return this.page;
   }
 
-  set page(page: PageInfo) {
-    this._page = page;
+  setPage(page: PageInfo) {
+    this.page = page;
   }
 }

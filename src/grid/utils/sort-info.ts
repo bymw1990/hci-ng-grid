@@ -1,20 +1,20 @@
 export class SortInfo {
-  private _asc: boolean = true;
-  private _field: string = null;
+  public asc: boolean = true;
+  public field: string = null;
 
-  get asc(): boolean {
-    return this._asc;
+  getAsc(): boolean {
+    return this.asc;
   }
 
-  set asc(asc: boolean) {
-    this._asc = asc;
+  setAsc(asc: boolean) {
+    this.asc = asc;
   }
 
-  get field(): string {
-    return this._field;
+  getField(): string {
+    return this.field;
   }
 
-  set field(field: string) {
-    this._field = field;
+  setField(field: string) {
+    this.field = field;
   }
 }

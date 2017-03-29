@@ -8,6 +8,7 @@ import { EventMeta } from "../utils/event-meta";
 export class CellTemplate {
 
   value: Object = null;
+  valueValid: boolean = true;
   render: boolean = true;
   format: string = null;
   formatType: string = null;
@@ -26,7 +27,9 @@ export class CellTemplate {
 
   onModelChange(value: Object) {
     this.value = value;
-    this.valueChange.emit(value);
+    if (this.valueValid) {
+      this.valueChange.emit(value);
+    }
   }
 
   onClick(event: MouseEvent) {
