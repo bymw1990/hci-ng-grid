@@ -1,13 +1,13 @@
-// Angular 2
+/*
+ * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
+ */
 import "@angular/platform-browser";
 import "@angular/platform-browser-dynamic";
 import "@angular/core";
 import "@angular/common";
+import "@angular/router";
 
 // RxJS
 import "rxjs";
 
-// Other vendors for example jQuery, Lodash or Bootstrap
-// You can import js, ts, css, sass, ...
-import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.min.css";

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Rx";
 
 import { ExternalData, ExternalInfo } from "hci-ng-grid/index";
+import {PageInfo} from "../../../../src/grid/utils/page-info";
 
 /**
  * Automatically generate different types of data to test filtering/paging and the such for various size data sets.
@@ -13,6 +14,7 @@ export class DataGeneratorService {
   fixedData: Array<Object> = new Array<Object>();
   externalData1: Array<Object> = new Array<Object>();
   externalData2: Array<Object> = new Array<Object>();
+  simpleData4: Array<Object> = new Array<Object>();
 
   private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie" ];
   private _lastNames: string[] = [ "Black", "Brown", "Grey", "Khan", "Smith", "White" ];
@@ -42,6 +44,32 @@ export class DataGeneratorService {
 
   getFixedData(filters: string[], sort: string, asc: boolean): Array<Object> {
     return this.fixedData;
+  }
+
+  generateSimpleData4(size: number) {
+    this.simpleData4 = new Array<Object>();
+    for (var i = 0; i < size; i++) {
+      let j: number = Math.floor(Math.random() * this._firstNames.length);
+      let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let firstName: string = this._firstNames[j];
+      let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
+      let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
+      let city: string = this._cities[Math.floor(Math.random() * this._cities.length)];
+      let addy: number = Math.floor(Math.random() * 9800 + 100);
+      let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
+      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
+
+      this.simpleData4.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone });
+    }
+  }
+
+  getSimpleData4(): Observable<Array<Object>> {
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next(this.simpleData4);
+      }, 5000);
+    });
   }
 
   generateFilteredData(size: number) {
@@ -112,9 +140,12 @@ export class DataGeneratorService {
     if (externalInfo === null) {
       return Observable.create(observer => { observer.next(new ExternalData(this.externalData1, externalInfo)); });
     }
-    let filters: any = externalInfo["_filter"];
-    let sort: any = externalInfo["_sort"];
-    let pageInfo: any = externalInfo["_page"];
+    if (externalInfo.getPage() === null) {
+      externalInfo.setPage(new PageInfo());
+    }
+    let filters: any = externalInfo.getFilter();
+    let sort: any = externalInfo.getSort();
+    let pageInfo: any = externalInfo.getPage();
 
     let filtered: Array<Object> = new Array<Object>();
     if (filters === null) {
@@ -165,11 +196,11 @@ export class DataGeneratorService {
     let pageSize: number = pageInfo["_pageSize"];
 
     let n: number = filtered.length;
-    externalInfo.page.nDataSize = n;
+    externalInfo.getPage().setDataSize(n);
     if (externalInfo.page.pageSize > 0) {
-      externalInfo.page.nPages = Math.ceil(n / pageSize);
+      externalInfo.getPage().setNumPages(Math.ceil(n / pageSize));
     } else {
-      externalInfo.page.nPages = 1;
+      externalInfo.getPage().setNumPages(1);
     }
 
     if (pageSize > 0) {
@@ -214,6 +245,9 @@ export class DataGeneratorService {
     if (externalInfo === null) {
       return new Observable<ExternalData>(observer => observer.next(new ExternalData(this.externalData2, externalInfo)));
     }
+    if (externalInfo.getPage() === null) {
+      externalInfo.setPage(new PageInfo());
+    }
     let filters: any = externalInfo["_filter"];
     let sort: any = externalInfo["_sort"];
 
@@ -256,7 +290,7 @@ export class DataGeneratorService {
       });
     }
 
-    externalInfo.page.nDataSize = filtered.length;
+    externalInfo.getPage().setDataSize(filtered.length);
     return new Observable<ExternalData>(observer => observer.next(new ExternalData(filtered, externalInfo)));
   }
 

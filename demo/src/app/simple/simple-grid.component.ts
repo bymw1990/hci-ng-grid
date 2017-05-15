@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
-
+import { Component, OnInit } from "@angular/core";
 import { Column } from "hci-ng-grid/index";
+
+import { DataGeneratorService } from "../services/data-generator.service";
 
 @Component({
   selector: "simple-grid",
@@ -10,8 +11,14 @@ import { Column } from "hci-ng-grid/index";
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Simple Grid'"
-                [inputData]="simpleData1"
-                [columnDefinitions]="simpleColumns1">
+                [inputData]="simpleData1">
+          <column-def [field]="'lastName'"></column-def>
+          <column-def [field]="'firstName'"></column-def>
+          <column-def [field]="'dob'">
+              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+          </column-def>
+          <column-def [field]="'pcg.nLabs'"></column-def>
+          <column-def [field]="'pcg.nested.nLabPath'"></column-def>
       </hci-grid>
     </div>
     <div style="padding: 20px;">
@@ -43,9 +50,25 @@ import { Column } from "hci-ng-grid/index";
       <hci-grid [inputData]="simpleData3">
       </hci-grid>
     </div>
+    <div style="padding: 20px;">
+        <h2>Simple Grid - Delayed Input</h2>
+    </div>
+    <div style="padding: 20px;">
+        <hci-grid [title]="'Simple Grid Delayed'"
+                  [inputData]="simpleData4">
+            <column-def [field]="'idPatient'" [name]="'ID'" [visible]="false"></column-def>
+            <column-def [field]="'lastName'" [name]="'Last Name'"></column-def>
+            <column-def [field]="'firstName'" [name]="'First Name'"></column-def>
+            <column-def [field]="'dob'" [name]="'Date of Birth'">
+                <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+            </column-def>
+            <column-def [field]="'address'" [name]="'Address 1'"></column-def>
+            <column-def [field]="'citystatezip'" [name]="'Address 2'"></column-def>
+        </hci-grid>
+    </div>
   `
 })
-export class SimpleGridComponent {
+export class SimpleGridComponent implements OnInit {
 
   simpleData1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -54,15 +77,6 @@ export class SimpleGridComponent {
     { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
     { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
-
-  simpleColumns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "LabelCell" })
   ];
 
   simpleData2: Array<Object> = [
@@ -82,5 +96,16 @@ export class SimpleGridComponent {
     { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth" },
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne" }
   ];
+
+  simpleData4: Array<Object> = null;
+
+  constructor(private dataGeneratorService: DataGeneratorService) {}
+
+  ngOnInit() {
+    this.dataGeneratorService.generateSimpleData4(10);
+    this.dataGeneratorService.getSimpleData4().subscribe((simpleData4: Array<Object>) => {
+      this.simpleData4 = simpleData4;
+    });
+  }
 
 }

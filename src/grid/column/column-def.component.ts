@@ -1,7 +1,4 @@
-import { Component, ContentChildren, ElementRef, Input, QueryList } from "@angular/core";
-
-import { CellTemplate } from "../cell/cell-template.component";
-import { DateCell } from "../cell/date-cell.component";
+import { Component, ContentChildren, Input, QueryList } from "@angular/core";
 
 @Component({
     selector: "column-def",
@@ -11,6 +8,7 @@ export class ColumnDefComponent {
     @Input() field: string;
     @Input() name: string = null;
     @Input() width: number = 100;
+    @Input() visible: boolean = true;
     @Input() template: string = "LabelCell";
 
     @ContentChildren("template") templates: QueryList<any>;

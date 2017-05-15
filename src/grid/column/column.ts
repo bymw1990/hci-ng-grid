@@ -34,6 +34,7 @@ export class Column {
       column.name = columnDefs[i].name;
       column.width = columnDefs[i].width;
       column.template = columnDefs[i].template;
+      column.visible = columnDefs[i].visible;
       column.component = columnDefs[i].component;
 
       columns.push(column);

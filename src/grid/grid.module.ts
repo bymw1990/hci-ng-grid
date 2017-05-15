@@ -22,9 +22,10 @@ import { DateCell } from "./cell/date-cell.component";
 import { DatePickerCell } from "./cell/date-picker-cell.component";
 
 @NgModule({
-  imports: [ CommonModule, FormsModule, CellModule ],
-  declarations: [ GridComponent, RowComponent, RowGroupComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe, ColumnDefComponent ],
-  providers: [ ],
-  exports: [ GridComponent, ColumnDefComponent, LabelCell, InputCell, DateCell, DatePickerCell ]
+  imports: [CommonModule, FormsModule, CellModule],
+  declarations: [GridComponent, RowComponent, RowGroupComponent, CellComponent, ColumnHeaderComponent, IsVisiblePipe, IsGroupPipe, IsFixedPipe, IsRowVisiblePipe, ColumnDefComponent],
+  providers: [],
+  entryComponents: [LabelCell, InputCell, DateCell, DatePickerCell],
+  exports: [GridComponent, ColumnDefComponent, LabelCell, InputCell, DateCell, DatePickerCell]
 })
 export class GridModule {}

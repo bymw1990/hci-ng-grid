@@ -4,9 +4,9 @@ import { RowGroup } from "./row-group";
 import { GridConfigService } from "../services/grid-config.service";
 import { GridDataService } from "../services/grid-data.service";
 
-const HIDDEN: number = 0;
+//const HIDDEN: number = 0;
 const COLLAPSED: number = 1;
-const EXPANDED: number = 2;
+//const EXPANDED: number = 2;
 
 /**
  * A Cell represents an i and j position in a grid.  This component binds the grid data for that position.  Rendering of

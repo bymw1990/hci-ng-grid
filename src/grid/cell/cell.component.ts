@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, EventEmitter, Input, Output, Type, ViewChild, ViewContainerRef, ViewEncapsulation } from "@angular/core";
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef,
+  EventEmitter, Input, Output, Type, ViewChild, ViewContainerRef, ViewEncapsulation
+} from "@angular/core";
 
 import { Cell } from "../cell/cell";
 import { Point } from "../utils/point";
@@ -7,7 +10,7 @@ import { GridConfigService } from "../services/grid-config.service";
 import { GridEventService } from "../services/grid-event.service";
 import { GridDataService } from "../services/grid-data.service";
 import { CellTemplate } from "./cell-template.component";
-import { LabelCell } from "./label-cell.component";
+import {LabelCell} from "./label-cell.component";
 
 /**
  * A Cell represents an i, j, and k position in a grid.  This component binds the grid data for that position.  Rendering of
@@ -182,15 +185,19 @@ export class CellComponent {
     if (this.component) {
       var factories = Array.from(this.resolver["_factories"].keys());
       var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.component.constructor.name);
+      //console.info(this.component);
+      //console.info(this.component.constructor.name);
 
       let factory = this.resolver.resolveComponentFactory(factoryClass);
       this.componentRef = this.template.createComponent(factory).instance;
       this.componentRef.setValues(this.component);
     } else {
-      var factories = Array.from(this.resolver["_factories"].keys());
-      var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
+      //var factories = Array.from(this.resolver["_factories"].keys());
+      //var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
+      //console.info(factories);
+      //console.info(this.type);
 
-      let factory = this.resolver.resolveComponentFactory(factoryClass);
+      let factory = this.resolver.resolveComponentFactory(LabelCell);
       this.componentRef = this.template.createComponent(factory).instance;
     }
 

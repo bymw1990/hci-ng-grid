@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": false,
@@ -10,9 +10,10 @@
     "noEmitHelpers": false,
     "declaration": true,
     "outDir": "./",
-    "types": ["node", "core-js", "jasmine"]
+    "types": [ "node", "jasmine", "systemjs" ]
   },
   "exclude": [
-    "node_modules","**/*.d.ts"
+    "node_modules",
+    "**/*.d.ts"
   ]
 }

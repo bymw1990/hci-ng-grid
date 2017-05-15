@@ -3,7 +3,6 @@ import { Subject } from "rxjs/Rx";
 
 import { GridConfigService } from "./grid-config.service";
 import { Cell } from "../cell/cell";
-import { LabelCell } from "../cell/label-cell.component";
 import { Row } from "../row/row";
 import { RowGroup } from "../row/row-group";
 import { Column } from "../column/column";
@@ -223,7 +222,6 @@ export class GridDataService {
     for (var i = 0; i < this.inputData.length; i++) {
       let row: Row = new Row();
       row.key = i;
-      let header: Row = null;
       for (var j = 0; j < columnDefinitions.length; j++) {
         if (columnDefinitions[j].isUtility) {
           row.add(new Cell({value: columnDefinitions[j].defaultValue}));

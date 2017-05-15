@@ -13,7 +13,6 @@ import { Range } from "./utils/range";
 import { Row } from "./row/row";
 import { RowGroup } from "./row/row-group";
 import { Column } from "./column/column";
-import { LabelCell } from "./cell/label-cell.component";
 import { PageInfo } from "./utils/page-info";
 import { ExternalInfo } from "./utils/external-info";
 import { ExternalData } from "./utils/external-data";
@@ -277,6 +276,8 @@ export class GridComponent implements OnChanges {
         this.postInitGridConfiguration();
       }
       this.gridDataService.setInputDataInit();
+      this.postInit();
+    } else {
       this.postInit();
     }
   }
