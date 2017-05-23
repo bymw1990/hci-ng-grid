@@ -163,11 +163,15 @@ export class GridDataService {
 
     let START: number = 0;
     let END: number = this.preparedData.length;
-    this.pageInfo.setDataSize(this.preparedData.length);
 
+    if (!this.gridConfigService.gridConfiguration.externalPaging) {
+      this.pageInfo.setDataSize(this.preparedData.length);
+    }
     if (paginate && this.pageInfo.getPageSize() > 0) {
       START = this.pageInfo.getPage() * this.pageInfo.getPageSize();
       END = Math.min(START + this.pageInfo.getPageSize(), this.pageInfo.getDataSize());
+      this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
+    } else if (this.gridConfigService.gridConfiguration.externalPaging) {
       this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
     } else if (!this.gridConfigService.gridConfiguration.externalPaging) {
       this.pageInfo.setNumPages(1);
