@@ -1,66 +1,46 @@
-/*
- *  Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
- */
+"use strict";
+
 var webpack = require("webpack");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const ProvidePlugin = require("webpack/lib/ProvidePlugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const path = require("path");
 
-/**
- * The webpack bundle configuration for the user demo.
- *
- * @author byoukstetter
- * @author mbyrne
- * @since 8/11/16
- */
 module.exports = function (options) {
     return {
-        devtool: "#inline-source-map",
+        stats: "errors-only",
+
+        devtool: "source-map",
 
         entry: {
-            polyfills: "./src/polyfills.ts",
-            twbs: "bootstrap-loader",
-            vendor: "./src/vendor.ts",
-            app: "./src/main.ts"
+            "main": "./main.ts",
+            "twbs": "bootstrap-loader",
+            "polyfills": "./polyfills.ts",
+            "vendor": "./vendor.ts"
         },
 
         resolve: {
-            extensions: [".js", ".ts"],
-            modules: ["src", "node_modules"]
+            modules: [
+                "node_modules",
+                path.resolve(process.cwd(), "src")
+            ],
+            extensions: [".ts", ".js"]
         },
 
+        context: path.join(process.cwd(), "./src"),
+
         output: {
-            path: __dirname + "/dist",
-            publicPath: "/",
-            filename: "[name].js",
-            chunkFilename: "[id].chunk.js"
+            path: path.join(process.cwd(), "dist"),
+            filename: "[name].bundle.js"
         },
 
         module: {
             rules: [
-                /**
-                 * A loader to transpile our Typescript code to ES5, guided by the tsconfig.json file. Excludes transpiling unit
-                 * and integration test files.
-                 */
                 {
                     test: /\.ts$/,
-                    use: [
-                        {
-                            loader: "@angularclass/hmr-loader"
-                        },
-                        {
-                            loader: "awesome-typescript-loader",
-                            options: {
-                                configFileName: "tsconfig.json"
-                            }
-                        },
-                        {
-                            loader: "angular2-template-loader"
-                        }
-                    ],
-                    exclude: [/\.(spec|e2e)\.ts$/, /node_modules/]
+                    use: ["awesome-typescript-loader", "angular2-template-loader", "angular-router-loader?aot=true&genDir=."]
                 },
                 {
                     test: /\.html$/,
@@ -80,7 +60,14 @@ module.exports = function (options) {
                 },
                 {
                     test: /\.css$/,
-                    loader: ExtractTextPlugin.extract({ fallbackLoader: "style-loader", loader: "css-loader?sourceMap" }),
+                    use: ExtractTextPlugin.extract({
+                        fallback: "style-loader",
+                        use: [
+                            {
+                                loader: "css-loader?sourceMap"
+                            }
+                        ]
+                    })
                 },
                 {
                     test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -105,26 +92,41 @@ module.exports = function (options) {
             ]
         },
 
-        devServer: {
-            historyApiFallback: true,
-            stats: "minimal"
-        },
-
         plugins: [
+            new webpack.DefinePlugin({
+                "process.env.NODE_ENV": "'production'"
+            }),
+
             new webpack.optimize.CommonsChunkPlugin({
                 name: ["app", "vendor", "twbs", "polyfills"]
             }),
-            // generating html
-            new HtmlWebpackPlugin({
-                template: "src/index.html"
+
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    output: {
+                        comments: false
+                    },
+                    mangle: false
+                }
             }),
-            // static assets
+
+            new webpack.ProgressPlugin(),
+
+            new webpack.ContextReplacementPlugin(
+                /angular(\\|\/)core(\\|\/)@angular/,
+                path.join(process.cwd(), "src")
+            ),
+
+            new HtmlWebpackPlugin({
+                template: "index.html",
+            }),
+
             new CopyWebpackPlugin([
                 {
-                    from: "src/favicon.ico",
-                    to: "favicon.ico"
+                    from: "favicon.ico"
                 }
             ]),
+
             new ExtractTextPlugin("[name].css"),
 
             new webpack.ProvidePlugin({
@@ -142,6 +144,18 @@ module.exports = function (options) {
                 Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
                 Util: "exports-loader?Util!bootstrap/js/dist/util"
             })
-        ]
+        ],
+
+        devServer: {
+            contentBase: "./src",
+            port: 3000,
+            inline: true,
+            historyApiFallback: true,
+            stats: "errors-only",
+            watchOptions: {
+                aggregateTimeout: 300,
+                poll: 500
+            }
+        }
     };
 }

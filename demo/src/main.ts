@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import {platformBrowser} from "@angular/platform-browser";
 
-import { AppModule } from "./app/app.module";
+import {AppModuleNgFactory} from "./app/app.module.ngfactory";
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+platformBrowser().bootstrapModuleFactory(AppModuleNgFactory);

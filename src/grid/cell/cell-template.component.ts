@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { EventMeta } from "../utils/event-meta";
 
 @Component({
-  selector: "hci-cell-template-abstract"
+  selector: "hci-cell-template-abstract",
+  template: "<ng-template></ng-template>"
 })
 export class CellTemplate {
 

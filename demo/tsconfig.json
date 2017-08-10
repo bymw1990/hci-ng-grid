@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "es2015",
     "lib": [
       "es2015",
@@ -18,12 +18,14 @@
     ],
     "types": [
       "node",
-      "jasmine"]
+      "jasmine"
+    ]
   },
   "exclude": [
     "node_modules",
     "dist",
     "src/**/*.spec.ts",
-    "src/**/*.e2e.ts"
+    "src/**/*.e2e.ts",
+    "**/*.ngfactory.ts"
   ]
 }

@@ -18,8 +18,7 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
         To simulate an api call, a delay of 1 s has been added.
     </div>
     <div style="padding: 20px;">
-      <hci-grid [columnDefinitions]="columns1"
-                [onExternalDataCall]="onExternalDataCall1"
+      <hci-grid [onExternalDataCall]="onExternalDataCall1"
                 [externalFiltering]="true"
                 [externalSorting]="true"
                 [externalPaging]="true"

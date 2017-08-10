@@ -1,19 +1,38 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "commonjs",
+    "module": "ES2015",
     "moduleResolution": "node",
-    "sourceMap": false,
+    "sourceMap": true,
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "removeComments": false,
     "noImplicitAny": false,
-    "noEmitHelpers": false,
-    "declaration": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "node"
+    ],
     "outDir": "./",
-    "types": [ "node", "jasmine", "systemjs" ]
+    "rootDir": "./"
   },
   "exclude": [
     "node_modules",
-    "**/*.d.ts"
-  ]
+    "demo",
+    "dist",
+    "src/**/*.spec.ts"
+  ],
+  "baseUrl": "./src",
+  "files": [
+    "./index.ts"
+  ],
+  "angularCompilerOptions": {
+    "genDir": "dist",
+    "debug": false,
+    "skipMetadataEmit" : false,
+    "strictMetadataEmit": false
+  }
 }
