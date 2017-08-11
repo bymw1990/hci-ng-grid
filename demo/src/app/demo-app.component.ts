@@ -13,7 +13,7 @@ import { Component } from "@angular/core";
 @Component({
   selector: "app",
   template: `
-    <div style="background-color: #ddddff; border-bottom: black 1px solid;">
+    <div style="background-color: #ddddff; border-bottom: black 1px solid; padding-top: 15px;">
       <div style="padding: 10px;">
         <h1>hci-ng-grid-demo</h1>
       </div>

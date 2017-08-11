@@ -78,7 +78,15 @@ export class GridEventService {
     }
     this._currentLocation = location;
 
+    let tries: number = this.gridConfigService.gridConfiguration.columnDefinitions.length;
     do {
+      if (tries === 0) {
+        this._currentLocation.i = 0;
+        this._currentLocation.j = 0;
+        this._currentLocation.k = 0;
+        break;
+      }
+
       if (dy > 0 && this.gridDataService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + dy) {
         this._currentLocation.i = this._currentLocation.i + dy;
         this._currentLocation.j = 0;
@@ -119,6 +127,8 @@ export class GridEventService {
           }
         }
       }
+
+      tries = tries - 1;
     } while (this._currentLocation.k >= 0 && !this.gridConfigService.gridConfiguration.columnDefinitions[this._currentLocation.k].visible);
 
     if (this.gridDataService.getRowGroup(this._currentLocation.i) === null) {
