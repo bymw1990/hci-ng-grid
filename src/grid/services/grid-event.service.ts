@@ -97,7 +97,7 @@ export class GridEventService {
         this._currentLocation.k = this._currentLocation.k + dx;
         this._currentLocation.i = Math.max(0, this._currentLocation.i);
         this._currentLocation.j = Math.max(0, this._currentLocation.j);
-        this._currentLocation.k = Math.max(0, this._currentLocation.k);
+        //this._currentLocation.k = Math.max(0, this._currentLocation.k);
 
         if (this._currentLocation.k === this.nColumns) {
           this._currentLocation.k = 0;
@@ -107,6 +107,15 @@ export class GridEventService {
             this._currentLocation.j = 0;
           } else {
             this._currentLocation.j = this._currentLocation.j + 1;
+          }
+        } else if (this._currentLocation.k < 0) {
+          this._currentLocation.k = this.gridConfigService.gridConfiguration.columnDefinitions.length - 1;
+          if (this._currentLocation.j > 0) {
+            this._currentLocation.j = this._currentLocation.j - 1;
+          } else if (this._currentLocation.i === 0) {
+            this._currentLocation.k = this.gridConfigService.gridConfiguration.columnDefinitions.length - 1;
+          } else {
+            this._currentLocation.i = this._currentLocation.i - 1;
           }
         }
       }

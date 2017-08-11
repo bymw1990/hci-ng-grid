@@ -185,18 +185,18 @@ export class CellComponent {
     if (this.component) {
       var factories = Array.from(this.resolver["_factories"].keys());
       var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.component.constructor.name);
-      //console.info(this.component);
-      //console.info(this.component.constructor.name);
-
       let factory = this.resolver.resolveComponentFactory(factoryClass);
+
+      this.componentRef = this.template.createComponent(factory).instance;
+      this.componentRef.setValues(this.component);
+    } else if (this.type) {
+      var factories = Array.from(this.resolver["_factories"].keys());
+      var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
+      let factory = this.resolver.resolveComponentFactory(factoryClass);
+
       this.componentRef = this.template.createComponent(factory).instance;
       this.componentRef.setValues(this.component);
     } else {
-      //var factories = Array.from(this.resolver["_factories"].keys());
-      //var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
-      //console.info(factories);
-      //console.info(this.type);
-
       let factory = this.resolver.resolveComponentFactory(LabelCell);
       this.componentRef = this.template.createComponent(factory).instance;
     }
