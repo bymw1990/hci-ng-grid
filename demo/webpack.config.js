@@ -16,7 +16,6 @@ module.exports = function (options) {
 
         entry: {
             "main": "./main.ts",
-            "twbs": "bootstrap-loader",
             "polyfills": "./polyfills.ts",
             "vendor": "./vendor.ts"
         },
@@ -53,10 +52,6 @@ module.exports = function (options) {
                 {
                     test: /\.scss$/,
                     use: ["raw-loader", "sass-loader"]
-                },
-                {
-                    test: /bootstrap\/dist\/js\/umd\//,
-                    use: "imports-loader?jQuery=jquery"
                 },
                 {
                     test: /\.css$/,
@@ -98,7 +93,7 @@ module.exports = function (options) {
             }),
 
             new webpack.optimize.CommonsChunkPlugin({
-                name: ["app", "vendor", "twbs", "polyfills"]
+                name: ["app", "vendor", "polyfills"]
             }),
 
             new UglifyJsPlugin({
@@ -127,23 +122,7 @@ module.exports = function (options) {
                 }
             ]),
 
-            new ExtractTextPlugin("[name].css"),
-
-            new webpack.ProvidePlugin({
-                $: "jquery",
-                jQuery: "jquery",
-                "window.jQuery": "jquery",
-                Tether: "tether",
-                "window.Tether": "tether",
-                Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
-                Alert: "exports-loader?Alert!bootstrap/js/dist/alert",
-                Button: "exports-loader?Button!bootstrap/js/dist/button",
-                Collapse: "exports-loader?Collapse!bootstrap/js/dist/collapse",
-                Dropdown: "exports-loader?Dropdown!bootstrap/js/dist/dropdown",
-                Modal: "exports-loader?Modal!bootstrap/js/dist/modal",
-                Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
-                Util: "exports-loader?Util!bootstrap/js/dist/util"
-            })
+            new ExtractTextPlugin("[name].css")
         ],
 
         devServer: {
