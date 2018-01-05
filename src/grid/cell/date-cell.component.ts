@@ -84,6 +84,6 @@ export class DateCell extends CellTemplate {
   }
 
   setValue(value: Object) {
-    this.formattedValue = moment((new Date(value))).format(this.dateFormat);
+    this.formattedValue = moment((new Date(<string>value))).format(this.dateFormat);
   }
 }

@@ -148,7 +148,7 @@ export class DatePickerCell extends CellTemplate {
     }
 
     setValue(value: Object) {
-        let date: Date = new Date(value);
+        let date: Date = new Date(<string>value);
         this.ngbValue = {
             year: date.getFullYear(),
             month: date.getMonth() + 1,
