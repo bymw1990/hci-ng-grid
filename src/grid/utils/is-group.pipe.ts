@@ -7,6 +7,10 @@ import { Column } from "../column/column";
 })
 export class IsGroupPipe implements PipeTransform {
   transform(list) {
-    return list.filter((o: Column) => o.isGroup || o.isUtility);
+    if (list === undefined) {
+      return list;
+    } else {
+      return list.filter((o: Column) => o.isGroup || o.isUtility);
+    }
   }
 }

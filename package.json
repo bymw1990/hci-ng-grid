@@ -11,8 +11,8 @@
     "doc": "npm run compodoc -- src -p tsconfig.json -d docs -n 'hci-ng-grid'",
     "karma": "karma",
     "ngc": "ngc",
-    "prepublish": "npm run build",
-    "push": "npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json)\" demo/node_modules/hci-ng-grid",
+    "npmPub": "npm run build && npm run copyfiles -- package.json build/ && cd build && npm publish",
+    "push": "cd build && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && cd ..",
     "rimraf": "rimraf"
   },
   "main": "index.js",

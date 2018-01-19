@@ -7,6 +7,10 @@ import { Column } from "../column/column";
 })
 export class IsVisiblePipe implements PipeTransform {
   transform(list) {
-    return list.filter((o: Column) => o.visible);
+    if (list === undefined) {
+      return list;
+    } else {
+      return list.filter((o: Column) => o.visible);
+    }
   }
 }

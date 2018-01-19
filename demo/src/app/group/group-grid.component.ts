@@ -14,6 +14,7 @@ import { Column } from "hci-ng-grid/index";
     <div style="padding: 20px;">
       <hci-grid [title]="'Group Grid'"
                 [inputData]="groupData"
+                [hci-grid-config]
                 [columnDefinitions]="groupColumns"
                 [groupBy]="['firstName', 'lastName']"
                 [cellSelect]="true">

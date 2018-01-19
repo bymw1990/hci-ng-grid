@@ -48,7 +48,7 @@ export class RowComponent {
 
   ngOnInit() {
     //console.log("RowComponent.ngOnInit " + this.i + " " + this.j);
-    this.columns = this.gridConfigService.gridConfiguration.columnDefinitions;
+    this.columns = this.gridConfigService.columnDefinitions;
   }
 
   onDoubleClick(event: Event) {

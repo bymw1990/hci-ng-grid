@@ -8,6 +8,10 @@ import { Column } from "../column/column";
 })
 export class IsFixedPipe implements PipeTransform {
   transform(list: Array<Column>, fixed: boolean) {
-    return list.filter((o: Column) => o.isFixed === fixed);
+    if (list === undefined) {
+      return list;
+    } else {
+      return list.filter((o: Column) => o.isFixed === fixed);
+    }
   }
 }

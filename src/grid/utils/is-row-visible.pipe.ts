@@ -7,6 +7,10 @@ import { Row } from "../row/row";
 })
 export class IsRowVisiblePipe implements PipeTransform {
   transform(list) {
-    return list.filter((o: Row) => o.visible);
+    if (list === undefined) {
+      return list;
+    } else {
+      return list.filter((o: Row) => o.visible);
+    }
   }
 }

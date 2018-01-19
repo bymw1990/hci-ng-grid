@@ -38,7 +38,7 @@ export class GridDataService {
 
   constructor(private gridConfigService: GridConfigService) {
     this.pageInfo.setPage(0);
-    this.pageInfo.setPageSize(this.gridConfigService.gridConfiguration.pageSize);
+    this.pageInfo.setPageSize(this.gridConfigService.pageSize);
   }
 
   cellDataUpdate(range: Range) {
@@ -64,7 +64,7 @@ export class GridDataService {
    * Paginate
    */
   filter() {
-    if(this.gridConfigService.gridConfiguration.externalFiltering) {
+    if(this.gridConfigService.externalFiltering) {
       this.filterInfo = new Array<FilterInfo>();
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].filterValue !== null && this.columnDefinitions[j].filterValue !== "") {
@@ -74,10 +74,10 @@ export class GridDataService {
 
       this.pageInfo.setPage(0);
 
-      this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, (this.gridConfigService.gridConfiguration.externalPaging) ? this.pageInfo : null));
+      this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.gridConfigService.externalSorting) ? this.sortInfo : null, (this.gridConfigService.externalPaging) ? this.pageInfo : null));
     } else {
       this.pageInfo.setPage(0);
-      this.initData(true, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, !this.gridConfigService.gridConfiguration.externalPaging);
+      this.initData(true, !this.gridConfigService.externalFiltering, !this.gridConfigService.externalSorting, !this.gridConfigService.externalPaging);
     }
   }
 
@@ -133,10 +133,10 @@ export class GridDataService {
   handleValueChange(i: number, j: number, key: number, k: number, value: any) {
     if (j === -1) {
       for (var n = 0; n < this.gridData[i].length(); n++) {
-        this.setInputDataValue(this.gridData[i].get(n).key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
+        this.setInputDataValue(this.gridData[i].get(n).key, this.gridConfigService.columnDefinitions[k].field, value);
       }
     } else {
-      this.setInputDataValue(key, this.gridConfigService.gridConfiguration.columnDefinitions[k].field, value);
+      this.setInputDataValue(key, this.gridConfigService.columnDefinitions[k].field, value);
     }
   }
 
@@ -146,7 +146,7 @@ export class GridDataService {
    * @param inputData
    */
   initData(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
-    this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
+    this.columnDefinitions = this.gridConfigService.columnDefinitions;
     if (this.inputData === null) {
       return;
     }
@@ -164,28 +164,28 @@ export class GridDataService {
     let START: number = 0;
     let END: number = this.preparedData.length;
 
-    if (!this.gridConfigService.gridConfiguration.externalPaging) {
+    if (!this.gridConfigService.externalPaging) {
       this.pageInfo.setDataSize(this.preparedData.length);
     }
     if (paginate && this.pageInfo.getPageSize() > 0) {
       START = this.pageInfo.getPage() * this.pageInfo.getPageSize();
       END = Math.min(START + this.pageInfo.getPageSize(), this.pageInfo.getDataSize());
       this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
-    } else if (this.gridConfigService.gridConfiguration.externalPaging) {
+    } else if (this.gridConfigService.externalPaging) {
       this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
-    } else if (!this.gridConfigService.gridConfiguration.externalPaging) {
+    } else if (!this.gridConfigService.externalPaging) {
       this.pageInfo.setNumPages(1);
     }
     this.pageInfoObserved.next(this.pageInfo);
 
     this.gridData = new Array<RowGroup>();
-    if (this.gridConfigService.gridConfiguration.groupBy !== null) {
+    if (this.gridConfigService.groupBy !== null) {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
       // lay next to each other
       let groupColumns: Array<number> = new Array<number>();
-      for (var i = 0; i < this.gridConfigService.gridConfiguration.columnDefinitions.length; i++) {
-        if (this.gridConfigService.gridConfiguration.columnDefinitions[i].isGroup) {
+      for (var i = 0; i < this.gridConfigService.columnDefinitions.length; i++) {
+        if (this.gridConfigService.columnDefinitions[i].isGroup) {
           groupColumns.push(i);
         }
       }
@@ -221,7 +221,7 @@ export class GridDataService {
 
   prepareData() {
     this.preparedData = new Array<any>();
-    let columnDefinitions: Column[] = this.gridConfigService.gridConfiguration.columnDefinitions;
+    let columnDefinitions: Column[] = this.gridConfigService.columnDefinitions;
 
     for (var i = 0; i < this.inputData.length; i++) {
       let row: Row = new Row();
@@ -244,12 +244,12 @@ export class GridDataService {
       this.pageInfo.setPageSize(10);
     }
 
-    if (this.gridConfigService.gridConfiguration.columnDefinitions === null && this.inputData.length > 0) {
+    if (this.gridConfigService.columnDefinitions === null && this.inputData.length > 0) {
       this.columnDefinitions = new Array<Column>();
       let keys: Array<string> = Object.keys(this.inputData[0]);
       for (var i = 0; i < keys.length; i++) {
         this.columnDefinitions.push(new Column({ field: keys[i], template: "LabelCell" }));
-        this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
+        this.gridConfigService.columnDefinitions = this.columnDefinitions;
       }
       return true;
     } else {
@@ -258,7 +258,7 @@ export class GridDataService {
   }
 
   setInputDataInit() {
-    this.initData(true, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, !this.gridConfigService.gridConfiguration.externalPaging);
+    this.initData(true, !this.gridConfigService.externalFiltering, !this.gridConfigService.externalSorting, !this.gridConfigService.externalPaging);
   }
 
   /**
@@ -291,10 +291,10 @@ export class GridDataService {
       this.pageInfo.setPage(this.pageInfo.getNumPages() - 1);
     }
 
-    if (this.gridConfigService.gridConfiguration.externalPaging) {
-      this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.gridConfiguration.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, this.pageInfo));
+    if (this.gridConfigService.externalPaging) {
+      this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, true);
+      this.initData(false, !this.gridConfigService.externalFiltering, !this.gridConfigService.externalSorting, true);
     }
   }
 
@@ -302,10 +302,10 @@ export class GridDataService {
     this.pageInfo.setPageSize(pageSize);
     this.pageInfo.setPage(0);
 
-    if (this.gridConfigService.gridConfiguration.externalPaging) {
-      this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.gridConfiguration.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.gridConfiguration.externalSorting) ? this.sortInfo : null, this.pageInfo));
+    if (this.gridConfigService.externalPaging) {
+      this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.externalFiltering) ? this.filterInfo : null, (this.gridConfigService.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, !this.gridConfigService.gridConfiguration.externalSorting, this.pageInfo.getPageSize() > 0);
+      this.initData(false, !this.gridConfigService.externalFiltering, !this.gridConfigService.externalSorting, this.pageInfo.getPageSize() > 0);
     }
   }
 
@@ -325,17 +325,17 @@ export class GridDataService {
     }
     this.sortInfoObserved.next(this.sortInfo);
 
-    if(this.gridConfigService.gridConfiguration.externalSorting) {
-      this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.gridConfiguration.externalFiltering) ? this.filterInfo : null, this.sortInfo, (this.gridConfigService.gridConfiguration.externalPaging) ? this.pageInfo : null));
+    if(this.gridConfigService.externalSorting) {
+      this.externalInfoObserved.next(new ExternalInfo((this.gridConfigService.externalFiltering) ? this.filterInfo : null, this.sortInfo, (this.gridConfigService.externalPaging) ? this.pageInfo : null));
     } else {
-      this.initData(false, !this.gridConfigService.gridConfiguration.externalFiltering, true, !this.gridConfigService.gridConfiguration.externalPaging);
+      this.initData(false, !this.gridConfigService.externalFiltering, true, !this.gridConfigService.externalPaging);
     }
   }
 
   sortPreparedData() {
     let sortColumns: Array<number> = new Array<number>();
 
-    if (this.sortInfo.field === null && this.gridConfigService.gridConfiguration.groupBy !== null) {
+    if (this.sortInfo.field === null && this.gridConfigService.groupBy !== null) {
       this.sortInfo.field = "GROUP_BY";
     }
 

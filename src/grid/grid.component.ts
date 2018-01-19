@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation } from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation} from "@angular/core";
 
-import { GridDataService } from "./services/grid-data.service";
-import { GridEventService } from "./services/grid-event.service";
-import { GridConfigService } from "./services/grid-config.service";
-import { GridMessageService } from "./services/grid-message.service";
-import { GridConfiguration } from "./utils/grid-configuration";
-import { Point } from "./utils/point";
-import { Range } from "./utils/range";
-import { Row } from "./row/row";
-import { RowGroup } from "./row/row-group";
-import { Column } from "./column/column";
-import { PageInfo } from "./utils/page-info";
-import { ExternalInfo } from "./utils/external-info";
-import { ExternalData } from "./utils/external-data";
-import { ColumnDefComponent } from "./column/column-def.component";
+import {HciGridConfigDirective} from "./config/config.directive";
+import {GridDataService} from "./services/grid-data.service";
+import {GridEventService} from "./services/grid-event.service";
+import {GridConfigService} from "./services/grid-config.service";
+import {GridMessageService} from "./services/grid-message.service";
+import {Point} from "./utils/point";
+import {Range} from "./utils/range";
+import {Row} from "./row/row";
+import {RowGroup} from "./row/row-group";
+import {Column} from "./column/column";
+import {PageInfo} from "./utils/page-info";
+import {ExternalInfo} from "./utils/external-info";
+import {ExternalData} from "./utils/external-data";
+import {ColumnDefComponent} from "./column/column-def.component";
 
 /**
- * Thoughts...
+ * Thoughts..
  * data or click represented by three ints
  * i = rowGroup, j = subRow, k = col
  * if no grouping, then j always 0.
@@ -34,7 +34,11 @@ import { ColumnDefComponent } from "./column/column-def.component";
  */
 @Component({
   selector: "hci-grid",
-  providers: [ GridDataService, GridEventService, GridConfigService, GridMessageService ],
+  providers: [
+    GridDataService,
+    GridEventService,
+    GridConfigService,
+    GridMessageService],
   template: `
     <div (keydown)="onKeyDown($event);">
       <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy">
@@ -102,7 +106,7 @@ import { ColumnDefComponent } from "./column/column-def.component";
       <div *ngIf="pageSize > 0"
            style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
         <span style="float: left; font-weight: bold;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.numPages }}</span>
-        <span style="text-align; middle;">
+        <span style="text-align: center;">
           <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
           <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-backward"></i></span>
           <select [ngModel]="pageSize"
@@ -117,6 +121,7 @@ import { ColumnDefComponent } from "./column/column-def.component";
     </div>
   `,
   styles: [ `
+    
     .hci-grid-header {
       background-color: transparent;
       color: black;
@@ -127,6 +132,7 @@ import { ColumnDefComponent } from "./column/column-def.component";
       font-weight: bold;
       font-size: large;
     }
+    
     .hci-grid-column-header {
       display: inline-block;
       padding: 5px;
@@ -136,25 +142,31 @@ import { ColumnDefComponent } from "./column/column-def.component";
       color: black;
       vertical-align: top;
     }
+    
     .hci-grid-row-height {
       height: 30px;
     }
+    
     .hci-grid-row-height-filter {
       height: 60px;
     }
+    
     .hci-grid-busy {
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.2);
     }
+    
     .hci-grid-busy-div {
       position: fixed;
       margin-left: 50%;
       margin-top: 5%;
     }
+    
     .hci-grid-busy-icon {
       color: red;
     }
+    
   ` ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -166,22 +178,10 @@ export class GridComponent implements OnChanges {
   @Input() title: string = null;
   @Input() inputData: Object[] = null;
 
-  // Grid Configuration
-  @Input() cellSelect: boolean = false;
-  @Input() columnDefinitions: Column[] = null;
   @Input() onAlert: Function;
   @Input() onExternalDataCall: Function;
-  @Input() externalFiltering: boolean = false;
-  @Input() externalPaging: boolean = false;
-  @Input() externalSorting: boolean = false;
-  @Input() fixedColumns: string[];
-  @Input() gridConfiguration: GridConfiguration;
-  @Input() groupBy: string[];
   @Input() level: string = null;
   @Input() onRowDoubleClick: Function;
-  @Input() rowSelect: boolean = false;
-  @Input() pageSize: number = -1;
-  @Input() pageSizes: number[] = [ 10, 25, 50 ];
 
   @ContentChildren(ColumnDefComponent) columnDefComponents: QueryList<ColumnDefComponent>;
 
@@ -193,6 +193,7 @@ export class GridComponent implements OnChanges {
   initialized: boolean = false;
   columnHeaders: boolean = false;
   busy: boolean = false;
+  pageSize: number = 10;
 
   constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
 
@@ -246,7 +247,7 @@ export class GridComponent implements OnChanges {
     /* If onRowDoubleClick is provided, then listen and send to function. */
     if (this.onRowDoubleClick) {
       this.gridDataService.doubleClickObserved.subscribe((row: Row) => {
-        let keys: number[] = this.gridConfigService.gridConfiguration.getKeyColumns();
+        let keys: number[] = this.gridConfigService.getKeyColumns();
         if (keys.length === 0) {
           return;
         } else {
@@ -272,7 +273,7 @@ export class GridComponent implements OnChanges {
       });
     } else if (this.inputData) {
       if (this.gridDataService.setInputData(this.inputData)) {
-        this.gridConfigService.gridConfiguration.init();
+        this.gridConfigService.init();
         this.postInitGridConfiguration();
       }
       this.gridDataService.setInputDataInit();
@@ -318,66 +319,23 @@ export class GridComponent implements OnChanges {
   }
 
   initGridConfiguration() {
-    if (this.gridConfiguration) {
-      this.gridConfigService.gridConfiguration = this.gridConfiguration;
-    }
-
-    /* If columns are defined in the template, then use those and disregard those defined in typescript (if they also exist). */
-    if (this.columnDefComponents && this.columnDefComponents.length > 0) {
-      this.columnDefinitions = Column.getColumns(this.columnDefComponents);
-    }
-    if (this.columnDefinitions) {
-      for (var k = 0; k < this.columnDefinitions.length; k++) {
-        if (this.columnDefinitions[k].template === null) {
-          this.columnDefinitions[k].template = "LabelCell";
-        }
-      }
-      this.gridConfigService.gridConfiguration.columnDefinitions = this.columnDefinitions;
-    }
-    if (this.cellSelect) {
-      this.gridConfigService.gridConfiguration.cellSelect = this.cellSelect;
-    }
-    if (this.fixedColumns) {
-      this.gridConfigService.gridConfiguration.fixedColumns = this.fixedColumns;
-    }
-    if (this.groupBy) {
-      this.gridConfigService.gridConfiguration.groupBy = this.groupBy;
-    }
-    if (this.externalFiltering) {
-      this.gridConfigService.gridConfiguration.externalFiltering = this.externalFiltering;
-    }
-    if (this.externalSorting) {
-      this.gridConfigService.gridConfiguration.externalSorting = this.externalSorting;
-    }
-    if (this.externalPaging) {
-      this.gridConfigService.gridConfiguration.externalPaging = this.externalPaging;
-    }
-    if (this.rowSelect) {
-      this.gridConfigService.gridConfiguration.rowSelect = this.rowSelect;
-    }
-    if (this.pageSize) {
-      this.gridConfigService.gridConfiguration.pageSize = this.pageSize;
-      this.gridDataService.pageInfo.setPageSize(this.pageSize);
-    }
-
-    this.gridConfigService.gridConfiguration.init();
+    this.gridConfigService.init();
     this.postInitGridConfiguration();
   }
 
   postInitGridConfiguration() {
-    if (this.gridConfigService.gridConfiguration.columnDefinitions !== null) {
-      this.columnHeaders = this.gridConfigService.gridConfiguration.columnHeaders;
+    if (this.gridConfigService.columnDefinitions !== null) {
+      this.columnHeaders = this.gridConfigService.columnHeaders;
 
-      if (this.gridConfigService.gridConfiguration.fixedColumns != null) {
-        this.nFixedColumns = this.gridConfigService.gridConfiguration.fixedColumns.length;
+      if (this.gridConfigService.fixedColumns != null) {
+        this.nFixedColumns = this.gridConfigService.fixedColumns.length;
       }
-      this.nColumns = this.gridConfigService.gridConfiguration.columnDefinitions.length;
-      this.columnDefinitions = this.gridConfigService.gridConfiguration.columnDefinitions;
+      this.nColumns = this.gridConfigService.columnDefinitions.length;
       this.gridEventService.setNColumns(this.nColumns);
       this.fixedMinWidth = 0;
-      for (var i = 0; i < this.columnDefinitions.length; i++) {
-        if (this.columnDefinitions[i].isFixed) {
-          this.fixedMinWidth = this.fixedMinWidth + this.columnDefinitions[i].minWidth;
+      for (var i = 0; i < this.gridConfigService.columnDefinitions.length; i++) {
+        if (this.gridConfigService.columnDefinitions[i].isFixed) {
+          this.fixedMinWidth = this.fixedMinWidth + this.gridConfigService.columnDefinitions[i].minWidth;
         }
       }
     }

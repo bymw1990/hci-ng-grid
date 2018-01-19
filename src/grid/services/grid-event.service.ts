@@ -29,7 +29,7 @@ export class GridEventService {
   }
 
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
-    if (!this.gridConfigService.gridConfiguration.cellSelect) {
+    if (!this.gridConfigService.cellSelect) {
       return;
     }
 
@@ -46,7 +46,7 @@ export class GridEventService {
   }
 
   setSelectedRange(location: Point, eventMeta: EventMeta) {
-    if (!this.gridConfigService.gridConfiguration.cellSelect) {
+    if (!this.gridConfigService.cellSelect) {
       return;
     }
     this._currentLocation = location;
@@ -73,12 +73,12 @@ export class GridEventService {
    * @param dy
    */
   arrowFrom(location: Point, dx: number, dy: number, eventMeta: EventMeta) {
-    if (!this.gridConfigService.gridConfiguration.cellSelect) {
+    if (!this.gridConfigService.cellSelect) {
       return;
     }
     this._currentLocation = location;
 
-    let tries: number = this.gridConfigService.gridConfiguration.columnDefinitions.length;
+    let tries: number = this.gridConfigService.columnDefinitions.length;
     do {
       if (tries === 0) {
         this._currentLocation.i = 0;
@@ -117,11 +117,11 @@ export class GridEventService {
             this._currentLocation.j = this._currentLocation.j + 1;
           }
         } else if (this._currentLocation.k < 0) {
-          this._currentLocation.k = this.gridConfigService.gridConfiguration.columnDefinitions.length - 1;
+          this._currentLocation.k = this.gridConfigService.columnDefinitions.length - 1;
           if (this._currentLocation.j > 0) {
             this._currentLocation.j = this._currentLocation.j - 1;
           } else if (this._currentLocation.i === 0) {
-            this._currentLocation.k = this.gridConfigService.gridConfiguration.columnDefinitions.length - 1;
+            this._currentLocation.k = this.gridConfigService.columnDefinitions.length - 1;
           } else {
             this._currentLocation.i = this._currentLocation.i - 1;
           }
@@ -129,7 +129,7 @@ export class GridEventService {
       }
 
       tries = tries - 1;
-    } while (this._currentLocation.k >= 0 && !this.gridConfigService.gridConfiguration.columnDefinitions[this._currentLocation.k].visible);
+    } while (this._currentLocation.k >= 0 && !this.gridConfigService.columnDefinitions[this._currentLocation.k].visible);
 
     if (this.gridDataService.getRowGroup(this._currentLocation.i) === null) {
       this._currentLocation = new Point(-1, 0, -1);

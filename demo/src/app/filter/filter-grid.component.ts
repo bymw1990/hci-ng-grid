@@ -16,6 +16,7 @@ import { Column } from "hci-ng-grid/index";
     <div style="padding: 20px;">
       <hci-grid [title]="'Filter Grid'"
                 [inputData]="filteredData"
+                [hci-grid-config]
                 [columnDefinitions]="filteredColumns">
       </hci-grid>
     </div>

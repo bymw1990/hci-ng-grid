@@ -78,9 +78,9 @@ export class CellComponent {
   constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService, private changeDetectorRef: ChangeDetectorRef) {}
 
   ngAfterContentInit() {
-    this.type = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].template;
-    this.component = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].component;
-    this.format = this.gridConfigService.gridConfiguration.columnDefinitions[this.k].format;
+    this.type = this.gridConfigService.columnDefinitions[this.k].template;
+    this.component = this.gridConfigService.columnDefinitions[this.k].component;
+    this.format = this.gridConfigService.columnDefinitions[this.k].format;
     this.isViewInitialized = true;
     this.createComponent();
 
@@ -95,12 +95,12 @@ export class CellComponent {
       }
     });
 
-    if (this.gridConfigService.gridConfiguration.cellSelect) {
+    if (this.gridConfigService.cellSelect) {
       this.gridEventService.getSelecetdRangeObservable().subscribe((range) => {
         if (range === null) {
           this.onFocusOut();
         } else if (range.contains(new Point(this.i, this.j, this.k))) {
-          if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
+          if (this.gridConfigService.columnDefinitions[this.k].visible) {
             this.onFocus();
           }
         } else {
@@ -112,7 +112,7 @@ export class CellComponent {
         if (location === null) {
           this.onFocusOut();
         } else if (location.equalsIJK(this.i, this.j, this.k)) {
-          if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].visible) {
+          if (this.gridConfigService.columnDefinitions[this.k].visible) {
             this.onFocus();
           } else {
             this.gridEventService.arrowFrom(location, 1, 0, null);
@@ -127,7 +127,7 @@ export class CellComponent {
   }
 
   cellClick(event: MouseEvent) {
-    if (this.gridConfigService.gridConfiguration.cellSelect && !this.componentRef.handleClick) {
+    if (this.gridConfigService.cellSelect && !this.componentRef.handleClick) {
       this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
     }
   }
@@ -177,7 +177,7 @@ export class CellComponent {
     }
 
     let setIsGroup: boolean = false;
-    if (this.gridConfigService.gridConfiguration.columnDefinitions[this.k].isGroup && this.j !== -1) {
+    if (this.gridConfigService.columnDefinitions[this.k].isGroup && this.j !== -1) {
       this.type = "LabelCell";
       setIsGroup = true;
     }

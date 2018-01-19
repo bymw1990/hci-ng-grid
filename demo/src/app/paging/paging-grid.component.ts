@@ -16,6 +16,7 @@ import { Column } from "hci-ng-grid/index";
     <div style="padding: 20px;">
       <hci-grid [title]="'Paging Grid'"
                 [inputData]="pagingData"
+                [hci-grid-config]
                 [columnDefinitions]="pagingColumns"
                 [pageSize]="10"
                 [pageSizes]="[ 10, 25, 100 ]">
