@@ -3,7 +3,6 @@
  */
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation} from "@angular/core";
 
-import {HciGridConfigDirective} from "./config/config.directive";
 import {GridDataService} from "./services/grid-data.service";
 import {GridEventService} from "./services/grid-event.service";
 import {GridConfigService} from "./services/grid-config.service";
@@ -17,6 +16,7 @@ import {PageInfo} from "./utils/page-info";
 import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {ColumnDefComponent} from "./column/column-def.component";
+import {Subscription} from "rxjs/Subscription";
 
 /**
  * Thoughts..
@@ -50,7 +50,7 @@ import {ColumnDefComponent} from "./column/column-def.component";
       
       <!-- Title Bar -->
       <div *ngIf="title !== null" class="hci-grid-header">
-        <span>{{ title }}</span>
+        <span>{{title}}</span>
       </div>
       
       <!-- Content -->
@@ -105,14 +105,14 @@ import {ColumnDefComponent} from "./column/column-def.component";
       <!-- Footer -->
       <div *ngIf="pageSize > 0"
            style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
-        <span style="float: left; font-weight: bold;">Showing page {{ pageInfo.page + 1 }} of {{ pageInfo.numPages }}</span>
+        <span style="float: left; font-weight: bold;">Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}</span>
         <span style="text-align: center;">
           <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
           <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-backward"></i></span>
           <select [ngModel]="pageSize"
                   (ngModelChange)="doPageSize($event)"
                   style="padding-left: 15px; padding-right: 15px;">
-            <option *ngFor="let o of pageSizes" [ngValue]="o">{{ o }}</option>
+            <option *ngFor="let o of pageSizes" [ngValue]="o">{{o}}</option>
           </select>
           <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-forward"></i></span>
           <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-forward"></i></span>
@@ -175,8 +175,22 @@ export class GridComponent implements OnChanges {
 
   @ViewChild("copypastearea") copypastearea: any;
 
-  @Input() title: string = null;
   @Input() inputData: Object[] = null;
+
+  @Input() config: any = {};
+  @Input() title: string = null;
+  @Input() rowSelect: boolean;
+  @Input() cellSelect: boolean;
+  @Input() keyNavigation: boolean;
+  @Input() nUtilityColumns: number;
+  @Input() columnDefinitions: Column[];
+  @Input() fixedColumns: string[];
+  @Input() groupBy: string[];
+  @Input() externalFiltering: boolean;
+  @Input() externalSorting: boolean;
+  @Input() externalPaging: boolean;
+  @Input() pageSize: number;
+  @Input() pageSizes: number[];
 
   @Input() onAlert: Function;
   @Input() onExternalDataCall: Function;
@@ -193,7 +207,8 @@ export class GridComponent implements OnChanges {
   initialized: boolean = false;
   columnHeaders: boolean = false;
   busy: boolean = false;
-  pageSize: number = 10;
+
+  columnsChangedSubscription: Subscription;
 
   constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
 
@@ -256,6 +271,8 @@ export class GridComponent implements OnChanges {
       });
     }
 
+    this.buildConfig();
+    this.gridConfigService.setConfig(this.config);
     this.initGridConfiguration();
 
     /* Get initial page Info */
@@ -281,6 +298,19 @@ export class GridComponent implements OnChanges {
     } else {
       this.postInit();
     }
+
+    this.columnsChangedSubscription = this.gridConfigService.getColumnsChangedSubject().subscribe((changed: boolean) => {
+      if (changed) {
+        this.initGridConfiguration();
+        this.gridDataService.setInputDataInit();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.columnsChangedSubscription) {
+      this.columnsChangedSubscription.unsubscribe();
+    }
   }
 
   postInit() {
@@ -292,9 +322,55 @@ export class GridComponent implements OnChanges {
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
-    if (this.initialized && changes["inputData"]) {
-      this.gridDataService.setInputData(this.inputData);
-      this.gridDataService.setInputDataInit();
+    if (this.initialized) {
+      if (changes["inputData"]) {
+        this.gridDataService.setInputData(this.inputData);
+        this.gridDataService.setInputDataInit();
+      } else if (changes["config"]) {
+        this.gridConfigService.setConfig(this.config);
+      } else {
+        this.buildConfig();
+        this.gridConfigService.setConfig(this.config);
+      }
+    }
+  }
+
+  buildConfig() {
+    if (this.rowSelect !== undefined) {
+      this.config.rowSelect = this.rowSelect;
+    }
+    if (this.cellSelect !== undefined) {
+      this.config.cellSelect = this.cellSelect;
+    }
+    if (this.keyNavigation !== undefined) {
+      this.config.keyNavigation = this.keyNavigation;
+    }
+    if (this.nUtilityColumns !== undefined) {
+      this.config.nUtilityColumns = this.nUtilityColumns;
+    }
+    if (this.columnDefinitions !== undefined) {
+      this.config.columnDefinitions = this.columnDefinitions;
+    }
+    if (this.fixedColumns !== undefined) {
+      this.config.fixedColumns = this.fixedColumns;
+    }
+    if (this.groupBy !== undefined) {
+      this.config.groupBy = this.groupBy;
+    }
+    if (this.externalFiltering !== undefined) {
+      this.config.externalFiltering = this.externalFiltering;
+    }
+    if (this.externalSorting !== undefined) {
+      this.config.externalSorting = this.externalSorting;
+    }
+    if (this.externalPaging !== undefined) {
+      this.config.externalPaging = this.externalPaging;
+    }
+    if (this.pageSize !== undefined) {
+      this.config.pageSize = this.pageSize;
+    }
+    if (this.pageSizes !== undefined) {
+      this.config.pageSizes = this.pageSizes;
     }
   }
 
@@ -325,6 +401,8 @@ export class GridComponent implements OnChanges {
 
   postInitGridConfiguration() {
     if (this.gridConfigService.columnDefinitions !== null) {
+      this.columnDefinitions = this.gridConfigService.columnDefinitions;
+
       this.columnHeaders = this.gridConfigService.columnHeaders;
 
       if (this.gridConfigService.fixedColumns != null) {

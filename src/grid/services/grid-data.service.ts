@@ -248,7 +248,7 @@ export class GridDataService {
       this.columnDefinitions = new Array<Column>();
       let keys: Array<string> = Object.keys(this.inputData[0]);
       for (var i = 0; i < keys.length; i++) {
-        this.columnDefinitions.push(new Column({ field: keys[i], template: "LabelCell" }));
+        this.columnDefinitions.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
         this.gridConfigService.columnDefinitions = this.columnDefinitions;
       }
       return true;

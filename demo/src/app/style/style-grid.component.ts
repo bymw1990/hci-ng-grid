@@ -13,7 +13,6 @@ import { Column } from "hci-ng-grid/index";
     </div>
     <div style="padding: 20px;">
       <hci-grid [inputData]="styleData1"
-                [hci-grid-config]
                 [columnDefinitions]="styleColumns1"
                 class="grid1">
       </hci-grid>
@@ -26,7 +25,6 @@ import { Column } from "hci-ng-grid/index";
     </div>
     <div style="padding: 20px;">
       <hci-grid [inputData]="styleData2"
-                [hci-grid-config]
                 [columnDefinitions]="styleColumns2"
                 [cellSelect]="true"
                 class="grid2">

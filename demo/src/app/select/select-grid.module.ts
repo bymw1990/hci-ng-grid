@@ -7,7 +7,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { SelectGridComponent } from "./select-grid.component";
 
 const routes: Routes = [
-  { path: "select", component: SelectGridComponent }
+  { path: "row-select", component: SelectGridComponent }
 ];
 
 @NgModule({

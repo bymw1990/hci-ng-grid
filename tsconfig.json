@@ -16,7 +16,7 @@
     "types": [
       "node"
     ],
-    "outDir": "./build",
+    "outDir": "./dist",
     "rootDir": "./"
   },
   "exclude": [
@@ -30,7 +30,7 @@
     "./index.ts"
   ],
   "angularCompilerOptions": {
-    "genDir": "build",
+    "genDir": "dist",
     "debug": false,
     "skipMetadataEmit" : false,
     "strictMetadataEmit": false

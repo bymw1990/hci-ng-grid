@@ -16,7 +16,6 @@ import { Column } from "hci-ng-grid/index";
     </div>
     <div style="padding: 20px;">
       <hci-grid [inputData]="data1"
-                [hci-grid-config]
                 [columnDefinitions]="columns1"
                 [level]="'WARN'"
                 [onAlert]="onWarningOrError"
@@ -39,7 +38,6 @@ import { Column } from "hci-ng-grid/index";
     </div>
     <div style="padding: 20px; margin-bottom: 100px;">
       <hci-grid [inputData]="data2"
-                [hci-grid-config]
                 [columnDefinitions]="columns2"
                 [level]="'DEBUG'"
                 [onAlert]="onDebug"

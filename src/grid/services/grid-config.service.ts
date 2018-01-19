@@ -8,73 +8,74 @@ import {RowSelectCellComponent} from "../cell/row-select-cell.component";
 @Injectable()
 export class GridConfigService {
 
-  columnsChanged: Subject<boolean> = new Subject<boolean>();
+  columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
 
-  private _columnHeaders: boolean = true;
-  private _rowSelect: boolean = false;
-  private _cellSelect: boolean = false;
-  private _keyNavigation: boolean = false;
-  private _nUtilityColumns: number = 0;
-  private _columnDefinitions: Column[] = null;
-  private _fixedColumns: string[] = null;
-  private _groupBy: string[] = null;
-  private _externalFiltering: boolean = false;
-  private _externalSorting: boolean = false;
-  private _externalPaging: boolean = false;
-  private _pageSize: number = -1;
-  private _pageSizes: number[] = [10, 25, 50];
+  columnHeaders: boolean = true;
+  rowSelect: boolean = false;
+  cellSelect: boolean = false;
+  keyNavigation: boolean = false;
+  nUtilityColumns: number = 0;
+  columnDefinitions: Column[] = null;
+  fixedColumns: string[] = null;
+  groupBy: string[] = null;
+  externalFiltering: boolean = false;
+  externalSorting: boolean = false;
+  externalPaging: boolean = false;
+  pageSize: number = -1;
+  pageSizes: number[] = [10, 25, 50];
 
+  /**
+   * Expects an object with the above configuration options as fields.
+   *
+   * @param config
+   */
   setConfig(config: any) {
-    let changed: boolean = false;
+    let columnsChanged: boolean = false;
 
-    if (config.columnHeaders !== undefined) {
-      if (this.columnHeaders !== config.columnHeaders) {
-        changed = true;
-      }
-      this.columnHeaders = config.columnHeaders;
-    }
+    // Selection Related Configuration
     if (config.rowSelect !== undefined) {
-      if (this.rowSelect !== config.rowSelect) {
-        changed = true;
-      }
       this.rowSelect = config.rowSelect;
     }
     if (config.cellSelect !== undefined) {
-      if (this.cellSelect !== config.cellSelect) {
-        changed = true;
-      }
       this.cellSelect = config.cellSelect;
     }
     if (config.keyNavigation !== undefined) {
-      if (this.keyNavigation !== config.keyNavigation) {
-        changed = true;
-      }
       this.keyNavigation = config.keyNavigation;
+    }
+
+    // Column Related Configuration
+    if (config.columnDefinitions !== undefined) {
+      if (this.columnDefinitions !== config.columnDefinitions) {
+        columnsChanged = true;
+      }
+      this.columnDefinitions = Column.deserializeArray(config.columnDefinitions);
+    }
+    if (config.columnHeaders !== undefined) {
+      if (this.columnHeaders !== config.columnHeaders) {
+        columnsChanged = true;
+      }
+      this.columnHeaders = config.columnHeaders;
     }
     if (config.nUtilityColumns !== undefined) {
       if (this.nUtilityColumns !== config.nUtilityColumns) {
-        changed = true;
+        columnsChanged = true;
       }
       this.nUtilityColumns = config.nUtilityColumns;
     }
-    if (config.columnDefinitions !== undefined) {
-      if (this.columnDefinitions !== config.columnDefinitions) {
-        changed = true;
-      }
-      this.columnDefinitions = config.columnDefinitions;
-    }
     if (config.fixedColumns !== undefined) {
       if (this.fixedColumns !== config.fixedColumns) {
-        changed = true;
+        columnsChanged = true;
       }
       this.fixedColumns = config.fixedColumns;
     }
     if (config.groupBy !== undefined) {
       if (this.groupBy !== config.groupBy) {
-        changed = true;
+        columnsChanged = true;
       }
       this.groupBy = config.groupBy;
     }
+
+    // Data Display and Fetching Configuration
     if (config.externalFiltering !== undefined) {
       this.externalFiltering = config.externalFiltering;
     }
@@ -91,14 +92,19 @@ export class GridConfigService {
       this.pageSizes = config.pageSizes;
     }
 
-    if (changed) {
+    // Notify listeners if anything related to column configuration changed.
+    if (columnsChanged) {
       //this.init();
-      this.columnsChanged.next(true);
+      this.columnsChangedSubject.next(true);
     }
   }
 
+  /**
+   * Based upon the nature of the columns, sorts them.  For example, utility columns as a negative, then fixed columns
+   * starting at zero then others.
+   */
   init() {
-    if (this._columnDefinitions === null) {
+    if (this.columnDefinitions === null) {
       return;
     }
     this.initColumnDefinitions();
@@ -106,46 +112,42 @@ export class GridConfigService {
 
     let nLeft: number = 0;
     let wLeft: number = 100;
-    let nRight: number = this._columnDefinitions.length;
+    let nRight: number = this.columnDefinitions.length;
     let wRight: number = 100;
 
-    for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (this._columnDefinitions[i].sortOrder < 0) {
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].sortOrder < 0) {
         nLeft = nLeft + 1;
         nRight = nRight - 1;
         wLeft = wLeft - 10;
-      } else if (this._columnDefinitions[i].isFixed && this._columnDefinitions[i].visible) {
+      } else if (this.columnDefinitions[i].isFixed && this.columnDefinitions[i].visible) {
         nLeft = nLeft + 1;
         nRight = nRight - 1;
-      } else if (!this._columnDefinitions[i].isFixed && !this._columnDefinitions[i].visible) {
+      } else if (!this.columnDefinitions[i].isFixed && !this.columnDefinitions[i].visible) {
         nRight = nRight - 1;
       }
     }
-    for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (!this._columnDefinitions[i].visible) {
-        this._columnDefinitions[i].width = 0;
-      } else if (this._columnDefinitions[i].sortOrder < 0) {
-        this._columnDefinitions[i].width = 5;
-      } else if (this._columnDefinitions[i].isFixed) {
-        this._columnDefinitions[i].width = wLeft / nLeft;
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (!this.columnDefinitions[i].visible) {
+        this.columnDefinitions[i].width = 0;
+      } else if (this.columnDefinitions[i].sortOrder < 0) {
+        this.columnDefinitions[i].width = 5;
+      } else if (this.columnDefinitions[i].isFixed) {
+        this.columnDefinitions[i].width = wLeft / nLeft;
       } else {
-        this._columnDefinitions[i].width = wRight / nRight;
+        this.columnDefinitions[i].width = wRight / nRight;
       }
     }
   }
 
-  get columnDefinitions() {
-    return this._columnDefinitions;
-  }
-
-  set columnDefinitions(columnDefinitions: Column[]) {
-    this._columnDefinitions = columnDefinitions;
+  getColumnDefinitions() {
+    return this.columnDefinitions;
   }
 
   getKeyColumns(): Array<number> {
     let keys: Array<number> = new Array<number>();
-    for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (this._columnDefinitions[i].isKey) {
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].isKey) {
         keys.push(i);
       }
     }
@@ -155,46 +157,46 @@ export class GridConfigService {
   initColumnDefinitions() {
     let nGroupBy: number = 0;
     let nFixedColumns: number = 0;
-    if (this._groupBy !== null) {
-      nGroupBy = this._groupBy.length;
+    if (this.groupBy !== null) {
+      nGroupBy = this.groupBy.length;
     }
-    if (this._fixedColumns !== null) {
-      nFixedColumns = this._fixedColumns.length;
+    if (this.fixedColumns !== null) {
+      nFixedColumns = this.fixedColumns.length;
     }
 
-    if (this._rowSelect) {
-      let rowSelectColumn: Column = new Column({ name: "", template: RowSelectCellComponent, minWidth: 30, maxWidth: 30 });
+    if (this.rowSelect) {
+      let rowSelectColumn: Column = Column.deserialize({ name: "", template: RowSelectCellComponent, minWidth: 30, maxWidth: 30 });
       rowSelectColumn.sortOrder = -10;
       rowSelectColumn.isUtility = true;
-      this._columnDefinitions.push(rowSelectColumn);
+      this.columnDefinitions.push(rowSelectColumn);
     }
 
     let hasFilter: boolean = false;
-    for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (this._columnDefinitions[i].filterType !== null) {
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].filterType !== null) {
         hasFilter = true;
       }
     }
 
-    this._columnHeaders = false;
-    for (var i = 0; i < this._columnDefinitions.length; i++) {
-      if (this._columnDefinitions[i].name !== null) {
-        this._columnHeaders = true;
+    this.columnHeaders = false;
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].name !== null) {
+        this.columnHeaders = true;
       }
-      if (this._columnDefinitions[i].filterType === null && hasFilter) {
-        this._columnDefinitions[i].filterType = "";
+      if (this.columnDefinitions[i].filterType === null && hasFilter) {
+        this.columnDefinitions[i].filterType = "";
       }
 
-      if (this._columnDefinitions[i].isUtility) {
+      if (this.columnDefinitions[i].isUtility) {
         continue;
       }
 
       let m: number = 0;
       let k: number = i;
       for (var j = 0; j < nGroupBy; j++) {
-        if (this._columnDefinitions[i].field === this._groupBy[j]) {
-          this._columnDefinitions[i].isGroup = true;
-          this._columnDefinitions[i].visible = false;
+        if (this.columnDefinitions[i].field === this.groupBy[j]) {
+          this.columnDefinitions[i].isGroup = true;
+          this.columnDefinitions[i].visible = false;
           k = j;
           m = 1;
           break;
@@ -202,8 +204,8 @@ export class GridConfigService {
       }
       if (m === 0) {
         for (var j = 0; j < nFixedColumns; j++) {
-          if (this._columnDefinitions[i].field === this._fixedColumns[j]) {
-            this._columnDefinitions[i].isFixed = true;
+          if (this.columnDefinitions[i].field === this.fixedColumns[j]) {
+            this.columnDefinitions[i].isFixed = true;
             k = j;
             m = 2;
             break;
@@ -212,17 +214,17 @@ export class GridConfigService {
       }
 
       if (m === 0) {
-        this._columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k;
+        this.columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k;
       } else if (m === 1) {
-        this._columnDefinitions[i].sortOrder = nGroupBy + k;
+        this.columnDefinitions[i].sortOrder = nGroupBy + k;
       } else if (m === 2) {
-        this._columnDefinitions[i].sortOrder = k;
+        this.columnDefinitions[i].sortOrder = k;
       }
     }
   }
 
   sortColumnDefinitions() {
-    this._columnDefinitions = this._columnDefinitions.sort((a: Column, b: Column) => {
+    this.columnDefinitions = this.columnDefinitions.sort((a: Column, b: Column) => {
       if (a.sortOrder < b.sortOrder) {
         return -1;
       } else if (a.sortOrder > b.sortOrder) {
@@ -232,105 +234,13 @@ export class GridConfigService {
       }
     });
 
-    for (var i = 0; i < this._columnDefinitions.length; i++) {
-      this._columnDefinitions[i].id = i;
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      this.columnDefinitions[i].id = i;
     }
   }
 
-  get cellSelect(): boolean {
-    return this._cellSelect;
-  }
-
-  set cellSelect(cellSelect: boolean) {
-    this._cellSelect = cellSelect;
-  }
-
-  get rowSelect(): boolean {
-    return this._rowSelect;
-  }
-
-  set rowSelect(rowSelect: boolean) {
-    this._rowSelect = rowSelect;
-  }
-
-  get groupBy(): string[] {
-    return this._groupBy;
-  }
-
-  set groupBy(groupBy: string[]) {
-    this._groupBy = groupBy;
-  }
-
-  get fixedColumns(): string[] {
-    return this._fixedColumns;
-  }
-
-  set fixedColumns(fixedColumns: string[]) {
-    this._fixedColumns = fixedColumns;
-  }
-
-  get externalFiltering(): boolean {
-    return this._externalFiltering;
-  }
-
-  set externalFiltering(externalFiltering: boolean) {
-    this._externalFiltering = externalFiltering;
-  }
-
-  get externalSorting(): boolean {
-    return this._externalSorting;
-  }
-
-  set externalSorting(externalSorting: boolean) {
-    this._externalSorting = externalSorting;
-  }
-
-  get externalPaging(): boolean {
-    return this._externalPaging;
-  }
-
-  set externalPaging(externalPaging: boolean) {
-    this._externalPaging = externalPaging;
-  }
-
-  get columnHeaders(): boolean {
-    return this._columnHeaders;
-  }
-
-  set columnHeaders(columnHeaders: boolean) {
-    this._columnHeaders = columnHeaders;
-  }
-
-  get keyNavigation(): boolean {
-    return this._keyNavigation;
-  }
-
-  set keyNavigation(keyNavigation: boolean) {
-    this._keyNavigation = keyNavigation;
-  }
-
-  get nUtilityColumns(): number {
-    return this._nUtilityColumns;
-  }
-
-  set nUtilityColumns(nUtilityColumns: number) {
-    this._nUtilityColumns = nUtilityColumns;
-  }
-
-  get pageSize(): number {
-    return this._pageSize;
-  }
-
-  set pageSize(pageSize: number) {
-    this._pageSize = pageSize;
-  }
-
-  get pageSizes(): number[] {
-    return this._pageSizes;
-  }
-
-  set pageSizes(pageSizes: number[]) {
-    this._pageSizes = pageSizes;
+  getColumnsChangedSubject(): Subject<boolean> {
+    return this.columnsChangedSubject;
   }
 
 }

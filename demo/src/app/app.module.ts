@@ -6,6 +6,8 @@ import {BrowserModule} from "@angular/platform-browser";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+
 import {DemoAppComponent} from "./demo-app.component";
 import {DataGeneratorService} from "./services/data-generator.service";
 
@@ -20,6 +22,7 @@ import {CopyPasteGridComponent} from "./copypaste/copypaste-grid.component";
 import {AlertsGridComponent} from "./alerts/alerts-grid.component";
 import {PagingGridComponent} from "./paging/paging-grid.component";
 import {StyleGridComponent} from "./style/style-grid.component";
+import {DynamicConfigGridComponent} from "./dynamic-config/dynamic-config.component";
 
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
@@ -32,6 +35,7 @@ import {CopyPasteGridModule} from "./copypaste/copypaste-grid.module";
 import {AlertsGridModule} from "./alerts/alerts-grid.module";
 import {PagingGridModule} from "./paging/paging-grid.module";
 import {StyleGridModule} from "./style/style-grid.module";
+import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
 
 import {GridModule} from "hci-ng-grid/index";
 
@@ -40,6 +44,7 @@ import {GridModule} from "hci-ng-grid/index";
     BrowserModule,
     CommonModule,
     FormsModule,
+    NgbModule.forRoot(),
     SimpleGridModule,
     SelectGridModule,
     EditGridModule,
@@ -51,7 +56,8 @@ import {GridModule} from "hci-ng-grid/index";
     AlertsGridModule,
     PagingGridModule,
     StyleGridModule,
-    GridModule
+    GridModule,
+    DynamicConfigGridModule
   ],
   declarations: [
     DemoAppComponent,
@@ -65,7 +71,8 @@ import {GridModule} from "hci-ng-grid/index";
     CopyPasteGridComponent,
     AlertsGridComponent,
     PagingGridComponent,
-    StyleGridComponent
+    StyleGridComponent,
+    DynamicConfigGridComponent
   ],
   providers: [
     DataGeneratorService

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild, ViewEncapsulation } from "@angular/core";
 
-import { NgbDropdown } from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateStruct, NgbDropdown} from "@ng-bootstrap/ng-bootstrap";
 
 import { CellTemplate } from "./cell-template.component";
 
@@ -95,10 +95,10 @@ export class DatePickerCell extends CellTemplate {
      *
      * @param value
      */
-    onModelChange(value: Object) {
+    onModelChange(value: NgbDateStruct) {
         this.ngbValue = value;
 
-        var ms: number = (new Date(value["year"], value["month"] - 1, value["day"], 0, 0, 0)).getTime();
+        var ms: number = (new Date(value.year, value.month - 1, value.day, 0, 0, 0)).getTime();
         this.value = ms;
         this.valueChange.emit(ms);
     }
@@ -158,7 +158,7 @@ export class DatePickerCell extends CellTemplate {
     }
 
     setValues(o: Object) {
-        if (o["dateFormat"]) {
+        if (o !== null && o["dateFormat"]) {
             this.dateFormat = o["dateFormat"];
         }
         this.changeDetectorRef.markForCheck();

@@ -6,7 +6,6 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
 import {GridComponent} from "./grid.component";
-import {HciGridConfigDirective} from "./config/config.directive";
 import {RowComponent} from "./row/row.component";
 import {RowGroupComponent} from "./row/row-group.component";
 import {CellModule} from "./cell/cell.module";
@@ -27,7 +26,6 @@ import {CellTemplate} from "./cell/cell-template.component";
   imports: [CommonModule, FormsModule, CellModule],
   declarations: [
     GridComponent,
-    HciGridConfigDirective,
     RowComponent,
     RowGroupComponent,
     CellTemplate,
@@ -40,6 +38,6 @@ import {CellTemplate} from "./cell/cell-template.component";
     ColumnDefComponent],
   providers: [],
   entryComponents: [LabelCell, InputCell, DateCell, DatePickerCell],
-  exports: [GridComponent, HciGridConfigDirective, ColumnDefComponent, LabelCell, InputCell, DateCell, DatePickerCell]
+  exports: [GridComponent, ColumnDefComponent, LabelCell, InputCell, DateCell, DatePickerCell]
 })
 export class GridModule {}

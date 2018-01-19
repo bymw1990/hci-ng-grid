@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import { Component } from "@angular/core";
+import {Component} from "@angular/core";
 
 /**
  * The demo will route to many different types of grids depending on what features are to be shown.
@@ -13,47 +13,24 @@ import { Component } from "@angular/core";
 @Component({
   selector: "app",
   template: `
-    <div style="background-color: #ddddff; border-bottom: black 1px solid; padding-top: 15px;">
-      <div style="padding: 10px;">
-        <h1>hci-ng-grid-demo</h1>
-      </div>
-      <div style="padding-left: 10px; display: inline-block; width: 100%;">
-        <div style="width: 10%; display: inline-block; vertical-align: top;">
-            <span style="font-weight: bold;">Examples: </span>
-        </div>
-        <div style="width: 80%; display: inline-block;">
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/simple">Basic</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/alerts">Alerts</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/select">Row Select</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/copypaste">Copy/Paste</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/edit">Inline Edit and Key Nav</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/group">Row Grouping</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/fixed">Fixed Columns</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/filter">Filtering</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/paging">Paging</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/external">External Sort/Filter/Page</a>
-          </div>
-          <div style="width: 24%; display: inline-block; padding-bottom: 5px;">
-            <a routerLink="/style">Custom Styling</a>
+    <div class="navbar navbar-dark bg-dark box-shadow">
+      <div class="container d-flex justify-content-between">
+        <a class="navbar-brand d-flex align-items-center" routerLink="/simple">hci-ng-grid Demo</a>
+        <div ngbDropdown class="d-inline-block">
+          <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
+          <div ngbDropdownMenu aria-labelledby="routeList">
+            <a class="dropdown-item" routerLink="/alerts">Alerts</a>
+            <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
+            <a class="dropdown-item" routerLink="/style">Custom Styling</a>
+            <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
+            <a class="dropdown-item" routerLink="/external">External Sort/Filter/Page</a>
+            <a class="dropdown-item" routerLink="/edit">Inline Edit and Key Nav</a>
+            <a class="dropdown-item" routerLink="/filter">Filtering</a>
+            <a class="dropdown-item" routerLink="/fixed">Fixed Columns</a>
+            <a class="dropdown-item" routerLink="/paging">Paging</a>
+            <a class="dropdown-item" routerLink="/group">Row Grouping</a>
+            <a class="dropdown-item" routerLink="/row-select">Row Select</a>
+            <a class="dropdown-item" routerLink="/simple">Simple</a>
           </div>
         </div>
       </div>

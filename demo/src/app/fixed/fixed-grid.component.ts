@@ -18,7 +18,6 @@ import { Column } from "hci-ng-grid/index";
     <div style="padding: 20px;">
       <hci-grid [title]="'Fixed Grid'"
                 [inputData]="fixedData"
-                [hci-grid-config]
                 [columnDefinitions]="fixedColumns"
                 [fixedColumns]="['firstName', 'lastName']">
       </hci-grid>
