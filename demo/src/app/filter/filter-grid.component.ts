@@ -7,7 +7,7 @@ import { Column } from "hci-ng-grid/index";
   selector: "filter-grid",
   template: `
     <div style="padding: 20px;">
-      <h2>Filter Grid</h2>
+      <h4>Filter Grid</h4>
     </div>
     <div style="padding-left: 20px;">
       <a (click)="initData();">Re-generate Data</a><br />

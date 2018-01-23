@@ -7,7 +7,7 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
   selector: "external-grid",
   template: `
     <div style="padding: 20px;">
-      <h2>External Grid</h2>
+      <h4>External Grid</h4>
     </div>
     <div style="padding: 20px;">
         250 rows of data is generated in our service and stored.  We bind the onExternalDataCall which takes an object

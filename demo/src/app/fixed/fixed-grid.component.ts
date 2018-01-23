@@ -7,7 +7,7 @@ import { Column } from "hci-ng-grid/index";
   selector: "fixed-grid",
   template: `
     <div style="padding: 20px;">
-      <h2>Fixed Grid</h2>
+      <h4>Fixed Grid</h4>
     </div>
     <div style="padding: 20px;">
       <div>&lt;tab&gt; through cells</div>

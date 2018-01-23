@@ -3,7 +3,6 @@ import {Injectable} from "@angular/core";
 import {Subject} from "rxjs/Subject";
 
 import {Column} from "../column/column";
-import {RowSelectCellComponent} from "../cell/row-select-cell.component";
 
 @Injectable()
 export class GridConfigService {
@@ -165,7 +164,7 @@ export class GridConfigService {
     }
 
     if (this.rowSelect) {
-      let rowSelectColumn: Column = Column.deserialize({ name: "", template: RowSelectCellComponent, minWidth: 30, maxWidth: 30 });
+      let rowSelectColumn: Column = Column.deserialize({ name: "", template: "RowSelectCellComponent", minWidth: 30, maxWidth: 30 });
       rowSelectColumn.sortOrder = -10;
       rowSelectColumn.isUtility = true;
       this.columnDefinitions.push(rowSelectColumn);

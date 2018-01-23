@@ -98,9 +98,9 @@ export class DatePickerCell extends CellTemplate {
     onModelChange(value: NgbDateStruct) {
         this.ngbValue = value;
 
-        var ms: number = (new Date(value.year, value.month - 1, value.day, 0, 0, 0)).getTime();
-        this.value = ms;
-        this.valueChange.emit(ms);
+        var iso8601: string = (new Date(value.year, value.month - 1, value.day, 0, 0, 0)).toISOString();
+        this.value = iso8601;
+        this.valueChange.emit(iso8601);
     }
 
     onFocus() {

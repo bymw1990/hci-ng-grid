@@ -21,9 +21,15 @@ import {InputCell} from "./cell/input-cell.component";
 import {DateCell} from "./cell/date-cell.component";
 import {DatePickerCell} from "./cell/date-picker-cell.component";
 import {CellTemplate} from "./cell/cell-template.component";
+import {RowSelectCellComponent} from "./cell/row-select-cell.component";
+import {GroupCollapseExpandCell} from "./cell/group-collapse-expand.component";
 
 @NgModule({
-  imports: [CommonModule, FormsModule, CellModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CellModule
+  ],
   declarations: [
     GridComponent,
     RowComponent,
@@ -35,9 +41,16 @@ import {CellTemplate} from "./cell/cell-template.component";
     IsGroupPipe,
     IsFixedPipe,
     IsRowVisiblePipe,
-    ColumnDefComponent],
-  providers: [],
-  entryComponents: [LabelCell, InputCell, DateCell, DatePickerCell],
-  exports: [GridComponent, ColumnDefComponent, LabelCell, InputCell, DateCell, DatePickerCell]
+    ColumnDefComponent
+  ],
+  exports: [
+    GridComponent,
+    ColumnDefComponent,
+    LabelCell,
+    InputCell,
+    DateCell,
+    DatePickerCell,
+    RowSelectCellComponent,
+    GroupCollapseExpandCell]
 })
 export class GridModule {}

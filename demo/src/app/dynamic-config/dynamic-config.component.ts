@@ -3,14 +3,14 @@ import {Component} from "@angular/core";
 @Component({
   selector: "dynamic-config-grid",
   template: `
-    <div style="padding: 20px;">
-      <h2>Dynamic Config Grid</h2>
+    <div class="ltr-padding">
+      <h4>Dynamic Config Grid</h4>
     </div>
-    <div style="padding: 20px;">
+    <div class="ltr-padding">
       <button class="btn btn-primary" (click)="setColumns1()">Columns 1</button>
       <button class="btn btn-primary" (click)="setColumns2()">Columns 2</button>
     </div>
-    <div style="padding: 20px;">
+    <div class="ltr-padding">
       <hci-grid [title]="'Dynamic Config Grid'"
                 [inputData]="data"
                 [columnDefinitions]="columns">
@@ -21,13 +21,13 @@ import {Component} from "@angular/core";
 export class DynamicConfigGridComponent {
 
   data: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "middleName": "A", "dob": 101110000000 },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "middleName": "B", "dob": 111110000000 },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "middleName": "C", "dob": 121110000000 },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "middleName": "D", "dob": 999990000000 },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "middleName": "E", "dob": 131110000000 },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "middleName": "F", "dob": 141110000000 },
-    { "idPatient": 7, "firstName": "Jimmy", "lastName": "Zephod", "middleName": "F", "dob": 141110000000 }
+    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "middleName": "A", "dob": "1952-01-03T00:00-07:00" },
+    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "middleName": "B", "dob": "1971-11-01T00:00-07:00" },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "middleName": "C", "dob": "1980-05-21T00:00-07:00" },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "middleName": "D", "dob": "1976-02-11T00:00-07:00" },
+    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "middleName": "E", "dob": "1955-08-21T00:00-07:00" },
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "middleName": "F", "dob": "1950-09-11T00:00-07:00" },
+    { "idPatient": 7, "firstName": "Jimmy", "lastName": "Zephod", "middleName": "F", "dob": "1960-01-17T00:00-07:00" }
   ];
 
   columns1: any[] = [

@@ -7,7 +7,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
   selector: "simple-grid",
   template: `
     <div style="padding: 20px;">
-      <h2>Simple Grid</h2>
+      <h4>Simple Grid</h4>
     </div>
     <div style="padding: 20px;">
       <hci-grid [title]="'Simple Grid'"
@@ -22,7 +22,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
       </hci-grid>
     </div>
     <div style="padding: 20px;">
-      <h2>More Simple Grid</h2>
+      <h4>More Simple Grid</h4>
     </div>
     <div style="padding: 20px;">
       Here we pass the data array and column definitions.  The column definitions specify the complex data path and the
@@ -40,7 +40,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
       </hci-grid>
     </div>
     <div style="padding: 20px;">
-      <h2>Even More Simple Grid</h2>
+      <h4>Even More Simple Grid</h4>
     </div>
     <div style="padding: 20px;">
       Here the only thing passed in is the data.  Visible label columns are created automatically based on every key
@@ -51,7 +51,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
       </hci-grid>
     </div>
     <div style="padding: 20px;">
-        <h2>Simple Grid - Delayed Input</h2>
+        <h4>Simple Grid - Delayed Input</h4>
     </div>
     <div style="padding: 20px;">
         <hci-grid [title]="'Simple Grid Delayed'"
@@ -71,21 +71,21 @@ import { DataGeneratorService } from "../services/data-generator.service";
 export class SimpleGridComponent implements OnInit {
 
   simpleData1: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 121110000000, "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1968-11-27T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
+    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1966-09-25T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1965-11-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1963-06-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
+    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1962-04-16T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1961-03-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
   simpleData2: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 121110000000, "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1974-11-13T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
+    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1975-11-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1976-07-17T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1977-04-16T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
+    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1978-03-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1979-02-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
   simpleData3: Array<Object> = [

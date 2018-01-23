@@ -7,7 +7,7 @@ import { Column } from "hci-ng-grid/index";
     selector: "paging-grid",
     template: `
     <div style="padding: 20px;">
-      <h2>Paging Grid</h2>
+      <h4>Paging Grid</h4>
     </div>
     <div style="padding-left: 20px;">
       <a (click)="initData();">Re-generate Data</a><br />

@@ -1,8 +1,10 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Rx";
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs/Rx";
 
-import { ExternalData, ExternalInfo } from "hci-ng-grid/index";
-import {PageInfo} from "../../../../src/grid/utils/page-info";
+import {ExternalData, ExternalInfo} from "hci-ng-grid/index";
+import {PageInfo} from "hci-ng-grid/index";
+
+const momentRandom = require("moment-random");
 
 /**
  * Automatically generate different types of data to test filtering/paging and the such for various size data sets.
@@ -24,6 +26,11 @@ export class DataGeneratorService {
   private _streets2: string[] = [ "acres", "shade", "wood", "dale" ];
   private _stypes: string[] = [ "Ln", "Rd", "St", "Dr" ];
 
+  generateDate(startYear: number, endYear: number): string {
+    let date: Date = momentRandom(endYear + "-12-31", startYear + "-01-01");
+    return date.toISOString();
+  }
+
   generateFixedData(size: number) {
     this.fixedData = new Array<Object>();
     for (var i = 0; i < size; i++) {
@@ -35,7 +42,7 @@ export class DataGeneratorService {
       let city: string = this._cities[Math.floor(Math.random() * this._cities.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
-      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let dob: string = this.generateDate(1930, 1990);
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
 
       this.fixedData.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone });
@@ -57,7 +64,7 @@ export class DataGeneratorService {
       let city: string = this._cities[Math.floor(Math.random() * this._cities.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
-      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let dob: string = this.generateDate(1930, 1990);
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
 
       this.simpleData4.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone });
@@ -82,7 +89,7 @@ export class DataGeneratorService {
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
-      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let dob: string = this.generateDate(1930, 1990);
 
       this.filteredData.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
     }
@@ -102,7 +109,7 @@ export class DataGeneratorService {
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
-      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let dob: string = this.generateDate(1930, 1990);
 
       this.pagingData.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
     }
@@ -122,7 +129,7 @@ export class DataGeneratorService {
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
-      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let dob: string = this.generateDate(1930, 1990);
 
       this.externalData1.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
     }
@@ -227,7 +234,7 @@ export class DataGeneratorService {
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
-      let dob: number = Math.floor(Math.random() * (1000000000000 - 100000000000) + 100000000000);
+      let dob: string = this.generateDate(1930, 1990);
 
       this.externalData2.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
     }

@@ -6,7 +6,7 @@ import { Column } from "hci-ng-grid/index";
     selector: "style-grid",
     template: `
     <div style="padding: 20px;">
-      <h2>New Row Colors</h2>
+      <h4>New Row Colors</h4>
     </div>
     <div style="padding: 20px;">
       Here we change the color of the odd and even rows.
@@ -18,7 +18,7 @@ import { Column } from "hci-ng-grid/index";
       </hci-grid>
     </div>
     <div style="padding: 20px;">
-      <h2>Cell Select Colors</h2>
+      <h4>Cell Select Colors</h4>
     </div>
     <div style="padding: 20px;">
       Here we change the default colors for the cell selection.
@@ -31,7 +31,7 @@ import { Column } from "hci-ng-grid/index";
       </hci-grid>
     </div>
     <div style="padding: 20px;">
-      <h2>Bigger Rows and Bigger Font</h2>
+      <h4>Bigger Rows and Bigger Font</h4>
     </div>
     <div style="padding: 20px;">
       Here we override the row height to 45px and change the font family and size.
@@ -70,12 +70,12 @@ import { Column } from "hci-ng-grid/index";
 export class StyleGridComponent {
 
     styleData1: Array<Object> = [
-        { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-        { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-        { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 121110000000, "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-        { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-        { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-        { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+        { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1971-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
+        { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1972-11-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
+        { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1973-12-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
+        { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1945-12-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
+        { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1947-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
+        { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1958-11-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
     ];
 
     styleColumns1: Column[] = [
@@ -88,12 +88,12 @@ export class StyleGridComponent {
     ];
 
     styleData2: Array<Object> = [
-        { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": 101110000000, "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-        { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": 111110000000, "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-        { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": 121110000000, "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-        { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": 999990000000, "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-        { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": 131110000000, "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-        { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": 141110000000, "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+        { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1967-01-12T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
+        { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1956-03-13T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
+        { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1945-04-15T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
+        { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1935-05-17T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
+        { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1967-06-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
+        { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1977-07-25T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
     ];
 
     styleColumns2: Column[] = [
