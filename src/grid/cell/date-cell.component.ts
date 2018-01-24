@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, ViewChild, ViewEncapsulation } from "@angular/core";
+import {ChangeDetectorRef, Component, ElementRef, Input, ViewChild, ViewEncapsulation} from "@angular/core";
 import * as moment from "moment";
 
 import { CellTemplate } from "./cell-template.component";
@@ -16,7 +16,7 @@ import { CellTemplate } from "./cell-template.component";
            (click)="onClick($event)"
            (keydown)="onInputKeyDown($event);"
            placeholder="dateFormat"
-           pattern="pattern"
+           [pattern]="pattern"
            class="hci-grid-cell-template hci-grid-cell-date"
            [ngClass]="{ 'focused': focused }" />
   `,
@@ -25,7 +25,7 @@ import { CellTemplate } from "./cell-template.component";
       border: none;
     }
   ` ],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class DateCell extends CellTemplate {
 
@@ -41,17 +41,17 @@ export class DateCell extends CellTemplate {
   }
 
   onModelChange(value: Object) {
-    console.log("DateCell.onModelChange " + this.formattedValue);
+    console.log("DateCell.onModelChange " + this.formattedValue + " to " + value);
 
     this.formattedValue = <string> value;
   }
 
   saveValue() {
     try {
-      let ms: number = Date.parse(this.formattedValue);
-      if (ms !== null && !isNaN(ms)) {
-        console.log(ms);
-        super.onModelChange(ms);
+      let date: Date = new Date(this.formattedValue);
+      if (date !== undefined) {
+        console.log(date.toISOString());
+        super.onModelChange(date.toISOString());
       }
     } catch (e) {
       //
