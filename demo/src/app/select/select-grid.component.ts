@@ -5,22 +5,22 @@ import { Column } from "hci-ng-grid/index";
 @Component({
   selector: "select-grid",
   template: `
-    <div style="padding: 20px;">
+    <div class="ltr-padding">
       <h4>Row Select</h4>
     </div>
-    <div style="padding: 20px;">
+    <div class="ltr-padding">
       Double click on a row.
       <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
     </div>
-    <div style="padding: 20px;">
+    <div class="ltr-padding">
       <hci-grid [inputData]="data1"
                 [columnDefinitions]="columns1"
                 [onRowDoubleClick]="onRowDoubleClick">
       </hci-grid>
     </div>
     <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
-    <div style="padding: 20px;">
-      <span style="font-size: 28px; font-weight: bold;">Multiple Row Select</span>
+    <div class="ltr-padding">
+      <h4>Multiple Row Select</h4>
     </div>
     <div style="padding: 20px; margin-bottom: 100px;">
       <hci-grid [inputData]="data2"

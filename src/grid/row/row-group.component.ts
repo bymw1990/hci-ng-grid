@@ -28,6 +28,7 @@ const COLLAPSED: number = 1;
       </span>
     </div>
     <hci-row *ngFor="let row of rowGroup.rows; let j = index"
+             class="d-flex flex-nowrap"
              [i]="i"
              [j]="j"
              [fixed]="fixed">

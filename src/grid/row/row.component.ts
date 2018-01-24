@@ -16,7 +16,7 @@ import { GridDataService } from "../services/grid-data.service";
               [class.hci-grid-row-odd]="i % 2 === 1"
               [class.hci-grid-row-even]="i % 2 === 0"
               [style.display]="column.visible ? 'inline-block' : 'none'"
-              [style.width]="column.width + '%'"
+              [style.flex]="'1 1 ' + column.width + '%'"
               [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
               [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
     </hci-cell>
@@ -30,6 +30,7 @@ import { GridDataService } from "../services/grid-data.service";
       background-color: #eeeeee;
     }
     .hci-grid-cell {
+      flex-flow: column;
       border: black 1px solid;
       vertical-align: top;
     }

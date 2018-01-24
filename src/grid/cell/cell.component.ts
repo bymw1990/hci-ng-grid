@@ -31,7 +31,7 @@ import {LabelCell} from "./label-cell.component";
       height: 100%;
     }
     .hci-grid-cell-template {
-      display: inline-block;
+      display: flex;
       width: 100%;
       height: 100%;
       background-color: transparent;

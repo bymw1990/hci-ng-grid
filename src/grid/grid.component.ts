@@ -54,21 +54,17 @@ import {Subscription} from "rxjs/Subscription";
       </div>
       
       <!-- Content -->
-      <div style="display: inline-block; width: 100%; white-space: nowrap; overflow-x: auto; margin-bottom: -5px; border: black 1px solid;">
+      <div class="d-flex flex-nowrap" style="width: 100%; white-space: nowrap; border: black 1px solid;">
       
         <!-- Left (Fixed) Content -->
-        <div style="vertical-align: top;"
-             [style.display]="nFixedColumns > 0 ? 'inline-block' : 'none'"
-             [style.width]="nFixedColumns > 0 ? (nFixedColumns * 10) + '%' : '0%'"
-             [style.min-width]="fixedMinWidth + 'px'">
+        <div [style.flex]="nFixedColumns > 0 ? '1 1 ' + (nFixedColumns * 10) + '%' : '1 1 0%'"
+             [style.display]="nFixedColumns == 0 ? 'none' : ''">
           <!-- Left Headers -->
-          <div *ngIf="columnHeaders">
+          <div *ngIf="columnHeaders" class="d-flex flex-nowrap">
             <hci-column-header class="hci-grid-column-header hci-grid-row-height"
                                *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
                                [column]="column"
-                               [style.display]="column.visible ? 'inline-block' : 'none'"
-                               [style.height]="column.filterType === null ? '30px' : '60px'"
-                               [style.width]="column.width + '%'"
+                               [style.flex]="'1 1 ' + column.width + '%'"
                                [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
             </hci-column-header><br />
@@ -79,19 +75,18 @@ import {Subscription} from "rxjs/Subscription";
         </div>
         
         <!-- Right (Main) Content -->
-        <div style="display: inline-block; overflow-x: auto; overflow-y: hidden; white-space: nowrap; vertical-align: top;"
-             class="rightDiv"
-             [style.margin-left]="nFixedColumns > 0 ? '-4px' : '0px'"
-             [style.width]="nFixedColumns > 0 ? (100 - (nFixedColumns * 10)) + '%' : '100%'">
+        <div class="rightDiv"
+             style="overflow-x: auto;"
+             [style.flex]="nFixedColumns > 0 ? '1 1 ' + (100 - nFixedColumns * 10) + '%' : '1 1 100%'">
           <!-- Right Headers -->
-          <div *ngIf="columnHeaders">
+          <div *ngIf="columnHeaders" class="d-flex flex-nowrap">
             <hci-column-header *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
                                [column]="column"
                                class="hci-grid-column-header hci-grid-row-height"
                                [class.hci-grid-row-height]="column.filterType === null"
                                [class.hci-grid-row-height-filter]="column.filterType !== null"
                                [style.display]="column.visible ? 'inline-block' : 'none'"
-                               [style.width]="column.width + '%'"
+                               [style.flex]="'1 1 ' + column.width + '%'"
                                [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
             </hci-column-header><br />

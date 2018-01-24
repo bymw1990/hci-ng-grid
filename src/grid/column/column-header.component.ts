@@ -10,18 +10,13 @@ import { SortInfo } from "../utils/sort-info";
  */
 @Component({
   selector: "hci-column-header",
-  styles: [`
-    .colSort {
-      float: right;
-    }
-  `],
   template: `
-    <span (click)="doSort()">
+    <div class="d-flex flex-nowrap" style="align-items: center;" (click)="doSort()">
       {{ column.name }}
-      <i *ngIf="asc === 0" class="fa fa-sort colSort"></i>
-      <i *ngIf="asc === 1" class="fa fa-sort-asc colSort"></i>
-      <i *ngIf="asc === -1" class="fa fa-sort-desc colSort"></i>
-    </span>
+      <i *ngIf="asc === 0" class="fa fa-sort sort-icon"></i>
+      <i *ngIf="asc === 1" class="fa fa-sort-asc sort-icon"></i>
+      <i *ngIf="asc === -1" class="fa fa-sort-desc sort-icon"></i>
+    </div>
     <br *ngIf="column.filterType !== null" />
     <span *ngIf="column.filterType === 'input'">
       <input [ngModel]="column.filterValue"
@@ -38,7 +33,13 @@ import { SortInfo } from "../utils/sort-info";
         <option *ngFor="let o of column.filterOptions" [ngValue]="o">{{ o }}</option>
       </select>
     </span>
-  `
+  `,
+  styles: [`
+    .sort-icon {
+      padding-left: 10px;
+      margin-left: auto;
+    }
+  `],
 })
 export class ColumnHeaderComponent {
 

@@ -13,8 +13,8 @@ export class Column {
   validator: any;
   sortOrder: number;
   width: number = 100;
-  minWidth: number = 100;
-  maxWidth: number = 500;
+  minWidth: number = 135;
+  maxWidth: number = 1000;
   isFixed: boolean = false;
   isGroup: boolean = false;
   isUtility: boolean = false;
