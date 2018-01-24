@@ -99,19 +99,21 @@ import {Subscription} from "rxjs/Subscription";
       
       <!-- Footer -->
       <div *ngIf="pageSize > 0"
-           style="width: 100%; height: 30px; border: black 1px solid; text-align: center; padding-top: 3px;">
-        <span style="float: left; font-weight: bold;">Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}</span>
-        <span style="text-align: center;">
-          <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
-          <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-backward"></i></span>
-          <select [ngModel]="pageSize"
-                  (ngModelChange)="doPageSize($event)"
-                  style="padding-left: 15px; padding-right: 15px;">
-            <option *ngFor="let o of pageSizes" [ngValue]="o">{{o}}</option>
-          </select>
-          <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-forward"></i></span>
-          <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-forward"></i></span>
-        </span>
+           style="width: 100%; border: black 1px solid; padding: 3px;">
+        <div>
+          <div style="float: left; font-weight: bold;">Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}</div>
+          <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
+            <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
+            <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-backward"></i></span>
+            <select [ngModel]="pageSize"
+                    (ngModelChange)="doPageSize($event)"
+                    style="padding-left: 15px; padding-right: 15px;">
+              <option *ngFor="let o of pageSizes" [ngValue]="o">{{o}}</option>
+            </select>
+            <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-forward"></i></span>
+            <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-forward"></i></span>
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -129,8 +131,7 @@ import {Subscription} from "rxjs/Subscription";
     }
     
     .hci-grid-column-header {
-      display: inline-block;
-      padding: 5px;
+      display: flex;
       border: black 1px solid;
       font-weight: bold;
       background-color: transparent;
