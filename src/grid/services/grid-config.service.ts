@@ -17,6 +17,7 @@ export class GridConfigService {
   columnDefinitions: Column[] = null;
   fixedColumns: string[] = null;
   groupBy: string[] = null;
+  groupByCollapsed: boolean = false;
   externalFiltering: boolean = false;
   externalSorting: boolean = false;
   externalPaging: boolean = false;
@@ -72,6 +73,12 @@ export class GridConfigService {
         columnsChanged = true;
       }
       this.groupBy = config.groupBy;
+    }
+    if (config.groupByCollapsed !== undefined) {
+      if (this.groupByCollapsed !== config.groupByCollapsed) {
+        columnsChanged = true;
+      }
+      this.groupByCollapsed = config.groupByCollapsed;
     }
 
     // Data Display and Fetching Configuration

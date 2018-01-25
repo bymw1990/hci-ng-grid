@@ -3,9 +3,9 @@ import { PageInfo } from "./page-info";
 import { SortInfo } from "./sort-info";
 
 export class ExternalInfo {
-  public filter: Array<FilterInfo>;
-  public sort: SortInfo;
-  public page: PageInfo;
+  public filter: Array<FilterInfo> = null;
+  public sort: SortInfo = null;
+  public page: PageInfo = null;
 
   constructor(filter: Array<FilterInfo>, sort: SortInfo, page: PageInfo) {
     this.filter = filter;

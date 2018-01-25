@@ -190,6 +190,8 @@ export class CellComponent {
       this.componentRef = this.template.createComponent(factory).instance;
       this.componentRef.setValues(this.component);
     } else if (this.type) {
+      console.info("Type: " + this.type);
+
       var factories = Array.from(this.resolver["_factories"].keys());
       var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
       let factory = this.resolver.resolveComponentFactory(factoryClass);

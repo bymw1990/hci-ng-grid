@@ -25,7 +25,7 @@ export class Column {
   component: any = null;
 
   static getColumns(columnDefComponents: QueryList<ColumnDefComponent>): Column[] {
-    let columns: Column[] = new Array<Column>();
+    let columns: Column[] = [];
     let columnDefs: ColumnDefComponent[] = <ColumnDefComponent[]> columnDefComponents.toArray();
     for (var i = 0; i < columnDefs.length; i++) {
       let column: Column = new Column({});

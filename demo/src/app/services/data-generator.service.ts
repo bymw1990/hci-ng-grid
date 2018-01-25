@@ -15,7 +15,7 @@ export class DataGeneratorService {
   pagingData: Array<Object> = new Array<Object>();
   fixedData: Array<Object> = new Array<Object>();
   externalData1: Array<Object> = new Array<Object>();
-  externalData2: Array<Object> = new Array<Object>();
+  externalData2: Object[] = [];
   simpleData4: Array<Object> = new Array<Object>();
 
   private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie" ];
@@ -225,7 +225,9 @@ export class DataGeneratorService {
   }
 
   generateExternalData2(size: number) {
-    this.externalData2 = new Array<Object>();
+    console.debug("Start generateExternalData2: " + size);
+
+    this.externalData2 = [];
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -238,6 +240,8 @@ export class DataGeneratorService {
 
       this.externalData2.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
     }
+
+    console.debug("Done generateExternalData2: " + this.externalData2.length);
   }
 
   /**
@@ -258,8 +262,8 @@ export class DataGeneratorService {
     let filters: any = externalInfo["_filter"];
     let sort: any = externalInfo["_sort"];
 
-    let filtered: Array<Object> = new Array<Object>();
-    if (filters === null) {
+    let filtered: Object[] = [];
+    if (filters === undefined || filters === null) {
       filtered = this.externalData2;
     } else {
       for (var i = 0; i < this.externalData2.length; i++) {
@@ -275,7 +279,7 @@ export class DataGeneratorService {
       }
     }
 
-    if (sort !== null) {
+    if (sort !== undefined && sort !== null) {
       filtered = filtered.sort((a: Object, b: Object) => {
         if (sort["_asc"]) {
           if (a[sort["_field"]] < b[sort["_field"]]) {

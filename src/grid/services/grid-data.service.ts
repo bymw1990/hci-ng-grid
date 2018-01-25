@@ -64,7 +64,7 @@ export class GridDataService {
    * Paginate
    */
   filter() {
-    if(this.gridConfigService.externalFiltering) {
+    if (this.gridConfigService.externalFiltering) {
       this.filterInfo = new Array<FilterInfo>();
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].filterValue !== null && this.columnDefinitions[j].filterValue !== "") {
@@ -206,6 +206,11 @@ export class GridDataService {
         }
       }
       if (currentRowGroup !== null) {
+        if (this.gridConfigService.groupByCollapsed) {
+          currentRowGroup.state = currentRowGroup.COLLAPSED;
+        } else {
+          currentRowGroup.state = currentRowGroup.EXPANDED;
+        }
         this.gridData.push(currentRowGroup);
       }
     } else {

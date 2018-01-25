@@ -1,10 +1,16 @@
-import { Cell } from "../cell/cell";
-import { Row } from "./row";
+import {Cell} from "../cell/cell";
+import {Row} from "./row";
 
 /**
  *
  */
 export class RowGroup {
+
+  HIDDEN: number = 0;
+  COLLAPSED: number = 1;
+  EXPANDED: number = 2;
+
+  state: number = this.COLLAPSED;
   header: Row = null;
   rows: Array<Row> = new Array<Row>();
 

@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation} from "@angular/core";
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, HostListener, Input, OnChanges,
+  QueryList,
+  SimpleChange, TemplateRef, ViewChild, ViewEncapsulation
+} from "@angular/core";
 
 import {GridDataService} from "./services/grid-data.service";
 import {GridEventService} from "./services/grid-event.service";
@@ -40,10 +44,10 @@ import {Subscription} from "rxjs/Subscription";
     GridConfigService,
     GridMessageService],
   template: `
-    <div (keydown)="onKeyDown($event);">
-      <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy">
-        <div class="hci-grid-busy-div">
-          <span class="fas fa-refresh fa-spin fa-3x fa-fw hci-grid-busy-icon"></span>
+    <div #gridContainer (keydown)="onKeyDown($event);">
+      <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy" [style.height.px]="gridContainerHeight">
+        <div class="hci-grid-busy-div" [style.transform]="'translate(calc(50% - 2.5em), calc(' + (gridContainerHeight / 2) + 'px - 2.5em))'">
+          <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
         </div>
       </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
@@ -138,7 +142,7 @@ import {Subscription} from "rxjs/Subscription";
       color: black;
       vertical-align: top;
     }
-    
+    /*
     .hci-grid-row-height {
       height: 30px;
     }
@@ -146,17 +150,16 @@ import {Subscription} from "rxjs/Subscription";
     .hci-grid-row-height-filter {
       height: 60px;
     }
-    
+    */
     .hci-grid-busy {
+      z-index: 9999;
       width: 100%;
-      height: 100%;
       background-color: rgba(0, 0, 0, 0.2);
+      position: absolute;
     }
     
     .hci-grid-busy-div {
-      position: fixed;
-      margin-left: 50%;
-      margin-top: 5%;
+      transform-origin: top left;
     }
     
     .hci-grid-busy-icon {
@@ -170,6 +173,7 @@ import {Subscription} from "rxjs/Subscription";
 export class GridComponent implements OnChanges {
 
   @ViewChild("copypastearea") copypastearea: any;
+  @ViewChild("gridContainer") gridContainer: any;
 
   @Input() inputData: Object[] = null;
 
@@ -182,6 +186,7 @@ export class GridComponent implements OnChanges {
   @Input() columnDefinitions: Column[];
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
+  @Input() groupByCollapsed: boolean;
   @Input() externalFiltering: boolean;
   @Input() externalSorting: boolean;
   @Input() externalPaging: boolean;
@@ -203,6 +208,7 @@ export class GridComponent implements OnChanges {
   initialized: boolean = false;
   columnHeaders: boolean = false;
   busy: boolean = false;
+  gridContainerHeight: number = 0;
 
   columnsChangedSubscription: Subscription;
 
@@ -215,6 +221,8 @@ export class GridComponent implements OnChanges {
     if (this.level) {
       this.gridMessageService.setLevel(this.level);
     }
+
+    this.updateGridContainerHeight();
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
@@ -232,6 +240,7 @@ export class GridComponent implements OnChanges {
     If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
       this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
+        this.updateGridContainerHeight();
         this.busy = true;
         this.changeDetectorRef.markForCheck();
         this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
@@ -299,6 +308,7 @@ export class GridComponent implements OnChanges {
       if (changed) {
         this.initGridConfiguration();
         this.gridDataService.setInputDataInit();
+        this.postInit();
       }
     });
   }
@@ -309,12 +319,26 @@ export class GridComponent implements OnChanges {
     }
   }
 
+  @HostListener("window:resize", ["$event"])
+  onResize(event: Event) {
+    this.updateGridContainerHeight();
+  }
+
+  updateGridContainerHeight() {
+    this.gridContainerHeight = this.gridContainer.nativeElement.offsetHeight;
+    console.debug("updateGridContainerHeight: " + this.gridContainerHeight);
+  }
+
   postInit() {
+    this.updateGridContainerHeight();
+
     this.pageInfo = this.gridDataService.pageInfo;
     this.pageSize = this.gridDataService.pageInfo.getPageSize();
+    this.pageSizes = this.gridConfigService.pageSizes;
 
     this.initialized = true;
     this.gridEventService.setSelectedLocation(null, null);
+    this.changeDetectorRef.markForCheck();
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
@@ -328,6 +352,8 @@ export class GridComponent implements OnChanges {
         this.buildConfig();
         this.gridConfigService.setConfig(this.config);
       }
+
+      this.updateGridContainerHeight();
     }
   }
 
@@ -346,12 +372,17 @@ export class GridComponent implements OnChanges {
     }
     if (this.columnDefinitions !== undefined) {
       this.config.columnDefinitions = this.columnDefinitions;
+    } else {
+      this.config.columnDefinitions = Column.getColumns(this.columnDefComponents);
     }
     if (this.fixedColumns !== undefined) {
       this.config.fixedColumns = this.fixedColumns;
     }
     if (this.groupBy !== undefined) {
       this.config.groupBy = this.groupBy;
+    }
+    if (this.groupByCollapsed !== undefined) {
+      this.config.groupByCollapsed = this.groupByCollapsed;
     }
     if (this.externalFiltering !== undefined) {
       this.config.externalFiltering = this.externalFiltering;
