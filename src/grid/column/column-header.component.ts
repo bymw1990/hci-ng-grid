@@ -12,19 +12,23 @@ import { SortInfo } from "../utils/sort-info";
   selector: "hci-column-header",
   template: `
     <div class="d-flex flex-nowrap" style="align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;" (click)="doSort()">
-      {{ column.name }}
-      <i *ngIf="asc === 0" class="fa fa-sort sort-icon"></i>
-      <i *ngIf="asc === 1" class="fa fa-sort-asc sort-icon"></i>
-      <i *ngIf="asc === -1" class="fa fa-sort-desc sort-icon"></i>
+      <span>{{ column.name }}</span>
+      <!--
+      <span class="sort-icon">
+      <i *ngIf="asc === 0" class="fas fa-sort"></i>
+      <i *ngIf="asc === 1" class="fas fa-sort-up"></i>
+      <i *ngIf="asc === -1" class="fas fa-sort-down"></i>
+      </span>-->
+      <span *ngIf="asc === 0" class="sort-icon"><span class="fas fa-sort"></span></span>
+      <span *ngIf="asc === 1" class="sort-icon"><span class="fas fa-sort-up"></span></span>
+      <span *ngIf="asc === -1" class="sort-icon"><span class="fas fa-sort-down"></span></span>
     </div>
     <br *ngIf="column.filterType !== null" />
     <span *ngIf="column.filterType === 'input'">
       <input [ngModel]="column.filterValue"
              (ngModelChange)="doFilterChange($event)"
              style="width: 90%;" />
-      <i class="fa fa-close"
-         (click)="doFilterClear();">
-      </i>
+      <span (click)="doFilterClear();"><span class="fas fa-close"></span></span>
     </span>
     <span *ngIf="column.filterType === 'select'">
       <select [ngModel]="column.filterValue"

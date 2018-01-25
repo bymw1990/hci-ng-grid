@@ -20,7 +20,7 @@ const COLLAPSED: number = 1;
          (click)="rowHeaderClick()"
          class="hci-grid-row-group-header">
       <span style="padding-left: 10px;">
-        <i class="fa fa-minus"></i>
+        <span class="fas fa-minus"></span>
       </span>
       <span *ngFor="let cell of rowGroup.header.cells"
             class="hci-grid-row-group-column-header">

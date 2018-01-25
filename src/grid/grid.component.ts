@@ -43,7 +43,7 @@ import {Subscription} from "rxjs/Subscription";
     <div (keydown)="onKeyDown($event);">
       <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy">
         <div class="hci-grid-busy-div">
-          <i class="fa fa-refresh fa-spin fa-3x fa-fw hci-grid-busy-icon"></i>
+          <span class="fas fa-refresh fa-spin fa-3x fa-fw hci-grid-busy-icon"></span>
         </div>
       </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
@@ -103,15 +103,15 @@ import {Subscription} from "rxjs/Subscription";
         <div>
           <div style="float: left; font-weight: bold;">Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}</div>
           <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
-            <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-backward"></i></span>
-            <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-backward"></i></span>
+            <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
+            <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
             <select [ngModel]="pageSize"
                     (ngModelChange)="doPageSize($event)"
                     style="padding-left: 15px; padding-right: 15px;">
               <option *ngFor="let o of pageSizes" [ngValue]="o">{{o}}</option>
             </select>
-            <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-forward"></i></span>
-            <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><i class="fa fa-fast-forward"></i></span>
+            <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-forward"></span></span>
+            <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-forward"></span></span>
           </div>
         </div>
       </div>

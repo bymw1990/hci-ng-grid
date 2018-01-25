@@ -5,10 +5,10 @@ import { CellTemplate } from "./cell-template.component";
 @Component({
   selector: "hci-grid-cell-row-select",
   template: `
-    <span class="hci-grid-cell-template hci-grid-cell-rsc" [ngClass]="{ 'focused': focused }">
-      <i (click)="onClick($event)"
-         class="fa fa-check"
-         [style.color]="selected ? '#00cc00' : 'red'"></i>
+    <span class="hci-grid-cell-template hci-grid-cell-rsc"
+          [ngClass]="{ 'focused': focused }"
+          (click)="onClick($event)" [style.color]="selected ? '#00cc00' : 'red'">
+      <span class="fas fa-check"></span>
     </span>
   `,
   styles: [ `
