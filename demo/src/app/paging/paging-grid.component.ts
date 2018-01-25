@@ -6,21 +6,25 @@ import { Column } from "hci-ng-grid/index";
 @Component({
     selector: "paging-grid",
     template: `
-    <div style="padding: 20px;">
-      <h4>Paging Grid</h4>
-    </div>
-    <div style="padding-left: 20px;">
-      <a (click)="initData();">Re-generate Data</a><br />
-      <span>Size: </span><input [(ngModel)]="dataSize" />
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [title]="'Paging Grid'"
-                [inputData]="pagingData"
-                [columnDefinitions]="pagingColumns"
-                [pageSize]="10"
-                [pageSizes]="[ 10, 25, 100 ]">
-      </hci-grid>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <h4>Paging Grid</h4>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            <a class="btn btn-primary" (click)="initData();">Re-generate Data</a><br />
+            <span>Size: </span><input [(ngModel)]="dataSize" />
+          </p>
+          <p>
+            <hci-grid [title]="'Paging Grid'"
+                      [inputData]="pagingData"
+                      [columnDefinitions]="pagingColumns"
+                      [pageSize]="10"
+                      [pageSizes]="[ 10, 25, 100 ]">
+            </hci-grid>
+          </p>
+        </div>
+      </div>
     `
 })
 export class PagingGridComponent {

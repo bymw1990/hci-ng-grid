@@ -5,29 +5,39 @@ import { Column } from "hci-ng-grid/index";
 @Component({
   selector: "select-grid",
   template: `
-    <div class="ltr-padding">
-      <h4>Row Select</h4>
+    <div class="card">
+      <div class="card-header">
+        <h4>Row Select</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Double click on a row.
+          <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
+        </p>
+        <p>
+          <hci-grid [inputData]="data1"
+                    [columnDefinitions]="columns1"
+                    [onRowDoubleClick]="onRowDoubleClick">
+          </hci-grid>
+        </p>
+      </div>
     </div>
-    <div class="ltr-padding">
-      Double click on a row.
-      <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
-    </div>
-    <div class="ltr-padding">
-      <hci-grid [inputData]="data1"
-                [columnDefinitions]="columns1"
-                [onRowDoubleClick]="onRowDoubleClick">
-      </hci-grid>
-    </div>
-    <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
-    <div class="ltr-padding">
-      <h4>Multiple Row Select</h4>
-    </div>
-    <div style="padding: 20px; margin-bottom: 100px;">
-      <hci-grid [inputData]="data2"
-                [columnDefinitions]="columns2"
-                [rowSelect]="true"
-                [cellSelect]="true">
-      </hci-grid>
+    <div class="card">
+      <div class="card-header">
+        <h4>Multiple Row Select</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Click on check boxes.
+        </p>
+        <p>
+          <hci-grid [inputData]="data2"
+                    [columnDefinitions]="columns2"
+                    [rowSelect]="true"
+                    [cellSelect]="true">
+          </hci-grid>
+        </p>
+      </div>
     </div>
   `
 })

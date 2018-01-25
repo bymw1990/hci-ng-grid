@@ -7,4 +7,4 @@ import "@fortawesome/fontawesome/index";
 import "@fortawesome/fontawesome-free-regular/index";
 import "@fortawesome/fontawesome-free-solid/index";
 
-import "app/app.css";
+import "app/demo.css";

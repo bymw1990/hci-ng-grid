@@ -6,65 +6,89 @@ import { DataGeneratorService } from "../services/data-generator.service";
 @Component({
   selector: "simple-grid",
   template: `
-    <div style="padding: 20px;">
-      <h4>Simple Grid</h4>
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [title]="'Simple Grid'"
-                [inputData]="simpleData1">
-          <column-def [field]="'lastName'"></column-def>
-          <column-def [field]="'firstName'"></column-def>
-          <column-def [field]="'dob'">
+    <div class="card">
+      <div class="card-header">
+        <h4>Simple Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          
+        </p>
+        <p>
+          <hci-grid [title]="'Simple Grid'"
+                    [inputData]="simpleData1">
+            <column-def [field]="'lastName'"></column-def>
+            <column-def [field]="'firstName'"></column-def>
+            <column-def [field]="'dob'">
               <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-          </column-def>
-          <column-def [field]="'pcg.nLabs'"></column-def>
-          <column-def [field]="'pcg.nested.nLabPath'"></column-def>
-      </hci-grid>
+            </column-def>
+            <column-def [field]="'pcg.nLabs'"></column-def>
+            <column-def [field]="'pcg.nested.nLabPath'"></column-def>
+          </hci-grid>
+        </p>
+      </div>
     </div>
-    <div style="padding: 20px;">
-      <h4>More Simple Grid</h4>
+    
+    <div class="card">
+      <div class="card-header">
+        <h4>More Simple Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Here we pass the data array and column definitions.  The column definitions specify the complex data path and the
+          template type and that is all.  There is no filtering, header, sorting or paging.
+        </p>
+        <p>
+          <hci-grid [inputData]="simpleData2">
+            <column-def [field]="'lastName'"></column-def>
+            <column-def [field]="'firstName'"></column-def>
+            <column-def [field]="'dob'">
+              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+            </column-def>
+            <column-def [field]="'pcg.nLabs'"></column-def>
+            <column-def [field]="'pcg.nested.nLabPath'"></column-def>
+          </hci-grid>
+        </p>
+      </div>
     </div>
-    <div style="padding: 20px;">
-      Here we pass the data array and column definitions.  The column definitions specify the complex data path and the
-      template type and that is all.  There is no filtering, header, sorting or paging.
+    
+    <div class="card">
+      <div class="card-header">
+        <h4>Even More Simple Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Here the only thing passed in is the data.  Visible label columns are created automatically based on every key
+          in the object.
+        </p>
+        <p>
+          <hci-grid [inputData]="simpleData3"></hci-grid>
+        </p>
+      </div>
     </div>
-    <div style="padding: 20px;">
-      <hci-grid [inputData]="simpleData2">
-        <column-def [field]="'lastName'"></column-def>
-        <column-def [field]="'firstName'"></column-def>
-        <column-def [field]="'dob'">
-          <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-        </column-def>
-        <column-def [field]="'pcg.nLabs'"></column-def>
-        <column-def [field]="'pcg.nested.nLabPath'"></column-def>
-      </hci-grid>
-    </div>
-    <div style="padding: 20px;">
-      <h4>Even More Simple Grid</h4>
-    </div>
-    <div style="padding: 20px;">
-      Here the only thing passed in is the data.  Visible label columns are created automatically based on every key
-      in the object.
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [inputData]="simpleData3">
-      </hci-grid>
-    </div>
-    <div style="padding: 20px;">
+
+    <div class="card">
+      <div class="card-header">
         <h4>Simple Grid - Delayed Input</h4>
-    </div>
-    <div style="padding: 20px;">
-        <hci-grid [title]="'Simple Grid Delayed'"
-                  [inputData]="simpleData4">
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          
+        </p>
+        <p>
+          <hci-grid [title]="'Simple Grid Delayed'"
+                    [inputData]="simpleData4">
             <column-def [field]="'idPatient'" [name]="'ID'" [visible]="false"></column-def>
             <column-def [field]="'lastName'" [name]="'Last Name'"></column-def>
             <column-def [field]="'firstName'" [name]="'First Name'"></column-def>
             <column-def [field]="'dob'" [name]="'Date of Birth'">
-                <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
             </column-def>
             <column-def [field]="'address'" [name]="'Address 1'"></column-def>
             <column-def [field]="'citystatezip'" [name]="'Address 2'"></column-def>
-        </hci-grid>
+          </hci-grid>
+        </p>
+      </div>
     </div>
   `
 })

@@ -5,58 +5,58 @@ import { Column } from "hci-ng-grid/index";
 @Component({
   selector: "copy-paste-grid",
   template: `
-    <div style="padding: 20px;">
-      <h4>Copy Paste Demo</h4>
-    </div>
-    <div style="padding: 20px;">
-      <div style="margin-bottom: 10px;">
-        Cells can be selected as a 2d array and the data copied.  Columns will be delimited with a \t and rows will be
-        delimited with \n.  Similarly, pasted data will be parsed with \n and then with \t.  This is how spreadsheet tools
-        such as Excel expect data when copy/pasting multiple cells.
+    <div class="card">
+      <div class="card-header">
+        <h4>Copy Paste Demo</h4>
       </div>
-      <div style="width: 45%; display: inline-block;">
-        <span style="font-size: larger; font-weight: bold;">To copy</span>
-        <ul>
+      <div class="card-body">
+        <p class="card-text">
+          Cells can be selected as a 2d array and the data copied.  Columns will be delimited with a \t and rows will be
+          delimited with \n.  Similarly, pasted data will be parsed with \n and then with \t.  This is how spreadsheet tools
+          such as Excel expect data when copy/pasting multiple cells.
+        </p>
+        <div class="card-text">
+          <span style="font-size: larger; font-weight: bold;">To copy</span>
+          <ul>
             <li>Click on a cell and ctrl-click on another to select a range of cells</li>
             <li>Use ctrl-c to copy those cell data</li>
             <li>In Excel select cell and ctrl-v</li>
-        </ul>
-      </div>
-      <div style="width: 45%; display: inline-block;">
-        <span style="font-size: larger; font-weight: bold;">To paste</span>
-        <ul>
-          <li>In Excel ctrl-c an array of cells</li>
-          <li>Click on a cell and ctrl-v</li>
-          <li>Look at cell data and bound data change</li>
-        </ul>
-      </div>
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [title]="'Copy Paste Grid'"
-                [inputData]="copyPasteData"
-                [columnDefinitions]="copyPasteColumns"
-                [cellSelect]="true">
-      </hci-grid>
-    </div>
-    
-    <!-- Below code only to show bound data as it is updated -->
-    <div style="padding: 20px;">
-      <span style="font-weight: bold;">Bound Data</span>
-      <div style="font-weight: bold;">
-        <span style="width: 100px; display: inline-block;">idPatient</span>
-        <span style="width: 100px; display: inline-block;">firstName</span>
-        <span style="width: 100px; display: inline-block;">lastName</span>
-        <span style="width: 150px; display: inline-block;">dob</span>
-        <span style="width: 100px; display: inline-block;">pcg.nLabs</span>
-        <span style="width: 150px; display: inline-block;">pcg.nested.nLabPath</span>
-      </div>
-      <div *ngFor="let row of copyPasteData">
-        <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
-        <span style="width: 150px; display: inline-block;">{{row.dob}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.pcg.nLabs}}</span>
-        <span style="width: 150px; display: inline-block;">{{row.pcg.nested.nLabPath}}</span>
+          </ul>
+        </div>
+        <div class="card-text">
+          <span style="font-size: larger; font-weight: bold;">To paste</span>
+          <ul>
+            <li>In Excel ctrl-c an array of cells</li>
+            <li>Click on a cell and ctrl-v</li>
+            <li>Look at cell data and bound data change</li>
+          </ul>
+        </div>
+        <p>
+          <hci-grid [title]="'Copy Paste Grid'"
+                    [inputData]="copyPasteData"
+                    [columnDefinitions]="copyPasteColumns"
+                    [cellSelect]="true">
+          </hci-grid>
+        </p>
+        <div style="padding: 20px;">
+          <span style="font-weight: bold;">Bound Data</span>
+          <div style="font-weight: bold;">
+            <span style="width: 100px; display: inline-block;">idPatient</span>
+            <span style="width: 100px; display: inline-block;">firstName</span>
+            <span style="width: 100px; display: inline-block;">lastName</span>
+            <span style="width: 200px; display: inline-block;">dob</span>
+            <span style="width: 100px; display: inline-block;">pcg.nLabs</span>
+            <span style="width: 200px; display: inline-block;">pcg.nested.nLabPath</span>
+          </div>
+          <div *ngFor="let row of copyPasteData">
+            <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
+            <span style="width: 200px; display: inline-block;">{{row.dob}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.pcg.nLabs}}</span>
+            <span style="width: 200px; display: inline-block;">{{row.pcg.nested.nLabPath}}</span>
+          </div>
+        </div>
       </div>
     </div>
     `

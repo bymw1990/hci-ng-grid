@@ -2,10 +2,11 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, HostListener, Input, OnChanges,
-  QueryList,
-  SimpleChange, TemplateRef, ViewChild, ViewEncapsulation
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, HostListener, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation
 } from "@angular/core";
+import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
+
+import {Subscription} from "rxjs/Subscription";
 
 import {GridDataService} from "./services/grid-data.service";
 import {GridEventService} from "./services/grid-event.service";
@@ -20,7 +21,6 @@ import {PageInfo} from "./utils/page-info";
 import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {ColumnDefComponent} from "./column/column-def.component";
-import {Subscription} from "rxjs/Subscription";
 
 /**
  * Thoughts..
@@ -46,7 +46,7 @@ import {Subscription} from "rxjs/Subscription";
   template: `
     <div #gridContainer (keydown)="onKeyDown($event);">
       <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy" [style.height.px]="gridContainerHeight">
-        <div class="hci-grid-busy-div" [style.transform]="'translate(calc(50% - 2.5em), calc(' + (gridContainerHeight / 2) + 'px - 2.5em))'">
+        <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
           <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
         </div>
       </div>
@@ -60,6 +60,11 @@ import {Subscription} from "rxjs/Subscription";
       <!-- Content -->
       <div class="d-flex flex-nowrap" style="width: 100%; white-space: nowrap; border: black 1px solid;">
       
+        <div *ngIf="gridData === null || gridData.length === 0" class="d-flex flex-nowrap empty-content">
+          <div *ngIf="!busy" class="empty-content-text">No Data</div>
+          <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
+        </div>
+        
         <!-- Left (Fixed) Content -->
         <div [style.flex]="nFixedColumns > 0 ? '1 1 ' + (nFixedColumns * 10) + '%' : '1 1 0%'"
              [style.display]="nFixedColumns == 0 ? 'none' : ''">
@@ -123,6 +128,19 @@ import {Subscription} from "rxjs/Subscription";
   `,
   styles: [ `
     
+    .empty-content {
+      height: 150px;
+      flex: 1 0 100%;
+    }
+    
+    .empty-content-text {
+      align-self: center;
+      margin-right: auto;
+      margin-left: auto;
+      color: #dddddd;
+      font-size: 5em;
+    }
+    
     .hci-grid-header {
       background-color: transparent;
       color: black;
@@ -163,7 +181,7 @@ import {Subscription} from "rxjs/Subscription";
     }
     
     .hci-grid-busy-icon {
-      color: red;
+      color: rgba(255, 0, 0, 0.5);
     }
     
   ` ],
@@ -209,10 +227,11 @@ export class GridComponent implements OnChanges {
   columnHeaders: boolean = false;
   busy: boolean = false;
   gridContainerHeight: number = 0;
+  gridContainerHeightCalc: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("'translate(calc(50% - 2.5em), 0px)'");
 
   columnsChangedSubscription: Subscription;
 
-  constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
+  constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private domSanitizer: DomSanitizer, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
 
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
@@ -313,6 +332,10 @@ export class GridComponent implements OnChanges {
     });
   }
 
+  ngAfterViewInit() {
+    this.updateGridContainerHeight();
+  }
+
   ngOnDestroy() {
     if (this.columnsChangedSubscription) {
       this.columnsChangedSubscription.unsubscribe();
@@ -325,8 +348,8 @@ export class GridComponent implements OnChanges {
   }
 
   updateGridContainerHeight() {
-    this.gridContainerHeight = this.gridContainer.nativeElement.offsetHeight;
-    console.debug("updateGridContainerHeight: " + this.gridContainerHeight);
+    this.gridContainerHeight = Math.max(150, this.gridContainer.nativeElement.offsetHeight);
+    this.gridContainerHeightCalc = this.domSanitizer.bypassSecurityTrustStyle("translate(calc(50% - 2.5em), calc(" + (Math.floor(this.gridContainerHeight / 2)) + "px - 2.5em))");
   }
 
   postInit() {
@@ -422,6 +445,7 @@ export class GridComponent implements OnChanges {
   }
 
   initGridConfiguration() {
+    this.gridDataService.pageInfo.pageSize = this.gridConfigService.pageSize;
     this.gridConfigService.init();
     this.postInitGridConfiguration();
   }

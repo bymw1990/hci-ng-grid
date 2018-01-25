@@ -1,16 +1,9 @@
 export class PageInfo {
 
-  public page: number = 0;
-  public pageSize: number = 10;
-  public dataSize: number = 0;
-  public numPages: number = 0;
-
-  constructor() {
-    this.page = 0;
-    this.pageSize = 10;
-    this.dataSize = 0;
-    this.numPages = 0;
-  }
+  page: number = 0;
+  pageSize: number = 10;
+  dataSize: number = 0;
+  numPages: number = 0;
 
   getPage(): number {
     return this.page;

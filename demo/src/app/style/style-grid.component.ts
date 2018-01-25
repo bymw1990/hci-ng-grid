@@ -5,66 +5,82 @@ import { Column } from "hci-ng-grid/index";
 @Component({
     selector: "style-grid",
     template: `
-    <div style="padding: 20px;">
-      <h4>New Row Colors</h4>
-    </div>
-    <div style="padding: 20px;">
-      Here we change the color of the odd and even rows.
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [inputData]="styleData1"
-                [columnDefinitions]="styleColumns1"
-                class="grid1">
-      </hci-grid>
-    </div>
-    <div style="padding: 20px;">
-      <h4>Cell Select Colors</h4>
-    </div>
-    <div style="padding: 20px;">
-      Here we change the default colors for the cell selection.
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [inputData]="styleData2"
-                [columnDefinitions]="styleColumns2"
-                [cellSelect]="true"
-                class="grid2">
-      </hci-grid>
-    </div>
-    <div style="padding: 20px;">
-      <h4>Bigger Rows and Bigger Font</h4>
-    </div>
-    <div style="padding: 20px;">
-      Here we override the row height to 45px and change the font family and size.
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [inputData]="styleData3"
-                class="grid3">
-      </hci-grid>
-    </div>
-  `,
+      <div class="card">
+        <div class="card-header">
+          <h4>New Row Colors</h4>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Here we change the color of the odd and even rows.
+          </p>
+          <p>
+            <hci-grid [inputData]="styleData1"
+                      [columnDefinitions]="styleColumns1"
+                      class="grid1">
+            </hci-grid>
+          </p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h4>Cell Select Colors</h4>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Here we change the default colors for the cell selection.
+          </p>
+          <p>
+            <hci-grid [inputData]="styleData2"
+                      [columnDefinitions]="styleColumns2"
+                      [cellSelect]="true"
+                      class="grid2">
+            </hci-grid>
+          </p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <h4>Bigger Rows and Bigger Font</h4>
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Here we override the row height to 45px and change the font family and size.
+          </p>
+          <p>
+            <hci-grid [inputData]="styleData3"
+                      class="grid3">
+            </hci-grid>
+          </p>
+        </div>
+      </div>
+    `,
     styles: [ `
-    .grid1 .hci-grid-row-even {
-      background-color: #eeffee;
-    }
-    .grid1 .hci-grid-row-odd {
-      background-color: #eeeeff;
-    }
     
-    .grid2 .hci-grid-cell-template.focused {
-      background-color: #ffeeee;
-    }
+      .grid1 .hci-grid-row-even {
+        background-color: #eeffee;
+      }
+      .grid1 .hci-grid-row-odd {
+        background-color: #eeeeff;
+      }
+      
+      .grid2 .hci-grid-cell-template.focused {
+        background-color: #ffeeee;
+      }
+      
+      .grid3 .hci-grid-row-height {
+        height: 45px;
+      }
+      .grid3 {
+        font-family: cursive;
+        font-size: larger;
+      }
+      .grid3 .hci-grid-cell-parent {
+        margin-top: 8px;
+      }
     
-    .grid3 .hci-grid-row-height {
-      height: 45px;
-    }
-    .grid3 {
-      font-family: cursive;
-      font-size: larger;
-    }
-    .grid3 .hci-grid-cell-parent {
-      margin-top: 8px;
-    }
-  ` ],
+    ` ],
     encapsulation: ViewEncapsulation.None
 })
 export class StyleGridComponent {

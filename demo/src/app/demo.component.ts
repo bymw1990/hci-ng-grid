@@ -11,18 +11,19 @@ import {Component} from "@angular/core";
  * specific to that grid.
  */
 @Component({
-  selector: "app",
+  selector: "demo",
   template: `
     <div class="navbar navbar-dark bg-dark box-shadow">
       <div class="container d-flex justify-content-between">
         <a class="navbar-brand d-flex align-items-center" routerLink="/simple">hci-ng-grid Demo</a>
-        <div ngbDropdown class="d-inline-block">
+        <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
             <a class="dropdown-item" routerLink="/style">Custom Styling</a>
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
+            <a class="dropdown-item" routerLink="/empty">Empty Grid</a>
             <a class="dropdown-item" routerLink="/external">External Sort/Filter/Page</a>
             <a class="dropdown-item" routerLink="/edit">Inline Edit and Key Nav</a>
             <a class="dropdown-item" routerLink="/filter">Filtering</a>
@@ -35,7 +36,9 @@ import {Component} from "@angular/core";
         </div>
       </div>
     </div>
-    <router-outlet></router-outlet>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
     `,
   styles: [ `
     a {
@@ -43,4 +46,4 @@ import {Component} from "@angular/core";
     }
   ` ]
 })
-export class DemoAppComponent {}
+export class DemoComponent {}

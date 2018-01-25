@@ -3,6 +3,6 @@
  */
 import {platformBrowser} from "@angular/platform-browser";
 
-import {AppModuleNgFactory} from "./app/app.module.ngfactory";
+import {DemoModuleNgFactory} from "./app/demo.module.ngfactory";
 
-platformBrowser().bootstrapModuleFactory(AppModuleNgFactory);
+platformBrowser().bootstrapModuleFactory(DemoModuleNgFactory);

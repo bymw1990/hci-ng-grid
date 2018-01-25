@@ -8,7 +8,7 @@ import {FormsModule} from "@angular/forms";
 
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
-import {DemoAppComponent} from "./demo-app.component";
+import {DemoComponent} from "./demo.component";
 import {DataGeneratorService} from "./services/data-generator.service";
 
 import {SimpleGridComponent} from "./simple/simple-grid.component";
@@ -23,6 +23,7 @@ import {AlertsGridComponent} from "./alerts/alerts-grid.component";
 import {PagingGridComponent} from "./paging/paging-grid.component";
 import {StyleGridComponent} from "./style/style-grid.component";
 import {DynamicConfigGridComponent} from "./dynamic-config/dynamic-config.component";
+import {EmptyGridComponent} from "./empty/empty-grid.component";
 
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
@@ -36,6 +37,7 @@ import {AlertsGridModule} from "./alerts/alerts-grid.module";
 import {PagingGridModule} from "./paging/paging-grid.module";
 import {StyleGridModule} from "./style/style-grid.module";
 import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
+import {EmptyGridModule} from "./empty/empty-grid.module";
 
 import {GridModule} from "hci-ng-grid/index";
 
@@ -56,11 +58,12 @@ import {GridModule} from "hci-ng-grid/index";
     AlertsGridModule,
     PagingGridModule,
     StyleGridModule,
-    GridModule,
-    DynamicConfigGridModule
+    DynamicConfigGridModule,
+    EmptyGridModule,
+    GridModule
   ],
   declarations: [
-    DemoAppComponent,
+    DemoComponent,
     SimpleGridComponent,
     SelectGridComponent,
     EditGridComponent,
@@ -72,13 +75,14 @@ import {GridModule} from "hci-ng-grid/index";
     AlertsGridComponent,
     PagingGridComponent,
     StyleGridComponent,
-    DynamicConfigGridComponent
+    DynamicConfigGridComponent,
+    EmptyGridComponent
   ],
   providers: [
     DataGeneratorService
   ],
   bootstrap: [
-    DemoAppComponent
+    DemoComponent
   ]
 })
-export class AppModule {}
+export class DemoModule {}

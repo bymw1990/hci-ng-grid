@@ -6,43 +6,47 @@ import { Column } from "hci-ng-grid/index";
 @Component({
   selector: "fixed-grid",
   template: `
-    <div style="padding: 20px;">
-      <h4>Fixed Grid</h4>
-    </div>
-    <div style="padding: 20px;">
-      <div>&lt;tab&gt; through cells</div>
-      <div>click on cells</div>
-      <div>up/down/left/right on selected cell</div>
-      <div>modify input cell values and check bound data changes</div>
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [title]="'Fixed Grid'"
-                [inputData]="fixedData"
-                [columnDefinitions]="fixedColumns"
-                [fixedColumns]="['firstName', 'lastName']">
-      </hci-grid>
-    </div>
-    <div style="padding: 20px;">
-      <span style="font-weight: bold;">Bound Data</span>
-      <div style="font-weight: bold;">
-        <span style="width: 100px; display: inline-block;">idPatient</span>
-        <span style="width: 100px; display: inline-block;">firstName</span>
-        <span style="width: 100px; display: inline-block;">middleName</span>
-        <span style="width: 100px; display: inline-block;">lastName</span>
-        <span style="width: 150px; display: inline-block;">dob</span>
-        <span style="width: 150px; display: inline-block;">gender</span>
-        <span style="width: 150px; display: inline-block;">address</span>
-        <span style="width: 150px; display: inline-block;">phone</span>
+    <div class="card">
+      <div class="card-header">
+        <h4>Fixed Grid</h4>
       </div>
-      <div *ngFor="let row of fixedData">
-        <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.middleName}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
-        <span style="width: 150px; display: inline-block;">{{row.dob}}</span>
-        <span style="width: 100px; display: inline-block;">{{row.gender}}</span>
-        <span style="width: 150px; display: inline-block;">{{row.address}}</span>
-        <span style="width: 150px; display: inline-block;">{{row.phone}}</span>
+      <div class="card-body">
+        <p class="card-text">
+          &lt;tab&gt; through cells<br />
+          click on cells<br />
+          up/down/left/right on selected cell<br />
+          modify input cell values and check bound data changes<br />
+        </p>
+        <p>
+          <hci-grid [title]="'Fixed Grid'"
+                    [inputData]="fixedData"
+                    [columnDefinitions]="fixedColumns"
+                    [fixedColumns]="['firstName', 'lastName']">
+          </hci-grid>
+        </p>
+        <div style="padding: 20px;">
+          <span style="font-weight: bold;">Bound Data</span>
+          <div style="font-weight: bold;">
+            <span style="width: 100px; display: inline-block;">idPatient</span>
+            <span style="width: 100px; display: inline-block;">firstName</span>
+            <span style="width: 100px; display: inline-block;">middleName</span>
+            <span style="width: 100px; display: inline-block;">lastName</span>
+            <span style="width: 150px; display: inline-block;">dob</span>
+            <span style="width: 150px; display: inline-block;">gender</span>
+            <span style="width: 150px; display: inline-block;">address</span>
+            <span style="width: 150px; display: inline-block;">phone</span>
+          </div>
+          <div *ngFor="let row of fixedData">
+            <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.middleName}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
+            <span style="width: 150px; display: inline-block;">{{row.dob}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.gender}}</span>
+            <span style="width: 150px; display: inline-block;">{{row.address}}</span>
+            <span style="width: 150px; display: inline-block;">{{row.phone}}</span>
+          </div>
+        </div>
       </div>
     </div>
     `

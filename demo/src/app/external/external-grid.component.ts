@@ -6,61 +6,68 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
 @Component({
   selector: "external-grid",
   template: `
-    <div style="padding: 20px;">
-      <h4>External Grid</h4>
+    <div class="card">
+      <div class="card-header">
+        <h4>External Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          250 rows of data is generated in our service and stored.  We bind the onExternalDataCall which takes an object
+          containing filtering/sorting/paging info.  Our data service applies the sorts/filters/pages to return a subset
+          of data back to the grid.  This service mimics what a backend query would do with the same information.<br />
+          In this demo we specify external call for all filter/sort/paging.  So any time a filter is changed, the page
+          size is updated, or the next page is selected, this external function is called to retrieve the data.<br />
+          To simulate an api call, a delay of 1 s has been added.
+        </p>
+        <p>
+          <hci-grid [onExternalDataCall]="onExternalDataCall1"
+                    [externalFiltering]="true"
+                    [externalSorting]="true"
+                    [externalPaging]="true"
+                    [pageSize]="10">
+            <column-def [field]="'idPatient'" [name]="'ID'"></column-def>
+            <column-def [field]="'lastName'" [name]="'Last Name'" filterType="'input'">
+                <hci-grid-cell-input #template></hci-grid-cell-input>
+            </column-def>
+            <column-def [field]="'middleName'" [name]="'Middle Name'" filterType="'input'">
+                <hci-grid-cell-input #template></hci-grid-cell-input>
+            </column-def>
+            <column-def [field]="'firstName'" [name]="'First Name'" filterType="'input'">
+                <hci-grid-cell-input #template></hci-grid-cell-input>
+            </column-def>
+            <column-def [field]="'dob'" [name]="'Date of Birth'">
+                <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
+            </column-def>
+            <column-def [field]="'gender'" [name]="'Gender'" filterType="'select'" filterOptions="[ '', 'Female', 'Male' ]">
+                <hci-grid-cell-input #template></hci-grid-cell-input>
+            </column-def>
+            <column-def [field]="'address'" [name]="'Address'">
+                <hci-grid-cell-input #template></hci-grid-cell-input>
+            </column-def>
+          </hci-grid>
+        </p>
+      </div>
     </div>
-    <div style="padding: 20px;">
-        250 rows of data is generated in our service and stored.  We bind the onExternalDataCall which takes an object
-        containing filtering/sorting/paging info.  Our data service applies the sorts/filters/pages to return a subset
-        of data back to the grid.  This service mimics what a backend query would do with the same information.<br />
-        In this demo we specify external call for all filter/sort/paging.  So any time a filter is changed, the page
-        size is updated, or the next page is selected, this external function is called to retrieve the data.<br />
-        To simulate an api call, a delay of 1 s has been added.
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [onExternalDataCall]="onExternalDataCall1"
-                [externalFiltering]="true"
-                [externalSorting]="true"
-                [externalPaging]="true"
-                [pageSize]="10">
-        <column-def [field]="'idPatient'" [name]="'ID'"></column-def>
-        <column-def [field]="'lastName'" [name]="'Last Name'" filterType="'input'">
-            <hci-grid-cell-input #template></hci-grid-cell-input>
-        </column-def>
-        <column-def [field]="'middleName'" [name]="'Middle Name'" filterType="'input'">
-            <hci-grid-cell-input #template></hci-grid-cell-input>
-        </column-def>
-        <column-def [field]="'firstName'" [name]="'First Name'" filterType="'input'">
-            <hci-grid-cell-input #template></hci-grid-cell-input>
-        </column-def>
-        <column-def [field]="'dob'" [name]="'Date of Birth'">
-            <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-        </column-def>
-        <column-def [field]="'gender'" [name]="'Gender'" filterType="'select'" filterOptions="[ '', 'Female', 'Male' ]">
-            <hci-grid-cell-input #template></hci-grid-cell-input>
-        </column-def>
-        <column-def [field]="'address'" [name]="'Address'">
-            <hci-grid-cell-input #template></hci-grid-cell-input>
-        </column-def>
-      </hci-grid>
-    </div>
-    <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
-    <div style="padding: 20px;">
-      <span style="font-size: 28px; font-weight: bold;">Partially External Grid</span>
-    </div>
-    <div style="padding: 20px;">
-        The previous example had external filter/sort/page.  Here we have external filter and sort, but paging is left
-        to the grid.  So our service applies filters and sorts to the data and always returns the full remaining dataset
-        which leaves the paging to the grid.
-    </div>
-    <div style="padding: 20px; margin-bottom: 100px;">
-      <hci-grid [columnDefinitions]="columns2"
-                [onExternalDataCall]="onExternalDataCall2"
-                [externalFiltering]="true"
-                [externalSorting]="true"
-                [externalPaging]="false"
-                [pageSize]="10">
-      </hci-grid>
+    <div class="card">
+      <div class="card-header">
+        <h4>Partially External Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          The previous example had external filter/sort/page.  Here we have external filter and sort, but paging is left
+          to the grid.  So our service applies filters and sorts to the data and always returns the full remaining dataset
+          which leaves the paging to the grid.
+        </p>
+        <p>
+          <hci-grid [columnDefinitions]="columns2"
+                    [onExternalDataCall]="onExternalDataCall2"
+                    [externalFiltering]="true"
+                    [externalSorting]="true"
+                    [externalPaging]="false"
+                    [pageSize]="10">
+          </hci-grid>
+        </p>
+      </div>
     </div>
     `
 })
@@ -92,6 +99,9 @@ export class ExternalGridComponent implements OnInit {
   }
 
   public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
+    console.info("handleExternalDataCall1");
+    console.info(externalInfo);
+
     return new Promise((resolve, reject) => {
       this.dataGeneratorService.getExternalData1(externalInfo).subscribe((externalData: ExternalData) => {
         setTimeout(() =>

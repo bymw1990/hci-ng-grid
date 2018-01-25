@@ -3,18 +3,22 @@ import {Component} from "@angular/core";
 @Component({
   selector: "dynamic-config-grid",
   template: `
-    <div class="ltr-padding">
-      <h4>Dynamic Config Grid</h4>
-    </div>
-    <div class="ltr-padding">
-      <button class="btn btn-primary" (click)="setColumns1()">Columns 1</button>
-      <button class="btn btn-primary" (click)="setColumns2()">Columns 2</button>
-    </div>
-    <div class="ltr-padding">
-      <hci-grid [title]="'Dynamic Config Grid'"
-                [inputData]="data"
-                [columnDefinitions]="columns">
-      </hci-grid>
+    <div class="card">
+      <div class="card-header">
+        <h4>Dynamic Config Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          <button class="btn btn-primary" (click)="setColumns1()">Columns 1</button>
+          <button class="btn btn-primary" (click)="setColumns2()">Columns 2</button>
+        </p>
+        <p>
+          <hci-grid [title]="'Dynamic Config Grid'"
+                    [inputData]="data"
+                    [columnDefinitions]="columns">
+          </hci-grid>
+        </p>
+      </div>
     </div>
     `
 })

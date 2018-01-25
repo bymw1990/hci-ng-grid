@@ -144,6 +144,9 @@ export class DataGeneratorService {
    * @returns {ExternalData}
    */
   getExternalData1(externalInfo: ExternalInfo): Observable<ExternalData> {
+    console.info("getExternalData1");
+    console.info(externalInfo);
+
     if (externalInfo === null) {
       return Observable.create(observer => { observer.next(new ExternalData(this.externalData1, externalInfo)); });
     }
@@ -152,7 +155,7 @@ export class DataGeneratorService {
     }
     let filters: any = externalInfo.getFilter();
     let sort: any = externalInfo.getSort();
-    let pageInfo: any = externalInfo.getPage();
+    let pageInfo: PageInfo = externalInfo.getPage();
 
     let filtered: Array<Object> = new Array<Object>();
     if (filters === null) {
@@ -161,7 +164,7 @@ export class DataGeneratorService {
       for (var i = 0; i < this.externalData1.length; i++) {
         let add: boolean = true;
         for (var j = 0; j < filters.length; j++) {
-          if (this.externalData1[i][filters[j]["_field"]].indexOf(filters[j]["_value"]) === -1) {
+          if (this.externalData1[i][filters[j]["field"]].indexOf(filters[j]["value"]) === -1) {
             add = false;
           }
         }
@@ -173,18 +176,18 @@ export class DataGeneratorService {
 
     if (sort !== null) {
       filtered = filtered.sort((a: Object, b: Object) => {
-        if (sort["_asc"]) {
-          if (a[sort["_field"]] < b[sort["_field"]]) {
+        if (sort["asc"]) {
+          if (a[sort["field"]] < b[sort["field"]]) {
             return -1;
-          } else if (a[sort["_field"]] < b[sort["_field"]]) {
+          } else if (a[sort["field"]] < b[sort["field"]]) {
             return 1;
           } else {
             return 0;
           }
         } else {
-          if (a[sort["_field"]] > b[sort["_field"]]) {
+          if (a[sort["field"]] > b[sort["field"]]) {
             return -1;
-          } else if (a[sort["_field"]] < b[sort["_field"]]) {
+          } else if (a[sort["field"]] < b[sort["field"]]) {
             return 1;
           } else {
             return 0;
@@ -199,8 +202,10 @@ export class DataGeneratorService {
 
     let data: Array<Object> = new Array<Object>();
 
-    let page: number = pageInfo["_page"];
-    let pageSize: number = pageInfo["_pageSize"];
+    console.info(pageInfo);
+
+    let page: number = pageInfo.getPage();
+    let pageSize: number = pageInfo.getPageSize();
 
     let n: number = filtered.length;
     externalInfo.getPage().setDataSize(n);
@@ -209,6 +214,8 @@ export class DataGeneratorService {
     } else {
       externalInfo.getPage().setNumPages(1);
     }
+
+    console.info("externalData1 paging: " + n + " " + page + " " + pageSize);
 
     if (pageSize > 0) {
       if (page * pageSize > n - 1) {
@@ -259,8 +266,8 @@ export class DataGeneratorService {
     if (externalInfo.getPage() === null) {
       externalInfo.setPage(new PageInfo());
     }
-    let filters: any = externalInfo["_filter"];
-    let sort: any = externalInfo["_sort"];
+    let filters: any = externalInfo["filter"];
+    let sort: any = externalInfo["sort"];
 
     let filtered: Object[] = [];
     if (filters === undefined || filters === null) {
@@ -269,7 +276,7 @@ export class DataGeneratorService {
       for (var i = 0; i < this.externalData2.length; i++) {
         let add: boolean = true;
         for (var j = 0; j < filters.length; j++) {
-          if (this.externalData2[i][filters[j]["_field"]].indexOf(filters[j]["_value"]) === -1) {
+          if (this.externalData2[i][filters[j]["field"]].indexOf(filters[j]["value"]) === -1) {
             add = false;
           }
         }
@@ -281,18 +288,18 @@ export class DataGeneratorService {
 
     if (sort !== undefined && sort !== null) {
       filtered = filtered.sort((a: Object, b: Object) => {
-        if (sort["_asc"]) {
-          if (a[sort["_field"]] < b[sort["_field"]]) {
+        if (sort["asc"]) {
+          if (a[sort["field"]] < b[sort["field"]]) {
             return -1;
-          } else if (a[sort["_field"]] < b[sort["_field"]]) {
+          } else if (a[sort["field"]] < b[sort["field"]]) {
             return 1;
           } else {
             return 0;
           }
         } else {
-          if (a[sort["_field"]] > b[sort["_field"]]) {
+          if (a[sort["field"]] > b[sort["field"]]) {
             return -1;
-          } else if (a[sort["_field"]] < b[sort["_field"]]) {
+          } else if (a[sort["field"]] < b[sort["field"]]) {
             return 1;
           } else {
             return 0;

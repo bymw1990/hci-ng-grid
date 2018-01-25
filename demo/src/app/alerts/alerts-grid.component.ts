@@ -5,48 +5,49 @@ import { Column } from "hci-ng-grid/index";
 @Component({
   selector: "alerts-grid",
   template: `
-    <div style="padding: 20px;">
-      <span style="font-size: 28px; font-weight: bold;">Alert Popup</span>
-    </div>
-    <div style="padding: 20px;">
-        Try copying a range of cells and pasting in the bottom right corner.  There will be a toast warning indicating
-        that the paste is not valid.  This type of logging of errors and warnings is how I see the messaging service being
-        used.<br />
-        Here we use a basic toast with a four second hide delay to post errors and warnings.
-    </div>
-    <div style="padding: 20px;">
-      <hci-grid [inputData]="data1"
-                [columnDefinitions]="columns1"
-                [level]="'WARN'"
-                [onAlert]="onWarningOrError"
-                [cellSelect]="true">
-      </hci-grid>
-      <div style="position: fixed; top: 0px; left: 50%; width: 50%;">
-        <div *ngFor="let message of messages"
-             style="font-weight: bold; padding: 8px; border: black 1px solid; background-color: #ffeeee; border-radius: 8px;">
-           {{ message }}
-        </div>
+    <div class="card">
+      <div class="card-header">
+        <h4>Alert Popup</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Try copying a range of cells and pasting in the bottom right corner.  There will be a toast warning indicating
+          that the paste is not valid.  This type of logging of errors and warnings is how I see the messaging service being
+          used.<br />
+          Here we use a basic toast with a four second hide delay to post errors and warnings.
+        </p>
+        <p>
+          <hci-grid [inputData]="data1"
+                    [columnDefinitions]="columns1"
+                    [level]="'WARN'"
+                    [onAlert]="onWarningOrError"
+                    [cellSelect]="true">
+          </hci-grid>
+        </p>
       </div>
     </div>
-    <div style="min-height: 10px; background-color: red; border: black 1px solid; border-radius: 5px; margin: 20px;"></div>
-    <div style="padding: 20px;">
-      <span style="font-size: 28px; font-weight: bold;">Logging Grid</span>
-    </div>
-    <div style="padding: 20px;">
-        Here we set the level to debug and add any new message to the top of a text area.  This won't be used in the full
-        release.  Will plan to just use the messaging service to broadcast errors and warnings.
-    </div>
-    <div style="padding: 20px; margin-bottom: 100px;">
-      <hci-grid [inputData]="data2"
-                [columnDefinitions]="columns2"
-                [level]="'DEBUG'"
-                [onAlert]="onDebug"
-                [cellSelect]="true">
-      </hci-grid>
-      <div style="margin-top: 20px;">
-        <span style="font-weight: bold;">Log</span>
-        <br />
-        <textarea #log style="width: 100%; height: 200px; font-size: 12px;"></textarea>
+    <div class="card">
+      <div class="card-header">
+        <h4>Logging Grid</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          Here we set the level to debug and add any new message to the top of a text area.  This won't be used in the full
+          release.  Will plan to just use the messaging service to broadcast errors and warnings.
+        </p>
+        <p>
+          <hci-grid [inputData]="data2"
+                    [columnDefinitions]="columns2"
+                    [level]="'DEBUG'"
+                    [onAlert]="onDebug"
+                    [cellSelect]="true">
+          </hci-grid>
+        </p>
+        <p>
+          <span style="font-weight: bold;">Log</span>
+          <br />
+          <textarea #log style="width: 100%; height: 200px; font-size: 12px;"></textarea>
+        </p>
       </div>
     </div>
     `
