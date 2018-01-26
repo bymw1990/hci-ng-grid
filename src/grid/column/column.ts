@@ -11,6 +11,7 @@ export class Column {
   format: string = null;
   visible: boolean = true;
   validator: any;
+  sortable: boolean = true;
   sortOrder: number;
   width: number = 100;
   minWidth: number = 135;

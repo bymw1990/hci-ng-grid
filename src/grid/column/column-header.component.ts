@@ -11,7 +11,7 @@ import { SortInfo } from "../utils/sort-info";
 @Component({
   selector: "hci-column-header",
   template: `
-    <div class="d-flex flex-nowrap" style="align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;" (click)="doSort()">
+    <div *ngIf="column.sortable" class="d-flex flex-nowrap" style="align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;" (click)="doSort()">
       <span>{{ column.name }}</span>
       <span *ngIf="asc === 0" class="sort-icon"><span class="fas fa-sort"></span></span>
       <span *ngIf="asc === 1" class="sort-icon"><span class="fas fa-sort-up"></span></span>

@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 
-import { Column } from "hci-ng-grid/index";
+import {Column, GridComponent} from "hci-ng-grid/index";
 
 @Component({
   selector: "select-grid",
@@ -36,11 +36,17 @@ import { Column } from "hci-ng-grid/index";
          </span>
         </p>
         <p>
-          <hci-grid [inputData]="data2"
+          <a class="btn btn-primary" (click)="clearSelectedRows()">Clear Selected Rows</a>
+          <a class="btn btn-primary" (click)="deleteSelectedRows()" style="margin-left: 10px;">Delete Selected Rows</a>
+        </p>
+        <p>
+          <hci-grid #grid2
+                    [inputData]="data2"
                     [columnDefinitions]="columns2"
                     [rowSelect]="true"
-                    [cellSelect]="true"
-                    (selectedRows)="setSelectedRows($event)">
+                    (selectedRows)="setSelectedRows($event)"
+                    [pageSize]="5"
+                    [pageSizes]="[5, 10]">
           </hci-grid>
         </p>
       </div>
@@ -48,6 +54,8 @@ import { Column } from "hci-ng-grid/index";
   `
 })
 export class SelectGridComponent {
+
+  @ViewChild("grid2") grid2: GridComponent;
 
   selectedRows: any[] = [];
   clickedData: Object = null;
@@ -78,7 +86,9 @@ export class SelectGridComponent {
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1972-06-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
     { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1973-07-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
     { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1974-08-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1975-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1975-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } },
+    { "idPatient": 7, "firstName": "Mike", "lastName": "Jones", "dob": "1971-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } },
+    { "idPatient": 8, "firstName": "Grey", "lastName": "White", "dob": "1979-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
   columns2: Column[] = [
@@ -100,5 +110,12 @@ export class SelectGridComponent {
 
   setSelectedRows(selectedRows: any[]) {
     this.selectedRows = selectedRows;
+  }
+
+  clearSelectedRows() {
+    this.grid2.clearSelectedRows();
+  }
+  deleteSelectedRows() {
+    this.grid2.deleteSelectedRows();
   }
 }

@@ -45,6 +45,30 @@ export class GridDataService {
     this.pageInfo.setPageSize(this.gridConfigService.pageSize);
   }
 
+  /**
+   * Deletes the selected rows based on the key of the selected row.  This is really for bound data only.  If deleting
+   * from an external data source, the call should be made to that service to delete the rows, then the grid should just
+   * be refreshed.
+   */
+  deleteSelectedRows() {
+    this.inputData = this.inputData.filter((row: Object) => {
+      for (var j = 0; j < this.columnDefinitions.length; j++) {
+        if (this.columnDefinitions[j].isKey && this.selectedRows.indexOf(this.getField(row, this.columnDefinitions[j].field)) !== -1) {
+          return false;
+        }
+      }
+      return true;
+    });
+    this.setInputDataInit();
+
+    if (this.gridData.length === 0) {
+      this.setPage(-2);
+    }
+
+    this.selectedRows = [];
+    this.selectedRowsSubject.next(this.selectedRows);
+  }
+
   clearSelectedRows() {
     this.selectedRows = [];
     this.selectedRowsSubject.next(this.selectedRows);

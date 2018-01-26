@@ -584,4 +584,12 @@ export class GridComponent implements OnChanges {
     }
   }
 
+  public clearSelectedRows() {
+    this.gridDataService.clearSelectedRows();
+  }
+
+  public deleteSelectedRows() {
+    this.gridDataService.deleteSelectedRows();
+  }
+
 }

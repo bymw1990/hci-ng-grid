@@ -182,6 +182,7 @@ export class GridConfigService {
 
     if (this.rowSelect) {
       let rowSelectColumn: Column = Column.deserialize({ name: "", template: "RowSelectCellComponent", minWidth: 30, maxWidth: 30 });
+      rowSelectColumn.sortable = false;
       rowSelectColumn.sortOrder = -10;
       rowSelectColumn.isUtility = true;
       this.columnDefinitions.push(rowSelectColumn);
