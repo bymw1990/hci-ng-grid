@@ -15,6 +15,9 @@ export class CellTemplate {
   formatType: string = null;
   activeOnRowHeader: boolean = false;
   valueable: boolean = true;
+  i: number;
+  j: number;
+  k: number;
 
   handleClick: boolean = false;
 
@@ -25,6 +28,12 @@ export class CellTemplate {
   @Output() tabEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() inputFocused: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() clickEvent: EventEmitter<Object> = new EventEmitter<Object>();
+
+  setPosition(i: number, j: number, k: number) {
+    this.i = i;
+    this.j = j;
+    this.k = k;
+  }
 
   onModelChange(value: Object) {
     this.value = value;

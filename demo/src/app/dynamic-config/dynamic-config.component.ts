@@ -9,13 +9,31 @@ import {Component} from "@angular/core";
       </div>
       <div class="card-body">
         <p class="card-text">
-          <button class="btn btn-primary" (click)="setColumns1()">Columns 1</button>
-          <button class="btn btn-primary" (click)="setColumns2()">Columns 2</button>
+          <button class="btn btn-primary" (click)="setColumnsA1()">Columns 1</button>
+          <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
         </p>
         <p>
-          <hci-grid [title]="'Dynamic Config Grid'"
+          <hci-grid [title]="'Dynamic Columns'"
                     [inputData]="data"
-                    [columnDefinitions]="columns">
+                    [columnDefinitions]="columnsA">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h4>Dynamic Grid Row Select</h4>
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+          <button class="btn btn-primary" (click)="setColumnsB1()">Columns 1</button>
+          <button class="btn btn-primary" (click)="setColumnsB2()">Columns 2</button>
+        </p>
+        <p>
+          <hci-grid [title]="'Dynamic Columns Row Select'"
+                    [inputData]="data"
+                    [columnDefinitions]="columnsB"
+                    [rowSelect]="true">
           </hci-grid>
         </p>
       </div>
@@ -34,26 +52,48 @@ export class DynamicConfigGridComponent {
     { "idPatient": 7, "firstName": "Jimmy", "lastName": "Zephod", "middleName": "F", "dob": "1960-01-17T00:00-07:00" }
   ];
 
-  columns1: any[] = [
+  columnsA1: any[] = [
     { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
     { field: "lastName", name: "Last Name", template: "InputCell" },
     { field: "firstName", name: "First Name", template: "InputCell" }
   ];
 
-  columns2: any[] = [
+  columnsA2: any[] = [
     { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
     { field: "lastName", name: "Last Name", template: "InputCell" },
     { field: "firstName", name: "First Name", template: "InputCell" },
     { field: "middleName", name: "Middle Name", template: "InputCell" }
-  ]
+  ];
 
-  columns: any = this.columns1;
+  columnsB1: any[] = [
+    { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
+    { field: "lastName", name: "Last Name", template: "InputCell" },
+    { field: "firstName", name: "First Name", template: "InputCell" }
+  ];
 
-  setColumns1() {
-    this.columns = this.columns1;
+  columnsB2: any[] = [
+    { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
+    { field: "lastName", name: "Last Name", template: "InputCell" },
+    { field: "firstName", name: "First Name", template: "InputCell" },
+    { field: "middleName", name: "Middle Name", template: "InputCell" }
+  ];
+
+  columnsA: any = this.columnsA1;
+  columnsB: any = this.columnsB1;
+
+  setColumnsA1() {
+    this.columnsA = this.columnsA1;
   }
 
-  setColumns2() {
-    this.columns = this.columns2;
+  setColumnsA2() {
+    this.columnsA = this.columnsA2;
+  }
+
+  setColumnsB1() {
+    this.columnsB = this.columnsB1;
+  }
+
+  setColumnsB2() {
+    this.columnsB = this.columnsB2;
   }
 }

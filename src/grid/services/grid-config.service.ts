@@ -121,6 +121,16 @@ export class GridConfigService {
     let nRight: number = this.columnDefinitions.length;
     let wRight: number = 100;
 
+    let keyDefined: boolean = false;
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].isKey) {
+        keyDefined = true;
+      }
+    }
+    if (!keyDefined && this.columnDefinitions.length > 0) {
+      this.columnDefinitions[0].isKey = true;
+    }
+
     for (var i = 0; i < this.columnDefinitions.length; i++) {
       if (this.columnDefinitions[i].sortOrder < 0) {
         nLeft = nLeft + 1;

@@ -190,8 +190,6 @@ export class CellComponent {
       this.componentRef = this.template.createComponent(factory).instance;
       this.componentRef.setValues(this.component);
     } else if (this.type) {
-      console.info("Type: " + this.type);
-
       var factories = Array.from(this.resolver["_factories"].keys());
       var factoryClass = <Type<any>> factories.find((o: any) => o.name === this.type);
       let factory = this.resolver.resolveComponentFactory(factoryClass);
@@ -202,6 +200,8 @@ export class CellComponent {
       let factory = this.resolver.resolveComponentFactory(LabelCell);
       this.componentRef = this.template.createComponent(factory).instance;
     }
+
+    this.componentRef.setPosition(this.i, this.j, this.k);
 
     if (this.j === -1 && this.componentRef.activeOnRowHeader) {
       this.componentRef.render = true;

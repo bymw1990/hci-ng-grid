@@ -2,7 +2,9 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, HostListener, Input, OnChanges, QueryList, SimpleChange, ViewChild, ViewEncapsulation
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, HostListener, Input,
+  OnChanges,
+  Output, QueryList, SimpleChange, ViewChild, ViewEncapsulation
 } from "@angular/core";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
@@ -160,15 +162,7 @@ import {ColumnDefComponent} from "./column/column-def.component";
       color: black;
       vertical-align: top;
     }
-    /*
-    .hci-grid-row-height {
-      height: 30px;
-    }
     
-    .hci-grid-row-height-filter {
-      height: 60px;
-    }
-    */
     .hci-grid-busy {
       z-index: 9999;
       width: 100%;
@@ -215,6 +209,8 @@ export class GridComponent implements OnChanges {
   @Input() onExternalDataCall: Function;
   @Input() level: string = null;
   @Input() onRowDoubleClick: Function;
+
+  @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
   @ContentChildren(ColumnDefComponent) columnDefComponents: QueryList<ColumnDefComponent>;
 
@@ -282,6 +278,10 @@ export class GridComponent implements OnChanges {
         this.onAlert(message);
       });
     }
+
+    this.gridDataService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
+      this.selectedRows.emit(selectedRows);
+    });
 
     /* If onRowDoubleClick is provided, then listen and send to function. */
     if (this.onRowDoubleClick) {

@@ -6,6 +6,8 @@ import { Cell } from "../cell/cell";
 export class Row {
   cells: Array<Cell> = new Array<Cell>();
   private _key: any;
+  private _rowNum: number;
+  private _selected: boolean = false;
   private _visible: boolean = true;
 
   equals(row: Row, compareIndexes: Array<number>): boolean {
@@ -56,5 +58,21 @@ export class Row {
 
   set key(key: any) {
     this._key = key;
+  }
+
+  get rowNum(): any {
+    return this._rowNum;
+  }
+
+  set rowNum(rowNum: any) {
+    this._rowNum = rowNum;
+  }
+
+  get selected(): any {
+    return this._selected;
+  }
+
+  set selected(selected: any) {
+    this._selected = selected;
   }
 }

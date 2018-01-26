@@ -29,12 +29,18 @@ import { Column } from "hci-ng-grid/index";
       <div class="card-body">
         <p class="card-text">
           Click on check boxes.
+          <span>Selected Row IDs:</span>
+          <span *ngIf="selectedRows.length === 0">None</span>
+          <span *ngFor="let selectedRow of selectedRows" style="padding-left: 5px;">
+           {{selectedRow}}
+         </span>
         </p>
         <p>
           <hci-grid [inputData]="data2"
                     [columnDefinitions]="columns2"
                     [rowSelect]="true"
-                    [cellSelect]="true">
+                    [cellSelect]="true"
+                    (selectedRows)="setSelectedRows($event)">
           </hci-grid>
         </p>
       </div>
@@ -43,6 +49,7 @@ import { Column } from "hci-ng-grid/index";
 })
 export class SelectGridComponent {
 
+  selectedRows: any[] = [];
   clickedData: Object = null;
 
   public onRowDoubleClick: Function;
@@ -89,5 +96,9 @@ export class SelectGridComponent {
 
   public handleRowDoubleClick(id: Object): void {
     this.clickedData = id;
+  }
+
+  setSelectedRows(selectedRows: any[]) {
+    this.selectedRows = selectedRows;
   }
 }

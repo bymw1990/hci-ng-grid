@@ -1,16 +1,17 @@
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs/Rx";
+import {Injectable} from "@angular/core";
+import {Subject} from "rxjs/Rx";
 
-import { GridConfigService } from "./grid-config.service";
-import { Cell } from "../cell/cell";
-import { Row } from "../row/row";
-import { RowGroup } from "../row/row-group";
-import { Column } from "../column/column";
-import { Range } from "../utils/range";
-import { SortInfo } from "../utils/sort-info";
-import { PageInfo } from "../utils/page-info";
-import { FilterInfo } from "../utils/filter-info";
-import { ExternalInfo } from "../utils/external-info";
+import {GridConfigService} from "./grid-config.service";
+import {Cell} from "../cell/cell";
+import {Row} from "../row/row";
+import {RowGroup} from "../row/row-group";
+import {Column} from "../column/column";
+import {Range} from "../utils/range";
+import {SortInfo} from "../utils/sort-info";
+import {PageInfo} from "../utils/page-info";
+import {FilterInfo} from "../utils/filter-info";
+import {ExternalInfo} from "../utils/external-info";
+import {RowSelectCellComponent} from "../cell/row-select-cell.component";
 
 @Injectable()
 export class GridDataService {
@@ -36,9 +37,41 @@ export class GridDataService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
+  private selectedRows: any[] = [];
+  private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
+
   constructor(private gridConfigService: GridConfigService) {
     this.pageInfo.setPage(0);
     this.pageInfo.setPageSize(this.gridConfigService.pageSize);
+  }
+
+  clearSelectedRows() {
+    this.selectedRows = [];
+    this.selectedRowsSubject.next(this.selectedRows);
+  }
+
+  setSelectedRow(i: number, j: number, k: number) {
+    let key: any = this.getKey(i, j);
+    this.getRowGroup(i).get(j).get(k).value = true;
+
+    if (this.selectedRows.indexOf(key) === -1) {
+      this.selectedRows.push(key);
+    }
+    this.selectedRowsSubject.next(this.selectedRows);
+  }
+
+  setUnselectedRow(i: number, j: number, k: number) {
+    let key: any = this.getKey(i, j);
+    this.getRowGroup(i).get(j).get(k).value = false;
+
+    if (this.selectedRows.indexOf(key) !== -1) {
+      this.selectedRows.splice(this.selectedRows.indexOf(key), 1);
+    }
+    this.selectedRowsSubject.next(this.selectedRows);
+  }
+
+  getSelectedRowsSubject() {
+    return this.selectedRowsSubject;
   }
 
   cellDataUpdate(range: Range) {
@@ -47,6 +80,10 @@ export class GridDataService {
 
   doubleClickRow(i: number, j: number) {
     this.doubleClickObserved.next(this.gridData[i].rows[j]);
+  }
+
+  getKey(i: number, j: number): any {
+    return this.gridData[i].rows[j].key;
   }
 
   /**
@@ -133,7 +170,7 @@ export class GridDataService {
   handleValueChange(i: number, j: number, key: number, k: number, value: any) {
     if (j === -1) {
       for (var n = 0; n < this.gridData[i].length(); n++) {
-        this.setInputDataValue(this.gridData[i].get(n).key, this.gridConfigService.columnDefinitions[k].field, value);
+        this.setInputDataValue(this.gridData[i].get(n).rowNum, this.gridConfigService.columnDefinitions[k].field, value);
       }
     } else {
       this.setInputDataValue(key, this.gridConfigService.columnDefinitions[k].field, value);
@@ -160,6 +197,7 @@ export class GridDataService {
     if (sort) {
       this.sortPreparedData();
     }
+    this.resetUtilityColumns();
 
     let START: number = 0;
     let END: number = this.preparedData.length;
@@ -224,16 +262,45 @@ export class GridDataService {
     this.data.next(this.gridData);
   }
 
+  resetUtilityColumns() {
+    this.clearSelectedRows();
+
+    let columnDefinitions: Column[] = this.gridConfigService.columnDefinitions;
+
+    for (var i = 0; i < this.preparedData.length; i++) {
+      for (var j = 0; j < columnDefinitions.length; j++) {
+        if (columnDefinitions[j].isUtility) {
+          if (columnDefinitions[j].defaultValue !== undefined) {
+            if (columnDefinitions[j].template === "RowSelectCellComponent" || columnDefinitions[j].component === RowSelectCellComponent) {
+              this.preparedData[i].get(j).value = false;
+            }
+          } else {
+            this.preparedData[i].get(j).value = columnDefinitions[j].defaultValue;
+          }
+        }
+      }
+    }
+  }
+
   prepareData() {
     this.preparedData = new Array<any>();
     let columnDefinitions: Column[] = this.gridConfigService.columnDefinitions;
 
     for (var i = 0; i < this.inputData.length; i++) {
       let row: Row = new Row();
-      row.key = i;
+      row.rowNum = i;
       for (var j = 0; j < columnDefinitions.length; j++) {
+        if (columnDefinitions[j].isKey) {
+          row.key = this.getField(this.inputData[i], columnDefinitions[j].field);
+        }
         if (columnDefinitions[j].isUtility) {
-          row.add(new Cell({value: columnDefinitions[j].defaultValue}));
+          if (columnDefinitions[j].defaultValue !== undefined) {
+            if (columnDefinitions[j].template === "RowSelectCellComponent" || columnDefinitions[j].component === RowSelectCellComponent) {
+              row.add(new Cell({value: false}));
+            }
+          } else {
+            row.add(new Cell({value: columnDefinitions[j].defaultValue}));
+          }
         } else {
           row.add(new Cell({value: this.getField(this.inputData[i], columnDefinitions[j].field), key: i}));
         }
