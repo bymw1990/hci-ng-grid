@@ -62,7 +62,7 @@ import {ColumnDefComponent} from "./column/column-def.component";
       <!-- Content -->
       <div class="d-flex flex-nowrap" style="width: 100%; white-space: nowrap; border: black 1px solid;">
       
-        <div *ngIf="gridData === null || gridData.length === 0" class="d-flex flex-nowrap empty-content">
+        <div *ngIf="origDataSize === 0" class="d-flex flex-nowrap empty-content">
           <div *ngIf="!busy" class="empty-content-text">No Data</div>
           <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
         </div>
@@ -112,7 +112,9 @@ import {ColumnDefComponent} from "./column/column-def.component";
       <div *ngIf="pageSize > 0"
            style="width: 100%; border: black 1px solid; padding: 3px;">
         <div>
-          <div style="float: left; font-weight: bold;">Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}</div>
+          <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
+            Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
+          </div>
           <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
             <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
             <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
@@ -215,6 +217,7 @@ export class GridComponent implements OnChanges {
   @ContentChildren(ColumnDefComponent) columnDefComponents: QueryList<ColumnDefComponent>;
 
   gridData: Array<RowGroup> = new Array<RowGroup>();
+  origDataSize: number = 0;
   nFixedColumns: number = 0;
   nColumns: number = 0;
   fixedMinWidth: number = 0;
@@ -242,6 +245,7 @@ export class GridComponent implements OnChanges {
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
       this.gridData = data;
+      this.origDataSize = this.gridDataService.getOriginalDataSize();
       this.busy = false;
       this.changeDetectorRef.markForCheck();
     });

@@ -11,10 +11,13 @@ import { Column } from "hci-ng-grid/index";
         <h4>Filter Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          <a class="btn btn-primary" (click)="initData();">Re-generate Data</a><br />
-          <span>Size: </span><input [(ngModel)]="dataSize" />
-        </p>
+        <div class="card-text">
+          <div class="d-flex flex-nowrap" style="align-items: center;">
+            <a class="btn btn-primary" (click)="initData();">Re-generate Data</a><br />
+            <span style="margin-left: 20px; font-size: 1.5em;">Size: </span>
+            <input [(ngModel)]="dataSize" style="margin-left: 10px; font-size: 1.5em;" />
+          </div>
+        </div>
         <p>
           <hci-grid [title]="'Filter Grid'"
                     [inputData]="filteredData"

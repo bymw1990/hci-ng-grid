@@ -11,7 +11,7 @@
     "postinstall": "cd .. && npm run build && npm run push && cd demo",
     "rimraf": "rimraf",
     "serve": "node server.js",
-    "start": "npm run clean && npm run ngc && webpack-dev-server --config webpack.config.js",
+    "start": "npm run clean && npm run ngc && webpack-dev-server --config webpack/webpack.live.js",
     "start-prod": "npm run build:live && npm run serve",
     "webpack": "webpack"
   },

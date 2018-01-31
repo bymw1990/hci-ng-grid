@@ -45,6 +45,14 @@ export class GridDataService {
     this.pageInfo.setPageSize(this.gridConfigService.pageSize);
   }
 
+  getOriginalDataSize(): number {
+    if (this.inputData === undefined) {
+      return 0;
+    } else {
+      return this.inputData.length;
+    }
+  }
+
   /**
    * Deletes the selected rows based on the key of the selected row.  This is really for bound data only.  If deleting
    * from an external data source, the call should be made to that service to delete the rows, then the grid should just

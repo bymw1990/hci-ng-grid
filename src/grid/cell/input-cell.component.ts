@@ -4,11 +4,6 @@ import { CellTemplate } from "./cell-template.component";
 
 @Component({
   selector: "hci-grid-cell-input",
-  styles: [ `
-    .hci-grid-cell-input {
-      border: none;
-    }
-  ` ],
   template: `
     <input #input
            [ngModel]="value"
@@ -18,6 +13,13 @@ import { CellTemplate } from "./cell-template.component";
            class="hci-grid-cell-template hci-grid-cell-input"
            [ngClass]="{ 'focused': focused }" />
   `,
+  styles: [ `
+      
+    .hci-grid-cell-input {
+      border: none;
+      min-height: 30px;
+    }
+  `],
   encapsulation: ViewEncapsulation.None,
 })
 export class InputCell extends CellTemplate {

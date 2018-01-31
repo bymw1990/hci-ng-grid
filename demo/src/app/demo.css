@@ -14,3 +14,8 @@
 .card {
   margin-top: 15px;
 }
+
+div .card-text {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
