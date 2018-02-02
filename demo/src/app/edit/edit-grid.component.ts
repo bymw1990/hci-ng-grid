@@ -20,7 +20,8 @@ import { Column } from "hci-ng-grid/index";
           <hci-grid [title]="'Edit Grid'"
                     [inputData]="editData"
                     [columnDefinitions]="editColumns"
-                    [cellSelect]="true">
+                    [cellSelect]="true"
+                    [config]="{ pageSize: 10 }">
           </hci-grid>
         </p>
         <div style="padding: 20px;">

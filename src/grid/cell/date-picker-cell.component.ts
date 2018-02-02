@@ -61,11 +61,11 @@ export class DatePickerCell extends CellTemplate {
 
     ngbValue: Object = null;
 
-    constructor(private changeDetectorRef: ChangeDetectorRef) {
+    /*constructor(private changeDetectorRef: ChangeDetectorRef) {
         super();
 
         this.setValue((new Date()).getTime());
-    }
+    }*/
 
     onToggle() {
         if (this.dropdown.isOpen()) {
@@ -100,7 +100,7 @@ export class DatePickerCell extends CellTemplate {
 
         var iso8601: string = (new Date(value.year, value.month - 1, value.day, 0, 0, 0)).toISOString();
         this.value = iso8601;
-        this.valueChange.emit(iso8601);
+        //this.valueChange.emit(iso8601);
     }
 
     onFocus() {
@@ -110,7 +110,7 @@ export class DatePickerCell extends CellTemplate {
     }
 
     onFocusOut() {
-        this.focused = false;
+        //this.focused = false;
         this.datepickerbutton.nativeElement.blur();
         this.dropdown.close();
     }
@@ -161,6 +161,6 @@ export class DatePickerCell extends CellTemplate {
         if (o !== null && o["dateFormat"]) {
             this.dateFormat = o["dateFormat"];
         }
-        this.changeDetectorRef.markForCheck();
+        //this.changeDetectorRef.markForCheck();
     }
 }

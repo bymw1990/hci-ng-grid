@@ -36,10 +36,6 @@ export class DateCell extends CellTemplate {
 
   formattedValue: string = "";
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
-    super();
-  }
-
   onModelChange(value: Object) {
     console.log("DateCell.onModelChange " + this.formattedValue + " to " + value);
 
@@ -64,11 +60,11 @@ export class DateCell extends CellTemplate {
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
       event.stopPropagation();
       this.input.nativeElement.blur();
-      this.keyEvent.emit(37);
+      this.keyEvent.next(37);
     } else if (event.keyCode === 39 && this.input.nativeElement.selectionStart === this.input.nativeElement.value.length) {
       event.stopPropagation();
       this.input.nativeElement.blur();
-      this.keyEvent.emit(39);
+      this.keyEvent.next(39);
     } else if (event.keyCode === 9 || event.keyCode === 38 || event.keyCode === 40) {
       event.stopPropagation();
       this.input.nativeElement.blur();

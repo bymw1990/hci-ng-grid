@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
+import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from "@angular/core";
 
-import { Column } from "../column/column";
-import { GridConfigService } from "../services/grid-config.service";
-import { GridDataService } from "../services/grid-data.service";
+import {Column} from "../column/column";
+import {GridService} from "../services/grid.service";
 
 @Component({
   selector: "hci-row",
@@ -33,6 +32,7 @@ import { GridDataService } from "../services/grid-data.service";
       flex-flow: column;
       border: black 1px solid;
       vertical-align: top;
+      min-height: 30px;
     }
   ` ],
   encapsulation: ViewEncapsulation.None,
@@ -45,15 +45,15 @@ export class RowComponent {
   @Input() fixed: boolean;
   columns: Column[];
 
-  constructor(private gridDataService: GridDataService, private gridConfigService: GridConfigService) {}
+  constructor(private gridService: GridService) {}
 
   ngOnInit() {
     //console.log("RowComponent.ngOnInit " + this.i + " " + this.j);
-    this.columns = this.gridConfigService.columnDefinitions;
+    this.columns = this.gridService.columnDefinitions;
   }
 
   onDoubleClick(event: Event) {
-    this.gridDataService.doubleClickRow(this.i, this.j);
+    this.gridService.doubleClickRow(this.i, this.j);
   }
 
 }

@@ -34,7 +34,6 @@ import {GroupCollapseExpandCell} from "./cell/group-collapse-expand.component";
     GridComponent,
     RowComponent,
     RowGroupComponent,
-    CellTemplate,
     CellComponent,
     ColumnHeaderComponent,
     IsVisiblePipe,
@@ -51,6 +50,7 @@ import {GroupCollapseExpandCell} from "./cell/group-collapse-expand.component";
     DateCell,
     DatePickerCell,
     RowSelectCellComponent,
-    GroupCollapseExpandCell]
+    GroupCollapseExpandCell
+  ]
 })
 export class GridModule {}

@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { Subject, Observable } from "rxjs/Rx";
+import {Injectable} from "@angular/core";
+import {Subject, Observable} from "rxjs/Rx";
 
 export const NONE: number = -1;
 export const ERROR: number = 0;

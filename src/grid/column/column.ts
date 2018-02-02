@@ -1,5 +1,7 @@
 import {QueryList} from "@angular/core";
 
+import * as moment from "moment";
+
 import {ColumnDefComponent} from "./column-def.component";
 
 export class Column {
@@ -24,6 +26,7 @@ export class Column {
   filterOptions: Array<any> = null;
   filterValue: any = null;
   component: any = null;
+  dataType: string = "string";
 
   static getColumns(columnDefComponents: QueryList<ColumnDefComponent>): Column[] {
     let columns: Column[] = [];
@@ -57,6 +60,16 @@ export class Column {
 
   constructor(object: any) {
     this.setConfig(object);
+  }
+
+  getFormattedValue(value: any): string {
+    if (value === undefined || value === null) {
+      return "";
+    } else if (this.dataType === "string") {
+      return value;
+    } else if (this.dataType === "date") {
+      return moment((new Date(<string>value))).format(this.format);
+    }
   }
 
   setConfig(object: any) {
@@ -119,6 +132,9 @@ export class Column {
     }
     if (object.component !== undefined) {
       this.component = object.component;
+    }
+    if (object.dataType !== undefined) {
+      this.dataType = object.dataType;
     }
   }
 

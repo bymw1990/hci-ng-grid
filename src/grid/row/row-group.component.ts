@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@angular/core";
+import {
+  ChangeDetectionStrategy, Component, ElementRef, Input, Renderer2, TemplateRef, ViewChild,
+  ViewEncapsulation
+} from "@angular/core";
 
-import { RowGroup } from "./row-group";
-import { GridConfigService } from "../services/grid-config.service";
-import { GridDataService } from "../services/grid-data.service";
+import {RowGroup} from "./row-group";
+import {GridService} from "../services/grid.service";
 
 /**
  * A Cell represents an i and j position in a grid.  This component binds the grid data for that position.  Rendering of
@@ -12,26 +14,34 @@ import { GridDataService } from "../services/grid-data.service";
 @Component({
   selector: "hci-row-group",
   template: `
-    <div *ngIf="rowGroup.header !== null"
-         (click)="rowHeaderClick()"
-         class="hci-grid-row-group-header">
-      <span style="padding-left: 10px;" (click)="expandCollapse($event)">
-        <span *ngIf="rowGroup.state === rowGroup.EXPANDED"><span class="fas fa-minus"></span></span>
-        <span *ngIf="rowGroup.state === rowGroup.COLLAPSED"><span class="fas fa-plus"></span></span>
-      </span>
-      <span *ngFor="let cell of rowGroup.header.cells"
-            class="hci-grid-row-group-column-header">
-        {{cell.value}}
-      </span>
+    <div #rowGroupRef>
+      <!--<div *ngIf="rowGroup !== null && rowGroup.header !== null"
+           (click)="rowHeaderClick()"
+           class="hci-grid-row-group-header">-->
+      <div *ngIf="rowGroup !== null && rowGroup.header !== null"
+           class="hci-grid-row-group-header">
+        <!--
+        <span style="padding-left: 10px;" (click)="expandCollapse($event)">
+          <span *ngIf="rowGroup.state === rowGroup.EXPANDED"><span class="fas fa-minus"></span></span>
+          <span *ngIf="rowGroup.state === rowGroup.COLLAPSED"><span class="fas fa-plus"></span></span>
+        </span>
+        -->
+        <ng-container *ngIf="rowGroup !== null">
+          <span *ngFor="let cell of rowGroup.header.cells"
+                class="hci-grid-row-group-column-header">
+            {{cell.value}}
+          </span>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="rowGroup !== null && (rowGroup.state === rowGroup.EXPANDED || rowGroup.header === null)">
+        <hci-row *ngFor="let row of rowGroup.rows; let j = index"
+                 class="d-flex flex-nowrap"
+                 [i]="i"
+                 [j]="j"
+                 [fixed]="fixed">
+        </hci-row>
+      </ng-container>
     </div>
-    <ng-container *ngIf="rowGroup.state === rowGroup.EXPANDED || rowGroup.header === null">
-      <hci-row *ngFor="let row of rowGroup.rows; let j = index"
-               class="d-flex flex-nowrap"
-               [i]="i"
-               [j]="j"
-               [fixed]="fixed">
-      </hci-row>
-    </ng-container>
   `,
   styles: [ `
       
@@ -46,8 +56,7 @@ import { GridDataService } from "../services/grid-data.service";
     }
       
   ` ],
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  encapsulation: ViewEncapsulation.None
 })
 export class RowGroupComponent {
 
@@ -56,10 +65,23 @@ export class RowGroupComponent {
 
   rowGroup: RowGroup;
 
-  constructor(private gridDataService: GridDataService, private gridConfigService: GridConfigService) {}
+  @ViewChild("rowGroupRef") rowGroupRef: ElementRef;
+
+  constructor(private renderer: Renderer2, private gridService: GridService) {}
 
   ngOnInit() {
-    this.rowGroup = this.gridDataService.getRowGroup(this.i);
+    this.rowGroup = this.gridService.getRowGroup(this.i);
+  }
+
+  ngAfterViewInit() {
+    this.gridService.data.subscribe((data: Array<RowGroup>) => {
+      if (this.gridService.getRowGroup(this.i) === null) {
+        this.renderer.setStyle(this.rowGroupRef.nativeElement, "display", "none");
+      } else {
+        this.renderer.setStyle(this.rowGroupRef.nativeElement, "display", "unset");
+      }
+      //this.changeDetectorRef.markForCheck();
+    });
   }
 
   expandCollapse(event: MouseEvent) {
@@ -73,6 +95,6 @@ export class RowGroupComponent {
   }
 
   rowHeaderClick() {
-    this.gridDataService.sort("GROUP_BY");
+    this.gridService.sort("GROUP_BY");
   }
 }

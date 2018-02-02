@@ -21,7 +21,8 @@ import { Column } from "hci-ng-grid/index";
         <p>
           <hci-grid [title]="'Filter Grid'"
                     [inputData]="filteredData"
-                    [columnDefinitions]="filteredColumns">
+                    [columnDefinitions]="filteredColumns"
+                    [pageSizes]="[10, 25, 100]">
           </hci-grid>
         </p>
       </div>
@@ -38,7 +39,7 @@ export class FilterGridComponent {
     new Column({ field: "lastName", name: "Last Name", template: "InputCell", filterType: "input" }),
     new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
     new Column({ field: "firstName", name: "First Name", template: "InputCell", filterType: "input" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "gender", name: "Gender", template: "LabelCell", filterType: "select", filterOptions: [ "", "Female", "Male" ] }),
     new Column({ field: "address", name: "Address", template: "LabelCell" })
   ];

@@ -1,11 +1,10 @@
-import { Injectable } from "@angular/core";
-import { Subject, Observable } from "rxjs/Rx";
+import {Injectable} from "@angular/core";
+import {Subject, Observable} from "rxjs/Rx";
 
-import { GridConfigService } from "./grid-config.service";
-import { GridDataService } from "./grid-data.service";
-import { Point } from "../utils/point";
-import { Range } from "../utils/range";
-import { EventMeta } from "../utils/event-meta";
+import {GridService} from "./grid.service";
+import {Point} from "../utils/point";
+import {Range} from "../utils/range";
+import {EventMeta} from "../utils/event-meta";
 
 @Injectable()
 export class GridEventService {
@@ -18,7 +17,7 @@ export class GridEventService {
   private selectedRange = new Subject<Range>();
   private selectedRangeObservable = this.selectedRange.asObservable();
 
-  constructor(private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
+  constructor(private gridService: GridService) {}
 
   get currentRange(): Range {
     return this._currentRange;
@@ -29,7 +28,7 @@ export class GridEventService {
   }
 
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
-    if (!this.gridConfigService.cellSelect) {
+    if (!this.gridService.cellSelect) {
       return;
     }
 
@@ -46,7 +45,7 @@ export class GridEventService {
   }
 
   setSelectedRange(location: Point, eventMeta: EventMeta) {
-    if (!this.gridConfigService.cellSelect) {
+    if (!this.gridService.cellSelect) {
       return;
     }
     this._currentLocation = location;
@@ -63,6 +62,18 @@ export class GridEventService {
     }
   }
 
+  arrowFromLocation(i: number, j: number, k: number, keyCode: number) {
+    if (keyCode === 37) {
+      this.arrowFrom(new Point(i, j, k), -1, 0, null);
+    } else if (keyCode === 39) {
+      this.arrowFrom(new Point(i, j, k), 1, 0, null);
+    } else if (keyCode === 38) {
+      this.arrowFrom(new Point(i, j, k), 0, -1, null);
+    } else if (keyCode === 40) {
+      this.arrowFrom(new Point(i, j, k), 0, 1, null);
+    }
+  }
+
   /**
    * Changes the current location based on the location passed to it plus the direction of the arrow key.  For example,
    * dx=-1 and dy=0 in the case of a left arrow click.  If the new location is greater than the number of columns, then
@@ -73,12 +84,12 @@ export class GridEventService {
    * @param dy
    */
   arrowFrom(location: Point, dx: number, dy: number, eventMeta: EventMeta) {
-    if (!this.gridConfigService.cellSelect) {
+    if (!this.gridService.cellSelect) {
       return;
     }
     this._currentLocation = location;
 
-    let tries: number = this.gridConfigService.columnDefinitions.length;
+    let tries: number = this.gridService.columnDefinitions.length;
     do {
       if (tries === 0) {
         this._currentLocation.i = 0;
@@ -87,7 +98,7 @@ export class GridEventService {
         break;
       }
 
-      if (dy > 0 && this.gridDataService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + dy) {
+      if (dy > 0 && this.gridService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + dy) {
         this._currentLocation.i = this._currentLocation.i + dy;
         this._currentLocation.j = 0;
       } else if (dy > 0) {
@@ -99,7 +110,7 @@ export class GridEventService {
         if (this._currentLocation.i < 0) {
           this._currentLocation = new Point(-1, 0, -1);
         } else {
-          this._currentLocation.j = this.gridDataService.getRowGroup(this._currentLocation.i).length() - 1;
+          this._currentLocation.j = this.gridService.getRowGroup(this._currentLocation.i).length() - 1;
         }
       } else if (dx !== 0) {
         this._currentLocation.k = this._currentLocation.k + dx;
@@ -110,18 +121,18 @@ export class GridEventService {
         if (this._currentLocation.k === this.nColumns) {
           this._currentLocation.k = 0;
 
-          if (this.gridDataService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + 1) {
+          if (this.gridService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + 1) {
             this._currentLocation.i = this._currentLocation.i + 1;
             this._currentLocation.j = 0;
           } else {
             this._currentLocation.j = this._currentLocation.j + 1;
           }
         } else if (this._currentLocation.k < 0) {
-          this._currentLocation.k = this.gridConfigService.columnDefinitions.length - 1;
+          this._currentLocation.k = this.gridService.columnDefinitions.length - 1;
           if (this._currentLocation.j > 0) {
             this._currentLocation.j = this._currentLocation.j - 1;
           } else if (this._currentLocation.i === 0) {
-            this._currentLocation.k = this.gridConfigService.columnDefinitions.length - 1;
+            this._currentLocation.k = this.gridService.columnDefinitions.length - 1;
           } else {
             this._currentLocation.i = this._currentLocation.i - 1;
           }
@@ -129,9 +140,9 @@ export class GridEventService {
       }
 
       tries = tries - 1;
-    } while (this._currentLocation.k >= 0 && !this.gridConfigService.columnDefinitions[this._currentLocation.k].visible);
+    } while (this._currentLocation.k >= 0 && !this.gridService.columnDefinitions[this._currentLocation.k].visible);
 
-    if (this.gridDataService.getRowGroup(this._currentLocation.i) === null) {
+    if (this.gridService.getRowGroup(this._currentLocation.i) === null) {
       this._currentLocation = new Point(-1, 0, -1);
     }
 

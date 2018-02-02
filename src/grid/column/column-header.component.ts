@@ -1,9 +1,8 @@
-import { Component, Input } from "@angular/core";
+import {Component, Input} from "@angular/core";
 
-import { Column } from "./column";
-import { GridConfigService } from "../services/grid-config.service";
-import { GridDataService } from "../services/grid-data.service";
-import { SortInfo } from "../utils/sort-info";
+import {Column} from "./column";
+import {GridService} from "../services/grid.service";
+import {SortInfo} from "../utils/sort-info";
 
 /**
  * fa-sort fa-sort-asc fa-sort-desc
@@ -49,10 +48,10 @@ export class ColumnHeaderComponent {
 
   asc: number = 0;
 
-  constructor(private gridConfigService: GridConfigService, private gridDataService: GridDataService) {}
+  constructor(private gridService: GridService) {}
 
   ngOnInit() {
-    this.gridDataService.sortInfoObserved.subscribe((sortInfo: SortInfo) => {
+    this.gridService.sortInfoObserved.subscribe((sortInfo: SortInfo) => {
       if (this.column.field === sortInfo.field) {
         if (sortInfo.asc) {
           this.asc = 1;
@@ -67,7 +66,7 @@ export class ColumnHeaderComponent {
 
   doFilterChange(value: any) {
     this.column.filterValue = value;
-    this.gridDataService.filter();
+    this.gridService.filter();
   }
 
   doFilterClear() {
@@ -75,6 +74,6 @@ export class ColumnHeaderComponent {
   }
 
   doSort() {
-    this.gridDataService.sort(this.column.field);
+    this.gridService.sort(this.column.field);
   }
 }

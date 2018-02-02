@@ -2,17 +2,18 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, ElementRef, EventEmitter, HostListener, Input,
+  ChangeDetectionStrategy, ComponentFactoryResolver, ChangeDetectorRef, Component, ContentChildren, ElementRef,
+  EventEmitter, HostListener, Input,
   OnChanges,
-  Output, QueryList, SimpleChange, ViewChild, ViewEncapsulation
+  Output, QueryList, Renderer2, SimpleChange, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation, Type,
+  ViewContainerRef, ReflectiveInjector
 } from "@angular/core";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
 import {Subscription} from "rxjs/Subscription";
 
-import {GridDataService} from "./services/grid-data.service";
+import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
-import {GridConfigService} from "./services/grid-config.service";
 import {GridMessageService} from "./services/grid-message.service";
 import {Point} from "./utils/point";
 import {Range} from "./utils/range";
@@ -23,6 +24,9 @@ import {PageInfo} from "./utils/page-info";
 import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {ColumnDefComponent} from "./column/column-def.component";
+import {LabelCell} from "./cell/label-cell.component";
+import {CellTemplate} from "./cell/cell-template.component";
+import {InputCell} from "./cell/input-cell.component";
 
 /**
  * Thoughts..
@@ -41,18 +45,18 @@ import {ColumnDefComponent} from "./column/column-def.component";
 @Component({
   selector: "hci-grid",
   providers: [
-    GridDataService,
+    GridService,
     GridEventService,
-    GridConfigService,
     GridMessageService],
   template: `
-    <div #gridContainer (keydown)="onKeyDown($event);">
+    <div #gridContainer (keydown)="onKeyDown($event);" (click)="click($event, null)">
       <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy" [style.height.px]="gridContainerHeight">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
           <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
         </div>
       </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
+      <div #container></div>
       
       <!-- Title Bar -->
       <div *ngIf="title !== null" class="hci-grid-header">
@@ -82,7 +86,7 @@ import {ColumnDefComponent} from "./column/column-def.component";
           </div>
           
           <!-- Left Data Rows -->
-          <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="true"></hci-row-group>
+          <hci-row-group *ngFor="let row of dataSize; let i = index" [i]="i" [fixed]="true"></hci-row-group>
         </div>
         
         <!-- Right (Main) Content -->
@@ -104,7 +108,25 @@ import {ColumnDefComponent} from "./column/column-def.component";
           </div>
           
           <!-- Right Data Rows -->
-          <hci-row-group *ngFor="let row of gridData; let i = index" [i]="i" [fixed]="false"></hci-row-group>
+          <ng-container *ngFor="let rowGroup of dataSize; let i = index">
+            <!--<div>
+              <ng-container *ngFor="let row of gridData[i].rows; let j = index" class="d-flex flex-nowrap">-->
+                <div class="d-flex flex-nowrap"
+                     [style.display]="gridData === null || i > gridData.length - 1 ? 'none' : 'unset'">
+                  <ng-container *ngFor="let column of columnDefinitions; let k = index">
+                    <!--<div (click)="click($event, null)" [id]="i + '-' + j + '-' + k" class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height" style="flex: 1 1 100%;">-->
+                    <div (click)="click($event, null)"
+                         [id]="'cell-' + i + '-0-' + k"
+                         class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                         [style.flex]="'1 1 ' + column.width + '%'"
+                         [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                         [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                    </div>
+                  </ng-container>
+                </div>
+              <!--</ng-container>
+            </div>-->
+          </ng-container>
         </div>
       </div>
       
@@ -118,7 +140,7 @@ import {ColumnDefComponent} from "./column/column-def.component";
           <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
             <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
             <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
-            <select [ngModel]="pageSize"
+            <select [ngModel]="pageInfo.pageSize"
                     (ngModelChange)="doPageSize($event)"
                     style="padding-left: 15px; padding-right: 15px;">
               <option *ngFor="let o of pageSizes" [ngValue]="o">{{o}}</option>
@@ -181,11 +203,11 @@ import {ColumnDefComponent} from "./column/column-def.component";
     }
     
   ` ],
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  encapsulation: ViewEncapsulation.None
 })
 export class GridComponent implements OnChanges {
 
+  @ViewChild("container", { read: ViewContainerRef }) container: any;
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: any;
 
@@ -216,6 +238,8 @@ export class GridComponent implements OnChanges {
 
   @ContentChildren(ColumnDefComponent) columnDefComponents: QueryList<ColumnDefComponent>;
 
+  dataSize: Array<Object> = new Array<Object>(0);
+
   gridData: Array<RowGroup> = new Array<RowGroup>();
   origDataSize: number = 0;
   nFixedColumns: number = 0;
@@ -230,12 +254,17 @@ export class GridComponent implements OnChanges {
 
   columnsChangedSubscription: Subscription;
 
-  constructor(private el: ElementRef, private changeDetectorRef: ChangeDetectorRef, private domSanitizer: DomSanitizer, private gridDataService: GridDataService, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridMessageService: GridMessageService) {}
+  private componentRef: CellTemplate = null;
+  private cellKeySubscription: Subscription;
+
+  constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
+              private domSanitizer: DomSanitizer, private gridService: GridService, private gridEventService: GridEventService,
+              private gridMessageService: GridMessageService) {}
 
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
    */
-  ngAfterContentInit() {
+  ngOnInit() {
     if (this.level) {
       this.gridMessageService.setLevel(this.level);
     }
@@ -243,36 +272,59 @@ export class GridComponent implements OnChanges {
     this.updateGridContainerHeight();
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
-    this.gridDataService.data.subscribe((data: Array<RowGroup>) => {
+    this.gridService.data.subscribe((data: Array<RowGroup>) => {
+      if (this.pageInfo.pageSize < 0) {
+        this.dataSize = new Array<number>(data.length);
+      }
       this.gridData = data;
-      this.origDataSize = this.gridDataService.getOriginalDataSize();
+      this.origDataSize = this.gridService.getOriginalDataSize();
       this.busy = false;
-      this.changeDetectorRef.markForCheck();
+
+      this.changeDetectorRef.detectChanges();
+      let i: number = 0;
+      for (let rowGroup of this.gridData) {
+        let j: number = 0;
+        for (let row of rowGroup.rows) {
+          let k: number = 0;
+          for (let cell of row.cells) {
+            let e = document.getElementById("cell-" + i + "-" + j + "-" + k);
+            if (e) {
+              e.textContent = "";
+              let value = this.columnDefinitions[k].getFormattedValue(cell.value);
+              let text = this.renderer.createText(value);
+              this.renderer.appendChild(e, text);
+            }
+            k = k + 1;
+          }
+          j = j + 1;
+        }
+        i = i + 1;
+      }
     });
 
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
-    this.gridDataService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
+    this.gridService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
       this.pageInfo = pageInfo;
+      this.updatePageSize();
     });
 
     /* Listen to changes in Sort/Filter/Page.
-    If there is an onExternalDataCall defined, send that info to that provided function. */
+     If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
-      this.gridDataService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
+      this.gridService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
         this.updateGridContainerHeight();
         this.busy = true;
-        this.changeDetectorRef.markForCheck();
         this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
           if (externalData.externalInfo === null) {
-            this.gridDataService.pageInfo.setNumPages(1);
+            this.gridService.pageInfo.setNumPages(1);
           } else {
-            this.gridDataService.pageInfo = externalData.externalInfo.getPage();
+            this.gridService.pageInfo = externalData.externalInfo.getPage();
           }
-          this.gridDataService.setInputData(externalData.data);
-          this.gridDataService.setInputDataInit();
+          this.gridService.setInputData(externalData.data);
+          this.gridService.setInputDataInit();
 
-          this.pageInfo = this.gridDataService.pageInfo;
-          this.pageSize = this.gridDataService.pageInfo.getPageSize();
+          this.pageInfo = this.gridService.pageInfo;
+          this.updatePageSize();
         });
       });
     }
@@ -283,14 +335,14 @@ export class GridComponent implements OnChanges {
       });
     }
 
-    this.gridDataService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
+    this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.selectedRows.emit(selectedRows);
     });
 
     /* If onRowDoubleClick is provided, then listen and send to function. */
     if (this.onRowDoubleClick) {
-      this.gridDataService.doubleClickObserved.subscribe((row: Row) => {
-        let keys: number[] = this.gridConfigService.getKeyColumns();
+      this.gridService.doubleClickObserved.subscribe((row: Row) => {
+        let keys: number[] = this.gridService.getKeyColumns();
         if (keys.length === 0) {
           return;
         } else {
@@ -300,49 +352,115 @@ export class GridComponent implements OnChanges {
     }
 
     this.buildConfig();
-    this.gridConfigService.setConfig(this.config);
+    this.gridService.setConfig(this.config);
     this.initGridConfiguration();
 
     /* Get initial page Info */
-    this.pageInfo = this.gridDataService.pageInfo;
+    this.pageInfo = this.gridService.pageInfo;
 
     /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
     if (this.onExternalDataCall) {
       this.busy = true;
-      this.changeDetectorRef.markForCheck();
       this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
-        this.gridDataService.pageInfo = externalData.getExternalInfo().getPage();
-        this.gridDataService.setInputData(externalData.getData());
-        this.gridDataService.setInputDataInit();
+        this.gridService.pageInfo = externalData.getExternalInfo().getPage();
+        this.gridService.setInputData(externalData.getData());
+        this.gridService.setInputDataInit();
         this.postInit();
       });
     } else if (this.inputData) {
-      if (this.gridDataService.setInputData(this.inputData)) {
-        this.gridConfigService.init();
+      if (this.gridService.setInputData(this.inputData)) {
+        this.gridService.init();
         this.postInitGridConfiguration();
       }
-      this.gridDataService.setInputDataInit();
+      this.gridService.setInputDataInit();
       this.postInit();
     } else {
       this.postInit();
     }
 
-    this.columnsChangedSubscription = this.gridConfigService.getColumnsChangedSubject().subscribe((changed: boolean) => {
+    this.columnsChangedSubscription = this.gridService.getColumnsChangedSubject().subscribe((changed: boolean) => {
       if (changed) {
         this.initGridConfiguration();
-        this.gridDataService.setInputDataInit();
+        this.gridService.setInputDataInit();
         this.postInit();
       }
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewOnInit() {
+    this.updatePageSize();
     this.updateGridContainerHeight();
+    this.changeDetectorRef.markForCheck();
   }
 
   ngOnDestroy() {
     if (this.columnsChangedSubscription) {
       this.columnsChangedSubscription.unsubscribe();
+    }
+  }
+
+  updatePageSize() {
+    if (this.dataSize.length !== this.pageInfo.pageSize && this.pageInfo.pageSize >= 0) {
+      this.dataSize = new Array<Object>(this.pageInfo.pageSize);
+    } else {
+      this.dataSize = new Array<Object>(0);
+    }
+  }
+
+  click(event: MouseEvent, value?: string) {
+    event.stopPropagation();
+    console.debug("click");
+    console.debug(event);
+
+    this.createCellComponent(<HTMLElement>event.srcElement);
+  }
+
+  selectComponent(i: number, j: number, k: number) {
+    let e = document.getElementById("cell-" + i + "-0-" + k);
+    this.createCellComponent(e);
+  }
+
+  createCellComponent(cellElement: HTMLElement) {
+    if (cellElement.id) {
+      let id: string = cellElement.id;
+      let ids = id.split("-");
+      let i: number = +ids[1];
+      let j: number = +ids[2];
+      let k: number = +ids[3];
+
+      let column: Column = this.columnDefinitions[k];
+
+      let factory = null;
+      /*if (column.component instanceof Type) {
+       var factories = Array.from(this.resolver["_factories"].keys());
+       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component.constructor.name);
+       factory = this.resolver.resolveComponentFactory(factoryClass);
+       } else if (column.component instanceof String) {
+       var factories = Array.from(this.resolver["_factories"].keys());
+       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component);
+       factory = this.resolver.resolveComponentFactory(factoryClass);
+       //this.componentRef.setValues(this.component);
+       } else {
+       factory = this.resolver.resolveComponentFactory(LabelCell);
+       }*/
+
+      factory = this.resolver.resolveComponentFactory(InputCell);
+      if (this.cellKeySubscription) {
+        this.cellKeySubscription.unsubscribe();
+      }
+      this.container.clear();
+      this.componentRef = this.container.createComponent(factory).instance;
+      this.componentRef.setPosition(i, j, k);
+      this.componentRef.data = this.gridData[i].get(j).get(k);
+      this.componentRef.setValue(this.gridData[i].get(j).get(k).value);
+      this.componentRef.setLocation(cellElement);
+      this.cellKeySubscription = this.componentRef.keyEvent.subscribe((keyCode: number) => {
+        console.log("cellKeySubscription: " + keyCode);
+        this.gridEventService.arrowFromLocation(i, j, k, keyCode);
+      });
+      this.gridEventService.getSelectedLocationObservable().subscribe((p: Point) => {
+        this.selectComponent(p.i, p.j, p.k);
+      });
     }
   }
 
@@ -359,9 +477,9 @@ export class GridComponent implements OnChanges {
   postInit() {
     this.updateGridContainerHeight();
 
-    this.pageInfo = this.gridDataService.pageInfo;
-    this.pageSize = this.gridDataService.pageInfo.getPageSize();
-    this.pageSizes = this.gridConfigService.pageSizes;
+    this.pageInfo = this.gridService.pageInfo;
+    this.updatePageSize();
+    this.pageSizes = this.gridService.pageSizes;
 
     this.initialized = true;
     this.gridEventService.setSelectedLocation(null, null);
@@ -371,13 +489,13 @@ export class GridComponent implements OnChanges {
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
     if (this.initialized) {
       if (changes["inputData"]) {
-        this.gridDataService.setInputData(this.inputData);
-        this.gridDataService.setInputDataInit();
+        this.gridService.setInputData(this.inputData);
+        this.gridService.setInputDataInit();
       } else if (changes["config"]) {
-        this.gridConfigService.setConfig(this.config);
+        this.gridService.setConfig(this.config);
       } else {
         this.buildConfig();
-        this.gridConfigService.setConfig(this.config);
+        this.gridService.setConfig(this.config);
       }
 
       this.updateGridContainerHeight();
@@ -429,46 +547,47 @@ export class GridComponent implements OnChanges {
   }
 
   doPageFirst() {
-    this.gridDataService.setPage(-2);
+    this.gridService.setPage(-2);
   }
 
   doPagePrevious() {
-    this.gridDataService.setPage(-1);
+    this.gridService.setPage(-1);
   }
 
   doPageSize(value: number) {
-    this.gridDataService.setPageSize(value);
+    this.dataSize = new Array<Object>(value);
+    this.gridService.setPageSize(value);
   }
 
   doPageNext() {
-    this.gridDataService.setPage(1);
+    this.gridService.setPage(1);
   }
 
   doPageLast() {
-    this.gridDataService.setPage(2);
+    this.gridService.setPage(2);
   }
 
   initGridConfiguration() {
-    this.gridDataService.pageInfo.pageSize = this.gridConfigService.pageSize;
-    this.gridConfigService.init();
+    this.gridService.pageInfo.pageSize = this.gridService.pageSize;
+    this.gridService.init();
     this.postInitGridConfiguration();
   }
 
   postInitGridConfiguration() {
-    if (this.gridConfigService.columnDefinitions !== null) {
-      this.columnDefinitions = this.gridConfigService.columnDefinitions;
+    if (this.gridService.columnDefinitions !== null) {
+      this.columnDefinitions = this.gridService.columnDefinitions;
 
-      this.columnHeaders = this.gridConfigService.columnHeaders;
+      this.columnHeaders = this.gridService.columnHeaders;
 
-      if (this.gridConfigService.fixedColumns != null) {
-        this.nFixedColumns = this.gridConfigService.fixedColumns.length;
+      if (this.gridService.fixedColumns != null) {
+        this.nFixedColumns = this.gridService.fixedColumns.length;
       }
-      this.nColumns = this.gridConfigService.columnDefinitions.length;
+      this.nColumns = this.gridService.columnDefinitions.length;
       this.gridEventService.setNColumns(this.nColumns);
       this.fixedMinWidth = 0;
-      for (var i = 0; i < this.gridConfigService.columnDefinitions.length; i++) {
-        if (this.gridConfigService.columnDefinitions[i].isFixed) {
-          this.fixedMinWidth = this.fixedMinWidth + this.gridConfigService.columnDefinitions[i].minWidth;
+      for (var i = 0; i < this.gridService.columnDefinitions.length; i++) {
+        if (this.gridService.columnDefinitions[i].isFixed) {
+          this.fixedMinWidth = this.fixedMinWidth + this.gridService.columnDefinitions[i].minWidth;
         }
       }
     }
@@ -487,7 +606,7 @@ export class GridComponent implements OnChanges {
         for (var i = range.min.i; i <= range.max.i; i++) {
           for (var j = range.min.j; j <= range.max.j; j++) {
             for (var k = range.min.k; k <= range.max.k; k++) {
-              copy += this.gridDataService.getRowGroup(i).get(j).get(k).value;
+              copy += this.gridService.getRowGroup(i).get(j).get(k).value;
               if (k < range.max.k) {
                 copy += "\t";
               }
@@ -533,13 +652,13 @@ export class GridComponent implements OnChanges {
       for (var ii = 0; ii < rows.length; ii++) {
         cols = rows[ii].split("\t");
         for (var kk = 0; kk < cols.length; kk++) {
-          if (this.gridDataService.getRowGroup(i) == null) {
+          if (this.gridService.getRowGroup(i) == null) {
             allowPaste = false;
             break;
-          } else if (this.gridDataService.getRowGroup(i).get(j) == null) {
+          } else if (this.gridService.getRowGroup(i).get(j) == null) {
             allowPaste = false;
             break;
-          } else if (this.gridDataService.getRowGroup(i).get(j).get(k) == null) {
+          } else if (this.gridService.getRowGroup(i).get(j).get(k) == null) {
             allowPaste = false;
             break;
           }
@@ -547,14 +666,14 @@ export class GridComponent implements OnChanges {
         }
         if (!allowPaste) {
           break;
-        } else if (this.gridDataService.getRowGroup(i).get(j + 1) != null) {
+        } else if (this.gridService.getRowGroup(i).get(j + 1) != null) {
           j = j + 1;
         } else {
           i = i + 1;
           j = 0;
         }
         k = range.min.k;
-        if (this.gridDataService.getRowGroup(i) == null && ii !== rows.length - 1) {
+        if (this.gridService.getRowGroup(i) == null && ii !== rows.length - 1) {
           allowPaste = false;
           break;
         }
@@ -568,11 +687,11 @@ export class GridComponent implements OnChanges {
         for (var ii = 0; ii < rows.length; ii++) {
           cols = rows[ii].split("\t");
           for (var kk = 0; kk < cols.length; kk++) {
-            this.gridDataService.getRowGroup(i).get(j).get(k).value = cols[kk];
+            this.gridService.getRowGroup(i).get(j).get(k).value = cols[kk];
             k = k + 1;
           }
 
-          if (this.gridDataService.getRowGroup(i).get(j + 1) != null) {
+          if (this.gridService.getRowGroup(i).get(j + 1) != null) {
             j = j + 1;
           } else {
             i = i + 1;
@@ -581,7 +700,7 @@ export class GridComponent implements OnChanges {
           k = range.min.k;
         }
 
-        this.gridDataService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
+        this.gridService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
       } else {
         this.gridMessageService.warn("Paste went out of range");
       }
@@ -589,11 +708,11 @@ export class GridComponent implements OnChanges {
   }
 
   public clearSelectedRows() {
-    this.gridDataService.clearSelectedRows();
+    this.gridService.clearSelectedRows();
   }
 
   public deleteSelectedRows() {
-    this.gridDataService.deleteSelectedRows();
+    this.gridService.deleteSelectedRows();
   }
 
 }

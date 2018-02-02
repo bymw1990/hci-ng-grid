@@ -12,33 +12,34 @@ import {GroupCollapseExpandCell} from "./group-collapse-expand.component";
 import {RowSelectCellComponent} from "./row-select-cell.component";
 
 @NgModule({
-    imports: [
-      CommonModule,
-      FormsModule,
-      NgbModule.forRoot()],
-    declarations: [
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgbModule.forRoot()
+  ],
+  declarations: [
+    LabelCell,
+    InputCell,
+    DateCell,
+    DatePickerCell,
+    GroupCollapseExpandCell,
+    RowSelectCellComponent
+  ],
+  entryComponents: [
       LabelCell,
       InputCell,
       DateCell,
       DatePickerCell,
       GroupCollapseExpandCell,
       RowSelectCellComponent
-    ],
-    entryComponents: [
-        LabelCell,
-        InputCell,
-        DateCell,
-        DatePickerCell,
-        GroupCollapseExpandCell,
-        RowSelectCellComponent
-    ],
-    exports: [
-        LabelCell,
-        InputCell,
-        DateCell,
-        DatePickerCell,
-        GroupCollapseExpandCell,
-        RowSelectCellComponent
-    ],
+  ],
+  exports: [
+      LabelCell,
+      InputCell,
+      DateCell,
+      DatePickerCell,
+      GroupCollapseExpandCell,
+      RowSelectCellComponent
+  ],
 })
 export class CellModule {}

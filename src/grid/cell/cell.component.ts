@@ -3,14 +3,14 @@ import {
   EventEmitter, Input, Output, Type, ViewChild, ViewContainerRef, ViewEncapsulation
 } from "@angular/core";
 
-import { Cell } from "../cell/cell";
-import { Point } from "../utils/point";
-import { EventMeta } from "../utils/event-meta";
-import { GridConfigService } from "../services/grid-config.service";
-import { GridEventService } from "../services/grid-event.service";
-import { GridDataService } from "../services/grid-data.service";
-import { CellTemplate } from "./cell-template.component";
+import {Cell} from "../cell/cell";
+import {Point} from "../utils/point";
+import {EventMeta} from "../utils/event-meta";
+import {GridService} from "../services/grid.service";
+import {GridEventService} from "../services/grid-event.service";
+import {CellTemplate} from "./cell-template.component";
 import {LabelCell} from "./label-cell.component";
+import {RowGroup} from "../row/row-group";
 
 /**
  * A Cell represents an i, j, and k position in a grid.  This component binds the grid data for that position.  Rendering of
@@ -20,10 +20,15 @@ import {LabelCell} from "./label-cell.component";
 @Component({
   selector: "hci-cell",
   template: `
-    <input #focuser style="position: absolute; left: -1000px;" (focus)="onFocuser();" (keydown)="onFocuserKeyDown($event)" />
-    <div (click)="cellClick($event)"
-         class="hci-grid-cell-parent">
-      <span #template style="display: none;"></span>
+    <!--
+  <input #focuser style="position: absolute; left: -1000px;" (focus)="onFocuser();" (keydown)="onFocuserKeyDown($event)" />-->
+  <!--<div (click)="cellClick($event)"
+       class="hci-grid-cell-parent">-->
+
+  <div [id]="i + '-' + j + '-' + k" class="hci-grid-cell-parent" #cellRef>
+    <span>{{value}}</span>
+    <!--
+    <span #template style="display: none;"></span>-->
     </div>
   `,
   styles: [ `
@@ -47,8 +52,7 @@ import {LabelCell} from "./label-cell.component";
       background-color: #ccddff;
     }
   ` ],
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  encapsulation: ViewEncapsulation.None
 })
 export class CellComponent {
 
@@ -62,6 +66,9 @@ export class CellComponent {
   @Output() cellFocused: EventEmitter<Object> = new EventEmitter<Object>();
   @Output() onUDLR: EventEmitter<Object> = new EventEmitter<Object>();
 
+  public data: Cell;
+  public value: any = "";
+
   format: string = null;
 
   private isViewInitialized: boolean = false;
@@ -72,35 +79,55 @@ export class CellComponent {
   @ViewChild("focuser") private focuser: ElementRef;
 
   private component: any = null;
-  private data: Cell;
   private componentRef: CellTemplate = null;
 
-  constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridConfigService: GridConfigService, private gridDataService: GridDataService, private changeDetectorRef: ChangeDetectorRef) {}
+  constructor(private resolver: ComponentFactoryResolver, private gridEventService: GridEventService, private gridService: GridService, private changeDetectorRef: ChangeDetectorRef) {}
 
-  ngAfterContentInit() {
-    this.type = this.gridConfigService.columnDefinitions[this.k].template;
-    this.component = this.gridConfigService.columnDefinitions[this.k].component;
-    this.format = this.gridConfigService.columnDefinitions[this.k].format;
+  ngOnInit() {
+    //console.debug("CellComponent");
+
+    this.type = this.gridService.columnDefinitions[this.k].template;
+    this.component = this.gridService.columnDefinitions[this.k].component;
+    this.format = this.gridService.columnDefinitions[this.k].format;
     this.isViewInitialized = true;
-    this.createComponent();
+    //this.createComponent();
 
-    this.gridDataService.cellDataUpdateObserved.subscribe((range) => {
-      if (range != null && range.contains(new Point(this.i, this.j, this.k))) {
-        if (this.componentRef.valueable) {
-          this.data = this.gridDataService.getCell(this.i, this.j, this.k);
-          this.componentRef.setValue(this.data.value);
-          this.gridDataService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
-          this.changeDetectorRef.markForCheck();
-        }
+    this.data = this.gridService.getCell(this.i, this.j, this.k);
+    if (this.data) {
+      this.value = this.data.value;
+    }
+
+    this.gridService.data.subscribe((data: Array<RowGroup>) => {
+      //console.debug("CC data change");
+      this.data = this.gridService.getCell(this.i, this.j, this.k);
+      if (this.data) {
+        //console.debug(this.data.value);
+        this.value = this.data.value;
       }
+      this.changeDetectorRef.markForCheck();
     });
 
-    if (this.gridConfigService.cellSelect) {
+    /*
+    this.gridService.cellDataUpdateObserved.subscribe((range) => {
+      if (range != null && range.contains(new Point(this.i, this.j, this.k))) {
+        //if (this.componentRef.valueable) {
+          this.data = this.gridService.getCell(this.i, this.j, this.k);
+          if (this.data) {
+            this.value = this.data.value;
+          }
+          //this.componentRef.setValue(this.data.value);
+          //this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+          //this.changeDetectorRef.markForCheck();
+        //}
+      }
+    });*/
+/*
+    if (this.gridService.cellSelect) {
       this.gridEventService.getSelecetdRangeObservable().subscribe((range) => {
         if (range === null) {
           this.onFocusOut();
         } else if (range.contains(new Point(this.i, this.j, this.k))) {
-          if (this.gridConfigService.columnDefinitions[this.k].visible) {
+          if (this.gridService.columnDefinitions[this.k].visible) {
             this.onFocus();
           }
         } else {
@@ -112,7 +139,7 @@ export class CellComponent {
         if (location === null) {
           this.onFocusOut();
         } else if (location.equalsIJK(this.i, this.j, this.k)) {
-          if (this.gridConfigService.columnDefinitions[this.k].visible) {
+          if (this.gridService.columnDefinitions[this.k].visible) {
             this.onFocus();
           } else {
             this.gridEventService.arrowFrom(location, 1, 0, null);
@@ -123,21 +150,25 @@ export class CellComponent {
       });
 
       this.onFocusOut();
-    }
+    }*/
   }
 
   cellClick(event: MouseEvent) {
-    if (this.gridConfigService.cellSelect && !this.componentRef.handleClick) {
+    /*
+    if (this.gridService.cellSelect && !this.componentRef.handleClick) {
       this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
     }
+    */
   }
 
   onFocuser() {
+    /*
     if (this.type === "LabelCell") {
       this.componentRef.onFocus();
     } else {
       this.componentRef.onFocus();
     }
+    */
   }
 
   /**
@@ -146,16 +177,20 @@ export class CellComponent {
    * the input is focused.  In the case of a date, the datepicker popup is opened.
    */
   onFocus() {
+    /*
     if (this.type === "LabelCell") {
       this.focuser.nativeElement.focus();
     }
     this.componentRef.onFocus();
     this.changeDetectorRef.markForCheck();
+    */
   }
 
   onFocusOut() {
+    /*
     this.componentRef.onFocusOut();
     this.changeDetectorRef.markForCheck();
+    */
   }
 
   /**
@@ -177,7 +212,7 @@ export class CellComponent {
     }
 
     let setIsGroup: boolean = false;
-    if (this.gridConfigService.columnDefinitions[this.k].isGroup && this.j !== -1) {
+    if (this.gridService.columnDefinitions[this.k].isGroup && this.j !== -1) {
       this.type = "LabelCell";
       setIsGroup = true;
     }
@@ -212,14 +247,14 @@ export class CellComponent {
     if (setIsGroup) {
       this.componentRef.valueable = false;
     }
-
+/*
     if (this.componentRef.valueable) {
-      this.data = this.gridDataService.getCell(this.i, this.j, this.k);
+      this.data = this.gridService.getCell(this.i, this.j, this.k);
       this.componentRef.setValue(this.data.value);
 
       this.componentRef.valueChange.subscribe((value: Object) => {
         this.data.value = value;
-        this.gridDataService.handleValueChange(this.i, this.j, this.data.key, this.k, value);
+        this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, value);
       });
     }
     this.componentRef.keyEvent.subscribe((keyCode: number) => {
@@ -233,7 +268,7 @@ export class CellComponent {
     });
     this.componentRef.clickEvent.subscribe((eventMeta: EventMeta) => {
       this.gridEventService.setSelectedRange(new Point(this.i, this.j, this.k), eventMeta);
-    });
+    });*/
   }
 
   onKeyDown(keyCode: number) {
