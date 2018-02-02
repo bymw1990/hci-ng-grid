@@ -17,6 +17,7 @@ import {CellTemplate} from "./cell-template.component";
   styles: [ `
       
     .hci-grid-cell-input, .hci-grid-cell-input:focus {
+      overflow-x: hidden;
       border: none;
       outline: none;
       width: -webkit-fill-available;

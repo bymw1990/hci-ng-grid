@@ -131,7 +131,7 @@ import {InputCell} from "./cell/input-cell.component";
       </div>
       
       <!-- Footer -->
-      <div *ngIf="pageSize > 0"
+      <div *ngIf="pageInfo.pageSize > 0"
            style="width: 100%; border: black 1px solid; padding: 3px;">
         <div>
           <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
@@ -264,18 +264,21 @@ export class GridComponent implements OnChanges {
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
    */
-  ngOnInit() {
+  ngAfterContentInit() {
     if (this.level) {
       this.gridMessageService.setLevel(this.level);
     }
 
+    this.buildConfig();
+    this.gridService.setConfig(this.config);
+    this.initGridConfiguration();
     this.updateGridContainerHeight();
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.data.subscribe((data: Array<RowGroup>) => {
-      if (this.pageInfo.pageSize < 0) {
+      /*if (this.pageInfo.pageSize < 0) {
         this.dataSize = new Array<number>(data.length);
-      }
+      }*/
       this.gridData = data;
       this.origDataSize = this.gridService.getOriginalDataSize();
       this.busy = false;
@@ -351,10 +354,6 @@ export class GridComponent implements OnChanges {
       });
     }
 
-    this.buildConfig();
-    this.gridService.setConfig(this.config);
-    this.initGridConfiguration();
-
     /* Get initial page Info */
     this.pageInfo = this.gridService.pageInfo;
 
@@ -388,6 +387,7 @@ export class GridComponent implements OnChanges {
   }
 
   ngAfterViewOnInit() {
+    this.pageInfo = this.gridService.pageInfo;
     this.updatePageSize();
     this.updateGridContainerHeight();
     this.changeDetectorRef.markForCheck();
@@ -400,10 +400,12 @@ export class GridComponent implements OnChanges {
   }
 
   updatePageSize() {
+    console.debug("updatePageSize: " + this.pageInfo.pageSize);
+
     if (this.dataSize.length !== this.pageInfo.pageSize && this.pageInfo.pageSize >= 0) {
       this.dataSize = new Array<Object>(this.pageInfo.pageSize);
     } else {
-      this.dataSize = new Array<Object>(0);
+      //this.dataSize = new Array<Object>(0);
     }
   }
 
@@ -517,7 +519,7 @@ export class GridComponent implements OnChanges {
     }
     if (this.columnDefinitions !== undefined) {
       this.config.columnDefinitions = this.columnDefinitions;
-    } else {
+    } else if (this.columnDefComponents !== undefined) {
       this.config.columnDefinitions = Column.getColumns(this.columnDefComponents);
     }
     if (this.fixedColumns !== undefined) {
@@ -568,7 +570,7 @@ export class GridComponent implements OnChanges {
   }
 
   initGridConfiguration() {
-    this.gridService.pageInfo.pageSize = this.gridService.pageSize;
+    this.gridService.pageInfo = this.gridService.pageInfo;
     this.gridService.init();
     this.postInitGridConfiguration();
   }
@@ -591,6 +593,8 @@ export class GridComponent implements OnChanges {
         }
       }
     }
+
+    this.updatePageSize();
   }
 
   /* Key Events */
