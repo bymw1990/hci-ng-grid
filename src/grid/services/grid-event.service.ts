@@ -6,16 +6,23 @@ import {Point} from "../utils/point";
 import {Range} from "../utils/range";
 import {EventMeta} from "../utils/event-meta";
 
+export const CLICK = 0;
+export const TAB = 1;
+export const ARROW = 2;
+
 @Injectable()
 export class GridEventService {
   private nColumns: number = 0;
-  private _currentLocation: Point = new Point(-1, 0, -1);
-  private selectedLocation = new Subject<Point>();
-  private selectedLocationObservable = this.selectedLocation.asObservable();
+  private selectedLocation: Point = new Point(-1, 0, -1);
+  private selectedLocationSubject = new Subject<Point>();
 
   private _currentRange: Range = null;
   private selectedRange = new Subject<Range>();
   private selectedRangeObservable = this.selectedRange.asObservable();
+
+  private lastDx: number = 0;
+  private lastDy: number = 0;
+  private lastEvent: number = null;
 
   constructor(private gridService: GridService) {}
 
@@ -27,12 +34,24 @@ export class GridEventService {
     this.nColumns = nColumns;
   }
 
+  setCurrentLocation(location: Point) {
+    console.debug("GridEvent.setCurrentLocation: " + (location === null ? "null" : location.toString()));
+
+    this.selectedLocation = location;
+    this.selectedLocationSubject.next(this.selectedLocation);
+  }
+
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
+    console.debug("GridEvent.setSelectedLocation");
     if (!this.gridService.cellSelect) {
       return;
     }
 
-    if (this._currentRange == null) {
+    if (eventMeta === null) {
+      this.setCurrentLocation(location);
+    }
+
+    /*if (this._currentRange == null) {
       this._currentRange = new Range(location, location);
       this.selectedRange.next(this._currentRange);
     } else if (eventMeta == null || eventMeta.isNull()) {
@@ -41,14 +60,14 @@ export class GridEventService {
     } else if (eventMeta.ctrl) {
       this._currentRange.update(location);
       this.selectedRange.next(this._currentRange);
-    }
+    }*/
   }
 
   setSelectedRange(location: Point, eventMeta: EventMeta) {
     if (!this.gridService.cellSelect) {
       return;
     }
-    this._currentLocation = location;
+    this.selectedLocation = location;
 
     if (this._currentRange == null) {
       this._currentRange = new Range(location, location);
@@ -84,80 +103,139 @@ export class GridEventService {
    * @param dy
    */
   arrowFrom(location: Point, dx: number, dy: number, eventMeta: EventMeta) {
+    this.lastEvent = ARROW;
+
     if (!this.gridService.cellSelect) {
       return;
     }
-    this._currentLocation = location;
+    if (location !== null) {
+      this.selectedLocation = location;
+    } else if (this.selectedLocation.isNegative()) {
+      this.selectedLocation = new Point(0, 0, 0);
+      this.selectedLocationSubject.next(this.selectedLocation);
+      return;
+    }
+
+    this.lastDx = dx;
+    this.lastDy = dy;
 
     let tries: number = this.gridService.columnDefinitions.length;
     do {
+      if (this.selectedLocation.isNegative()) {
+        this.selectedLocation = new Point(0, 0, 0);
+        break;
+      }
       if (tries === 0) {
-        this._currentLocation.i = 0;
-        this._currentLocation.j = 0;
-        this._currentLocation.k = 0;
+        this.selectedLocation.i = 0;
+        this.selectedLocation.j = 0;
+        this.selectedLocation.k = 0;
         break;
       }
 
-      if (dy > 0 && this.gridService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + dy) {
-        this._currentLocation.i = this._currentLocation.i + dy;
-        this._currentLocation.j = 0;
+      if (dy > 0 && this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
+        this.selectedLocation.i = this.selectedLocation.i + dy;
+        this.selectedLocation.j = 0;
       } else if (dy > 0) {
-        this._currentLocation.j = this._currentLocation.j + dy;
-      } else if (dy < 0 && this._currentLocation.j > 0) {
-        this._currentLocation.j = this._currentLocation.j + dy;
-      } else if (dy < 0 && this._currentLocation.j === 0) {
-        this._currentLocation.i = this._currentLocation.i + dy;
-        if (this._currentLocation.i < 0) {
-          this._currentLocation = new Point(-1, 0, -1);
+        this.selectedLocation.j = this.selectedLocation.j + dy;
+      } else if (dy < 0 && this.selectedLocation.j > 0) {
+        this.selectedLocation.j = this.selectedLocation.j + dy;
+      } else if (dy < 0 && this.selectedLocation.j === 0) {
+        this.selectedLocation.i = this.selectedLocation.i + dy;
+        if (this.selectedLocation.i < 0) {
+          this.selectedLocation = new Point(-1, 0, -1);
         } else {
-          this._currentLocation.j = this.gridService.getRowGroup(this._currentLocation.i).length() - 1;
+          this.selectedLocation.j = this.gridService.getRowGroup(this.selectedLocation.i).length() - 1;
         }
       } else if (dx !== 0) {
-        this._currentLocation.k = this._currentLocation.k + dx;
-        this._currentLocation.i = Math.max(0, this._currentLocation.i);
-        this._currentLocation.j = Math.max(0, this._currentLocation.j);
-        //this._currentLocation.k = Math.max(0, this._currentLocation.k);
+        this.selectedLocation.k = this.selectedLocation.k + dx;
+        this.selectedLocation.i = Math.max(0, this.selectedLocation.i);
+        this.selectedLocation.j = Math.max(0, this.selectedLocation.j);
+        //this.selectedLocation.k = Math.max(0, this.selectedLocation.k);
 
-        if (this._currentLocation.k === this.nColumns) {
-          this._currentLocation.k = 0;
+        if (this.selectedLocation.k === this.nColumns) {
+          this.selectedLocation.k = 0;
 
-          if (this.gridService.getRowGroup(this._currentLocation.i).length() === this._currentLocation.j + 1) {
-            this._currentLocation.i = this._currentLocation.i + 1;
-            this._currentLocation.j = 0;
+          if (this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + 1) {
+            this.selectedLocation.i = this.selectedLocation.i + 1;
+            this.selectedLocation.j = 0;
           } else {
-            this._currentLocation.j = this._currentLocation.j + 1;
+            this.selectedLocation.j = this.selectedLocation.j + 1;
           }
-        } else if (this._currentLocation.k < 0) {
-          this._currentLocation.k = this.gridService.columnDefinitions.length - 1;
-          if (this._currentLocation.j > 0) {
-            this._currentLocation.j = this._currentLocation.j - 1;
-          } else if (this._currentLocation.i === 0) {
-            this._currentLocation.k = this.gridService.columnDefinitions.length - 1;
+        } else if (this.selectedLocation.k < 0) {
+          this.selectedLocation.k = this.gridService.columnDefinitions.length - 1;
+          if (this.selectedLocation.j > 0) {
+            this.selectedLocation.j = this.selectedLocation.j - 1;
+          } else if (this.selectedLocation.i === 0) {
+            this.selectedLocation.k = this.gridService.columnDefinitions.length - 1;
           } else {
-            this._currentLocation.i = this._currentLocation.i - 1;
+            this.selectedLocation.i = this.selectedLocation.i - 1;
           }
         }
       }
 
       tries = tries - 1;
-    } while (this._currentLocation.k >= 0 && !this.gridService.columnDefinitions[this._currentLocation.k].visible);
+    } while (this.selectedLocation.k >= 0 && !this.gridService.columnDefinitions[this.selectedLocation.k].visible);
 
-    if (this.gridService.getRowGroup(this._currentLocation.i) === null) {
-      this._currentLocation = new Point(-1, 0, -1);
+    if (this.gridService.getRowGroup(this.selectedLocation.i) === null) {
+      this.selectedLocation = new Point(-1, 0, -1);
     }
 
-    this.selectedLocation.next(this._currentLocation);
+    console.debug("arrowFrom: to: " + this.selectedLocation.toString());
+
+    this.selectedLocationSubject.next(this.selectedLocation);
   }
 
   tabFrom(location: Point, eventMeta: EventMeta) {
-    this.arrowFrom(location, 1, 0, eventMeta);
+    this.lastEvent = TAB;
+
+    if (location === null) {
+      this.arrowFrom(this.selectedLocation, 1, 0, eventMeta);
+    } else {
+      this.arrowFrom(location, 1, 0, eventMeta);
+    }
   }
 
-  getSelectedLocationObservable(): Observable<Point> {
-    return this.selectedLocationObservable;
+  repeatLastEvent() {
+    if (this.lastEvent !== null) {
+      if (this.lastEvent === TAB) {
+        this.tabFrom(null, null);
+      } else if (this.lastEvent === ARROW) {
+        this.arrowFrom(null, this.lastDx, this.lastDy, null);
+      } else {
+        this.selectedLocation = new Point(-1, 0, -1);
+        this.selectedLocationSubject.next(this.selectedLocation);
+      }
+    } else {
+      this.selectedLocation = new Point(-1, 0, -1);
+      this.selectedLocationSubject.next(this.selectedLocation);
+    }
+  }
+
+  getLastDx(): number {
+    return this.lastDx;
+  }
+
+  getLastDy(): number {
+    return this.lastDy;
+  }
+
+  getSelectedLocationSubject(): Subject<Point> {
+    return this.selectedLocationSubject;
   }
 
   getSelecetdRangeObservable(): Observable<Range> {
     return this.selectedRangeObservable;
+  }
+
+  isLastEventArrow(): boolean {
+    return this.lastEvent !== null && this.lastEvent === ARROW;
+  }
+
+  isLastEventClick(): boolean {
+    return this.lastEvent !== null && this.lastEvent === CLICK;
+  }
+
+  isLastEventTab(): boolean {
+    return this.lastEvent !== null && this.lastEvent === TAB;
   }
 }

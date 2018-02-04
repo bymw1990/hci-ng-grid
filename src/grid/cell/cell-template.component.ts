@@ -4,6 +4,7 @@ import { EventMeta } from "../utils/event-meta";
 import {GridService} from "../services/grid.service";
 import {Cell} from "./cell";
 import {Subject} from "rxjs/Subject";
+import {GridEventService} from "../services/grid-event.service";
 
 export class CellTemplate {
 
@@ -32,9 +33,19 @@ export class CellTemplate {
 
   keyEvent: Subject<number> = new Subject<number>();
 
+  gridService: GridService;
+  gridEventService: GridEventService;
+  elementRef: ElementRef;
+  renderer: Renderer2;
+
   private hostElement: HTMLElement;
 
-  constructor(private gridService: GridService, private elementRef: ElementRef, private renderer: Renderer2) {}
+  constructor(gridService: GridService, gridEventService: GridEventService, elementRef: ElementRef, renderer: Renderer2) {
+    this.gridService = gridService;
+    this.gridEventService = gridEventService;
+    this.elementRef = elementRef;
+    this.renderer = renderer;
+  }
 
   setLocation(hostElement: HTMLElement) {
     this.hostElement = hostElement;

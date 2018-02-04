@@ -2,11 +2,11 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {
-  ChangeDetectionStrategy, ComponentFactoryResolver, ChangeDetectorRef, Component, ContentChildren, ElementRef,
+  AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ContentChildren, ElementRef,
   EventEmitter, HostListener, Input,
   OnChanges,
-  Output, QueryList, Renderer2, SimpleChange, TemplateRef, ViewChild, ViewChildren, ViewEncapsulation, Type,
-  ViewContainerRef, ReflectiveInjector
+  Output, QueryList, Renderer2, SimpleChange, ViewChild, ViewEncapsulation,
+  ViewContainerRef
 } from "@angular/core";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
@@ -49,7 +49,8 @@ import {InputCell} from "./cell/input-cell.component";
     GridEventService,
     GridMessageService],
   template: `
-    <div #gridContainer (keydown)="onKeyDown($event);" (click)="click($event, null)">
+    <div #gridContainer (click)="onClick($event)" (keydown)="onKeyDown($event)">
+      <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy" [style.height.px]="gridContainerHeight">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
           <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
@@ -111,13 +112,13 @@ import {InputCell} from "./cell/input-cell.component";
           <ng-container *ngFor="let rowGroup of dataSize; let i = index">
             <!--<div>
               <ng-container *ngFor="let row of gridData[i].rows; let j = index" class="d-flex flex-nowrap">-->
-                <div class="d-flex flex-nowrap"
-                     [style.display]="gridData === null || i > gridData.length - 1 ? 'none' : 'unset'">
+                <div class="flex-nowrap"
+                     [style.display]="gridData === null || i > gridData.length - 1 ? 'none' : 'flex'">
                   <ng-container *ngFor="let column of columnDefinitions; let k = index">
-                    <!--<div (click)="click($event, null)" [id]="i + '-' + j + '-' + k" class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height" style="flex: 1 1 100%;">-->
-                    <div (click)="click($event, null)"
+                    <div (click)="onClick($event)"
                          [id]="'cell-' + i + '-0-' + k"
                          class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                         [style.display]="column.visible ? 'inline-block' : 'none'"
                          [style.flex]="'1 1 ' + column.width + '%'"
                          [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                          [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
@@ -129,6 +130,8 @@ import {InputCell} from "./cell/input-cell.component";
           </ng-container>
         </div>
       </div>
+
+      <input #focuser2 id="focuser2" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       
       <!-- Footer -->
       <div *ngIf="pageInfo.pageSize > 0"
@@ -205,11 +208,13 @@ import {InputCell} from "./cell/input-cell.component";
   ` ],
   encapsulation: ViewEncapsulation.None
 })
-export class GridComponent implements OnChanges {
+export class GridComponent implements OnChanges, AfterViewInit {
 
   @ViewChild("container", { read: ViewContainerRef }) container: any;
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: any;
+  @ViewChild("focuser1") focuser1: ElementRef;
+  @ViewChild("focuser2") focuser2: ElementRef;
 
   @Input() inputData: Object[] = null;
 
@@ -256,6 +261,7 @@ export class GridComponent implements OnChanges {
 
   private componentRef: CellTemplate = null;
   private cellKeySubscription: Subscription;
+  private selectedLocationSubscription: Subscription;
 
   constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
               private domSanitizer: DomSanitizer, private gridService: GridService, private gridEventService: GridEventService,
@@ -386,11 +392,20 @@ export class GridComponent implements OnChanges {
     });
   }
 
-  ngAfterViewOnInit() {
+  ngAfterViewInit() {
     this.pageInfo = this.gridService.pageInfo;
     this.updatePageSize();
     this.updateGridContainerHeight();
     this.changeDetectorRef.markForCheck();
+
+    this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
+      console.debug("GridComponent.selectedLocationSubscription");
+      this.container.clear();
+      if (p.isNotNegative()) {
+        this.selectComponent(p.i, p.j, p.k);
+        //this.selectedLocationSubscription.unsubscribe();
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -409,15 +424,8 @@ export class GridComponent implements OnChanges {
     }
   }
 
-  click(event: MouseEvent, value?: string) {
-    event.stopPropagation();
-    console.debug("click");
-    console.debug(event);
-
-    this.createCellComponent(<HTMLElement>event.srcElement);
-  }
-
   selectComponent(i: number, j: number, k: number) {
+    console.log("GridComponent.selectComponent: " + i + " " + j + " " + k);
     let e = document.getElementById("cell-" + i + "-0-" + k);
     this.createCellComponent(e);
   }
@@ -430,7 +438,19 @@ export class GridComponent implements OnChanges {
       let j: number = +ids[2];
       let k: number = +ids[3];
 
+      try {
+        this.gridData[i].get(j).get(k);
+      } catch (e) {
+        this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+      }
+
       let column: Column = this.columnDefinitions[k];
+
+      if (!column.visible && this.gridEventService.getLastDx() === 1) {
+        this.gridEventService.repeatLastEvent();
+      } else if (!column.visible) {
+        this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+      }
 
       let factory = null;
       /*if (column.component instanceof Type) {
@@ -447,22 +467,18 @@ export class GridComponent implements OnChanges {
        }*/
 
       factory = this.resolver.resolveComponentFactory(InputCell);
-      if (this.cellKeySubscription) {
+      /*if (this.cellKeySubscription) {
         this.cellKeySubscription.unsubscribe();
-      }
-      this.container.clear();
+      }*/
       this.componentRef = this.container.createComponent(factory).instance;
       this.componentRef.setPosition(i, j, k);
       this.componentRef.data = this.gridData[i].get(j).get(k);
       this.componentRef.setValue(this.gridData[i].get(j).get(k).value);
       this.componentRef.setLocation(cellElement);
-      this.cellKeySubscription = this.componentRef.keyEvent.subscribe((keyCode: number) => {
+      /*this.cellKeySubscription = this.componentRef.keyEvent.subscribe((keyCode: number) => {
         console.log("cellKeySubscription: " + keyCode);
         this.gridEventService.arrowFromLocation(i, j, k, keyCode);
-      });
-      this.gridEventService.getSelectedLocationObservable().subscribe((p: Point) => {
-        this.selectComponent(p.i, p.j, p.k);
-      });
+      });*/
     }
   }
 
@@ -597,9 +613,37 @@ export class GridComponent implements OnChanges {
     this.updatePageSize();
   }
 
-  /* Key Events */
+  public clearSelectedRows() {
+    this.gridService.clearSelectedRows();
+  }
+
+  public deleteSelectedRows() {
+    this.gridService.deleteSelectedRows();
+  }
+
+  onClick(event: MouseEvent) {
+    console.debug("click");
+    console.debug(event.srcElement);
+
+    event.stopPropagation();
+    /*console.debug("click");
+    console.debug(event);
+
+    this.createCellComponent(<HTMLElement>event.srcElement);*/
+    this.gridEventService.setSelectedLocation(Point.getPoint(event.srcElement.id), null);
+  }
+
+  onFocus(event: Event) {
+    event.stopPropagation();
+    let id: string = event.srcElement.id;
+    if (id === "focuser2") {
+      this.focuser1.nativeElement.focus();
+    }
+  }
+
   onKeyDown(event: KeyboardEvent) {
-    this.gridMessageService.debug("GridComponent.onKeyDown");
+    console.debug("GridComponent.onKeyDown");
+
     if (event.ctrlKey && event.keyCode === 67) {
       this.gridMessageService.debug("Copy Event");
 
@@ -708,15 +752,22 @@ export class GridComponent implements OnChanges {
       } else {
         this.gridMessageService.warn("Paste went out of range");
       }
+    } else if (event.keyCode === 9) {
+      event.stopPropagation();
+      this.gridEventService.tabFrom(null, null);
+    } else if (event.keyCode === 37) {
+      event.stopPropagation();
+      this.gridEventService.arrowFrom(null, -1, 0, null);
+    } else if (event.keyCode === 39) {
+      event.stopPropagation();
+      this.gridEventService.arrowFrom(null, 1, 0, null);
+    } else if (event.keyCode === 38) {
+      event.stopPropagation();
+      this.gridEventService.arrowFrom(null, 0, -1, null);
+    } else if (event.keyCode === 40) {
+      event.stopPropagation();
+      this.gridEventService.arrowFrom(null, 0, 1, null);
     }
-  }
-
-  public clearSelectedRows() {
-    this.gridService.clearSelectedRows();
-  }
-
-  public deleteSelectedRows() {
-    this.gridService.deleteSelectedRows();
   }
 
 }

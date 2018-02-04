@@ -3,10 +3,32 @@ export class Point {
   private _j: number;
   private _k: number;
 
+  static getPoint(id: string): Point {
+    let array = id.split("-");
+    let last = array.length - 1;
+    if (array.length >= 3) {
+      try {
+        return new Point(+array[last - 2], +array[last - 1], +array[last]);
+      } catch (e) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   constructor(i: number, j: number, k: number) {
     this._i = i;
     this._j = j;
     this._k = k;
+  }
+
+  isNegative() {
+    return this._i === -1 || this._j === -1 || this._k === -1;
+  }
+
+  isNotNegative() {
+    return this._i >= 0 && this._j >= 0 && this._k >= 0;
   }
 
   equals(other: Point): boolean {
