@@ -8,8 +8,8 @@ import {GridEventService} from "../services/grid-event.service";
 
 export class CellTemplate {
 
-  data: Cell = null;
-  value: Object = null;
+  value: any;
+  data: Cell = new Cell({key: null, value: null});
   valueValid: boolean = true;
   render: boolean = true;
   format: string = null;
@@ -68,6 +68,11 @@ export class CellTemplate {
     this.updateLocation();
   }
 
+  setData(data: Cell) {
+    this.data = data;
+    this.value = this.gridService.formatData(this.k, this.data.value);
+  }
+
   setPosition(i: number, j: number, k: number) {
     this.i = i;
     this.j = j;
@@ -75,12 +80,13 @@ export class CellTemplate {
   }
 
   onModelChange(value: Object) {
-    console.debug("onModelChange: " + value);
     this.value = value;
+    /*console.debug("onModelChange: " + value);
+    this.data.value = value;
     if (this.valueValid) {
       //this.valueChange.emit(value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.value);
-    }
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+    }*/
   }
 
   onClick(event: MouseEvent) {
@@ -130,10 +136,6 @@ export class CellTemplate {
     } catch (e) {
       // Ignore
     }
-  }
-
-  setValue(value: Object) {
-    this.value = value;
   }
 
   setValues(o: Object) {

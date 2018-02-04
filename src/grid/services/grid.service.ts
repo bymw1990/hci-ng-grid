@@ -8,6 +8,7 @@ import {Column} from "../column/column";
 import {Range} from "../utils/range";
 import {SortInfo} from "../utils/sort-info";
 import {PageInfo} from "../utils/page-info";
+import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
 import {RowSelectCellComponent} from "../cell/row-select-cell.component";
@@ -50,6 +51,7 @@ export class GridService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
+  private valueSubject: Subject<Point> = new Subject<Point>();
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
 
@@ -182,6 +184,28 @@ export class GridService {
       } else {
         this.columnDefinitions[i].width = wRight / nRight;
       }
+    }
+  }
+
+  formatData(k: number, value: any): any {
+    let column: Column = this.columnDefinitions[k];
+    if (column.dataType === "string") {
+      return value;
+    } else if (column.dataType === "date") {
+      return column.formatValue(value);
+    } else {
+      return "Add Formatter";
+    }
+  }
+
+  parseData(k: number, value: any): any {
+    let column: Column = this.columnDefinitions[k];
+    if (column.dataType === "string") {
+      return value;
+    } else if (column.dataType === "date") {
+      return column.parseValue(value);
+    } else {
+      return "Add Parser";
     }
   }
 
@@ -460,6 +484,8 @@ export class GridService {
     } else {
       this.setInputDataValue(key, this.columnDefinitions[k].field, value);
     }
+
+    this.valueSubject.next(new Point(i, j, k));
   }
 
   /**
@@ -743,6 +769,10 @@ export class GridService {
       }
       return v;
     });
+  }
+
+  getValueSubject(): Subject<Point> {
+    return this.valueSubject;
   }
 
 }

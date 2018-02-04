@@ -62,13 +62,23 @@ export class Column {
     this.setConfig(object);
   }
 
-  getFormattedValue(value: any): string {
+  formatValue(value: any): string {
     if (value === undefined || value === null) {
       return "";
     } else if (this.dataType === "string") {
       return value;
     } else if (this.dataType === "date") {
       return moment((new Date(<string>value))).format(this.format);
+    }
+  }
+
+  parseValue(value: any): string {
+    if (value === undefined || value === null) {
+      return "";
+    } else if (this.dataType === "string") {
+      return value;
+    } else if (this.dataType === "date") {
+      return moment(<string>value, this.format).toISOString();
     }
   }
 

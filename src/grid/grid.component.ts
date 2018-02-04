@@ -299,7 +299,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
             let e = document.getElementById("cell-" + i + "-" + j + "-" + k);
             if (e) {
               e.textContent = "";
-              let value = this.columnDefinitions[k].getFormattedValue(cell.value);
+              let value = this.columnDefinitions[k].formatValue(cell.value);
               let text = this.renderer.createText(value);
               this.renderer.appendChild(e, text);
             }
@@ -406,6 +406,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
         //this.selectedLocationSubscription.unsubscribe();
       }
     });
+
+    this.gridService.getValueSubject().subscribe((location: Point) => {
+      let e = document.getElementById("cell-" + location.i + "-" + location.j + "-" + location.k);
+      if (e) {
+        e.textContent = "";
+        let value = this.columnDefinitions[location.k].formatValue(this.gridService.getCell(location.i, location.j, location.k).value);
+        let text = this.renderer.createText(value);
+        this.renderer.appendChild(e, text);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -472,8 +482,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }*/
       this.componentRef = this.container.createComponent(factory).instance;
       this.componentRef.setPosition(i, j, k);
-      this.componentRef.data = this.gridData[i].get(j).get(k);
-      this.componentRef.setValue(this.gridData[i].get(j).get(k).value);
+      this.componentRef.setData(this.gridData[i].get(j).get(k));
       this.componentRef.setLocation(cellElement);
       /*this.cellKeySubscription = this.componentRef.keyEvent.subscribe((keyCode: number) => {
         console.log("cellKeySubscription: " + keyCode);
@@ -770,4 +779,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  @HostListener("document:click", ["$event"])
+  clickout(event) {
+    if (!this.el.nativeElement.contains(event.target)) {
+      this.container.clear();
+    }
+  }
 }

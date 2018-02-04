@@ -46,7 +46,9 @@ export class GridEventService {
     if (!this.gridService.cellSelect) {
       return;
     }
-
+    if (location === null) {
+      return;
+    }
     if (eventMeta === null) {
       this.setCurrentLocation(location);
     }

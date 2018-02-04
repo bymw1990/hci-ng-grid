@@ -31,16 +31,16 @@ import { Column } from "hci-ng-grid/index";
             <span style="width: 100px; display: inline-block;">firstName</span>
             <span style="width: 100px; display: inline-block;">lastName</span>
             <span style="width: 150px; display: inline-block;">dob</span>
-            <span style="width: 100px; display: inline-block;">pcg.nLabs</span>
-            <span style="width: 150px; display: inline-block;">pcg.nested.nLabPath</span>
+            <span style="width: 100px; display: inline-block;">nLabs</span>
+            <span style="width: 150px; display: inline-block;">nLabPath</span>
           </div>
           <div *ngFor="let row of editData">
             <span style="width: 100px; display: inline-block;">{{row.idPatient}}</span>
             <span style="width: 100px; display: inline-block;">{{row.firstName}}</span>
             <span style="width: 100px; display: inline-block;">{{row.lastName}}</span>
             <span style="width: 150px; display: inline-block;">{{row.dob}}</span>
-            <span style="width: 100px; display: inline-block;">{{row.pcg.nLabs}}</span>
-            <span style="width: 150px; display: inline-block;">{{row.pcg.nested.nLabPath}}</span>
+            <span style="width: 100px; display: inline-block;">{{row.nLabs}}</span>
+            <span style="width: 150px; display: inline-block;">{{row.nLabPath}}</span>
           </div>
         </div>
       </div>
@@ -50,12 +50,18 @@ import { Column } from "hci-ng-grid/index";
 export class EditGridComponent {
 
   editData: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-11-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1960-12-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1940-01-03T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1950-06-06T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1930-01-17T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-11-21T00:00-07:00", "nLabs": 1, "nLabPath": 12 },
+    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1960-12-11T00:00-07:00", "nLabs": 2, "nLabPath": 23 },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1940-01-03T00:00-07:00", "nLabs": 3, "nLabPath": 34 },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1950-06-06T00:00-07:00", "nLabs": 99, "nLabPath": 9 },
+    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "nLabs": 4, "nLabPath": 45 },
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1930-01-17T00:00-07:00", "nLabs": 5, "nLabPath": 56 },
+    { "idPatient": 7, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "nLabs": 4, "nLabPath": 45 },
+    { "idPatient": 8, "firstName": "Jenny", "lastName": "White", "dob": "1940-05-29T00:00-07:00", "nLabs": 9, "nLabPath": 13 },
+    { "idPatient": 9, "firstName": "Sam", "lastName": "Black", "dob": "1930-02-22T00:00-07:00", "nLabs": 2, "nLabPath": 65 },
+    { "idPatient": 10, "firstName": "Tim", "lastName": "Lewis", "dob": "1920-06-08T00:00-07:00", "nLabs": 9, "nLabPath": 111 },
+    { "idPatient": 11, "firstName": "Ben", "lastName": "Brown", "dob": "1977-08-12T00:00-07:00", "nLabs": 3, "nLabPath": 87 },
+    { "idPatient": 12, "firstName": "Leslie", "lastName": "Pink", "dob": "1980-11-03T00:00-07:00", "nLabs": 4, "nLabPath": 98 }
   ];
 
   editColumns: Column[] = [
@@ -63,8 +69,8 @@ export class EditGridComponent {
     new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
     new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "InputCell" })
+    new Column({ field: "nLabs", name: "# Labs", template: "LabelCell" }),
+    new Column({ field: "nLabPath", name: "# Lab Path", template: "InputCell" })
   ];
 
 }

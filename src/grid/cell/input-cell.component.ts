@@ -1,5 +1,6 @@
 import {Component, ElementRef, ViewChild, ViewEncapsulation} from "@angular/core";
 
+import {Point} from "../utils/point";
 import {CellTemplate} from "./cell-template.component";
 
 @Component({
@@ -32,9 +33,9 @@ export class InputCell extends CellTemplate {
 
   ngAfterViewInit() {
     this.input.nativeElement.focus();
-    if (this.value !== null) {
+    if (this.data !== null && this.data.value !== null) {
       if (this.gridEventService.getLastDx() === -1) {
-        this.input.nativeElement.selectionStart = (<string>this.value).length;
+        this.input.nativeElement.selectionStart = (<string>this.data.value).length;
       } else {
         this.input.nativeElement.selectionStart = 0;
       }
@@ -45,7 +46,7 @@ export class InputCell extends CellTemplate {
    * Override empty method in CellTemplate.
    */
   onFocus() {
-    super.onFocus();
+    //super.onFocus();
     this.input.nativeElement.focus();
   }
 
@@ -57,17 +58,21 @@ export class InputCell extends CellTemplate {
     console.log("InputCell.onInputKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
-      //event.stopPropagation();
-      //this.input.nativeElement.blur();
-      //this.keyEvent.next(37);
+      this.data.value = this.gridService.parseData(this.k, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
     } else if (event.keyCode === 39 && this.input.nativeElement.selectionStart === this.input.nativeElement.value.length) {
-      //event.stopPropagation();
-      //this.input.nativeElement.blur();
-      //this.keyEvent.next(39);
-    } else if (event.keyCode === 9 || event.keyCode === 38 || event.keyCode === 40) {
-      //event.stopPropagation();
-      //this.input.nativeElement.blur();
-      //this.onKeyDown(event);
+      this.data.value = this.gridService.parseData(this.k, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+    } else if (event.keyCode === 38 || event.keyCode === 40) {
+      this.data.value = this.gridService.parseData(this.k, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+    } else if (event.keyCode === 9) {
+    } else if (event.keyCode === 27) {
+      this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+    } else if (event.keyCode === 13) {
+      this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+      this.data.value = this.gridService.parseData(this.k, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
     } else {
       event.stopPropagation();
     }
