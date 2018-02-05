@@ -32,6 +32,7 @@ export class GridService {
   externalPaging: boolean = false;
   pageSize: number = -1;
   pageSizes: number[] = [10, 25, 50];
+  nVisibleRows: number = null;
 
   inputData: Object[];
   preparedData: Array<Row>;
@@ -128,6 +129,11 @@ export class GridService {
     if (config.pageSizes !== undefined) {
       this.pageSizes = config.pageSizes;
     }
+    if (config.nVisibleRows !== undefined) {
+      this.nVisibleRows = config.nVisibleRows;
+    }
+
+    this.pageInfo.pageSize = this.pageSize;
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
@@ -233,6 +239,8 @@ export class GridService {
       nFixedColumns = this.fixedColumns.length;
     }
 
+    let groupByDisplay: string = null;
+
     if (this.rowSelect) {
       let rowSelectColumn: Column = Column.deserialize({ name: "", template: "RowSelectCellComponent", minWidth: 30, maxWidth: 30 });
       rowSelectColumn.sortable = false;
@@ -265,6 +273,7 @@ export class GridService {
       let k: number = i;
       for (var j = 0; j < nGroupBy; j++) {
         if (this.columnDefinitions[i].field === this.groupBy[j]) {
+          groupByDisplay = (groupByDisplay === null) ? this.columnDefinitions[i].name : groupByDisplay + ", " + this.columnDefinitions[i].name;
           this.columnDefinitions[i].isGroup = true;
           this.columnDefinitions[i].visible = false;
           k = j;
@@ -284,13 +293,19 @@ export class GridService {
       }
 
       if (m === 0) {
-        this.columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k;
+        this.columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k + 1;
       } else if (m === 1) {
-        this.columnDefinitions[i].sortOrder = nGroupBy + k;
+        this.columnDefinitions[i].sortOrder = nGroupBy + k + 1;
       } else if (m === 2) {
         this.columnDefinitions[i].sortOrder = k;
       }
     }
+
+    if (nGroupBy > 0) {
+      let column: Column = new Column({sortOrder: nGroupBy, field: "GROUPBY", name: groupByDisplay});
+      this.columnDefinitions.push(column);
+    }
+
   }
 
   sortColumnDefinitions() {
@@ -600,7 +615,9 @@ export class GridService {
         if (this.columnDefinitions[j].isKey) {
           row.key = this.getField(this.inputData[i], this.columnDefinitions[j].field);
         }
-        if (this.columnDefinitions[j].isUtility) {
+        if (this.columnDefinitions[j].field === "GROUPBY") {
+          row.add(new Cell({value: null, key: i}));
+        } else if (this.columnDefinitions[j].isUtility) {
           if (this.columnDefinitions[j].defaultValue !== undefined) {
             if (this.columnDefinitions[j].template === "RowSelectCellComponent" || this.columnDefinitions[j].component === RowSelectCellComponent) {
               row.add(new Cell({value: false}));
@@ -612,6 +629,7 @@ export class GridService {
           row.add(new Cell({value: this.getField(this.inputData[i], this.columnDefinitions[j].field), key: i}));
         }
       }
+
       this.preparedData.push(row);
     }
   }

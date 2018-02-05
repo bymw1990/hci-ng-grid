@@ -1,14 +1,13 @@
 export class Point {
   private _i: number;
   private _j: number;
-  private _k: number;
 
   static getPoint(id: string): Point {
     let array = id.split("-");
     let last = array.length - 1;
-    if (array.length >= 3) {
+    if (array.length >= 2) {
       try {
-        return new Point(+array[last - 2], +array[last - 1], +array[last]);
+        return new Point(+array[last - 1], +array[last]);
       } catch (e) {
         return null;
       }
@@ -17,43 +16,36 @@ export class Point {
     }
   }
 
-  constructor(i: number, j: number, k: number) {
+  constructor(i: number, j: number) {
     this._i = i;
     this._j = j;
-    this._k = k;
   }
 
   isNegative() {
-    return this._i === -1 || this._j === -1 || this._k === -1;
+    return this._i === -1 || this._j === -1;
   }
 
   isNotNegative() {
-    return this._i >= 0 && this._j >= 0 && this._k >= 0;
+    return this._i >= 0 && this._j >= 0;
   }
 
   equals(other: Point): boolean {
     if (other === null) {
       return false;
     } else {
-      return this._i === other.i && this._j === other.j && this._k === other.k;
+      return this._i === other.i && this._j === other.j;
     }
   }
 
   equalsIJK(i: number, j: number, k: number): boolean {
-    return this._i === i && this._j === j && this._k === k;
+    return this._i === i && this._j === j;
   }
 
   greaterThan(other: Point) {
-    if (this._k > other.k) {
-      if (this._i === other.i) {
-        return this._j >= other.j;
-      } else {
-        return this._i >= other.i;
-      }
+    if (this._j > other.j) {
+      return this._i >= other.i;
     } else if (this._i > other.i) {
-      return this._k >= other.k;
-    } else if (this._i === other.i && this._j > other.j) {
-      return this._k >= other.k;
+      return this._j >= other.j;
     } else {
       return false;
     }
@@ -64,16 +56,10 @@ export class Point {
   }
 
   lessThan(other: Point) {
-    if (this._k < other.k) {
-      if (this._i === other.i) {
-        return this._j <= other.j;
-      } else {
-        return this._i <= other.i;
-      }
+    if (this._j < other.j) {
+      return this._i <= other.i;
     } else if (this._i < other.i) {
-      return this._k <= other.k;
-    } else if (this._i === other.i && this._j < other.j) {
-      return this._k <= other.k;
+      return this._j <= other.j;
     } else {
       return false;
     }
@@ -99,15 +85,7 @@ export class Point {
     this._j = j;
   }
 
-  get k(): number {
-    return this._k;
-  }
-
-  set k(k: number) {
-    this._k = k;
-  }
-
   public toString(): string {
-    return "Point(" + this._i + "," + this._j + "," + this._k + ")";
+    return "Point(" + this._i + "," + this._j + ")";
   }
 }

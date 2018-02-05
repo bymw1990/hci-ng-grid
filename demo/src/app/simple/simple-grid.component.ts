@@ -19,9 +19,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
                     [inputData]="simpleData1">
             <column-def [field]="'lastName'"></column-def>
             <column-def [field]="'firstName'"></column-def>
-            <column-def [field]="'dob'">
-              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-            </column-def>
+            <column-def [field]="'dob'"></column-def>
             <column-def [field]="'pcg.nLabs'"></column-def>
             <column-def [field]="'pcg.nested.nLabPath'"></column-def>
           </hci-grid>

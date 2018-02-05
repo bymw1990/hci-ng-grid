@@ -10,7 +10,7 @@ export class RowGroup {
   COLLAPSED: number = 1;
   EXPANDED: number = 2;
 
-  state: number = this.COLLAPSED;
+  state: number = this.EXPANDED;
   header: Row = null;
   rows: Array<Row> = new Array<Row>();
 
@@ -21,6 +21,18 @@ export class RowGroup {
         this.header.add(new Cell({ value: this.rows[0].get(headerColumns[i]).value }));
       }
     }
+  }
+
+  hasHeader(): boolean {
+    return this.header !== null;
+  }
+
+  isExpanded(): boolean {
+    return this.state === this.EXPANDED;
+  }
+
+  isCollaposed(): boolean {
+    return this.state === this.COLLAPSED;
   }
 
   add(row: Row) {

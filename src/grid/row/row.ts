@@ -32,6 +32,14 @@ export class Row {
     return true;
   }
 
+  getConcatenatedCells() {
+    let all: string = null;
+    for (let cell of this.cells) {
+      all = (all === null) ? cell.value : all + ", " + cell.value;
+    }
+    return all;
+  }
+
   add(cell: Cell) {
     this.cells.push(cell);
   }

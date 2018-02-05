@@ -13,7 +13,7 @@ export const ARROW = 2;
 @Injectable()
 export class GridEventService {
   private nColumns: number = 0;
-  private selectedLocation: Point = new Point(-1, 0, -1);
+  private selectedLocation: Point = new Point(-1, -1);
   private selectedLocationSubject = new Subject<Point>();
 
   private _currentRange: Range = null;
@@ -83,15 +83,15 @@ export class GridEventService {
     }
   }
 
-  arrowFromLocation(i: number, j: number, k: number, keyCode: number) {
+  arrowFromLocation(i: number, j: number, keyCode: number) {
     if (keyCode === 37) {
-      this.arrowFrom(new Point(i, j, k), -1, 0, null);
+      this.arrowFrom(new Point(i, j), -1, 0, null);
     } else if (keyCode === 39) {
-      this.arrowFrom(new Point(i, j, k), 1, 0, null);
+      this.arrowFrom(new Point(i, j), 1, 0, null);
     } else if (keyCode === 38) {
-      this.arrowFrom(new Point(i, j, k), 0, -1, null);
+      this.arrowFrom(new Point(i, j), 0, -1, null);
     } else if (keyCode === 40) {
-      this.arrowFrom(new Point(i, j, k), 0, 1, null);
+      this.arrowFrom(new Point(i, j), 0, 1, null);
     }
   }
 
@@ -113,7 +113,7 @@ export class GridEventService {
     if (location !== null) {
       this.selectedLocation = location;
     } else if (this.selectedLocation.isNegative()) {
-      this.selectedLocation = new Point(0, 0, 0);
+      this.selectedLocation = new Point(0, 0);
       this.selectedLocationSubject.next(this.selectedLocation);
       return;
     }
@@ -124,17 +124,24 @@ export class GridEventService {
     let tries: number = this.gridService.columnDefinitions.length;
     do {
       if (this.selectedLocation.isNegative()) {
-        this.selectedLocation = new Point(0, 0, 0);
+        this.selectedLocation = new Point(0, 0);
         break;
       }
       if (tries === 0) {
         this.selectedLocation.i = 0;
         this.selectedLocation.j = 0;
-        this.selectedLocation.k = 0;
         break;
       }
 
       if (dy > 0 && this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
+        this.selectedLocation = new Point(-1, -1);
+      } else if (dy !== 0) {
+        this.selectedLocation.j = this.selectedLocation.j + dy;
+      } else if (dx !== 0) {
+        this.selectedLocation.j = this.selectedLocation.j + dx;
+      }
+
+      /*if (dy > 0 && this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
         this.selectedLocation.i = this.selectedLocation.i + dy;
         this.selectedLocation.j = 0;
       } else if (dy > 0) {
@@ -144,7 +151,7 @@ export class GridEventService {
       } else if (dy < 0 && this.selectedLocation.j === 0) {
         this.selectedLocation.i = this.selectedLocation.i + dy;
         if (this.selectedLocation.i < 0) {
-          this.selectedLocation = new Point(-1, 0, -1);
+          this.selectedLocation = new Point(-1, -1);
         } else {
           this.selectedLocation.j = this.gridService.getRowGroup(this.selectedLocation.i).length() - 1;
         }
@@ -173,13 +180,13 @@ export class GridEventService {
             this.selectedLocation.i = this.selectedLocation.i - 1;
           }
         }
-      }
+      }*/
 
       tries = tries - 1;
-    } while (this.selectedLocation.k >= 0 && !this.gridService.columnDefinitions[this.selectedLocation.k].visible);
+    } while (this.selectedLocation.j >= 0 && !this.gridService.columnDefinitions[this.selectedLocation.j].visible);
 
     if (this.gridService.getRowGroup(this.selectedLocation.i) === null) {
-      this.selectedLocation = new Point(-1, 0, -1);
+      this.selectedLocation = new Point(-1, -1);
     }
 
     console.debug("arrowFrom: to: " + this.selectedLocation.toString());
@@ -204,11 +211,11 @@ export class GridEventService {
       } else if (this.lastEvent === ARROW) {
         this.arrowFrom(null, this.lastDx, this.lastDy, null);
       } else {
-        this.selectedLocation = new Point(-1, 0, -1);
+        this.selectedLocation = new Point(-1, -1);
         this.selectedLocationSubject.next(this.selectedLocation);
       }
     } else {
-      this.selectedLocation = new Point(-1, 0, -1);
+      this.selectedLocation = new Point(-1, -1);
       this.selectedLocationSubject.next(this.selectedLocation);
     }
   }

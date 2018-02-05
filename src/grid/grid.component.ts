@@ -49,7 +49,7 @@ import {InputCell} from "./cell/input-cell.component";
     GridEventService,
     GridMessageService],
   template: `
-    <div #gridContainer (click)="onClick($event)" (keydown)="onKeyDown($event)">
+    <div #gridContainer [id]="gridContainer" (click)="onClick($event)" (keydown)="onKeyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy" [style.height.px]="gridContainerHeight">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
@@ -80,14 +80,15 @@ import {InputCell} from "./cell/input-cell.component";
             <hci-column-header class="hci-grid-column-header hci-grid-row-height"
                                *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
                                [column]="column"
-                               [style.flex]="'1 1 ' + column.width + '%'"
                                [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-            </hci-column-header><br />
+            </hci-column-header>
           </div>
           
-          <!-- Left Data Rows -->
+          <!-- Left Data Rows  #leftRowContainer -->
+          <!--
           <hci-row-group *ngFor="let row of dataSize; let i = index" [i]="i" [fixed]="true"></hci-row-group>
+          -->
         </div>
         
         <!-- Right (Main) Content -->
@@ -95,39 +96,45 @@ import {InputCell} from "./cell/input-cell.component";
              style="overflow-x: auto;"
              [style.flex]="nFixedColumns > 0 ? '1 1 ' + (100 - nFixedColumns * 10) + '%' : '1 1 100%'">
           <!-- Right Headers -->
-          <div *ngIf="columnHeaders" class="d-flex flex-nowrap">
-            <hci-column-header *ngFor="let column of columnDefinitions | isFixed:false | isVisible; let j = index"
-                               [column]="column"
-                               class="hci-grid-column-header hci-grid-row-height"
-                               [class.hci-grid-row-height]="column.filterType === null"
-                               [class.hci-grid-row-height-filter]="column.filterType !== null"
-                               [style.display]="column.visible ? 'inline-block' : 'none'"
-                               [style.flex]="'1 1 ' + column.width + '%'"
-                               [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                               [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-            </hci-column-header><br />
-          </div>
-          
-          <!-- Right Data Rows -->
-          <ng-container *ngFor="let rowGroup of dataSize; let i = index">
-            <!--<div>
-              <ng-container *ngFor="let row of gridData[i].rows; let j = index" class="d-flex flex-nowrap">-->
+          <div #rightRowContainer id="rightRowContainer" class="hci-grid-right-row-container">
+          <!--<div id="rightColumnHeader">-->
+            <div id="rightColumnHeader"
+                 style="position: sticky; float: left; top: 0; z-index: 1; background-color: white;"
+                 [style.display]="columnHeaders ? 'table' : 'none'">
+              <hci-column-header *ngFor="let column of columnDefinitions; let j = index"
+                   [id]="'header-' + j"
+                   [column]="column"
+                   class="hci-grid-column-header hci-grid-row-height"
+                   [class.hci-grid-row-height]="column.filterType === null"
+                   [class.hci-grid-row-height-filter]="column.filterType !== null"
+                   style="height: 30px; vertical-align: top;"
+                   [style.display]="column.visible && column.isFixed == false ? 'inline-block' : 'none'"
+                   [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                   [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+              </hci-column-header>
+            </div>
+            <!--</div>-->
+              
+              <!-- Right Data Rows -->
+            <!--<div #rightRowContainer id="rightRowContainer" class="hci-grid-right-row-container">-->
+              <ng-container *ngFor="let rowGroup of dataSize; let i = index">
                 <div class="flex-nowrap"
-                     [style.display]="gridData === null || i > gridData.length - 1 ? 'none' : 'flex'">
-                  <ng-container *ngFor="let column of columnDefinitions; let k = index">
-                    <div (click)="onClick($event)"
-                         [id]="'cell-' + i + '-0-' + k"
-                         class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
-                         [style.display]="column.visible ? 'inline-block' : 'none'"
-                         [style.flex]="'1 1 ' + column.width + '%'"
-                         [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                         [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-                    </div>
-                  </ng-container>
-                </div>
-              <!--</ng-container>
-            </div>-->
-          </ng-container>
+                     style="display: table;"
+                     [style.margin-top]="i === 0 && columnHeaders ? '30px' : '0px'">
+                     <!--[style.display]="gridData === null || i > gridData.length - 1 ? 'none' : 'flex'">-->
+                <ng-container *ngFor="let column of columnDefinitions; let j = index">
+                  <div (click)="onClick($event)"
+                       [id]="'cell-' + i + '-' + j"
+                       class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                       style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top;"
+                       [style.display]="column.visible && column.isFixed == false ? 'inline-block' : 'none'"
+                       [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                       [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
         </div>
       </div>
 
@@ -212,9 +219,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   @ViewChild("container", { read: ViewContainerRef }) container: any;
   @ViewChild("copypastearea") copypastearea: any;
-  @ViewChild("gridContainer") gridContainer: any;
+  @ViewChild("gridContainer") gridContainer: ElementRef;
   @ViewChild("focuser1") focuser1: ElementRef;
   @ViewChild("focuser2") focuser2: ElementRef;
+  @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
 
   @Input() inputData: Object[] = null;
 
@@ -233,6 +241,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() externalPaging: boolean;
   @Input() pageSize: number;
   @Input() pageSizes: number[];
+  @Input("nVisibleRows") cfgNVisibleRows: number;
 
   @Input() onAlert: Function;
   @Input() onExternalDataCall: Function;
@@ -282,32 +291,82 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.data.subscribe((data: Array<RowGroup>) => {
+      console.debug("GridComponent.data.subscribe");
+      console.debug(data);
       /*if (this.pageInfo.pageSize < 0) {
         this.dataSize = new Array<number>(data.length);
       }*/
       this.gridData = data;
       this.origDataSize = this.gridService.getOriginalDataSize();
       this.busy = false;
-
       this.changeDetectorRef.detectChanges();
-      let i: number = 0;
-      for (let rowGroup of this.gridData) {
-        let j: number = 0;
-        for (let row of rowGroup.rows) {
-          let k: number = 0;
-          for (let cell of row.cells) {
-            let e = document.getElementById("cell-" + i + "-" + j + "-" + k);
-            if (e) {
-              e.textContent = "";
-              let value = this.columnDefinitions[k].formatValue(cell.value);
-              let text = this.renderer.createText(value);
-              this.renderer.appendChild(e, text);
-            }
-            k = k + 1;
-          }
-          j = j + 1;
-        }
+
+      //this.updateColumnHeaders();
+      this.updateCellSizes();
+
+      let i: number = -1;
+      for (let rowGroup of this.dataSize) {
         i = i + 1;
+        for (var j = 0; j < this.columnDefinitions.length; j++) {
+          let e = document.getElementById("cell-" + i + "-" + j);
+          if (e) {
+            e.textContent = "";
+            this.renderer.removeClass(e, "editable");
+          }
+        }
+      }
+
+      i = -1;
+      for (let rowGroup of this.gridData) {
+        if (rowGroup.hasHeader()) {
+          i = i + 1;
+          let e = document.getElementById("cell-" + i + "-0");
+          if (e) {
+            e.textContent = "";
+            let value = rowGroup.getHeader().getConcatenatedCells();
+            let text = this.renderer.createText(value);
+            this.renderer.appendChild(e, text);
+          }
+          i = i - 1;
+
+          if (rowGroup.isExpanded()) {
+            for (let row of rowGroup.rows) {
+              i = i + 1;
+              let j: number = 0;
+              for (let cell of row.cells) {
+                if (j === 0) {
+                  j = j + 1;
+                  continue;
+                }
+                let e = document.getElementById("cell-" + i + "-" + j);
+                if (e) {
+                  e.textContent = "";
+                  let value = this.columnDefinitions[j].formatValue(cell.value);
+                  let text = this.renderer.createText(value);
+                  this.renderer.appendChild(e, text);
+                  this.renderer.addClass(e, "editable");
+                }
+                j = j + 1;
+              }
+            }
+          }
+        } else {
+          for (let row of rowGroup.rows) {
+            i = i + 1;
+
+            let j: number = 0;
+            for (let cell of row.cells) {
+              let e = document.getElementById("cell-" + i + "-" + j);
+              if (e) {
+                e.textContent = "";
+                let value = this.columnDefinitions[j].formatValue(cell.value);
+                let text = this.renderer.createText(value);
+                this.renderer.appendChild(e, text);
+              }
+              j = j + 1;
+            }
+          }
+        }
       }
     });
 
@@ -408,7 +467,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.gridService.getValueSubject().subscribe((location: Point) => {
-      let e = document.getElementById("cell-" + location.i + "-" + location.j + "-" + location.k);
+      let e = document.getElementById("cell-" + location.i + "-" + location.j);
       if (e) {
         e.textContent = "";
         let value = this.columnDefinitions[location.k].formatValue(this.gridService.getCell(location.i, location.j, location.k).value);
@@ -416,11 +475,38 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.appendChild(e, text);
       }
     });
+
+    this.initialized = true;
+    this.updateCellSizes();
   }
 
   ngOnDestroy() {
     if (this.columnsChangedSubscription) {
       this.columnsChangedSubscription.unsubscribe();
+    }
+  }
+
+  updateCellSizes() {
+    console.debug("updateCellSize: " + this.initialized);
+    if (this.initialized) {
+      let e = this.gridContainer.nativeElement;
+      let width: number = e.offsetWidth;
+
+      for (var j = 0; j < this.columnDefinitions.length; j++) {
+        let e = document.getElementById("header-" + j);
+        if (e) {
+          this.renderer.setStyle(e, "width", Math.floor(width / 100 * this.columnDefinitions[j].width) + "px");
+        }
+      }
+
+      for (var i = 0; i < this.dataSize.length; i++) {
+        for (var j = 0; j < this.columnDefinitions.length; j++) {
+          let e = document.getElementById("cell-" + i + "-" + j);
+          if (e) {
+            this.renderer.setStyle(e, "width", Math.floor(width / 100 * this.columnDefinitions[j].width) + "px");
+          }
+        }
+      }
     }
   }
 
@@ -451,7 +537,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       try {
         this.gridData[i].get(j).get(k);
       } catch (e) {
-        this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
       }
 
       let column: Column = this.columnDefinitions[k];
@@ -459,7 +545,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (!column.visible && this.gridEventService.getLastDx() === 1) {
         this.gridEventService.repeatLastEvent();
       } else if (!column.visible) {
-        this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
       }
 
       let factory = null;
@@ -494,21 +580,43 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @HostListener("window:resize", ["$event"])
   onResize(event: Event) {
     this.updateGridContainerHeight();
+    this.updateCellSizes();
   }
 
   updateGridContainerHeight() {
     this.gridContainerHeight = Math.max(150, this.gridContainer.nativeElement.offsetHeight);
     this.gridContainerHeightCalc = this.domSanitizer.bypassSecurityTrustStyle("translate(calc(50% - 2.5em), calc(" + (Math.floor(this.gridContainerHeight / 2)) + "px - 2.5em))");
+
+    if (this.config.nVisibleRows) {
+      console.debug("postInit.nVisibleRows");
+
+      let height: number = 30;
+      let cell = document.getElementById("cell-0-0-0");
+      if (cell) {
+        height = cell.offsetHeight;
+      }
+      console.debug(document.getElementById("rightRowContainer"));
+      let rows = document.getElementById("rightRowContainer");
+      this.renderer.setStyle(rows, "max-height", 30 * this.config.nVisibleRows + "px");
+      this.renderer.setStyle(rows, "overflow-y", "auto");
+      let header = document.getElementById("rightColumnHeader");
+      if (header && rows.scrollHeight > rows.offsetHeight) {
+        this.renderer.setStyle(header, "margin-right", "17px");
+      } else {
+        this.renderer.setStyle(header, "margin-right", "0px");
+      }
+    }
   }
 
   postInit() {
+    console.debug("postInit");
+
     this.updateGridContainerHeight();
 
     this.pageInfo = this.gridService.pageInfo;
     this.updatePageSize();
     this.pageSizes = this.gridService.pageSizes;
 
-    this.initialized = true;
     this.gridEventService.setSelectedLocation(null, null);
     this.changeDetectorRef.markForCheck();
   }
@@ -571,6 +679,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.pageSizes !== undefined) {
       this.config.pageSizes = this.pageSizes;
     }
+    if (this.cfgNVisibleRows !== undefined) {
+      console.debug("Set config.nVisibleRows");
+      this.config.nVisibleRows = this.cfgNVisibleRows;
+    }
   }
 
   doPageFirst() {
@@ -622,6 +734,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.updatePageSize();
   }
 
+  /*updateColumnHeaders() {
+    if (this.initialized) {
+      for (var j = 0; j < this.columnDefinitions.length; j++) {
+        let e = document.getElementById("header-" + j);
+        if (e) {
+          e.textContent = "";
+          let text = this.renderer.createText(this.columnDefinitions[j].name);
+          this.renderer.appendChild(e, text);
+        }
+      }
+    }
+  }*/
+
   public clearSelectedRows() {
     this.gridService.clearSelectedRows();
   }
@@ -652,7 +777,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   onKeyDown(event: KeyboardEvent) {
     console.debug("GridComponent.onKeyDown");
-
+/*
     if (event.ctrlKey && event.keyCode === 67) {
       this.gridMessageService.debug("Copy Event");
 
@@ -697,7 +822,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let i = range.min.i;
       let j = range.min.j;
-      let k = range.min.k;
+      //let k = range.min.k;
       let cols: string[] = null;
 
       if (paste.endsWith("\n")) {
@@ -719,7 +844,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
             allowPaste = false;
             break;
           }
-          k = k + 1;
+          //k = k + 1;
         }
         if (!allowPaste) {
           break;
@@ -729,7 +854,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           i = i + 1;
           j = 0;
         }
-        k = range.min.k;
+        //k = range.min.k;
         if (this.gridService.getRowGroup(i) == null && ii !== rows.length - 1) {
           allowPaste = false;
           break;
@@ -738,7 +863,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       i = range.min.i;
       j = range.min.j;
-      k = range.min.k;
+      //k = range.min.k;
 
       if (allowPaste) {
         for (var ii = 0; ii < rows.length; ii++) {
@@ -757,7 +882,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           k = range.min.k;
         }
 
-        this.gridService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
+        //this.gridService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
       } else {
         this.gridMessageService.warn("Paste went out of range");
       }
@@ -776,7 +901,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     } else if (event.keyCode === 40) {
       event.stopPropagation();
       this.gridEventService.arrowFrom(null, 0, 1, null);
-    }
+    }*/
   }
 
   @HostListener("document:click", ["$event"])

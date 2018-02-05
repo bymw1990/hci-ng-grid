@@ -15,7 +15,7 @@ export class Column {
   validator: any;
   sortable: boolean = true;
   sortOrder: number;
-  width: number = 100;
+  width: number = 150;
   minWidth: number = 135;
   maxWidth: number = 1000;
   isFixed: boolean = false;

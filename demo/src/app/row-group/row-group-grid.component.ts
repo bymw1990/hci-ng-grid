@@ -18,7 +18,8 @@ import { Column } from "hci-ng-grid/index";
                     [inputData]="groupData"
                     [columnDefinitions]="groupColumns"
                     [groupBy]="['firstName', 'lastName']"
-                    [cellSelect]="true">
+                    [cellSelect]="true"
+          [pageSize]="10">
           </hci-grid>
         </p>
         <div style="padding: 20px;">
@@ -48,7 +49,7 @@ import { Column } from "hci-ng-grid/index";
     </div>
     `
 })
-export class GroupGridComponent {
+export class RowGroupGridComponent {
 
   groupData: Array<Object> = [
     { "idPatient": 1, "firstName": "Zane", "lastName": "Zoe", "dob": "1970-01-01T00:00-07:00", "middleName": "C", "gender": "Female", "address": "111 Spooner St", "phone": "7131110005" },
@@ -56,17 +57,27 @@ export class GroupGridComponent {
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1975-03-11T00:00-07:00", "middleName": "B", "gender": "Other", "address": "1555 E 800 S", "phone": "71354440007" },
     { "idPatient": 4, "firstName": "Ragini", "lastName": "Kanth", "dob": "1976-04-21T00:00-07:00", "middleName": "Z", "gender": "Male", "address": "1 N Canyon Rd", "phone": "7136660008" },
     { "idPatient": 5, "firstName": "Bob", "lastName": "Smith", "dob": "1977-05-21T00:00-07:00", "middleName": "A", "gender": "Male", "address": "742 Evergreen Terace", "phone": "7135550001" },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1978-06-11T00:00-07:00", "middleName": "", "gender": "Male", "address": "9 S Canyon Rd", "phone": "7137770009" }
+    { "idPatient": 6, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1978-09-21T00:00-07:00", "middleName": "", "gender": "Male", "address": "9 S Canyon Rd", "phone": "7137770009" },
+    { "idPatient": 7, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1977-08-11T00:00-07:00", "middleName": "K", "gender": "Male", "address": "8 N Canyon Rd", "phone": "7137770008" },
+    { "idPatient": 8, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1976-07-21T00:00-07:00", "middleName": "J", "gender": "Male", "address": "7 S Canyon Rd", "phone": "7137770007" },
+    { "idPatient": 9, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1975-06-11T00:00-07:00", "middleName": "I", "gender": "Male", "address": "6 N Canyon Rd", "phone": "7137770006" },
+    { "idPatient": 10, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1974-05-21T00:00-07:00", "middleName": "", "gender": "Male", "address": "5 S Canyon Rd", "phone": "7137770005" },
+    { "idPatient": 11, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1973-04-11T00:00-07:00", "middleName": "H", "gender": "Male", "address": "4 N Canyon Rd", "phone": "7137770004" },
+    { "idPatient": 12, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1972-03-21T00:00-07:00", "middleName": "G", "gender": "Male", "address": "3 S Canyon Rd", "phone": "7137770003" },
+    { "idPatient": 13, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1971-02-11T00:00-07:00", "middleName": "", "gender": "Male", "address": "2 N Canyon Rd", "phone": "7137770002" },
+    { "idPatient": 14, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1970-01-21T00:00-07:00", "middleName": "E", "gender": "Male", "address": "1 S Canyon Rd", "phone": "7137770001" },
+    { "idPatient": 15, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1960-01-21T00:00-07:00", "middleName": "D", "gender": "Male", "address": "1 E Canyon Rd", "phone": "7137770001" },
+    { "idPatient": 16, "firstName": "Jimmy", "lastName": "Byrne", "dob": "1950-01-21T00:00-07:00", "middleName": "C", "gender": "Male", "address": "1 W Canyon Rd", "phone": "7137770001" }
   ];
 
   groupColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
-    new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
-    new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
-    new Column({ field: "address", name: "Address", template: "LabelCell" }),
-    new Column({ field: "phone", name: "Phone", template: "InputCell" })
+    new Column({ field: "idPatient", name: "ID", visible: false }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "middleName", name: "Middle Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth" }),
+    new Column({ field: "gender", name: "Gender" }),
+    new Column({ field: "address", name: "Address" }),
+    new Column({ field: "phone", name: "Phone" })
   ];
 }

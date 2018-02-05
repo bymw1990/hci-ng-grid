@@ -14,7 +14,7 @@ import {DataGeneratorService} from "./services/data-generator.service";
 import {SimpleGridComponent} from "./simple/simple-grid.component";
 import {SelectGridComponent} from "./select/select-grid.component";
 import {EditGridComponent} from "./edit/edit-grid.component";
-import {GroupGridComponent} from "./group/group-grid.component";
+import {RowGroupGridComponent} from "./row-group/row-group-grid.component";
 import {FixedGridComponent} from "./fixed/fixed-grid.component";
 import {FilterGridComponent} from "./filter/filter-grid.component";
 import {ExternalGridComponent} from "./external/external-grid.component";
@@ -28,7 +28,7 @@ import {EmptyGridComponent} from "./empty/empty-grid.component";
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
 import {EditGridModule} from "./edit/edit-grid.module";
-import {GroupGridModule} from "./group/group-grid.module";
+import {RowGroupGridModule} from "./row-group/row-group-grid.module";
 import {FixedGridModule} from "./fixed/fixed-grid.module";
 import {FilterGridModule} from "./filter/filter-grid.module";
 import {ExternalGridModule} from "./external/external-grid.module";
@@ -50,7 +50,7 @@ import {GridModule} from "hci-ng-grid/index";
     SimpleGridModule,
     SelectGridModule,
     EditGridModule,
-    GroupGridModule,
+    RowGroupGridModule,
     FixedGridModule,
     FilterGridModule,
     ExternalGridModule,
@@ -67,7 +67,7 @@ import {GridModule} from "hci-ng-grid/index";
     SimpleGridComponent,
     SelectGridComponent,
     EditGridComponent,
-    GroupGridComponent,
+    RowGroupGridComponent,
     FixedGridComponent,
     FilterGridComponent,
     ExternalGridComponent,

@@ -21,7 +21,8 @@ import { Column } from "hci-ng-grid/index";
                     [inputData]="editData"
                     [columnDefinitions]="editColumns"
                     [cellSelect]="true"
-                    [config]="{ pageSize: 10 }">
+                    [pageSize]="25"
+                    [nVisibleRows]="10">
           </hci-grid>
         </p>
         <div style="padding: 20px;">
@@ -61,11 +62,14 @@ export class EditGridComponent {
     { "idPatient": 9, "firstName": "Sam", "lastName": "Black", "dob": "1930-02-22T00:00-07:00", "nLabs": 2, "nLabPath": 65 },
     { "idPatient": 10, "firstName": "Tim", "lastName": "Lewis", "dob": "1920-06-08T00:00-07:00", "nLabs": 9, "nLabPath": 111 },
     { "idPatient": 11, "firstName": "Ben", "lastName": "Brown", "dob": "1977-08-12T00:00-07:00", "nLabs": 3, "nLabPath": 87 },
-    { "idPatient": 12, "firstName": "Leslie", "lastName": "Pink", "dob": "1980-11-03T00:00-07:00", "nLabs": 4, "nLabPath": 98 }
+    { "idPatient": 12, "firstName": "Leslie", "lastName": "Pink", "dob": "1980-11-03T00:00-07:00", "nLabs": 4, "nLabPath": 13 },
+    { "idPatient": 13, "firstName": "Jimmy", "lastName": "Smith", "dob": "1933-04-05T00:00-07:00", "nLabs": 7, "nLabPath": 32 },
+    { "idPatient": 14, "firstName": "Bob", "lastName": "White", "dob": "1944-05-13T00:00-07:00", "nLabs": 8, "nLabPath": 27 },
+    { "idPatient": 15, "firstName": "Jane", "lastName": "Black", "dob": "1955-06-23T00:00-07:00", "nLabs": 6, "nLabPath": 73 }
   ];
 
   editColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
+    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: true }),
     new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
     new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
