@@ -10,6 +10,7 @@ import {
 } from "@angular/core";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
+import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
 
 import {GridService} from "./services/grid.service";
@@ -21,7 +22,6 @@ import {Column} from "./column/column";
 import {PageInfo} from "./utils/page-info";
 import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
-import {ColumnDefComponent} from "./column/column-def.component";
 import {CellTemplate} from "./cell/cell-template.component";
 import {InputCell} from "./cell/input-cell.component";
 
@@ -48,7 +48,7 @@ import {InputCell} from "./cell/input-cell.component";
   template: `
     <div #gridContainer [id]="gridContainer" (click)="onClick($event)" (keydown)="onKeyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
-      <div [style.display]="busy ? 'inherit' : 'none'" class="hci-grid-busy" [style.height.px]="gridContainerHeight">
+      <div #busyOverlay class="hci-grid-busy" style="display: none;">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
           <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
         </div>
@@ -62,30 +62,45 @@ import {InputCell} from "./cell/input-cell.component";
       </div>
       
       <!-- Content -->
-      <div class="d-flex flex-nowrap" style="width: 100%; white-space: nowrap; border: black 1px solid;">
-      
+      <div class="grid-content">
         <div *ngIf="origDataSize === 0" class="d-flex flex-nowrap empty-content">
           <div *ngIf="!busy" class="empty-content-text">No Data</div>
           <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
         </div>
         
-        <!-- Left (Fixed) Content -->
-        <div [style.flex]="nFixedColumns > 0 ? '1 1 ' + (nFixedColumns * 10) + '%' : '1 1 0%'"
-             [style.display]="nFixedColumns == 0 ? 'none' : ''">
+        <div #leftRowContainer id="leftRowContainer" class="hci-grid-left-row-container">
           <!-- Left Headers -->
-          <div *ngIf="columnHeaders" class="d-flex flex-nowrap">
-            <hci-column-header class="hci-grid-column-header hci-grid-row-height"
-                               *ngFor="let column of columnDefinitions | isFixed:true; let j = index"
+          <div id="leftColumnHeader"
+               style="position: sticky; float: left; top: 0; z-index: 1; background-color: white;"
+               [style.display]="columnHeaders ? 'table' : 'none'">
+            <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
+                               [id]="'header-' + column.id"
                                [column]="column"
+                               class="hci-grid-column-header hci-grid-row-height"
+                               [class.hci-grid-row-height]="column.filterType === null"
+                               [class.hci-grid-row-height-filter]="column.filterType !== null"
+                               style="height: 30px; vertical-align: top; display: inline-block;"
                                [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
             </hci-column-header>
           </div>
-          
-          <!-- Left Data Rows  #leftRowContainer -->
-          <!--
-          <hci-row-group *ngFor="let row of dataSize; let i = index" [i]="i" [fixed]="true"></hci-row-group>
-          -->
+
+          <!-- Left Data Rows -->
+          <ng-container *ngFor="let rowGroup of dataSize; let i = index">
+            <div class="flex-nowrap"
+                 [style.display]="i < gridData.length ? 'table' : 'none'"
+                 [style.margin-top]="i === 0 && columnHeaders ? '30px' : '0px'">
+              <ng-container *ngFor="let column of columnDefinitions | isFixed: true | isVisible">
+                <div (click)="onClick($event)"
+                     [id]="'cell-' + i + '-' + column.id"
+                     class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                     style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block;"
+                     [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                     [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
         </div>
         
         <!-- Right (Main) Content -->
@@ -94,37 +109,31 @@ import {InputCell} from "./cell/input-cell.component";
              [style.flex]="nFixedColumns > 0 ? '1 1 ' + (100 - nFixedColumns * 10) + '%' : '1 1 100%'">
           <!-- Right Headers -->
           <div #rightRowContainer id="rightRowContainer" class="hci-grid-right-row-container">
-          <!--<div id="rightColumnHeader">-->
             <div id="rightColumnHeader"
                  style="position: sticky; float: left; top: 0; z-index: 1; background-color: white;"
                  [style.display]="columnHeaders ? 'table' : 'none'">
-              <hci-column-header *ngFor="let column of columnDefinitions; let j = index"
-                   [id]="'header-' + j"
+              <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
+                   [id]="'header-' + column.id"
                    [column]="column"
                    class="hci-grid-column-header hci-grid-row-height"
                    [class.hci-grid-row-height]="column.filterType === null"
                    [class.hci-grid-row-height-filter]="column.filterType !== null"
-                   style="height: 30px; vertical-align: top;"
-                   [style.display]="column.visible && column.isFixed == false ? 'inline-block' : 'none'"
+                   style="height: 30px; vertical-align: top; display: inline-block;"
                    [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                    [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
               </hci-column-header>
             </div>
-            <!--</div>-->
               
-              <!-- Right Data Rows -->
-            <!--<div #rightRowContainer id="rightRowContainer" class="hci-grid-right-row-container">-->
-              <ng-container *ngFor="let rowGroup of dataSize; let i = index">
-                <div class="flex-nowrap"
-                     style="display: table;"
-                     [style.margin-top]="i === 0 && columnHeaders ? '30px' : '0px'">
-                     <!--[style.display]="gridData === null || i > gridData.length - 1 ? 'none' : 'flex'">-->
-                <ng-container *ngFor="let column of columnDefinitions; let j = index">
+            <!-- Right Data Rows -->
+            <ng-container *ngFor="let rowGroup of dataSize; let i = index">
+              <div class="flex-nowrap"
+                   [style.display]="i < gridData.length ? 'table' : 'none'"
+                   [style.margin-top]="i === 0 && columnHeaders ? '30px' : '0px'">
+                <ng-container *ngFor="let column of columnDefinitions | isFixed: false | isVisible">
                   <div (click)="onClick($event)"
-                       [id]="'cell-' + i + '-' + j"
+                       [id]="'cell-' + i + '-' + column.id"
                        class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
-                       style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top;"
-                       [style.display]="column.visible && column.isFixed == false ? 'inline-block' : 'none'"
+                       style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block;"
                        [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                        [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
                   </div>
@@ -160,6 +169,17 @@ import {InputCell} from "./cell/input-cell.component";
     </div>
   `,
   styles: [ `
+    
+    .grid-content {
+      width: 100%;
+      display: inline-flex;
+      white-space: nowrap;
+      border: black 1px solid;
+    }
+    
+    .hci-grid-left-row-container {
+      flex-shrink: 0;
+    }
     
     .empty-content {
       height: 150px;
@@ -217,6 +237,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("container", { read: ViewContainerRef }) container: any;
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: ElementRef;
+  @ViewChild("busyOverlay") busyOverlay: ElementRef;
   @ViewChild("focuser1") focuser1: ElementRef;
   @ViewChild("focuser2") focuser2: ElementRef;
   @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
@@ -247,8 +268,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
-  @ContentChildren(ColumnDefComponent) columnDefComponents: QueryList<ColumnDefComponent>;
-
   dataSize: Array<Object> = new Array<Object>(0);
 
   gridData: Array<Row> = new Array<Row>();
@@ -259,9 +278,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
   columnHeaders: boolean = false;
-  busy: boolean = false;
   gridContainerHeight: number = 0;
   gridContainerHeightCalc: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("'translate(calc(50% - 2.5em), 0px)'");
+
+  busy: boolean = false;
+  busySubject: Subject<boolean> = new Subject<boolean>();
+
+  inputDataSubject: Subject<Object[]> = new Subject<Object[]>();
 
   columnsChangedSubscription: Subscription;
 
@@ -295,7 +318,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }*/
       this.gridData = data;
       this.origDataSize = this.gridService.getOriginalDataSize();
-      this.busy = false;
+      this.busySubject.next(false);
       this.changeDetectorRef.detectChanges();
 
       //this.updateColumnHeaders();
@@ -305,7 +328,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let rowGroup of this.dataSize) {
         i = i + 1;
         for (var j = 0; j < this.columnDefinitions.length; j++) {
-          let e = document.getElementById("cell-" + i + "-" + j);
+          let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
           if (e) {
             e.textContent = "";
             this.renderer.removeClass(e, "editable");
@@ -317,7 +340,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let row of this.gridData) {
         if (row.hasHeader()) {
           i = i + 1;
-          let e = document.getElementById("cell-" + i + "-0");
+          let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-0");
           if (e) {
             e.textContent = "";
             let value = row.getHeader();
@@ -334,7 +357,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
                 j = j + 1;
                 continue;
               }
-              let e = document.getElementById("cell-" + i + "-" + j);
+              let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
               if (e) {
                 e.textContent = "";
                 let value = this.columnDefinitions[j].formatValue(cell.value);
@@ -350,7 +373,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
           let j: number = 0;
           for (let cell of row.cells) {
-            let e = document.getElementById("cell-" + i + "-" + j);
+            let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
             if (e) {
               e.textContent = "";
               let value = this.columnDefinitions[j].formatValue(cell.value);
@@ -374,7 +397,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.onExternalDataCall) {
       this.gridService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
         this.updateGridContainerHeight();
-        this.busy = true;
+        this.busySubject.next(true);
         this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
           if (externalData.externalInfo === null) {
             this.gridService.pageInfo.setNumPages(1);
@@ -417,7 +440,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
     if (this.onExternalDataCall) {
-      this.busy = true;
+      this.busySubject.next(true);
       this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
         this.gridService.pageInfo = externalData.getExternalInfo().getPage();
         this.gridService.setInputData(externalData.getData());
@@ -445,22 +468,35 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.busySubject.subscribe((busy: boolean) => {
+      this.busy = busy;
+      if (this.busyOverlay && this.busyOverlay.nativeElement) {
+        this.renderer.setStyle(this.busyOverlay.nativeElement, "display", busy ? "block" : "none");
+        this.renderer.setStyle(this.busyOverlay.nativeElement, "height", this.gridContainerHeight + "px");
+      }
+    });
+
+    this.inputDataSubject.subscribe((inputData: Object[]) => {
+      this.busySubject.next(true);
+      this.gridService.setInputData(this.inputData);
+      this.gridService.setInputDataInit();
+      this.busySubject.next(false);
+    });
+
     this.pageInfo = this.gridService.pageInfo;
     this.updatePageSize();
     this.updateGridContainerHeight();
-    this.changeDetectorRef.markForCheck();
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
       console.debug("GridComponent.selectedLocationSubscription");
       this.container.clear();
       if (p.isNotNegative()) {
         this.selectComponent(p.i, p.j);
-        //this.selectedLocationSubscription.unsubscribe();
       }
     });
 
     this.gridService.getValueSubject().subscribe((location: Point) => {
-      let e = document.getElementById("cell-" + location.i + "-" + location.j);
+      let e = this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j);
       if (e) {
         e.textContent = "";
         let value = this.columnDefinitions[location.j].formatValue(this.gridService.getCell(location.i, location.j).value);
@@ -471,6 +507,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.initialized = true;
     this.updateCellSizes();
+  }
+
+  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+    if (this.initialized) {
+      if (changes["inputData"]) {
+        this.inputDataSubject.next(this.inputData);
+      } else if (changes["config"]) {
+        this.gridService.setConfig(this.config);
+      } else {
+        this.buildConfig();
+        this.gridService.setConfig(this.config);
+      }
+
+      this.updateGridContainerHeight();
+    }
   }
 
   ngOnDestroy() {
@@ -484,17 +535,30 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.initialized) {
       let e = this.gridContainer.nativeElement;
       let width: number = e.offsetWidth;
+      let w: number = 0;
+
+      let fixedWidth: number = 0;
+      let fixedMinWidth: number = 0;
 
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        let e = document.getElementById("header-" + j);
+        e = this.gridContainer.nativeElement.querySelector("#header-" + j);
+        w = Math.floor(width / 100 * this.columnDefinitions[j].width);
         if (e) {
-          this.renderer.setStyle(e, "width", Math.floor(width / 100 * this.columnDefinitions[j].width) + "px");
+          this.renderer.setStyle(e, "width", w + "px");
+        }
+        if (this.columnDefinitions[j].isFixed) {
+          fixedWidth = fixedWidth + w;
+          fixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
         }
       }
 
+      e = this.gridContainer.nativeElement.querySelector("#leftRowContainer");
+      this.renderer.setStyle(e, "width", fixedWidth + "px");
+      this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
+
       for (var i = 0; i < this.dataSize.length; i++) {
         for (var j = 0; j < this.columnDefinitions.length; j++) {
-          let e = document.getElementById("cell-" + i + "-" + j);
+          e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
           if (e) {
             this.renderer.setStyle(e, "width", Math.floor(width / 100 * this.columnDefinitions[j].width) + "px");
           }
@@ -515,7 +579,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   selectComponent(i: number, j: number) {
     console.log("GridComponent.selectComponent: " + i + " " + j);
-    let e = document.getElementById("cell-" + i + "-" + j);
+    let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
     this.createCellComponent(e);
   }
 
@@ -580,15 +644,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("postInit.nVisibleRows");
 
       let height: number = 30;
-      let cell = document.getElementById("cell-0-0-0");
+      let cell = this.gridContainer.nativeElement.querySelector("#cell-0-0");
       if (cell) {
         height = cell.offsetHeight;
       }
-      console.debug(document.getElementById("rightRowContainer"));
-      let rows = document.getElementById("rightRowContainer");
+      console.debug(this.gridContainer.nativeElement.querySelector("#rightRowContainer"));
+      let rows = this.gridContainer.nativeElement.querySelector("#rightRowContainer");
       this.renderer.setStyle(rows, "max-height", 30 * this.config.nVisibleRows + "px");
       this.renderer.setStyle(rows, "overflow-y", "auto");
-      let header = document.getElementById("rightColumnHeader");
+      let header = this.gridContainer.nativeElement.querySelector("#rightColumnHeader");
       if (header && rows.scrollHeight > rows.offsetHeight) {
         this.renderer.setStyle(header, "margin-right", "17px");
       } else {
@@ -610,22 +674,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.changeDetectorRef.markForCheck();
   }
 
-  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
-    if (this.initialized) {
-      if (changes["inputData"]) {
-        this.gridService.setInputData(this.inputData);
-        this.gridService.setInputDataInit();
-      } else if (changes["config"]) {
-        this.gridService.setConfig(this.config);
-      } else {
-        this.buildConfig();
-        this.gridService.setConfig(this.config);
-      }
-
-      this.updateGridContainerHeight();
-    }
-  }
-
   buildConfig() {
     if (this.rowSelect !== undefined) {
       this.config.rowSelect = this.rowSelect;
@@ -641,8 +689,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.columnDefinitions !== undefined) {
       this.config.columnDefinitions = this.columnDefinitions;
-    } else if (this.columnDefComponents !== undefined) {
-      this.config.columnDefinitions = Column.getColumns(this.columnDefComponents);
     }
     if (this.fixedColumns !== undefined) {
       this.config.fixedColumns = this.fixedColumns;
@@ -726,7 +772,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /*updateColumnHeaders() {
     if (this.initialized) {
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        let e = document.getElementById("header-" + j);
+        let e = this.gridContainer.nativeElement.querySelector("#header-" + j);
         if (e) {
           e.textContent = "";
           let text = this.renderer.createText(this.columnDefinitions[j].name);
@@ -897,6 +943,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   clickout(event) {
     if (!this.el.nativeElement.contains(event.target)) {
       this.container.clear();
+      this.gridEventService.clearSelectedLocation();
     }
   }
 }

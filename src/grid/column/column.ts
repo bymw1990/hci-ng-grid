@@ -1,8 +1,4 @@
-import {QueryList} from "@angular/core";
-
 import * as moment from "moment";
-
-import {ColumnDefComponent} from "./column-def.component";
 
 export class Column {
   id: number;
@@ -27,24 +23,7 @@ export class Column {
   filterValue: any = null;
   component: any = null;
   dataType: string = "string";
-
-  static getColumns(columnDefComponents: QueryList<ColumnDefComponent>): Column[] {
-    let columns: Column[] = [];
-    let columnDefs: ColumnDefComponent[] = <ColumnDefComponent[]> columnDefComponents.toArray();
-    for (var i = 0; i < columnDefs.length; i++) {
-      let column: Column = new Column({});
-
-      column.field = columnDefs[i].field;
-      column.name = columnDefs[i].name;
-      column.width = columnDefs[i].width;
-      column.template = columnDefs[i].template;
-      column.visible = columnDefs[i].visible;
-      column.component = columnDefs[i].component;
-
-      columns.push(column);
-    }
-    return columns;
-  }
+  selectable: boolean = true;
 
   static deserialize(object): Column {
     return new Column(object);
@@ -65,20 +44,20 @@ export class Column {
   formatValue(value: any): string {
     if (value === undefined || value === null) {
       return "";
-    } else if (this.dataType === "string") {
-      return value;
     } else if (this.dataType === "date") {
       return moment((new Date(<string>value))).format(this.format);
+    } else {
+      return value;
     }
   }
 
   parseValue(value: any): string {
     if (value === undefined || value === null) {
       return "";
-    } else if (this.dataType === "string") {
-      return value;
     } else if (this.dataType === "date") {
       return moment(<string>value, this.format).toISOString();
+    } else {
+      return value;
     }
   }
 
@@ -145,6 +124,9 @@ export class Column {
     }
     if (object.dataType !== undefined) {
       this.dataType = object.dataType;
+    }
+    if (object.selectable !== undefined) {
+      this.selectable = object.selectable;
     }
   }
 

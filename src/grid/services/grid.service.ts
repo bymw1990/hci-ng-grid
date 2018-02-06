@@ -185,9 +185,9 @@ export class GridService {
       } else if (this.columnDefinitions[i].sortOrder < 0) {
         this.columnDefinitions[i].width = 5;
       } else if (this.columnDefinitions[i].isFixed) {
-        this.columnDefinitions[i].width = wLeft / nLeft;
+        this.columnDefinitions[i].width = wLeft / (nLeft + nRight);
       } else {
-        this.columnDefinitions[i].width = wRight / nRight;
+        this.columnDefinitions[i].width = wRight / (nLeft + nRight);
       }
     }
   }
@@ -255,7 +255,9 @@ export class GridService {
       }
     }
 
+    this.nVisibleColumns = 0;
     this.columnHeaders = false;
+
     for (var i = 0; i < this.columnDefinitions.length; i++) {
       if (this.columnDefinitions[i].name !== null) {
         this.columnHeaders = true;
@@ -299,19 +301,27 @@ export class GridService {
         this.columnDefinitions[i].sortOrder = k;
       }
 
-      this.nVisibleColumns = 0;
       if (!this.columnDefinitions[i].visible) {
         this.columnDefinitions[i].sortOrder = this.columnDefinitions[i].sortOrder + 1000;
+        this.columnDefinitions[i].selectable = false;
       } else {
         this.nVisibleColumns = this.nVisibleColumns + 1;
       }
     }
 
     if (nGroupBy > 0) {
-      let column: Column = new Column({sortOrder: nGroupBy, field: "GROUPBY", name: groupByDisplay});
+      let column: Column = new Column({sortOrder: nGroupBy, field: "GROUPBY", name: groupByDisplay, selectable: false});
       this.columnDefinitions.push(column);
+      this.nVisibleColumns = this.nVisibleColumns + 1;
     }
+  }
 
+  getColumn(j: number): Column {
+    return this.columnDefinitions[j];
+  }
+
+  isColumnSelectable(j: number): boolean {
+    return this.columnDefinitions[j].selectable;
   }
 
   getNVisibleColumns(): number {
@@ -329,8 +339,9 @@ export class GridService {
       }
     });
 
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      this.columnDefinitions[i].id = i;
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      this.columnDefinitions[j].id = j;
+      console.debug("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
     }
   }
 

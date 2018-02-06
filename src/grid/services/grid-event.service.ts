@@ -41,15 +41,21 @@ export class GridEventService {
     this.selectedLocationSubject.next(this.selectedLocation);
   }
 
+  clearSelectedLocation() {
+    this.setSelectedLocation(new Point(-1, -1), null);
+  }
+
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
     console.debug("GridEvent.setSelectedLocation");
     if (!this.gridService.cellSelect) {
       return;
-    }
-    if (location === null) {
+    } else if (location === null) {
       return;
-    }
-    if (eventMeta === null) {
+    } else if (location.isNegative()) {
+      this.setCurrentLocation(location);
+    } else if (!this.gridService.isColumnSelectable(location.j)) {
+      return;
+    } else if (eventMeta === null) {
       this.setCurrentLocation(location);
     }
 
@@ -121,42 +127,27 @@ export class GridEventService {
     this.lastDx = dx;
     this.lastDy = dy;
 
-    this.selectedLocation.i = this.selectedLocation.i + dy;
-    this.selectedLocation.j = this.selectedLocation.j + dx;
-
-    console.debug("this.gridService.getNVisibleColumns(): " + this.gridService.getNVisibleColumns());
-    if (this.selectedLocation.j >= this.gridService.getNVisibleColumns()) {
-      this.selectedLocation.i = this.selectedLocation.i + 1;
-      this.selectedLocation.j = 0;
-    }
-
-    /*
-    let tries: number = this.gridService.columnDefinitions.length;
-    do {
-      if (this.selectedLocation.isNegative()) {
-        this.selectedLocation = new Point(0, 0);
-        break;
-      }
-      if (tries === 0) {
-        this.selectedLocation.i = 0;
-        this.selectedLocation.j = 0;
-        break;
-      }
-
-      if (dy > 0 && this.gridService.getRow(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
-        this.selectedLocation = new Point(-1, -1);
-      } else if (dy !== 0) {
-        this.selectedLocation.i = this.selectedLocation.i + dy;
-      } else if (dx !== 0) {
+    if (dx !== 0) {
+      do {
         this.selectedLocation.j = this.selectedLocation.j + dx;
-      }
-
-      tries = tries - 1;
-    } while (this.selectedLocation.j >= 0 && !this.gridService.columnDefinitions[this.selectedLocation.j].visible);*/
+        if (this.selectedLocation.j >= this.gridService.getNVisibleColumns()) {
+          this.selectedLocation.i = this.selectedLocation.i + 1;
+          this.selectedLocation.j = 0;
+        }
+        if (this.selectedLocation.j < 0) {
+          this.selectedLocation.i = this.selectedLocation.i - 1;
+          this.selectedLocation.j = this.gridService.getNVisibleColumns() - 1;
+        }
+      } while (!this.gridService.isColumnSelectable(this.selectedLocation.j));
+    } else {
+      this.selectedLocation.i = this.selectedLocation.i + dy;
+    }
 
     if (this.gridService.getRow(this.selectedLocation.i) === null) {
       this.selectedLocation = new Point(-1, -1);
     } else if (this.selectedLocation.isNegative()) {
+      this.selectedLocation = new Point(-1, -1);
+    } else if (!this.gridService.isColumnSelectable(this.selectedLocation.j)) {
       this.selectedLocation = new Point(-1, -1);
     }
 

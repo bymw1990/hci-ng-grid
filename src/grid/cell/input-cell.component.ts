@@ -70,8 +70,10 @@ export class InputCell extends CellTemplate {
       this.data.value = this.gridService.parseData(this.j, this.value);
       this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 27) {
+      event.stopPropagation();
       this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
     } else if (event.keyCode === 13) {
+      event.stopPropagation();
       this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
       this.data.value = this.gridService.parseData(this.j, this.value);
       this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);

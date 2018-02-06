@@ -7,7 +7,7 @@ export class Row {
 
   cells: Array<Cell> = new Array<Cell>();
   data: Object = {};
-  header: any;
+  header: any = null;
   size: number = 1;
 
   HIDDEN: number = 0;

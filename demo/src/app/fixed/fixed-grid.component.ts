@@ -56,15 +56,15 @@ export class FixedGridComponent {
   fixedData: Array<Object>;
 
   fixedColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
-    new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "DateCell" }),
-    new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
-    new Column({ field: "address", name: "Address", template: "LabelCell", minWidth: 300 }),
-    new Column({ field: "citystatezip", name: "City, State Zip", template: "LabelCell", minWidth: 300 }),
-    new Column({ field: "phone", name: "Phone", template: "InputCell" })
+    new Column({ field: "idPatient", name: "ID", visible: false }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "middleName", name: "Middle Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "gender", name: "Gender" }),
+    new Column({ field: "address", name: "Address", minWidth: 300 }),
+    new Column({ field: "citystatezip", name: "City, State Zip", minWidth: 300 }),
+    new Column({ field: "phone", name: "Phone" })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

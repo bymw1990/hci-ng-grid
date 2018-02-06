@@ -12,7 +12,6 @@ import {IsVisiblePipe} from "./utils/is-visible.pipe";
 import {IsGroupPipe} from "./utils/is-group.pipe";
 import {IsFixedPipe} from "./utils/is-fixed.pipe";
 import {IsRowVisiblePipe} from "./utils/is-row-visible.pipe";
-import {ColumnDefComponent} from "./column/column-def.component";
 import {LabelCell} from "./cell/label-cell.component";
 import {InputCell} from "./cell/input-cell.component";
 
@@ -28,12 +27,10 @@ import {InputCell} from "./cell/input-cell.component";
     IsVisiblePipe,
     IsGroupPipe,
     IsFixedPipe,
-    IsRowVisiblePipe,
-    ColumnDefComponent
+    IsRowVisiblePipe
   ],
   exports: [
     GridComponent,
-    ColumnDefComponent,
     LabelCell,
     InputCell
   ]
