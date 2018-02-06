@@ -6,10 +6,6 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {LabelCell} from "./label-cell.component";
 import {InputCell} from "./input-cell.component";
-import {DateCell} from "./date-cell.component";
-import {DatePickerCell} from "./date-picker-cell.component";
-import {GroupCollapseExpandCell} from "./group-collapse-expand.component";
-import {RowSelectCellComponent} from "./row-select-cell.component";
 
 @NgModule({
   imports: [
@@ -19,27 +15,15 @@ import {RowSelectCellComponent} from "./row-select-cell.component";
   ],
   declarations: [
     LabelCell,
-    InputCell,
-    DateCell,
-    DatePickerCell,
-    GroupCollapseExpandCell,
-    RowSelectCellComponent
+    InputCell
   ],
   entryComponents: [
       LabelCell,
-      InputCell,
-      DateCell,
-      DatePickerCell,
-      GroupCollapseExpandCell,
-      RowSelectCellComponent
+      InputCell
   ],
   exports: [
       LabelCell,
-      InputCell,
-      DateCell,
-      DatePickerCell,
-      GroupCollapseExpandCell,
-      RowSelectCellComponent
+      InputCell
   ],
 })
 export class CellModule {}

@@ -3,7 +3,6 @@ import {Subject} from "rxjs/Rx";
 
 import {Cell} from "../cell/cell";
 import {Row} from "../row/row";
-import {RowGroup} from "../row/row-group";
 import {Column} from "../column/column";
 import {Range} from "../utils/range";
 import {SortInfo} from "../utils/sort-info";
@@ -11,7 +10,6 @@ import {PageInfo} from "../utils/page-info";
 import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
-import {RowSelectCellComponent} from "../cell/row-select-cell.component";
 
 @Injectable()
 export class GridService {
@@ -37,8 +35,8 @@ export class GridService {
   inputData: Object[];
   preparedData: Array<Row>;
 
-  gridData: Array<RowGroup>;
-  data = new Subject<Array<RowGroup>>();
+  gridData: Array<Row>;
+  data = new Subject<Array<Row>>();
 
   filterInfo: Array<FilterInfo> = new Array<FilterInfo>();
 
@@ -52,6 +50,7 @@ export class GridService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
+  private nVisibleColumns: number = 0;
   private valueSubject: Subject<Point> = new Subject<Point>();
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
@@ -299,6 +298,13 @@ export class GridService {
       } else if (m === 2) {
         this.columnDefinitions[i].sortOrder = k;
       }
+
+      this.nVisibleColumns = 0;
+      if (!this.columnDefinitions[i].visible) {
+        this.columnDefinitions[i].sortOrder = this.columnDefinitions[i].sortOrder + 1000;
+      } else {
+        this.nVisibleColumns = this.nVisibleColumns + 1;
+      }
     }
 
     if (nGroupBy > 0) {
@@ -306,6 +312,10 @@ export class GridService {
       this.columnDefinitions.push(column);
     }
 
+  }
+
+  getNVisibleColumns(): number {
+    return this.nVisibleColumns;
   }
 
   sortColumnDefinitions() {
@@ -365,9 +375,9 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
-  setSelectedRow(i: number, j: number, k: number) {
+  setSelectedRow(i: number, j: number) {
     let key: any = this.getKey(i, j);
-    this.getRowGroup(i).get(j).get(k).value = true;
+    this.getRow(i).get(j).value = true;
 
     if (this.selectedRows.indexOf(key) === -1) {
       this.selectedRows.push(key);
@@ -375,9 +385,9 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
-  setUnselectedRow(i: number, j: number, k: number) {
+  setUnselectedRow(i: number, j: number) {
     let key: any = this.getKey(i, j);
-    this.getRowGroup(i).get(j).get(k).value = false;
+    this.getRow(i).get(j).value = false;
 
     if (this.selectedRows.indexOf(key) !== -1) {
       this.selectedRows.splice(this.selectedRows.indexOf(key), 1);
@@ -393,12 +403,12 @@ export class GridService {
     this.cellDataUpdateObserved.next(range);
   }
 
-  doubleClickRow(i: number, j: number) {
-    this.doubleClickObserved.next(this.gridData[i].rows[j]);
+  doubleClickRow(i: number) {
+    this.doubleClickObserved.next(this.gridData[i]);
   }
 
   getKey(i: number, j: number): any {
-    return this.gridData[i].rows[j].key;
+    return this.gridData[i].key;
   }
 
   /**
@@ -460,13 +470,9 @@ export class GridService {
     this.preparedData = filteredData;
   }
 
-  getCell(i: number, j: number, k: number): Cell {
+  getCell(i: number, j: number): Cell {
     try {
-      if (j === -1) {
-        return this.gridData[i].getHeader().get(k);
-      } else {
-        return this.gridData[i].get(j).get(k);
-      }
+      return this.gridData[i].get(j);
     } catch (e) {
       return null;
     }
@@ -482,7 +488,7 @@ export class GridService {
     return obj;
   }
 
-  getRowGroup(i: number): RowGroup {
+  getRow(i: number): Row {
     if (i > this.gridData.length - 1) {
       return null;
     } else {
@@ -490,17 +496,12 @@ export class GridService {
     }
   }
 
-  handleValueChange(i: number, j: number, key: number, k: number, value: any) {
-    console.log("handleValueChange: " + i + " " + j + " " + k + " " + value);
-    if (j === -1) {
-      for (var n = 0; n < this.gridData[i].length(); n++) {
-        this.setInputDataValue(this.gridData[i].get(n).rowNum, this.columnDefinitions[k].field, value);
-      }
-    } else {
-      this.setInputDataValue(key, this.columnDefinitions[k].field, value);
-    }
+  handleValueChange(i: number, j: number, key: number, value: any) {
+    console.log("handleValueChange: " + i + " " + j + " " + value);
 
-    this.valueSubject.next(new Point(i, j, k));
+    this.setInputDataValue(key, this.columnDefinitions[j].field, value);
+
+    this.valueSubject.next(new Point(i, j));
   }
 
   /**
@@ -541,7 +542,7 @@ export class GridService {
     }
     this.pageInfoObserved.next(this.pageInfo);
 
-    this.gridData = new Array<RowGroup>();
+    this.gridData = new Array<Row>();
     if (this.groupBy !== null) {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
@@ -553,34 +554,25 @@ export class GridService {
         }
       }
 
-      let currentRowGroup: RowGroup = null;
       for (var i = START; i < END; i++) {
-        if (currentRowGroup === null) {
-          currentRowGroup = new RowGroup();
-          currentRowGroup.add(this.preparedData[i]);
-          currentRowGroup.createHeader(groupColumns);
-        } else if (currentRowGroup.equals(this.preparedData[i], groupColumns)) {
-          currentRowGroup.add(this.preparedData[i]);
-        } else {
-          this.gridData.push(currentRowGroup);
-          currentRowGroup = new RowGroup();
-          currentRowGroup.add(this.preparedData[i]);
-          currentRowGroup.createHeader(groupColumns);
-        }
+        this.preparedData[i].createHeader(groupColumns);
       }
-      if (currentRowGroup !== null) {
-        if (this.groupByCollapsed) {
-          currentRowGroup.state = currentRowGroup.COLLAPSED;
+
+      let currentHeader: any = null;
+      for (var i = START; i < END; i++) {
+        if (currentHeader === null) {
+          currentHeader = this.preparedData[i].header;
+        } else if (this.preparedData[i].header === currentHeader) {
+          this.preparedData[i].header = null;
         } else {
-          currentRowGroup.state = currentRowGroup.EXPANDED;
+          currentHeader = this.preparedData[i].header;
         }
-        this.gridData.push(currentRowGroup);
+
+        this.gridData.push(this.preparedData[i]);
       }
     } else {
       for (var i = START; i < END; i++) {
-        let rowGroup: RowGroup = new RowGroup();
-        rowGroup.add(this.preparedData[i]);
-        this.gridData.push(rowGroup);
+        this.gridData.push(this.preparedData[i]);
       }
     }
 
@@ -594,9 +586,9 @@ export class GridService {
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].isUtility) {
           if (this.columnDefinitions[j].defaultValue !== undefined) {
-            if (this.columnDefinitions[j].template === "RowSelectCellComponent" || this.columnDefinitions[j].component === RowSelectCellComponent) {
+            /*if (this.columnDefinitions[j].template === "RowSelectCellComponent" || this.columnDefinitions[j].component === RowSelectCellComponent) {
               this.preparedData[i].get(j).value = false;
-            }
+            }*/
           } else {
             this.preparedData[i].get(j).value = this.columnDefinitions[j].defaultValue;
           }
@@ -618,13 +610,13 @@ export class GridService {
         if (this.columnDefinitions[j].field === "GROUPBY") {
           row.add(new Cell({value: null, key: i}));
         } else if (this.columnDefinitions[j].isUtility) {
-          if (this.columnDefinitions[j].defaultValue !== undefined) {
+          /*if (this.columnDefinitions[j].defaultValue !== undefined) {
             if (this.columnDefinitions[j].template === "RowSelectCellComponent" || this.columnDefinitions[j].component === RowSelectCellComponent) {
               row.add(new Cell({value: false}));
             }
           } else {
             row.add(new Cell({value: this.columnDefinitions[j].defaultValue}));
-          }
+          }*/
         } else {
           row.add(new Cell({value: this.getField(this.inputData[i], this.columnDefinitions[j].field), key: i}));
         }

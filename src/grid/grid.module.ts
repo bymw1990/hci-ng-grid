@@ -6,10 +6,7 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
 import {GridComponent} from "./grid.component";
-import {RowComponent} from "./row/row.component";
-import {RowGroupComponent} from "./row/row-group.component";
 import {CellModule} from "./cell/cell.module";
-import {CellComponent} from "./cell/cell.component";
 import {ColumnHeaderComponent} from "./column/column-header.component";
 import {IsVisiblePipe} from "./utils/is-visible.pipe";
 import {IsGroupPipe} from "./utils/is-group.pipe";
@@ -18,11 +15,6 @@ import {IsRowVisiblePipe} from "./utils/is-row-visible.pipe";
 import {ColumnDefComponent} from "./column/column-def.component";
 import {LabelCell} from "./cell/label-cell.component";
 import {InputCell} from "./cell/input-cell.component";
-import {DateCell} from "./cell/date-cell.component";
-import {DatePickerCell} from "./cell/date-picker-cell.component";
-import {CellTemplate} from "./cell/cell-template.component";
-import {RowSelectCellComponent} from "./cell/row-select-cell.component";
-import {GroupCollapseExpandCell} from "./cell/group-collapse-expand.component";
 
 @NgModule({
   imports: [
@@ -32,9 +24,6 @@ import {GroupCollapseExpandCell} from "./cell/group-collapse-expand.component";
   ],
   declarations: [
     GridComponent,
-    RowComponent,
-    RowGroupComponent,
-    CellComponent,
     ColumnHeaderComponent,
     IsVisiblePipe,
     IsGroupPipe,
@@ -46,11 +35,7 @@ import {GroupCollapseExpandCell} from "./cell/group-collapse-expand.component";
     GridComponent,
     ColumnDefComponent,
     LabelCell,
-    InputCell,
-    DateCell,
-    DatePickerCell,
-    RowSelectCellComponent,
-    GroupCollapseExpandCell
+    InputCell
   ]
 })
 export class GridModule {}

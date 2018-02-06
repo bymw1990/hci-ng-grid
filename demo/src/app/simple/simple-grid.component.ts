@@ -15,14 +15,14 @@ import { DataGeneratorService } from "../services/data-generator.service";
           
         </p>
         <p>
-          <hci-grid [title]="'Simple Grid'"
+          <!--<hci-grid [title]="'Simple Grid'"
                     [inputData]="simpleData1">
             <column-def [field]="'lastName'"></column-def>
             <column-def [field]="'firstName'"></column-def>
             <column-def [field]="'dob'"></column-def>
             <column-def [field]="'pcg.nLabs'"></column-def>
             <column-def [field]="'pcg.nested.nLabPath'"></column-def>
-          </hci-grid>
+          </hci-grid>-->
         </p>
       </div>
     </div>
@@ -37,7 +37,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           template type and that is all.  There is no filtering, header, sorting or paging.
         </p>
         <p>
-          <hci-grid [inputData]="simpleData2">
+          <!--<hci-grid [inputData]="simpleData2">
             <column-def [field]="'lastName'"></column-def>
             <column-def [field]="'firstName'"></column-def>
             <column-def [field]="'dob'">
@@ -45,7 +45,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
             </column-def>
             <column-def [field]="'pcg.nLabs'"></column-def>
             <column-def [field]="'pcg.nested.nLabPath'"></column-def>
-          </hci-grid>
+          </hci-grid>-->
         </p>
       </div>
     </div>
@@ -74,7 +74,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           
         </p>
         <p>
-          <hci-grid [title]="'Simple Grid Delayed'"
+          <!--<hci-grid [title]="'Simple Grid Delayed'"
                     [inputData]="simpleData4">
             <column-def [field]="'idPatient'" [name]="'ID'" [visible]="false"></column-def>
             <column-def [field]="'lastName'" [name]="'Last Name'"></column-def>
@@ -84,7 +84,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
             </column-def>
             <column-def [field]="'address'" [name]="'Address 1'"></column-def>
             <column-def [field]="'citystatezip'" [name]="'Address 2'"></column-def>
-          </hci-grid>
+          </hci-grid>-->
         </p>
       </div>
     </div>

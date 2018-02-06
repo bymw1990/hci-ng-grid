@@ -18,7 +18,6 @@ export class CellTemplate {
   valueable: boolean = true;
   i: number;
   j: number;
-  k: number;
 
   handleClick: boolean = false;
 
@@ -70,13 +69,12 @@ export class CellTemplate {
 
   setData(data: Cell) {
     this.data = data;
-    this.value = this.gridService.formatData(this.k, this.data.value);
+    this.value = this.gridService.formatData(this.j, this.data.value);
   }
 
-  setPosition(i: number, j: number, k: number) {
+  setPosition(i: number, j: number) {
     this.i = i;
     this.j = j;
-    this.k = k;
   }
 
   onModelChange(value: Object) {

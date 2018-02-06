@@ -16,15 +16,12 @@ import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
 import {GridMessageService} from "./services/grid-message.service";
 import {Point} from "./utils/point";
-import {Range} from "./utils/range";
 import {Row} from "./row/row";
-import {RowGroup} from "./row/row-group";
 import {Column} from "./column/column";
 import {PageInfo} from "./utils/page-info";
 import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {ColumnDefComponent} from "./column/column-def.component";
-import {LabelCell} from "./cell/label-cell.component";
 import {CellTemplate} from "./cell/cell-template.component";
 import {InputCell} from "./cell/input-cell.component";
 
@@ -254,7 +251,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   dataSize: Array<Object> = new Array<Object>(0);
 
-  gridData: Array<RowGroup> = new Array<RowGroup>();
+  gridData: Array<Row> = new Array<Row>();
   origDataSize: number = 0;
   nFixedColumns: number = 0;
   nColumns: number = 0;
@@ -290,7 +287,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.updateGridContainerHeight();
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
-    this.gridService.data.subscribe((data: Array<RowGroup>) => {
+    this.gridService.data.subscribe((data: Array<Row>) => {
       console.debug("GridComponent.data.subscribe");
       console.debug(data);
       /*if (this.pageInfo.pageSize < 0) {
@@ -317,54 +314,50 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       i = -1;
-      for (let rowGroup of this.gridData) {
-        if (rowGroup.hasHeader()) {
+      for (let row of this.gridData) {
+        if (row.hasHeader()) {
           i = i + 1;
           let e = document.getElementById("cell-" + i + "-0");
           if (e) {
             e.textContent = "";
-            let value = rowGroup.getHeader().getConcatenatedCells();
+            let value = row.getHeader();
             let text = this.renderer.createText(value);
             this.renderer.appendChild(e, text);
           }
           i = i - 1;
 
-          if (rowGroup.isExpanded()) {
-            for (let row of rowGroup.rows) {
-              i = i + 1;
-              let j: number = 0;
-              for (let cell of row.cells) {
-                if (j === 0) {
-                  j = j + 1;
-                  continue;
-                }
-                let e = document.getElementById("cell-" + i + "-" + j);
-                if (e) {
-                  e.textContent = "";
-                  let value = this.columnDefinitions[j].formatValue(cell.value);
-                  let text = this.renderer.createText(value);
-                  this.renderer.appendChild(e, text);
-                  this.renderer.addClass(e, "editable");
-                }
-                j = j + 1;
-              }
-            }
-          }
-        } else {
-          for (let row of rowGroup.rows) {
+          if (row.isExpanded()) {
             i = i + 1;
-
             let j: number = 0;
             for (let cell of row.cells) {
+              if (j === 0) {
+                j = j + 1;
+                continue;
+              }
               let e = document.getElementById("cell-" + i + "-" + j);
               if (e) {
                 e.textContent = "";
                 let value = this.columnDefinitions[j].formatValue(cell.value);
                 let text = this.renderer.createText(value);
                 this.renderer.appendChild(e, text);
+                this.renderer.addClass(e, "editable");
               }
               j = j + 1;
             }
+          }
+        } else {
+          i = i + 1;
+
+          let j: number = 0;
+          for (let cell of row.cells) {
+            let e = document.getElementById("cell-" + i + "-" + j);
+            if (e) {
+              e.textContent = "";
+              let value = this.columnDefinitions[j].formatValue(cell.value);
+              let text = this.renderer.createText(value);
+              this.renderer.appendChild(e, text);
+            }
+            j = j + 1;
           }
         }
       }
@@ -461,7 +454,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("GridComponent.selectedLocationSubscription");
       this.container.clear();
       if (p.isNotNegative()) {
-        this.selectComponent(p.i, p.j, p.k);
+        this.selectComponent(p.i, p.j);
         //this.selectedLocationSubscription.unsubscribe();
       }
     });
@@ -470,7 +463,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let e = document.getElementById("cell-" + location.i + "-" + location.j);
       if (e) {
         e.textContent = "";
-        let value = this.columnDefinitions[location.k].formatValue(this.gridService.getCell(location.i, location.j, location.k).value);
+        let value = this.columnDefinitions[location.j].formatValue(this.gridService.getCell(location.i, location.j).value);
         let text = this.renderer.createText(value);
         this.renderer.appendChild(e, text);
       }
@@ -520,9 +513,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  selectComponent(i: number, j: number, k: number) {
-    console.log("GridComponent.selectComponent: " + i + " " + j + " " + k);
-    let e = document.getElementById("cell-" + i + "-0-" + k);
+  selectComponent(i: number, j: number) {
+    console.log("GridComponent.selectComponent: " + i + " " + j);
+    let e = document.getElementById("cell-" + i + "-" + j);
     this.createCellComponent(e);
   }
 
@@ -532,15 +525,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let ids = id.split("-");
       let i: number = +ids[1];
       let j: number = +ids[2];
-      let k: number = +ids[3];
 
       try {
-        this.gridData[i].get(j).get(k);
+        this.gridData[i].get(j);
       } catch (e) {
         this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
       }
 
-      let column: Column = this.columnDefinitions[k];
+      let column: Column = this.columnDefinitions[j];
 
       if (!column.visible && this.gridEventService.getLastDx() === 1) {
         this.gridEventService.repeatLastEvent();
@@ -563,12 +555,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
        }*/
 
       factory = this.resolver.resolveComponentFactory(InputCell);
-      /*if (this.cellKeySubscription) {
-        this.cellKeySubscription.unsubscribe();
-      }*/
       this.componentRef = this.container.createComponent(factory).instance;
-      this.componentRef.setPosition(i, j, k);
-      this.componentRef.setData(this.gridData[i].get(j).get(k));
+      this.componentRef.setPosition(i, j);
+      this.componentRef.setData(this.gridData[i].get(j));
       this.componentRef.setLocation(cellElement);
       /*this.cellKeySubscription = this.componentRef.keyEvent.subscribe((keyCode: number) => {
         console.log("cellKeySubscription: " + keyCode);
@@ -777,9 +766,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   onKeyDown(event: KeyboardEvent) {
     console.debug("GridComponent.onKeyDown");
-/*
+
     if (event.ctrlKey && event.keyCode === 67) {
-      this.gridMessageService.debug("Copy Event");
+      /*this.gridMessageService.debug("Copy Event");
 
       let range: Range = this.gridEventService.currentRange;
       if (range != null && !range.min.equals(range.max)) {
@@ -804,9 +793,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.copypastearea.nativeElement.value = copy;
         this.copypastearea.nativeElement.select();
         event.stopPropagation();
-      }
+      }*/
     } else if (event.ctrlKey && event.keyCode === 86) {
-      this.copypastearea.nativeElement.select();
+      /*this.copypastearea.nativeElement.select();
       let paste: string = this.copypastearea.nativeElement.value;
 
       this.gridMessageService.debug("Paste Event: " + paste);
@@ -885,7 +874,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         //this.gridService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
       } else {
         this.gridMessageService.warn("Paste went out of range");
-      }
+      }*/
     } else if (event.keyCode === 9) {
       event.stopPropagation();
       this.gridEventService.tabFrom(null, null);
@@ -901,7 +890,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     } else if (event.keyCode === 40) {
       event.stopPropagation();
       this.gridEventService.arrowFrom(null, 0, 1, null);
-    }*/
+    }
   }
 
   @HostListener("document:click", ["$event"])

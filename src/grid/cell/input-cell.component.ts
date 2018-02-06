@@ -58,21 +58,23 @@ export class InputCell extends CellTemplate {
     console.log("InputCell.onInputKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
-      this.data.value = this.gridService.parseData(this.k, this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 39 && this.input.nativeElement.selectionStart === this.input.nativeElement.value.length) {
-      this.data.value = this.gridService.parseData(this.k, this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 38 || event.keyCode === 40) {
-      this.data.value = this.gridService.parseData(this.k, this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 9) {
+      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 27) {
-      this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
+      this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
     } else if (event.keyCode === 13) {
-      this.gridEventService.setSelectedLocation(new Point(-1, 0, -1), null);
-      this.data.value = this.gridService.parseData(this.k, this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
+      this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else {
       event.stopPropagation();
     }

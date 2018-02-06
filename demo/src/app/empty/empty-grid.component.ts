@@ -15,14 +15,14 @@ import { DataGeneratorService } from "../services/data-generator.service";
           What a grid looks like with no data.
         </p>
         <p>
-          <hci-grid [title]="'Empty Grid'"
+          <!--<hci-grid [title]="'Empty Grid'"
                     [inputData]="data">
             <column-def [field]="'lastName'"></column-def>
             <column-def [field]="'firstName'"></column-def>
             <column-def [field]="'dob'">
               <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
             </column-def>
-          </hci-grid>
+          </hci-grid>-->
         </p>
       </div>
     </div>

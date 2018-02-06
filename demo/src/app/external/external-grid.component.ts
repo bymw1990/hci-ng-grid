@@ -20,7 +20,7 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
           To simulate an api call, a delay of 1 s has been added.
         </p>
         <p>
-          <hci-grid [onExternalDataCall]="onExternalDataCall1"
+          <!--<hci-grid [onExternalDataCall]="onExternalDataCall1"
                     [externalFiltering]="true"
                     [externalSorting]="true"
                     [externalPaging]="true"
@@ -44,7 +44,7 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
             <column-def [field]="'address'" [name]="'Address'">
                 <hci-grid-cell-input #template></hci-grid-cell-input>
             </column-def>
-          </hci-grid>
+          </hci-grid>-->
         </p>
       </div>
     </div>

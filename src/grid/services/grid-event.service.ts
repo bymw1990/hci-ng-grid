@@ -121,6 +121,16 @@ export class GridEventService {
     this.lastDx = dx;
     this.lastDy = dy;
 
+    this.selectedLocation.i = this.selectedLocation.i + dy;
+    this.selectedLocation.j = this.selectedLocation.j + dx;
+
+    console.debug("this.gridService.getNVisibleColumns(): " + this.gridService.getNVisibleColumns());
+    if (this.selectedLocation.j >= this.gridService.getNVisibleColumns()) {
+      this.selectedLocation.i = this.selectedLocation.i + 1;
+      this.selectedLocation.j = 0;
+    }
+
+    /*
     let tries: number = this.gridService.columnDefinitions.length;
     do {
       if (this.selectedLocation.isNegative()) {
@@ -133,59 +143,20 @@ export class GridEventService {
         break;
       }
 
-      if (dy > 0 && this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
+      if (dy > 0 && this.gridService.getRow(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
         this.selectedLocation = new Point(-1, -1);
       } else if (dy !== 0) {
-        this.selectedLocation.j = this.selectedLocation.j + dy;
+        this.selectedLocation.i = this.selectedLocation.i + dy;
       } else if (dx !== 0) {
         this.selectedLocation.j = this.selectedLocation.j + dx;
       }
 
-      /*if (dy > 0 && this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + dy) {
-        this.selectedLocation.i = this.selectedLocation.i + dy;
-        this.selectedLocation.j = 0;
-      } else if (dy > 0) {
-        this.selectedLocation.j = this.selectedLocation.j + dy;
-      } else if (dy < 0 && this.selectedLocation.j > 0) {
-        this.selectedLocation.j = this.selectedLocation.j + dy;
-      } else if (dy < 0 && this.selectedLocation.j === 0) {
-        this.selectedLocation.i = this.selectedLocation.i + dy;
-        if (this.selectedLocation.i < 0) {
-          this.selectedLocation = new Point(-1, -1);
-        } else {
-          this.selectedLocation.j = this.gridService.getRowGroup(this.selectedLocation.i).length() - 1;
-        }
-      } else if (dx !== 0) {
-        this.selectedLocation.k = this.selectedLocation.k + dx;
-        this.selectedLocation.i = Math.max(0, this.selectedLocation.i);
-        this.selectedLocation.j = Math.max(0, this.selectedLocation.j);
-        //this.selectedLocation.k = Math.max(0, this.selectedLocation.k);
-
-        if (this.selectedLocation.k === this.nColumns) {
-          this.selectedLocation.k = 0;
-
-          if (this.gridService.getRowGroup(this.selectedLocation.i).length() === this.selectedLocation.j + 1) {
-            this.selectedLocation.i = this.selectedLocation.i + 1;
-            this.selectedLocation.j = 0;
-          } else {
-            this.selectedLocation.j = this.selectedLocation.j + 1;
-          }
-        } else if (this.selectedLocation.k < 0) {
-          this.selectedLocation.k = this.gridService.columnDefinitions.length - 1;
-          if (this.selectedLocation.j > 0) {
-            this.selectedLocation.j = this.selectedLocation.j - 1;
-          } else if (this.selectedLocation.i === 0) {
-            this.selectedLocation.k = this.gridService.columnDefinitions.length - 1;
-          } else {
-            this.selectedLocation.i = this.selectedLocation.i - 1;
-          }
-        }
-      }*/
-
       tries = tries - 1;
-    } while (this.selectedLocation.j >= 0 && !this.gridService.columnDefinitions[this.selectedLocation.j].visible);
+    } while (this.selectedLocation.j >= 0 && !this.gridService.columnDefinitions[this.selectedLocation.j].visible);*/
 
-    if (this.gridService.getRowGroup(this.selectedLocation.i) === null) {
+    if (this.gridService.getRow(this.selectedLocation.i) === null) {
+      this.selectedLocation = new Point(-1, -1);
+    } else if (this.selectedLocation.isNegative()) {
       this.selectedLocation = new Point(-1, -1);
     }
 

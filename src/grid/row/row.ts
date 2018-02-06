@@ -1,10 +1,20 @@
-import { Cell } from "../cell/cell";
+import {Cell} from "../cell/cell";
 
 /**
  *
  */
 export class Row {
+
   cells: Array<Cell> = new Array<Cell>();
+  data: Object = {};
+  header: any;
+  size: number = 1;
+
+  HIDDEN: number = 0;
+  COLLAPSED: number = 1;
+  EXPANDED: number = 2;
+  state: number = this.EXPANDED;
+
   private _key: any;
   private _rowNum: number;
   private _selected: boolean = false;
@@ -32,6 +42,13 @@ export class Row {
     return true;
   }
 
+  createHeader(headerColumns: Array<number>) {
+    this.header = null;
+    for (var i = 0; i < headerColumns.length; i++) {
+      this.header = this.header === null ? this.cells[headerColumns[i]].value : this.header + ", " + this.cells[headerColumns[i]].value;
+    }
+  }
+
   getConcatenatedCells() {
     let all: string = null;
     for (let cell of this.cells) {
@@ -46,6 +63,26 @@ export class Row {
 
   get(i: number): Cell {
     return this.cells[i];
+  }
+
+  hasHeader(): boolean {
+    return this.header !== null;
+  }
+
+  isExpanded(): boolean {
+    return this.state === this.EXPANDED;
+  }
+
+  isCollaposed(): boolean {
+    return this.state === this.COLLAPSED;
+  }
+
+  getHeader(): any {
+    return this.header;
+  }
+
+  setHeader(header: any) {
+    this.header = header;
   }
 
   length(): number {
