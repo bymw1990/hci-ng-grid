@@ -67,24 +67,24 @@ import { DataGeneratorService } from "../services/data-generator.service";
 
     <div class="card">
       <div class="card-header">
-        <h4>Simple Grid - Delayed Input</h4>
+        <h4>Simple Grid - 5s Delayed Input</h4>
       </div>
       <div class="card-body">
         <p class="card-text">
           
         </p>
         <p>
-          <!--<hci-grid [title]="'Simple Grid Delayed'"
-                    [inputData]="simpleData4">
-            <column-def [field]="'idPatient'" [name]="'ID'" [visible]="false"></column-def>
-            <column-def [field]="'lastName'" [name]="'Last Name'"></column-def>
-            <column-def [field]="'firstName'" [name]="'First Name'"></column-def>
-            <column-def [field]="'dob'" [name]="'Date of Birth'">
-              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-            </column-def>
-            <column-def [field]="'address'" [name]="'Address 1'"></column-def>
-            <column-def [field]="'citystatezip'" [name]="'Address 2'"></column-def>
-          </hci-grid>-->
+          <hci-grid [title]="'Simple Grid Delayed'"
+                    [inputData]="simpleData4"
+                    [columnDefinitions]="[
+                      { field: 'idPatient', name: 'ID' },
+                      { field: 'lastName', name: 'Last Name' },
+                      { field: 'firstName', name: 'First Name' },
+                      { field: 'dob', name: 'Date of Birth' },
+                      { field: 'address', name: 'Address 1' },
+                      { field: 'citystatezip', name: 'Address 2' }
+                    ]">
+          </hci-grid>
         </p>
       </div>
     </div>

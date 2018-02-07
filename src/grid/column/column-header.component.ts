@@ -10,14 +10,18 @@ import {SortInfo} from "../utils/sort-info";
 @Component({
   selector: "hci-column-header",
   template: `
-    <!--<div *ngIf="column.filterType !== null">
-      <span class="fas fa-filter"></span>
-    </div>-->
-    <div *ngIf="column.sortable" class="d-flex flex-nowrap" style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;" (click)="doSort()">
+    <div class="d-flex flex-nowrap" style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;" (click)="doSort()">
       <span>{{ column.name }}</span>
       <!--<span *ngIf="asc === 0" class="sort-icon"><span class="fas fa-sort"></span></span>-->
-      <span *ngIf="asc === 1" class="sort-icon"><span class="fas fa-sort-up"></span></span>
-      <span *ngIf="asc === -1" class="sort-icon"><span class="fas fa-sort-down"></span></span>
+      <div class="d-flex flex-nowrap sort-icon">
+        <div *ngIf="column.filterType !== null">
+          <span class="fas fa-filter"></span>
+        </div>
+        <div *ngIf="column.sortable" style="margin-left: 5px;">
+          <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
+          <span *ngIf="asc === -1"><span class="fas fa-arrow-alt-circle-down"></span></span>
+        </div>
+      </div>
     </div>
     
     <!--
@@ -40,7 +44,6 @@ import {SortInfo} from "../utils/sort-info";
   styles: [`
     .sort-icon {
       margin-left: auto;
-      padding-left: 10px;
       padding-right: 5px;
     }
   `],

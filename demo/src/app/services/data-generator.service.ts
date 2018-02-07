@@ -19,9 +19,10 @@ export class DataGeneratorService {
   externalData2: Object[] = [];
   simpleData4: Array<Object> = new Array<Object>();
 
-  private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie" ];
+  private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Gerry", "Gina",
+      "Harry", "Hellen", "Mike", "Milla", "Sam", "Sarah", "Tim", "Tina" ];
   private _lastNames: string[] = [ "Black", "Brown", "Grey", "Khan", "Smith", "White" ];
-  private _middleNames: string[] = [ "", "A", "C", "N", "O", "Z" ];
+  private _middleNames: string[] = [ "", "A", "C", "D", "H", "L", "N", "O", "R", "T", "Z" ];
   private _cities: string[] = [ "Salt Lake City", "Odgen", "Provo" ];
   private _streets1: string[] = [ "Pine", "Red", "Green", "Oak", "Aspen" ];
   private _streets2: string[] = [ "acres", "shade", "wood", "dale" ];

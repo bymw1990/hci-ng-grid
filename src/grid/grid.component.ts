@@ -46,7 +46,7 @@ import {InputCell} from "./cell/input-cell.component";
     GridEventService,
     GridMessageService],
   template: `
-    <div #gridContainer [id]="gridContainer" (click)="onClick($event)" (keydown)="onKeyDown($event)">
+    <div #gridContainer [id]="gridContainer" style="display: grid;" (click)="onClick($event)" (keydown)="onKeyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       <div #busyOverlay class="hci-grid-busy" style="display: none;">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
@@ -79,7 +79,7 @@ import {InputCell} from "./cell/input-cell.component";
                                class="hci-grid-column-header hci-grid-row-height"
                                [class.hci-grid-row-height]="column.filterType === null"
                                [class.hci-grid-row-height-filter]="column.filterType !== null"
-                               style="height: 30px; vertical-align: top; display: inline-block;"
+                               style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
                                [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
             </hci-column-header>
@@ -118,7 +118,7 @@ import {InputCell} from "./cell/input-cell.component";
                    class="hci-grid-column-header hci-grid-row-height"
                    [class.hci-grid-row-height]="column.filterType === null"
                    [class.hci-grid-row-height-filter]="column.filterType !== null"
-                   style="height: 30px; vertical-align: top; display: inline-block;"
+                   style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
                    [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                    [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
               </hci-column-header>
@@ -468,6 +468,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.gridContainer.nativeElement.addEventListener("scroll", this.onScroll, true);
+
     this.busySubject.subscribe((busy: boolean) => {
       this.busy = busy;
       if (this.busyOverlay && this.busyOverlay.nativeElement) {
@@ -490,6 +492,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
       console.debug("GridComponent.selectedLocationSubscription");
       this.container.clear();
+      this.componentRef = null;
       if (p.isNotNegative()) {
         this.selectComponent(p.i, p.j);
       }
@@ -790,6 +793,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.deleteSelectedRows();
   }
 
+  onScroll() {
+    console.debug("onScroll");
+    if (this.componentRef !== null) {
+      this.componentRef.updateLocation();
+    }
+  }
+
   onClick(event: MouseEvent) {
     console.debug("click");
     console.debug(event.srcElement);
@@ -943,6 +953,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   clickout(event) {
     if (!this.el.nativeElement.contains(event.target)) {
       this.container.clear();
+      this.componentRef = null;
       this.gridEventService.clearSelectedLocation();
     }
   }

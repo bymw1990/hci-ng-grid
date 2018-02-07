@@ -248,12 +248,12 @@ export class GridService {
       this.columnDefinitions.push(rowSelectColumn);
     }
 
-    let hasFilter: boolean = false;
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
+    //let hasFilter: boolean = false;
+    /*for (var i = 0; i < this.columnDefinitions.length; i++) {
       if (this.columnDefinitions[i].filterType !== null) {
         hasFilter = true;
       }
-    }
+    }*/
 
     this.nVisibleColumns = 0;
     this.columnHeaders = false;
@@ -262,9 +262,9 @@ export class GridService {
       if (this.columnDefinitions[i].name !== null) {
         this.columnHeaders = true;
       }
-      if (this.columnDefinitions[i].filterType === null && hasFilter) {
+      /*if (this.columnDefinitions[i].filterType === null && hasFilter) {
         this.columnDefinitions[i].filterType = "";
-      }
+      }*/
 
       if (this.columnDefinitions[i].isUtility) {
         continue;
