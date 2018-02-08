@@ -14,10 +14,10 @@ import {SortInfo} from "../utils/sort-info";
       <span>{{ column.name }}</span>
       <!--<span *ngIf="asc === 0" class="sort-icon"><span class="fas fa-sort"></span></span>-->
       <div class="d-flex flex-nowrap sort-icon">
-        <div *ngIf="column.filterType !== null">
+        <div [id]="'filter-' + column.id" *ngIf="column.filterType !== null">
           <span class="fas fa-filter"></span>
         </div>
-        <div *ngIf="column.sortable" style="margin-left: 5px;">
+        <div [id]="'sort-' + column.id" *ngIf="column.sortable" style="margin-left: 5px;">
           <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
           <span *ngIf="asc === -1"><span class="fas fa-arrow-alt-circle-down"></span></span>
         </div>
@@ -50,7 +50,6 @@ import {SortInfo} from "../utils/sort-info";
 })
 export class ColumnHeaderComponent {
 
-  @Input() k: number;
   @Input() column: Column;
 
   asc: number = 0;

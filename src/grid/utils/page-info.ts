@@ -1,7 +1,7 @@
 export class PageInfo {
 
   page: number = 0;
-  pageSize: number = 10;
+  pageSize: number = -1;
   dataSize: number = 0;
   numPages: number = 0;
 

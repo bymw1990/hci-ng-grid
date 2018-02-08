@@ -15,13 +15,13 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Click on row header to change sort based on row group.
         </p>
         <p>
-          <hci-grid [title]="'Group Grid'"
-                    [inputData]="groupData"
-                    [columnDefinitions]="groupColumns"
-                    [groupBy]="['firstName', 'lastName']"
-                    [cellSelect]="true"
-                    [pageSize]="10">
-          </hci-grid>
+          <hci-ng-grid [title]="'Group Grid'"
+                       [inputData]="groupData"
+                       [columnDefinitions]="groupColumns"
+                       [groupBy]="['firstName', 'lastName']"
+                       [cellSelect]="true"
+                       [pageSize]="10">
+          </hci-ng-grid>
         </p>
         <div style="padding: 20px;">
           <span style="font-weight: bold;" (click)="showBound = !showBound">Click for Bound Data</span>
@@ -63,12 +63,12 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Click on row header to change sort based on row group.
         </p>
         <p>
-          <hci-grid [inputData]="bigData"
-                    [columnDefinitions]="columns2"
-                    [groupBy]="['firstName', 'lastName']"
-                    [cellSelect]="true"
-                    [pageSize]="25">
-          </hci-grid>
+          <hci-ng-grid [inputData]="bigData"
+                       [columnDefinitions]="columns2"
+                       [groupBy]="['firstName', 'lastName']"
+                       [cellSelect]="true"
+                       [pageSize]="25">
+          </hci-ng-grid>
         </p>
       </div>
     </div>

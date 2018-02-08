@@ -16,12 +16,12 @@ import { Column } from "hci-ng-grid/index";
             <span>Size: </span><input [(ngModel)]="dataSize" />
           </p>
           <p>
-            <hci-grid [title]="'Paging Grid'"
-                      [inputData]="pagingData"
-                      [columnDefinitions]="pagingColumns"
-                      [pageSize]="10"
-                      [pageSizes]="[ 10, 25, 100 ]">
-            </hci-grid>
+            <hci-ng-grid [title]="'Paging Grid'"
+                         [inputData]="pagingData"
+                         [columnDefinitions]="pagingColumns"
+                         [pageSize]="10"
+                         [pageSizes]="[ 10, 25, 100 ]">
+            </hci-ng-grid>
           </p>
         </div>
       </div>
@@ -33,13 +33,13 @@ export class PagingGridComponent {
     pagingData: Array<Object>;
 
     pagingColumns: Column[] = [
-        new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),
-        new Column({ field: "lastName", name: "Last Name", template: "InputCell" }),
-        new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
-        new Column({ field: "firstName", name: "First Name", template: "InputCell" }),
-        new Column({ field: "dob", name: "Date of Birth", template: "DatePickerCell" }),
-        new Column({ field: "gender", name: "Gender", template: "LabelCell" }),
-        new Column({ field: "address", name: "Address", template: "LabelCell" })
+        new Column({ field: "idPatient", name: "ID", visible: false }),
+        new Column({ field: "lastName", name: "Last Name" }),
+        new Column({ field: "middleName", name: "Middle Name" }),
+        new Column({ field: "firstName", name: "First Name" }),
+        new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+        new Column({ field: "gender", name: "Gender" }),
+        new Column({ field: "address", name: "Address" })
     ];
 
     constructor(private dataGeneratorService: DataGeneratorService) {}

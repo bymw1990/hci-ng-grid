@@ -2,11 +2,8 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {
-  AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ContentChildren, ElementRef,
-  EventEmitter, HostListener, Input,
-  OnChanges,
-  Output, QueryList, Renderer2, SimpleChange, ViewChild, ViewEncapsulation,
-  ViewContainerRef
+  AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
+  OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef
 } from "@angular/core";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
@@ -26,31 +23,27 @@ import {CellTemplate} from "./cell/cell-template.component";
 import {InputCell} from "./cell/input-cell.component";
 
 /**
- * Thoughts..
- * data or click represented by three ints
- * i = rowGroup, j = subRow, k = col
- * if no grouping, then j always 0.
+ * A robust grid for angular.
+ * Features:
+ *   Row Grouping
+ *   Fixed Columns
+ *   Excel like editing
+ *   Copy and paste
  *
- * group by a, b
- *   A   B
- *           x   y   z
- *           1   2   3
- *
- *   grouped data separated into subRow -1?  click on subrow collapses/expands?  not show grouped keys for rest of rows (0 and 1)?
- *
+ * @since 1.0.0
  */
 @Component({
-  selector: "hci-grid",
+  selector: "hci-ng-grid",
   providers: [
     GridService,
     GridEventService,
     GridMessageService],
   template: `
-    <div #gridContainer [id]="gridContainer" style="display: grid;" (click)="onClick($event)" (keydown)="onKeyDown($event)">
+    <div #gridContainer id="gridContainer" (click)="onClick($event)" (keydown)="onKeyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
-      <div #busyOverlay class="hci-grid-busy" style="display: none;">
-        <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
-          <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
+      <div #busyOverlay class="hci-ng-grid-busy" style="display: none;">
+        <div class="hci-ng-grid-busy-div" [style.transform]="gridContainerHeightCalc">
+          <span class="fas fa-sync fa-spin fa-5x fa-fw hci-ng-grid-busy-icon"></span>
         </div>
       </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
@@ -73,10 +66,10 @@ import {InputCell} from "./cell/input-cell.component";
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
-                                 class="hci-grid-column-header hci-grid-row-height"
-                                 [class.hci-grid-row-height]="column.filterType === null"
-                                 [class.hci-grid-row-height-filter]="column.filterType !== null"
-                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center; border-right: black 2px solid;"
+                                 class="hci-ng-grid-column-header hci-ng-grid-row-height"
+                                 [class.hci-ng-grid-row-height]="column.filterType === null"
+                                 [class.hci-ng-grid-row-height-filter]="column.filterType !== null"
+                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center; border: black 1px solid;"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
               </hci-column-header>
@@ -87,10 +80,10 @@ import {InputCell} from "./cell/input-cell.component";
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
-                                 class="hci-grid-column-header hci-grid-row-height"
-                                 [class.hci-grid-row-height]="column.filterType === null"
-                                 [class.hci-grid-row-height-filter]="column.filterType !== null"
-                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center; border-right: black 2px solid;"
+                                 class="hci-ng-grid-column-header hci-ng-grid-row-height"
+                                 [class.hci-ng-grid-row-height]="column.filterType === null"
+                                 [class.hci-ng-grid-row-height-filter]="column.filterType !== null"
+                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center; border: black 1px solid;"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
               </hci-column-header>
@@ -101,7 +94,7 @@ import {InputCell} from "./cell/input-cell.component";
         <!-- Content -->
         <div #gridContent id="gridContent">
           <div #leftView id="leftView">
-            <div #leftContainer id="leftContainer" class="hci-grid-left-row-container">
+            <div #leftContainer id="leftContainer" class="hci-ng-grid-left-row-container">
               <div #leftCellEditContainer></div>
               
               <!-- Left Data Rows -->
@@ -113,7 +106,7 @@ import {InputCell} from "./cell/input-cell.component";
                   <ng-container *ngFor="let column of columnDefinitions | isFixed: true | isVisible">
                     <div (click)="onClick($event)"
                          [id]="'cell-' + i + '-' + column.id"
-                         class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                         class="hci-ng-grid-cell-parent hci-grid-cell hci-ng-grid-row-height"
                          style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block; position: absolute;"
                          [style.left.px]="0"
                          [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
@@ -181,19 +174,24 @@ import {InputCell} from "./cell/input-cell.component";
   `,
   styles: [ `
 
+    #gridContainer {
+      display: inline-block;
+      width: 100%;
+    }
+      
     #titleBar {
       background-color: transparent;
       color: black;
       padding: 10px;
+      border: black 1px solid;
       border-top-left-radius: 0px;
       border-top-right-radius: 0px;
-      border: black 1px solid;
       font-weight: bold;
       font-size: large;
     }
 
     #mainContent {
-      width: 1000px;
+      width: 100%;
       height: 280px;
     }
     
@@ -201,7 +199,8 @@ import {InputCell} from "./cell/input-cell.component";
       display: inline-block;
       position: absolute;
       height: 30px;
-      border: black 1px solid;
+      border-left: black 1px solid;
+      border-right: black 1px solid;
       font-weight: bold;
       background-color: transparent;
       color: black;
@@ -264,18 +263,18 @@ import {InputCell} from "./cell/input-cell.component";
       white-space: nowrap;
     }
     
-    .hci-grid-busy {
+    .hci-ng-grid-busy {
       z-index: 9999;
       width: 100%;
       background-color: rgba(0, 0, 0, 0.2);
       position: absolute;
     }
     
-    .hci-grid-busy-div {
+    .hci-ng-grid-busy-div {
       transform-origin: top left;
     }
     
-    .hci-grid-busy-icon {
+    .hci-ng-grid-busy-icon {
       color: rgba(255, 0, 0, 0.5);
     }
     
@@ -310,7 +309,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() externalPaging: boolean;
   @Input() pageSize: number;
   @Input() pageSizes: number[];
-  @Input("nVisibleRows") cfgNVisibleRows: number;
+  @Input("nVisibleRows") cfgNVisibleRows: number = 10;
 
   @Input() onAlert: Function;
   @Input() onExternalDataCall: Function;
@@ -607,24 +606,52 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let fixedWidth: number = 0;
       let fixedMinWidth: number = 0;
+      let nonFixedWidth: number = 0;
+      let nonFixedMinWidth: number = 0;
+
+      let exactWidth: number = 0;
+      let remainder: number = 0;
 
       for (var j = 0; j < this.columnDefinitions.length; j++) {
+        if (!this.columnDefinitions[j].visible) {
+          break;
+        }
+
+        exactWidth = Math.max(gridWidth / 100 * this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
+        if (exactWidth !== Math.floor(exactWidth)) {
+          remainder = remainder + exactWidth - Math.floor(exactWidth);
+        }
+
         e = this.gridContainer.nativeElement.querySelector("#header-" + j);
-        w = Math.floor(gridWidth / 100 * this.columnDefinitions[j].width);
+        w = Math.floor(exactWidth);
+        if (this.columnDefinitions.length - 1 === j) {
+          w = w + remainder;
+        }
         if (e) {
           this.renderer.setStyle(e, "width", w + "px");
         }
         if (this.columnDefinitions[j].isFixed) {
           fixedWidth = fixedWidth + w;
           fixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
+        } else {
+          nonFixedWidth = fixedWidth + w;
+          nonFixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
         }
       }
 
       e = this.gridContainer.nativeElement.querySelector("#leftView");
       this.renderer.setStyle(e, "width", fixedWidth + "px");
-      e = this.gridContainer.nativeElement.querySelector("#leftView");
       this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
 
+      e = this.gridContainer.nativeElement.querySelector("#leftContainer");
+      this.renderer.setStyle(e, "width", fixedWidth + "px");
+
+      e = this.gridContainer.nativeElement.querySelector("#rightContainer");
+      this.renderer.setStyle(e, "width", nonFixedWidth + "px");
+      this.renderer.setStyle(e, "min-width", nonFixedMinWidth + "px");
+
+      e = this.gridContainer.nativeElement.querySelector("#headerContent");
+      this.renderer.setStyle(e, "width", gridWidth);
       e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
       this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
       e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
@@ -641,6 +668,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         left = 0;
         let fixed: boolean = true;
         for (var j = 0; j < this.columnDefinitions.length; j++) {
+          if (!this.columnDefinitions[j].visible) {
+            break;
+          }
+
           if (fixed && !this.columnDefinitions[j].isFixed) {
             fixed = false;
             left = 0;
@@ -648,7 +679,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
           e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
           if (e) {
-            width = Math.max(Math.floor(gridWidth / 100 * this.columnDefinitions[j].width), this.columnDefinitions[j].minWidth);
+            width = Math.floor(Math.max(gridWidth / 100 * this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth));
+            if (this.columnDefinitions.length - 1 === j) {
+              width = width + remainder;
+            }
             this.renderer.setStyle(e, "width", width + "px");
             this.renderer.setStyle(e, "left", left + "px");
             left = left + width;
@@ -734,13 +768,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   updateGridContainerHeight() {
-    this.gridContainerHeight = Math.max(150, this.gridContainer.nativeElement.offsetHeight);
-    this.gridContainerHeightCalc = this.domSanitizer.bypassSecurityTrustStyle("translate(calc(50% - 2.5em), calc(" + (Math.floor(this.gridContainerHeight / 2)) + "px - 2.5em))");
+    //this.gridContainerHeight = Math.max(150, this.gridContainer.nativeElement.offsetHeight);
+    //this.gridContainerHeightCalc = this.domSanitizer.bypassSecurityTrustStyle("translate(calc(50% - 2.5em), calc(" + (Math.floor(this.gridContainerHeight / 2)) + "px - 2.5em))");
 
     if (this.config.nVisibleRows) {
       console.debug("postInit.nVisibleRows");
 
-      let height: number = 30;
+      let height: number = this.config.nVisibleRows * 30;
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (30 + height) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+
+      height = 30;
       let cell = this.gridContainer.nativeElement.querySelector("#cell-0-0");
       if (cell) {
         height = cell.offsetHeight;
@@ -903,7 +942,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
     console.debug(event);
 
     this.createCellComponent(<HTMLElement>event.srcElement);*/
-    this.gridEventService.setSelectedLocation(Point.getPoint(event.srcElement.id), null);
+    let idElement: HTMLElement = <HTMLElement>event.srcElement;
+    while (!idElement.id) {
+      idElement = idElement.parentElement;
+    }
+    console.debug(idElement);
+
+    this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
   }
 
   onFocus(event: Event) {

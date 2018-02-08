@@ -28,7 +28,6 @@ export class GridService {
   externalFiltering: boolean = false;
   externalSorting: boolean = false;
   externalPaging: boolean = false;
-  pageSize: number = -1;
   pageSizes: number[] = [10, 25, 50];
   nVisibleRows: number = null;
 
@@ -50,6 +49,8 @@ export class GridService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
+  private nFixedColumns: number = 0;
+  private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
   private valueSubject: Subject<Point> = new Subject<Point>();
   private selectedRows: any[] = [];
@@ -123,7 +124,7 @@ export class GridService {
       this.externalPaging = config.externalPaging;
     }
     if (config.pageSize !== undefined) {
-      this.pageSize = config.pageSize;
+      this.pageInfo.pageSize = config.pageSize;
     }
     if (config.pageSizes !== undefined) {
       this.pageSizes = config.pageSizes;
@@ -132,7 +133,9 @@ export class GridService {
       this.nVisibleRows = config.nVisibleRows;
     }
 
-    this.pageInfo.pageSize = this.pageSize;
+    if (this.nVisibleRows === null) {
+      this.nVisibleRows = this.pageInfo.pageSize;
+    }
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
@@ -156,6 +159,18 @@ export class GridService {
     let wLeft: number = 100;
     let nRight: number = this.columnDefinitions.length;
     let wRight: number = 100;
+
+    this.nFixedColumns = 0;
+    this.nNonFixedColumns = 0;
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      if (this.columnDefinitions[j].visible) {
+        if (this.columnDefinitions[j].isFixed) {
+          this.nFixedColumns = this.nFixedColumns + 1;
+        } else {
+          this.nNonFixedColumns = this.nNonFixedColumns + 1;
+        }
+      }
+    }
 
     let keyDefined: boolean = false;
     for (var i = 0; i < this.columnDefinitions.length; i++) {
@@ -212,6 +227,14 @@ export class GridService {
     } else {
       return "Add Parser";
     }
+  }
+
+  getNFixedColumns(): number {
+    return this.nFixedColumns;
+  }
+
+  getNNonFixedColumns(): number {
+    return this.nNonFixedColumns;
   }
 
   getColumnDefinitions() {

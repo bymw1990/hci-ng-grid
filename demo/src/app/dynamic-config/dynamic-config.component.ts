@@ -13,10 +13,10 @@ import {Component} from "@angular/core";
           <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
         </p>
         <p>
-          <hci-grid [title]="'Dynamic Columns'"
-                    [inputData]="data"
-                    [columnDefinitions]="columnsA">
-          </hci-grid>
+          <hci-ng-grid [title]="'Dynamic Columns'"
+                       [inputData]="data"
+                       [columnDefinitions]="columnsA">
+          </hci-ng-grid>
         </p>
       </div>
     </div>
@@ -30,11 +30,11 @@ import {Component} from "@angular/core";
           <button class="btn btn-primary" (click)="setColumnsB2()">Columns 2</button>
         </p>
         <p>
-          <hci-grid [title]="'Dynamic Columns Row Select'"
-                    [inputData]="data"
-                    [columnDefinitions]="columnsB"
-                    [rowSelect]="true">
-          </hci-grid>
+          <hci-ng-grid [title]="'Dynamic Columns Row Select'"
+                       [inputData]="data"
+                       [columnDefinitions]="columnsB"
+                       [rowSelect]="true">
+          </hci-ng-grid>
         </p>
       </div>
     </div>

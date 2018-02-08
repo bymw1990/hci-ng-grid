@@ -14,10 +14,10 @@ import { Column } from "hci-ng-grid/index";
             Here we change the color of the odd and even rows.
           </p>
           <p>
-            <hci-grid [inputData]="styleData1"
-                      [columnDefinitions]="styleColumns1"
-                      class="grid1">
-            </hci-grid>
+            <hci-ng-grid [inputData]="styleData1"
+                         [columnDefinitions]="styleColumns1"
+                         class="grid1">
+            </hci-ng-grid>
           </p>
         </div>
       </div>
@@ -31,11 +31,11 @@ import { Column } from "hci-ng-grid/index";
             Here we change the default colors for the cell selection.
           </p>
           <p>
-            <hci-grid [inputData]="styleData2"
-                      [columnDefinitions]="styleColumns2"
-                      [cellSelect]="true"
-                      class="grid2">
-            </hci-grid>
+            <hci-ng-grid [inputData]="styleData2"
+                         [columnDefinitions]="styleColumns2"
+                         [cellSelect]="true"
+                         class="grid2">
+            </hci-ng-grid>
           </p>
         </div>
       </div>
@@ -49,34 +49,34 @@ import { Column } from "hci-ng-grid/index";
             Here we override the row height to 45px and change the font family and size.
           </p>
           <p>
-            <hci-grid [inputData]="styleData3"
-                      class="grid3">
-            </hci-grid>
+            <hci-ng-grid [inputData]="styleData3"
+                         class="grid3">
+            </hci-ng-grid>
           </p>
         </div>
       </div>
     `,
     styles: [ `
     
-      .grid1 .hci-grid-row-even {
+      .grid1 .hci-ng-grid-row-even {
         background-color: #eeffee;
       }
-      .grid1 .hci-grid-row-odd {
+      .grid1 .hci-ng-grid-row-odd {
         background-color: #eeeeff;
       }
       
-      .grid2 .hci-grid-cell-template.focused {
+      .grid2 .hci-ng-grid-cell-template.focused {
         background-color: #ffeeee;
       }
       
-      .grid3 .hci-grid-row-height {
+      .grid3 .hci-ng-grid-row-height {
         height: 45px;
       }
       .grid3 {
         font-family: cursive;
         font-size: larger;
       }
-      .grid3 .hci-grid-cell-parent {
+      .grid3 .hci-ng-grid-cell-parent {
         margin-top: 8px;
       }
     

@@ -17,13 +17,13 @@ import { Column } from "hci-ng-grid/index";
           modify input cell values and check bound data changes<br />
         </p>
         <p>
-          <hci-grid [title]="'Edit Grid'"
-                    [inputData]="editData"
-                    [columnDefinitions]="editColumns"
-                    [cellSelect]="true"
-                    [pageSize]="25"
-                    [nVisibleRows]="10">
-          </hci-grid>
+          <hci-ng-grid [title]="'Edit Grid'"
+                       [inputData]="editData"
+                       [columnDefinitions]="editColumns"
+                       [cellSelect]="true"
+                       [pageSize]="25"
+                       [nVisibleRows]="10">
+          </hci-ng-grid>
         </p>
         <div style="padding: 20px;">
           <span style="font-weight: bold;">Bound Data</span>

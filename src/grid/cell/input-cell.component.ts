@@ -4,7 +4,7 @@ import {Point} from "../utils/point";
 import {CellTemplate} from "./cell-template.component";
 
 @Component({
-  selector: "hci-grid-cell-input",
+  selector: "hci-ng-grid-cell-input",
   template: `
     <input #input
            [ngModel]="value"
@@ -12,12 +12,12 @@ import {CellTemplate} from "./cell-template.component";
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
            (keydown)="onInputKeyDown($event);"
-           class="hci-grid-cell-template hci-grid-cell-input"
+           class="hci-ng-grid-cell-template hci-ng-grid-cell-input"
            [ngClass]="{ 'focused': focused }" />
   `,
   styles: [ `
       
-    .hci-grid-cell-input, .hci-grid-cell-input:focus {
+    .hci-ng-grid-cell-input, .hci-ng-grid-cell-input:focus {
       overflow-x: hidden;
       border: none;
       outline: none;

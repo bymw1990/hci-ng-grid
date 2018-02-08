@@ -18,11 +18,11 @@ import { Column } from "hci-ng-grid/index";
           modify input cell values and check bound data changes<br />
         </p>
         <p>
-          <hci-grid [title]="'Fixed Grid'"
-                    [inputData]="fixedData"
-                    [columnDefinitions]="fixedColumns"
-                    [fixedColumns]="['firstName', 'lastName']">
-          </hci-grid>
+          <hci-ng-grid [title]="'Fixed Grid'"
+                       [inputData]="fixedData"
+                       [columnDefinitions]="fixedColumns"
+                       [fixedColumns]="['firstName', 'lastName']">
+          </hci-ng-grid>
         </p>
         <div style="padding: 20px;">
           <span style="font-weight: bold;">Bound Data</span>

@@ -60,7 +60,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           in the object.
         </p>
         <p>
-          <hci-grid [inputData]="simpleData3"></hci-grid>
+          <hci-ng-grid [inputData]="simpleData3"></hci-ng-grid>
         </p>
       </div>
     </div>
@@ -74,17 +74,17 @@ import { DataGeneratorService } from "../services/data-generator.service";
           
         </p>
         <p>
-          <hci-grid [title]="'Simple Grid Delayed'"
-                    [inputData]="simpleData4"
-                    [columnDefinitions]="[
-                      { field: 'idPatient', name: 'ID' },
-                      { field: 'lastName', name: 'Last Name' },
-                      { field: 'firstName', name: 'First Name' },
-                      { field: 'dob', name: 'Date of Birth' },
-                      { field: 'address', name: 'Address 1' },
-                      { field: 'citystatezip', name: 'Address 2' }
-                    ]">
-          </hci-grid>
+          <hci-ng-grid [title]="'Simple Grid Delayed'"
+                       [inputData]="simpleData4"
+                       [columnDefinitions]="[
+                         { field: 'idPatient', name: 'ID' },
+                         { field: 'lastName', name: 'Last Name' },
+                         { field: 'firstName', name: 'First Name' },
+                         { field: 'dob', name: 'Date of Birth' },
+                         { field: 'address', name: 'Address 1' },
+                         { field: 'citystatezip', name: 'Address 2' }
+                       ]">
+          </hci-ng-grid>
         </p>
       </div>
     </div>

@@ -32,11 +32,11 @@ import { Column } from "hci-ng-grid/index";
           </ul>
         </div>
         <p>
-          <hci-grid [title]="'Copy Paste Grid'"
-                    [inputData]="copyPasteData"
-                    [columnDefinitions]="copyPasteColumns"
-                    [cellSelect]="true">
-          </hci-grid>
+          <hci-ng-grid [title]="'Copy Paste Grid'"
+                       [inputData]="copyPasteData"
+                       [columnDefinitions]="copyPasteColumns"
+                       [cellSelect]="true">
+          </hci-ng-grid>
         </p>
         <div style="padding: 20px;">
           <span style="font-weight: bold;">Bound Data</span>
