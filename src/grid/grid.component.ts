@@ -56,7 +56,7 @@ import {InputCell} from "./cell/input-cell.component";
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="title !== null" class="hci-grid-header">
+      <div *ngIf="title !== null" id="titleBar">
         <span>{{title}}</span>
       </div>
       
@@ -68,30 +68,30 @@ import {InputCell} from "./cell/input-cell.component";
           <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
         </div>
         
-        <div #headerContainer id="header">
-          <div #leftHeader id="leftHeader">
-            <div id="leftColumnHeader">
+        <div #headerContentContent id="headerContent">
+          <div #leftHeaderView id="leftHeaderView">
+            <div id="leftHeaderContainer">
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
                                  class="hci-grid-column-header hci-grid-row-height"
                                  [class.hci-grid-row-height]="column.filterType === null"
                                  [class.hci-grid-row-height-filter]="column.filterType !== null"
-                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
+                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center; border-right: black 2px solid;"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
               </hci-column-header>
             </div>
           </div>
-          <div #rightHeader id="rightHeader">
-            <div id="rightColumnHeader">
+          <div #rightHeaderView id="rightHeaderView">
+            <div id="rightHeaderContainer">
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
                                  class="hci-grid-column-header hci-grid-row-height"
                                  [class.hci-grid-row-height]="column.filterType === null"
                                  [class.hci-grid-row-height-filter]="column.filterType !== null"
-                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
+                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center; border-right: black 2px solid;"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
                                  [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
               </hci-column-header>
@@ -172,95 +172,8 @@ import {InputCell} from "./cell/input-cell.component";
     </div>
   `,
   styles: [ `
-      
-    #mainContent {
-      width: 1000px;
-      height: 400px;
-    }
-      
-    #header {
-      display: inline-block;
-    }
-    
-    #leftHeader {
-      position: absolute;
-      display: inline-block;
-      white-space: nowrap;
-    }
-      
-    #leftColumnHeader {
-      float: left;
-      top: 0px;
-    }
-      
-    #rightHeader {
-      display: inline-block;
-      white-space: nowrap;
-      margin-left: 280px;
-      margin-right: 0px;
-      overflow: hidden;
-      width: 720px;
-      height: 30px;
-    }      
-    
-    #rightColumnHeader {
-      display: inline;
-      position: relative;
-    }
-    
-    #gridContent {
-      display: inline-block;
-      position: absolute;
-    }
-    
-    #leftView {
-      float: left;
-    }
-    
-    #leftContainer {
-      width: 280px;
-      min-width: 280px;
-    }
-    
-    #rightView {
-      margin-left: 280px;
-      width: 720px;
-      overflow: auto;
-    }
-    
-    #rightContainer {
-      white-space: nowrap;
-    }
-    /*
-    .grid-content {
-      width: 100%;
-      overflow-y: auto;
-      overflow-x: auto;
-      display: inline-flex;
-    }
-    
-    .hci-grid-left-row-container {
-      float: left;
-      position: sticky;
-      left: 0px;
-      background-color: white;
-      z-index: 11;
-    }
-    
-    .empty-content {
-      height: 150px;
-      flex: 1 0 100%;
-    }
-    
-    .empty-content-text {
-      align-self: center;
-      margin-right: auto;
-      margin-left: auto;
-      color: #dddddd;
-      font-size: 5em;
-    }
-    
-    .hci-grid-header {
+
+    #titleBar {
       background-color: transparent;
       color: black;
       padding: 10px;
@@ -270,15 +183,77 @@ import {InputCell} from "./cell/input-cell.component";
       font-weight: bold;
       font-size: large;
     }
+
+    #mainContent {
+      width: 1000px;
+      height: 280px;
+    }
     
-    .hci-grid-column-header {
-      display: flex;
+    #headerContent {
+      display: inline-block;
+      position: absolute;
+      height: 30px;
       border: black 1px solid;
       font-weight: bold;
       background-color: transparent;
       color: black;
       vertical-align: top;
-    }*/
+    }
+    
+    #leftHeaderView {
+      position: absolute;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    
+    #leftHeaderContainer {
+      float: left;
+      top: 0px;
+    }
+    
+    #rightHeaderView {
+      display: inline-block;
+      white-space: nowrap;
+      margin-left: 280px;
+      margin-right: 0px;
+      overflow: hidden;
+      width: 720px;
+      height: 30px;
+    }      
+    
+    #rightHeaderContainer {
+      display: inline;
+      position: relative;
+    }
+    
+    #gridContent {
+      display: inline-block;
+      position: absolute;
+      margin-top: 30px;
+    }
+    
+    #leftView {
+      float: left;
+      overflow: hidden;
+      height: 250px;
+    }
+    
+    #leftContainer {
+      white-space: nowrap;
+      top: -55px;
+      position: relative;
+    }
+    
+    #rightView {
+      margin-left: 280px;
+      width: 720px;
+      overflow: auto;
+      height: 250px;
+    }
+    
+    #rightContainer {
+      white-space: nowrap;
+    }
     
     .hci-grid-busy {
       z-index: 9999;
@@ -365,8 +340,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   onScrollRightView(event: Event) {
     console.debug("onScrollRightView");
     let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
-    let rightColumnHeader: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightColumnHeader");
-    this.renderer.setStyle(rightColumnHeader, "left", "-" + rightRowContainer.scrollLeft + "px");
+    let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightHeaderContainer");
+    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
+    this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
   }
 
   /**
@@ -632,9 +609,20 @@ export class GridComponent implements OnChanges, AfterViewInit {
         }
       }
 
-      e = this.gridContainer.nativeElement.querySelector("#leftContainer");
+      e = this.gridContainer.nativeElement.querySelector("#leftView");
       this.renderer.setStyle(e, "width", fixedWidth + "px");
+      e = this.gridContainer.nativeElement.querySelector("#leftView");
       this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
+
+      e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+      this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
+      e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+      this.renderer.setStyle(e, "width", (width - Math.max(fixedWidth, fixedMinWidth)) + "px");
+
+      e = this.gridContainer.nativeElement.querySelector("#rightView");
+      this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
+      e = this.gridContainer.nativeElement.querySelector("#rightView");
+      this.renderer.setStyle(e, "width", (width - Math.max(fixedWidth, fixedMinWidth)) + "px");
 
       for (var i = 0; i < this.dataSize.length; i++) {
         for (var j = 0; j < this.columnDefinitions.length; j++) {
@@ -734,7 +722,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let rows = this.gridContainer.nativeElement.querySelector("#rightRowContainer");
       this.renderer.setStyle(rows, "max-height", 30 * this.config.nVisibleRows + "px");
       this.renderer.setStyle(rows, "overflow-y", "auto");
-      /*let header = this.gridContainer.nativeElement.querySelector("#rightColumnHeader");
+      /*let header = this.gridContainer.nativeElement.querySelector("#rightHeaderContainer");
       if (header && rows.scrollHeight > rows.offsetHeight) {
         this.renderer.setStyle(header, "margin-right", "17px");
       } else {

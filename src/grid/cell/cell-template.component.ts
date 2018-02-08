@@ -55,8 +55,8 @@ export class CellTemplate {
   updateLocation() {
     console.debug("updateLocation: " + this.hostElement.offsetLeft + " " + this.hostElement.parentElement.scrollLeft + " " + this.hostElement.offsetTop + " " + this.hostElement.parentElement.scrollTop);
     this.renderer.setStyle(this.elementRef.nativeElement, "position", "absolute");
-    this.renderer.setStyle(this.elementRef.nativeElement, "left", (this.hostElement.offsetLeft - this.elementRef.nativeElement.parentElement.scrollLeft) + "px");
-    this.renderer.setStyle(this.elementRef.nativeElement, "top", (this.hostElement.offsetTop - this.elementRef.nativeElement.parentElement.scrollTop) + "px");
+    this.renderer.setStyle(this.elementRef.nativeElement, "margin-left", (this.hostElement.offsetLeft - this.elementRef.nativeElement.parentElement.parentElement.scrollLeft) + "px");
+    this.renderer.setStyle(this.elementRef.nativeElement, "margin-top", (this.hostElement.offsetTop - this.elementRef.nativeElement.parentElement.parentElement.scrollTop) + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "width", this.hostElement.offsetWidth + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "height", this.hostElement.offsetHeight + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "border", "red 1px solid");
