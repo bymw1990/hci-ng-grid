@@ -54,94 +54,97 @@ import {InputCell} from "./cell/input-cell.component";
         </div>
       </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
-      <div #container></div>
       
       <!-- Title Bar -->
       <div *ngIf="title !== null" class="hci-grid-header">
         <span>{{title}}</span>
       </div>
       
-      <!-- Content -->
-      <div class="grid-content">
+      <div #mainContent id="mainContent">
+        <div #cellEditContainer></div>
+        
         <div *ngIf="origDataSize === 0" class="d-flex flex-nowrap empty-content">
           <div *ngIf="!busy" class="empty-content-text">No Data</div>
           <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
         </div>
         
-        <div #leftRowContainer id="leftRowContainer" class="hci-grid-left-row-container">
-          <!-- Left Headers -->
-          <div id="leftColumnHeader"
-               style="position: sticky; float: left; top: 0; z-index: 1; background-color: white;"
-               [style.display]="columnHeaders ? 'table' : 'none'">
-            <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
-                               [id]="'header-' + column.id"
-                               [column]="column"
-                               class="hci-grid-column-header hci-grid-row-height"
-                               [class.hci-grid-row-height]="column.filterType === null"
-                               [class.hci-grid-row-height-filter]="column.filterType !== null"
-                               style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
-                               [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                               [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-            </hci-column-header>
+        <div #headerContainer id="header">
+          <div #leftHeader id="leftHeader">
+            <div id="leftColumnHeader">
+              <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
+                                 [id]="'header-' + column.id"
+                                 [column]="column"
+                                 class="hci-grid-column-header hci-grid-row-height"
+                                 [class.hci-grid-row-height]="column.filterType === null"
+                                 [class.hci-grid-row-height-filter]="column.filterType !== null"
+                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
+                                 [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                                 [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+              </hci-column-header>
+            </div>
           </div>
+          <div #rightHeader id="rightHeader">
+            <div id="rightColumnHeader">
+              <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
+                                 [id]="'header-' + column.id"
+                                 [column]="column"
+                                 class="hci-grid-column-header hci-grid-row-height"
+                                 [class.hci-grid-row-height]="column.filterType === null"
+                                 [class.hci-grid-row-height-filter]="column.filterType !== null"
+                                 style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
+                                 [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                                 [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+              </hci-column-header>
+            </div>
+          </div>
+        </div>
 
-          <!-- Left Data Rows -->
-          <ng-container *ngFor="let rowGroup of dataSize; let i = index">
-            <div class="flex-nowrap"
-                 [style.display]="i < gridData.length ? 'table' : 'none'"
-                 [style.margin-top]="i === 0 && columnHeaders ? '30px' : '0px'">
-              <ng-container *ngFor="let column of columnDefinitions | isFixed: true | isVisible">
-                <div (click)="onClick($event)"
-                     [id]="'cell-' + i + '-' + column.id"
-                     class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
-                     style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block;"
-                     [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                     [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+        <!-- Content -->
+        <div #gridContent id="gridContent">
+          <div #leftView id="leftView">
+            <div #leftContainer id="leftContainer" class="hci-grid-left-row-container">
+              <!-- Left Data Rows -->
+              <ng-container *ngFor="let rowGroup of dataSize; let i = index">
+                <div class="flex-nowrap"
+                     [style.display]="i < gridData.length ? 'table' : 'none'">
+                  <ng-container *ngFor="let column of columnDefinitions | isFixed: true | isVisible">
+                    <div (click)="onClick($event)"
+                         [id]="'cell-' + i + '-' + column.id"
+                         class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                         style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block;"
+                         [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                         [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                    </div>
+                  </ng-container>
                 </div>
               </ng-container>
             </div>
-          </ng-container>
-        </div>
-        
-        <!-- Right (Main) Content -->
-        <div class="rightDiv"
-             style="overflow-x: auto;"
-             [style.flex]="nFixedColumns > 0 ? '1 1 ' + (100 - nFixedColumns * 10) + '%' : '1 1 100%'">
-          <!-- Right Headers -->
-          <div #rightRowContainer id="rightRowContainer" class="hci-grid-right-row-container">
-            <div id="rightColumnHeader"
-                 style="position: sticky; float: left; top: 0; z-index: 1; background-color: white;"
-                 [style.display]="columnHeaders ? 'table' : 'none'">
-              <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
-                   [id]="'header-' + column.id"
-                   [column]="column"
-                   class="hci-grid-column-header hci-grid-row-height"
-                   [class.hci-grid-row-height]="column.filterType === null"
-                   [class.hci-grid-row-height-filter]="column.filterType !== null"
-                   style="height: 30px; vertical-align: top; display: inline-flex; align-items: center;"
-                   [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                   [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-              </hci-column-header>
+          </div>
+
+          <!-- Right (Main) Content -->
+          <div #rightView id="rightView">
+            <!-- Right Headers -->
+            <div #rightRowContainer id="rightContainer">
+
+              <!-- Right Data Rows -->
+              <ng-container *ngFor="let rowGroup of dataSize; let i = index">
+                <div class="flex-nowrap"
+                     [style.display]="i < gridData.length ? 'table' : 'none'">
+                  <ng-container *ngFor="let column of columnDefinitions | isFixed: false | isVisible">
+                    <div (click)="onClick($event)"
+                         [id]="'cell-' + i + '-' + column.id"
+                         class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
+                         style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block;"
+                         [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
+                         [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
             </div>
-              
-            <!-- Right Data Rows -->
-            <ng-container *ngFor="let rowGroup of dataSize; let i = index">
-              <div class="flex-nowrap"
-                   [style.display]="i < gridData.length ? 'table' : 'none'"
-                   [style.margin-top]="i === 0 && columnHeaders ? '30px' : '0px'">
-                <ng-container *ngFor="let column of columnDefinitions | isFixed: false | isVisible">
-                  <div (click)="onClick($event)"
-                       [id]="'cell-' + i + '-' + column.id"
-                       class="hci-grid-cell-parent hci-grid-cell hci-grid-row-height"
-                       style="border: black 1px solid; flex-wrap: nowrap; height: 30px; vertical-align: top; display: inline-block;"
-                       [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                       [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
-                  </div>
-                </ng-container>
-              </div>
-            </ng-container>
           </div>
         </div>
+        
       </div>
 
       <input #focuser2 id="focuser2" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
@@ -169,16 +172,79 @@ import {InputCell} from "./cell/input-cell.component";
     </div>
   `,
   styles: [ `
+      
+    #mainContent {
+      width: 1000px;
+      height: 400px;
+    }
+      
+    #header {
+      display: inline-block;
+    }
     
+    #leftHeader {
+      position: absolute;
+      display: inline-block;
+      white-space: nowrap;
+    }
+      
+    #leftColumnHeader {
+      float: left;
+      top: 0px;
+    }
+      
+    #rightHeader {
+      display: inline-block;
+      white-space: nowrap;
+      margin-left: 280px;
+      margin-right: 0px;
+      overflow: hidden;
+      width: 720px;
+      height: 30px;
+    }      
+    
+    #rightColumnHeader {
+      display: inline;
+      position: relative;
+    }
+    
+    #gridContent {
+      display: inline-block;
+      position: absolute;
+    }
+    
+    #leftView {
+      float: left;
+    }
+    
+    #leftContainer {
+      width: 280px;
+      min-width: 280px;
+    }
+    
+    #rightView {
+      margin-left: 280px;
+      width: 720px;
+      overflow: auto;
+    }
+    
+    #rightContainer {
+      white-space: nowrap;
+    }
+    /*
     .grid-content {
       width: 100%;
+      overflow-y: auto;
+      overflow-x: auto;
       display: inline-flex;
-      white-space: nowrap;
-      border: black 1px solid;
     }
     
     .hci-grid-left-row-container {
-      flex-shrink: 0;
+      float: left;
+      position: sticky;
+      left: 0px;
+      background-color: white;
+      z-index: 11;
     }
     
     .empty-content {
@@ -212,7 +278,7 @@ import {InputCell} from "./cell/input-cell.component";
       background-color: transparent;
       color: black;
       vertical-align: top;
-    }
+    }*/
     
     .hci-grid-busy {
       z-index: 9999;
@@ -234,7 +300,7 @@ import {InputCell} from "./cell/input-cell.component";
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
-  @ViewChild("container", { read: ViewContainerRef }) container: any;
+  @ViewChild("cellEditContainer", { read: ViewContainerRef }) cellEditContainer: any;
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: ElementRef;
   @ViewChild("busyOverlay") busyOverlay: ElementRef;
@@ -296,6 +362,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
               private domSanitizer: DomSanitizer, private gridService: GridService, private gridEventService: GridEventService,
               private gridMessageService: GridMessageService) {}
 
+  onScrollRightView(event: Event) {
+    console.debug("onScrollRightView");
+    let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
+    let rightColumnHeader: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightColumnHeader");
+    this.renderer.setStyle(rightColumnHeader, "left", "-" + rightRowContainer.scrollLeft + "px");
+  }
+
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
    */
@@ -303,6 +376,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.level) {
       this.gridMessageService.setLevel(this.level);
     }
+
+    let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
+    rightView.addEventListener("scroll", this.onScrollRightView.bind(this), true);
 
     this.buildConfig();
     this.gridService.setConfig(this.config);
@@ -468,7 +544,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.gridContainer.nativeElement.addEventListener("scroll", this.onScroll, true);
+    this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
+    //this.gridContainer.nativeElement.addEventListener("scroll", this.onScroll.bind(this), true);
 
     this.busySubject.subscribe((busy: boolean) => {
       this.busy = busy;
@@ -491,7 +568,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
       console.debug("GridComponent.selectedLocationSubscription");
-      this.container.clear();
+      this.cellEditContainer.clear();
       this.componentRef = null;
       if (p.isNotNegative()) {
         this.selectComponent(p.i, p.j);
@@ -555,7 +632,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         }
       }
 
-      e = this.gridContainer.nativeElement.querySelector("#leftRowContainer");
+      e = this.gridContainer.nativeElement.querySelector("#leftContainer");
       this.renderer.setStyle(e, "width", fixedWidth + "px");
       this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
 
@@ -587,6 +664,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   createCellComponent(cellElement: HTMLElement) {
+    console.debug("createCellComponent");
+
     if (cellElement.id) {
       let id: string = cellElement.id;
       let ids = id.split("-");
@@ -622,7 +701,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
        }*/
 
       factory = this.resolver.resolveComponentFactory(InputCell);
-      this.componentRef = this.container.createComponent(factory).instance;
+      this.componentRef = this.cellEditContainer.createComponent(factory).instance;
       this.componentRef.setPosition(i, j);
       this.componentRef.setData(this.gridData[i].get(j));
       this.componentRef.setLocation(cellElement);
@@ -655,12 +734,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let rows = this.gridContainer.nativeElement.querySelector("#rightRowContainer");
       this.renderer.setStyle(rows, "max-height", 30 * this.config.nVisibleRows + "px");
       this.renderer.setStyle(rows, "overflow-y", "auto");
-      let header = this.gridContainer.nativeElement.querySelector("#rightColumnHeader");
+      /*let header = this.gridContainer.nativeElement.querySelector("#rightColumnHeader");
       if (header && rows.scrollHeight > rows.offsetHeight) {
         this.renderer.setStyle(header, "margin-right", "17px");
       } else {
         this.renderer.setStyle(header, "margin-right", "0px");
-      }
+      }*/
     }
   }
 
@@ -952,7 +1031,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @HostListener("document:click", ["$event"])
   clickout(event) {
     if (!this.el.nativeElement.contains(event.target)) {
-      this.container.clear();
+      this.cellEditContainer.clear();
       this.componentRef = null;
       this.gridEventService.clearSelectedLocation();
     }
