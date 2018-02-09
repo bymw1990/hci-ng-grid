@@ -10,6 +10,7 @@ import {PageInfo} from "../utils/page-info";
 import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class GridService {
@@ -34,8 +35,8 @@ export class GridService {
   inputData: Object[];
   preparedData: Array<Row>;
 
-  gridData: Array<Row>;
-  data = new Subject<Array<Row>>();
+  gridData: Array<Row> = new Array<Row>();
+  data: BehaviorSubject<Array<Row>> = new BehaviorSubject<Array<Row>>(new Array<Row>());
 
   filterInfo: Array<FilterInfo> = new Array<FilterInfo>();
 
@@ -227,6 +228,10 @@ export class GridService {
     } else {
       return "Add Parser";
     }
+  }
+
+  getNVisibleRows(): number {
+    return this.nVisibleRows;
   }
 
   getNFixedColumns(): number {

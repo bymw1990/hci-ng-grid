@@ -25,6 +25,9 @@ export class Column {
   dataType: string = "string";
   selectable: boolean = true;
 
+  renderLeft: number = 0;
+  renderWidth: number = 0;
+
   static deserialize(object): Column {
     return new Column(object);
   }
