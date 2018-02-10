@@ -16,7 +16,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         </p>
         <p>
           <!--<hci-grid [title]="'Empty Grid'"
-                    [inputData]="data">
+                    [data]="data">
             <column-def [field]="'lastName'"></column-def>
             <column-def [field]="'firstName'"></column-def>
             <column-def [field]="'dob'">

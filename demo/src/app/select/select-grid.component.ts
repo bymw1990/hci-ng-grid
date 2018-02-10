@@ -15,7 +15,7 @@ import {Column, GridComponent} from "hci-ng-grid/index";
           <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
         </p>
         <p>
-          <hci-ng-grid [inputData]="data1"
+          <hci-ng-grid [data]="data1"
                        [columnDefinitions]="columns1"
                        [onRowDoubleClick]="onRowDoubleClick">
           </hci-ng-grid>
@@ -41,7 +41,7 @@ import {Column, GridComponent} from "hci-ng-grid/index";
         </p>
         <p>
           <hci-ng-grid #grid2
-                       [inputData]="data2"
+                       [data]="data2"
                        [columnDefinitions]="columns2"
                        [rowSelect]="true"
                        (selectedRows)="setSelectedRows($event)"

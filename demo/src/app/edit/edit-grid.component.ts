@@ -18,7 +18,7 @@ import { Column } from "hci-ng-grid/index";
         </p>
         <p>
           <hci-ng-grid [title]="'Edit Grid'"
-                       [inputData]="editData"
+                       [data]="editData"
                        [columnDefinitions]="editColumns"
                        [cellSelect]="true"
                        [pageSize]="25"

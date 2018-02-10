@@ -56,7 +56,7 @@ import {Cell} from "./cell/cell";
       
       <div #mainContent id="mainContent">
         
-        <div *ngIf="origDataSize === 0" class="d-flex flex-nowrap empty-content">
+        <div *ngIf="gridData.length === 0" class="d-flex flex-nowrap empty-content">
           <div *ngIf="!busy" class="empty-content-text">No Data</div>
           <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
         </div>
@@ -250,7 +250,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("focuser2") focuser2: ElementRef;
   @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
 
-  @Input() inputData: Object[] = null;
+  @Input("data") boundData: Object[] = null;
 
   @Input() config: any = {};
   @Input() title: string = null;
@@ -269,20 +269,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = 10;
 
-  @Input() onAlert: Function;
-  @Input() onExternalDataCall: Function;
+  @Input("dataCall") onExternalDataCall: Function;
   @Input() onRowDoubleClick: Function;
 
+  @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
-  rowRender: Array<number> = new Array<number>();
-  rowRenderSubject: Subject<Array<number>> = new Subject<Array<number>>();
-
   gridData: Array<Row> = new Array<Row>();
-  origDataSize: number = 0;
-  nFixedColumns: number = 0;
-  nColumns: number = 0;
-  fixedMinWidth: number = 0;
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
   columnHeaders: boolean = false;
@@ -299,22 +292,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
   columnsChangedSubscription: Subscription;
 
   private componentRef: CellTemplate = null;
-  private cellKeySubscription: Subscription;
   private selectedLocationSubscription: Subscription;
 
   constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
               private domSanitizer: DomSanitizer, private gridService: GridService, private gridEventService: GridEventService,
               private gridMessageService: GridMessageService) {}
 
-  onScrollRightView(event: Event) {
-    console.debug("onScrollRightView");
-    let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
-    let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightHeaderContainer");
-    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
-    this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
-    this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
-    this.updateGridSizes();
-    this.renderData();
+  ngOnInit() {
+    this.gridMessageService.messageObservable.subscribe((message: string) => {
+      this.warning.emit(message);
+    });
   }
 
   /**
@@ -344,18 +331,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
           } else {
             this.gridService.pageInfo = externalData.externalInfo.getPage();
           }
-          this.gridService.setInputData(externalData.data);
-          this.gridService.setInputDataInit();
+          this.gridService.setOriginalData(externalData.data);
 
           this.pageInfo = this.gridService.pageInfo;
           //this.updateRenderSize();
         });
-      });
-    }
-
-    if (this.onAlert) {
-      this.gridMessageService.messageObservable.subscribe((message: string) => {
-        this.onAlert(message);
       });
     }
 
@@ -378,21 +358,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
     /* Get initial page Info */
     this.pageInfo = this.gridService.pageInfo;
 
-    /* Can't use inputData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use inputData. */
+    /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
       this.busySubject.next(true);
       this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
         this.gridService.pageInfo = externalData.getExternalInfo().getPage();
-        this.gridService.setInputData(externalData.getData());
-        this.gridService.setInputDataInit();
+        this.gridService.setOriginalData(externalData.getData());
         this.postInit();
       });
-    } else if (this.inputData) {
-      if (this.gridService.setInputData(this.inputData)) {
-        this.gridService.init();
-        this.postInitGridConfiguration();
-      }
-      this.gridService.setInputDataInit();
+    } else if (this.boundData) {
+      this.gridService.setOriginalData(this.boundData);
       this.postInit();
     } else {
       this.postInit();
@@ -401,7 +376,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.columnsChangedSubscription = this.gridService.getColumnsChangedSubject().subscribe((changed: boolean) => {
       if (changed) {
         this.initGridConfiguration();
-        this.gridService.setInputDataInit();
+        this.gridService.initData();
         this.postInit();
       }
     });
@@ -412,26 +387,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
 
-    this.inputDataSubject.subscribe((inputData: Object[]) => {
-      console.debug("inputDataSubject.subscribe: " + inputData.length);
+    this.inputDataSubject.subscribe((boundData: Object[]) => {
+      console.debug("inputDataSubject.subscribe: " + boundData.length);
       this.busySubject.next(true);
-      this.gridService.setInputData(this.inputData);
-      this.gridService.setInputDataInit();
+      this.gridService.setOriginalData(this.boundData);
+      this.gridService.initData();
       this.busySubject.next(false);
     });
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
-    this.gridService.data.subscribe((data: Array<Row>) => {
+    this.gridService.getViewDataSubject().subscribe((data: Array<Row>) => {
       console.debug("data.subscribe: " + data.length);
       this.setGridData(data);
     });
-
-    this.rowRenderSubject.subscribe((rowRender: Array<number>) => {
-      this.updateGridSizes();
-    });
-
-    let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
-    rightView.addEventListener("scroll", this.onScrollRightView.bind(this), true);
 
     this.busySubject.subscribe((busy: boolean) => {
       this.busy = busy;
@@ -442,8 +410,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.pageInfo = this.gridService.pageInfo;
-    //this.updateRenderSize();
-    this.updateGridContainerHeight();
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
       console.debug("GridComponent.selectedLocationSubscription");
@@ -465,13 +431,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     });
 
+    let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
+    rightView.addEventListener("scroll", this.onScrollRightView.bind(this), true);
+
     this.initialized = true;
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
     //if (this.initialized) {
-      if (changes["inputData"]) {
-        this.inputDataSubject.next(this.inputData);
+      if (changes["boundData"]) {
+        this.inputDataSubject.next(this.boundData);
       } else if (changes["config"]) {
         this.gridService.setConfig(this.config);
       } else {
@@ -498,6 +467,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let insideGridWidth: number = gridWidth;
       let w: number = 0;
 
+      console.debug("gridWidth: " + gridWidth);
       if (this.gridService.getNVisibleRows() < this.pageInfo.pageSize) {
         insideGridWidth = gridWidth - 17;
       }
@@ -515,7 +485,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           break;
         }
 
-        exactWidth = Math.max(insideGridWidth / 100 * this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
+        exactWidth = Math.max(insideGridWidth * (this.columnDefinitions[j].width / 100), this.columnDefinitions[j].minWidth);
         if (exactWidth !== Math.floor(exactWidth)) {
           remainder = remainder + exactWidth - Math.floor(exactWidth);
         }
@@ -564,72 +534,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
       e = this.gridContainer.nativeElement.querySelector("#rightView");
       this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
-
-      /*let width: number = 0;
-      let left: number = 0;
-      for (var i = 0; i < this.rowRender.length; i++) {
-        left = 0;
-        let fixed: boolean = true;
-        for (var j = 0; j < this.columnDefinitions.length; j++) {
-          if (!this.columnDefinitions[j].visible) {
-            break;
-          }
-
-          if (fixed && !this.columnDefinitions[j].isFixed) {
-            fixed = false;
-            left = 0;
-          }
-
-          e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
-          if (e) {
-            width = Math.floor(Math.max(insideGridWidth / 100 * this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth));
-            if (this.columnDefinitions.length - 1 === j) {
-              width = width + remainder;
-            }
-            this.renderer.setStyle(e, "width", width + "px");
-            this.renderer.setStyle(e, "left", left + "px");
-            left = left + width;
-          }
-        }
-      }*/
-
-      //this.changeDetectorRef.markForCheck();
-    //}
   }
-
-  /*updateRenderSize() {
-    console.debug("updateRenderSize: " + this.pageInfo.pageSize + " " + this.gridService.getNVisibleRows());
-
-    let startPosition: number = 0;
-    let endPosition: number = 0;
-
-    let scrollTop: number = this.gridContainer.nativeElement.querySelector("#rightContainer").scrollTop;
-    startPosition = Math.floor(scrollTop / 30);
-
-    this.rowRender = new Array<number>();
-
-    if (this.gridData === null || this.gridData.length === 0) {
-      return;
-    }
-
-    if (this.gridService.getNVisibleRows() < 0) {
-      if (this.pageInfo.pageSize < 0) {
-        for (var i = 0; i < this.gridData.length; i++) {
-          this.rowRender.push(i);
-        }
-      } else {
-        for (var i = 0; i < this.pageInfo.pageSize; i++) {
-          this.rowRender.push(i);
-        }
-      }
-    } else {
-      for (var i = startPosition; i < startPosition + this.gridService.getNVisibleRows(); i++) {
-        this.rowRender.push(i);
-      }
-    }
-
-    this.changeDetectorRef.markForCheck();
-  }*/
 
   setGridData(gridData: Array<Row>) {
     console.debug("setGridData");
@@ -637,7 +542,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.changeDetectorRef.markForCheck();
     this.gridData = gridData;
-    this.origDataSize = this.gridService.getOriginalDataSize();
     this.renderData();
     this.busySubject.next(false);
   }
@@ -645,16 +549,24 @@ export class GridComponent implements OnChanges, AfterViewInit {
   renderData() {
     console.debug("renderData");
     this.changeDetectorRef.detectChanges();
-    //this.updateRenderSize();
+    this.updateGridContainerHeight();
     this.updateGridSizes();
 
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
     for (let i of this.renderedRows) {
-      this.renderer.removeChild(leftContainer, leftContainer.querySelector("#row-left-" + i));
+      try {
+        this.renderer.removeChild(leftContainer, leftContainer.querySelector("#row-left-" + i));
+      } catch (e) {
+        // Ignore
+      }
     }
     let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightContainer");
     for (let i of this.renderedRows) {
-      this.renderer.removeChild(rightContainer, rightContainer.querySelector("#row-right-" + i));
+      try {
+        this.renderer.removeChild(rightContainer, rightContainer.querySelector("#row-right-" + i));
+      } catch (e) {
+        // Ignore
+      }
     }
     this.renderedRows = [];
 
@@ -873,7 +785,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   updateGridContainerHeight() {
     if (this.config.nVisibleRows) {
-      console.debug("postInit.nVisibleRows");
+      console.debug("updateGridContainerHeight.nVisibleRows");
 
       let height: number = this.config.nVisibleRows * 30;
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (30 + height) + "px");
@@ -893,11 +805,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   postInit() {
     console.debug("postInit");
 
-    this.updateGridContainerHeight();
-
     this.pageInfo = this.gridService.pageInfo;
-    this.updateGridSizes();
     this.pageSizes = this.gridService.pageSizes;
+    this.updateGridContainerHeight();
+    this.updateGridSizes();
 
     this.gridEventService.setSelectedLocation(null, null);
     this.changeDetectorRef.markForCheck();
@@ -972,10 +883,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   initGridConfiguration() {
     this.gridService.pageInfo = this.gridService.pageInfo;
     this.gridService.init();
-    this.postInitGridConfiguration();
+    this.columnDefinitions = this.gridService.columnDefinitions;
+    //this.postInitGridConfiguration();
   }
 
-  postInitGridConfiguration() {
+  /*postInitGridConfiguration() {
     if (this.gridService.columnDefinitions !== null) {
       this.columnDefinitions = this.gridService.columnDefinitions;
 
@@ -995,7 +907,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     //this.updateRenderSize();
-  }
+  }*/
 
   public clearSelectedRows() {
     this.gridService.clearSelectedRows();
@@ -1010,6 +922,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.componentRef !== null) {
       this.componentRef.updateLocation();
     }
+  }
+
+  onScrollRightView(event: Event) {
+    console.debug("onScrollRightView");
+    let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
+    let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightHeaderContainer");
+    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
+    this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
+    this.updateGridSizes();
+    this.renderData();
   }
 
   onClick(event: MouseEvent) {

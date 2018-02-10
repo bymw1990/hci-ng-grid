@@ -14,7 +14,7 @@ import { Column } from "hci-ng-grid/index";
             Here we change the color of the odd and even rows.
           </p>
           <p>
-            <hci-ng-grid [inputData]="styleData1"
+            <hci-ng-grid [data]="styleData1"
                          [columnDefinitions]="styleColumns1"
                          class="grid1">
             </hci-ng-grid>
@@ -31,7 +31,7 @@ import { Column } from "hci-ng-grid/index";
             Here we change the default colors for the cell selection.
           </p>
           <p>
-            <hci-ng-grid [inputData]="styleData2"
+            <hci-ng-grid [data]="styleData2"
                          [columnDefinitions]="styleColumns2"
                          [cellSelect]="true"
                          class="grid2">
@@ -49,7 +49,7 @@ import { Column } from "hci-ng-grid/index";
             Here we override the row height to 45px and change the font family and size.
           </p>
           <p>
-            <hci-ng-grid [inputData]="styleData3"
+            <hci-ng-grid [data]="styleData3"
                          class="grid3">
             </hci-ng-grid>
           </p>

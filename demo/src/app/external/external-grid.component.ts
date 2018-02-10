@@ -60,7 +60,7 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
         </p>
         <p>
           <hci-ng-grid [columnDefinitions]="columns2"
-                       [onExternalDataCall]="onExternalDataCall2"
+                       [dataCall]="onExternalDataCall2"
                        [externalFiltering]="true"
                        [externalSorting]="true"
                        [externalPaging]="false"

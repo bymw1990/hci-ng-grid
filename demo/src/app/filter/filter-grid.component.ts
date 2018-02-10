@@ -20,7 +20,7 @@ import { Column } from "hci-ng-grid/index";
         </div>
         <p>
           <hci-ng-grid [title]="'Filter Grid'"
-                       [inputData]="filteredData"
+                       [data]="filteredData"
                        [columnDefinitions]="filteredColumns"
                        [pageSizes]="[10, 25, 100]"
                        [cellSelect]="true"

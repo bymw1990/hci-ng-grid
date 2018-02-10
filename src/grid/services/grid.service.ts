@@ -32,11 +32,11 @@ export class GridService {
   pageSizes: number[] = [10, 25, 50];
   nVisibleRows: number = null;
 
-  inputData: Object[];
+  originalData: Object[];
   preparedData: Array<Row>;
 
-  gridData: Array<Row> = new Array<Row>();
-  data: BehaviorSubject<Array<Row>> = new BehaviorSubject<Array<Row>>(new Array<Row>());
+  viewData: Array<Row> = new Array<Row>();
+  viewDataSubject: BehaviorSubject<Array<Row>> = new BehaviorSubject<Array<Row>>(new Array<Row>());
 
   filterInfo: Array<FilterInfo> = new Array<FilterInfo>();
 
@@ -195,15 +195,26 @@ export class GridService {
         nRight = nRight - 1;
       }
     }
+
+    let maxWidth: number = 100;
     for (var i = 0; i < this.columnDefinitions.length; i++) {
       if (!this.columnDefinitions[i].visible) {
         this.columnDefinitions[i].width = 0;
       } else if (this.columnDefinitions[i].sortOrder < 0) {
         this.columnDefinitions[i].width = 5;
-      } else if (this.columnDefinitions[i].isFixed) {
-        this.columnDefinitions[i].width = wLeft / (nLeft + nRight);
+        maxWidth = maxWidth - 5;
+      }
+    }
+
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].sortOrder < 0 || !this.columnDefinitions[i].visible) {
+        continue;
+      }
+
+      if (this.columnDefinitions[i].isFixed) {
+        this.columnDefinitions[i].width = maxWidth / this.nVisibleColumns;
       } else {
-        this.columnDefinitions[i].width = wRight / (nLeft + nRight);
+        this.columnDefinitions[i].width = maxWidth / this.nVisibleColumns;
       }
     }
   }
@@ -244,6 +255,10 @@ export class GridService {
 
   getColumnDefinitions() {
     return this.columnDefinitions;
+  }
+
+  getViewDataSubject(): BehaviorSubject<Array<Row>> {
+    return this.viewDataSubject;
   }
 
   getKeyColumns(): Array<number> {
@@ -378,20 +393,20 @@ export class GridService {
   }
 
   getOriginalDataSize(): number {
-    if (this.inputData === undefined) {
+    if (this.originalData === undefined) {
       return 0;
     } else {
-      return this.inputData.length;
+      return this.originalData.length;
     }
   }
 
   /**
-   * Deletes the selected rows based on the key of the selected row.  This is really for bound data only.  If deleting
-   * from an external data source, the call should be made to that service to delete the rows, then the grid should just
+   * Deletes the selected rows based on the key of the selected row.  This is really for bound viewDataSubject only.  If deleting
+   * from an external viewDataSubject source, the call should be made to that service to delete the rows, then the grid should just
    * be refreshed.
    */
   deleteSelectedRows() {
-    this.inputData = this.inputData.filter((row: Object) => {
+    this.originalData = this.originalData.filter((row: Object) => {
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].isKey && this.selectedRows.indexOf(this.getField(row, this.columnDefinitions[j].field)) !== -1) {
           return false;
@@ -399,9 +414,9 @@ export class GridService {
       }
       return true;
     });
-    this.setInputDataInit();
+    this.initData();
 
-    if (this.gridData.length === 0) {
+    if (this.viewData.length === 0) {
       this.setPage(-2);
     }
 
@@ -443,11 +458,11 @@ export class GridService {
   }
 
   doubleClickRow(i: number) {
-    this.doubleClickObserved.next(this.gridData[i]);
+    this.doubleClickObserved.next(this.viewData[i]);
   }
 
   getKey(i: number, j: number): any {
-    return this.gridData[i].key;
+    return this.viewData[i].key;
   }
 
   /**
@@ -458,7 +473,7 @@ export class GridService {
    * and paging.
    *
    * Filtering Steps
-   * Re-init data.
+   * Re-init viewDataSubject.
    * Set page to 0;
    * Filter
    * Sort
@@ -478,7 +493,7 @@ export class GridService {
       this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.externalSorting) ? this.sortInfo : null, (this.externalPaging) ? this.pageInfo : null));
     } else {
       this.pageInfo.setPage(0);
-      this.initData(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
+      this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
     }
   }
 
@@ -511,13 +526,18 @@ export class GridService {
 
   getCell(i: number, j: number): Cell {
     try {
-      return this.gridData[i].get(j);
+      return this.viewData[i].get(j);
     } catch (e) {
       return null;
     }
   }
 
   getField(row: Object, field: String): Object {
+    if (!field) {
+      console.debug("getField: field is undefined.");
+      return null;
+    }
+
     var fields = field.split(".");
 
     var obj = row[fields[0]];
@@ -528,10 +548,10 @@ export class GridService {
   }
 
   getRow(i: number): Row {
-    if (i > this.gridData.length - 1) {
+    if (i > this.viewData.length - 1) {
       return null;
     } else {
-      return this.gridData[i];
+      return this.viewData[i];
     }
   }
 
@@ -546,10 +566,10 @@ export class GridService {
   /**
    * TODO: If groupBy, don't just push rows, but check for pre-existing keys and add those rows to existing rowData.
    *
-   * @param inputData
+   * @param originalData
    */
-  initData(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
-    if (this.inputData === null) {
+  initDataWithOptions(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
+    if (this.originalData === null) {
       return;
     }
 
@@ -581,7 +601,7 @@ export class GridService {
     }
     this.pageInfoObserved.next(this.pageInfo);
 
-    this.gridData = new Array<Row>();
+    this.viewData = new Array<Row>();
     if (this.groupBy !== null) {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
@@ -607,15 +627,15 @@ export class GridService {
           currentHeader = this.preparedData[i].header;
         }
 
-        this.gridData.push(this.preparedData[i]);
+        this.viewData.push(this.preparedData[i]);
       }
     } else {
       for (var i = START; i < END; i++) {
-        this.gridData.push(this.preparedData[i]);
+        this.viewData.push(this.preparedData[i]);
       }
     }
 
-    this.data.next(this.gridData);
+    this.viewDataSubject.next(this.viewData);
   }
 
   resetUtilityColumns() {
@@ -637,14 +657,15 @@ export class GridService {
   }
 
   prepareData() {
+    console.debug("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columnDefinitions.length);
     this.preparedData = new Array<any>();
 
-    for (var i = 0; i < this.inputData.length; i++) {
+    for (var i = 0; i < this.originalData.length; i++) {
       let row: Row = new Row();
       row.rowNum = i;
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].isKey) {
-          row.key = this.getField(this.inputData[i], this.columnDefinitions[j].field);
+          row.key = this.getField(this.originalData[i], this.columnDefinitions[j].field);
         }
         if (this.columnDefinitions[j].field === "GROUPBY") {
           row.add(new Cell({value: null, key: i}));
@@ -657,7 +678,7 @@ export class GridService {
             row.add(new Cell({value: this.columnDefinitions[j].defaultValue}));
           }*/
         } else {
-          row.add(new Cell({value: this.getField(this.inputData[i], this.columnDefinitions[j].field), key: i}));
+          row.add(new Cell({value: this.getField(this.originalData[i], this.columnDefinitions[j].field), key: i}));
         }
       }
 
@@ -668,36 +689,35 @@ export class GridService {
   /**
    * TODO: Fix auto create columns.
    *
-   * @param inputData
+   * @param originalData
    * @returns {boolean}
    */
-  setInputData(inputData: Array<Object>): boolean {
-    this.inputData = inputData;
+  setOriginalData(originalData: Array<Object>) {
+    this.originalData = originalData;
 
-    if (this.pageInfo.getPageSize() === -1 && this.inputData.length > 50) {
+    if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50) {
       this.pageInfo.setPageSize(10);
     }
 
-    if (this.columnDefinitions === null && this.inputData.length > 0) {
+    if (this.columnDefinitions === null && this.originalData.length > 0) {
       this.columnDefinitions = new Array<Column>();
-      let keys: Array<string> = Object.keys(this.inputData[0]);
+      let keys: Array<string> = Object.keys(this.originalData[0]);
       for (var i = 0; i < keys.length; i++) {
         this.columnDefinitions.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
         this.columnDefinitions = this.columnDefinitions;
       }
-      return true;
-    } else {
-      return false;
     }
+
+    this.initData();
   }
 
-  setInputDataInit() {
-    this.initData(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
+  initData() {
+    this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
   }
 
   /**
    * When a cell value updates, we have a i,j,k position and value.  Now this works for updating our internal
-   * grid data which is flattened, but our input data could have a complex data structure.  An list of Person
+   * grid viewDataSubject which is flattened, but our input viewDataSubject could have a complex viewDataSubject structure.  An list of Person
    * may have a field like demographics.firstName which is in its own demographic object within person.
    *
    * @param rowIndex
@@ -707,7 +727,7 @@ export class GridService {
   setInputDataValue(key: number, field: string, value: any) {
     var fields = field.split(".");
 
-    var obj = this.inputData[key];
+    var obj = this.originalData[key];
     for (var i = 0; i < fields.length - 1; i++) {
       obj = obj[fields[i]];
     }
@@ -728,7 +748,7 @@ export class GridService {
     if (this.externalPaging) {
       this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.externalFiltering, !this.externalSorting, true);
+      this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, true);
     }
   }
 
@@ -739,7 +759,7 @@ export class GridService {
     if (this.externalPaging) {
       this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
     } else {
-      this.initData(false, !this.externalFiltering, !this.externalSorting, this.pageInfo.getPageSize() > 0);
+      this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, this.pageInfo.getPageSize() > 0);
     }
   }
 
@@ -762,7 +782,7 @@ export class GridService {
     if(this.externalSorting) {
       this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, this.sortInfo, (this.externalPaging) ? this.pageInfo : null));
     } else {
-      this.initData(false, !this.externalFiltering, true, !this.externalPaging);
+      this.initDataWithOptions(false, !this.externalFiltering, true, !this.externalPaging);
     }
   }
 

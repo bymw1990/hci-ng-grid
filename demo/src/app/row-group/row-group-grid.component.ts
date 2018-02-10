@@ -16,7 +16,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </p>
         <p>
           <hci-ng-grid [title]="'Group Grid'"
-                       [inputData]="groupData"
+                       [data]="groupData"
                        [columnDefinitions]="groupColumns"
                        [groupBy]="['firstName', 'lastName']"
                        [cellSelect]="true"
@@ -63,7 +63,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Click on row header to change sort based on row group.
         </p>
         <p>
-          <hci-ng-grid [inputData]="bigData"
+          <hci-ng-grid [data]="bigData"
                        [columnDefinitions]="columns2"
                        [groupBy]="['firstName', 'lastName']"
                        [cellSelect]="true"
