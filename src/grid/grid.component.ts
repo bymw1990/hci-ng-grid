@@ -205,7 +205,7 @@ import {Cell} from "./cell/cell";
     
     #leftContainer {
       white-space: nowrap;
-      top: -55px;
+      top: 0px;
       position: relative;
     }
     
@@ -648,6 +648,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     //this.updateRenderSize();
     this.updateGridSizes();
 
+    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    for (let i of this.renderedRows) {
+      this.renderer.removeChild(leftContainer, leftContainer.querySelector("#row-left-" + i));
+    }
     let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightContainer");
     for (let i of this.renderedRows) {
       this.renderer.removeChild(rightContainer, rightContainer.querySelector("#row-right-" + i));
@@ -665,29 +669,49 @@ export class GridComponent implements OnChanges, AfterViewInit {
     console.debug("start: " + start);
     let cell: Cell = null;
     let row: Row = null;
-    let eRow: HTMLElement = null;
+    let lRow: HTMLElement = null;
+    let rRow: HTMLElement = null;
     for (var i = start; this.gridData.length; i++) {
       row = this.gridData[i];
       if (!row) {
         return;
       }
 
-      eRow = this.createRow(rightContainer, "right", i);
+      if (this.gridService.getNFixedColumns() > 0) {
+        lRow = this.createRow(leftContainer, "left", i);
+      }
+      rRow = this.createRow(rightContainer, "right", i);
       this.renderedRows.push(i);
 
-      for (var j = 0; j < row.cells.length; j++) {
+      for (var j = 0; j < this.gridService.getNFixedColumns(); j++) {
         if (!this.columnDefinitions[j].visible) {
           break;
         }
         cell = this.gridData[i].get(j);
         if (this.columnDefinitions[j].field === "GROUPBY") {
           if (row.hasHeader()) {
-            this.createCell(eRow, this.columnDefinitions[j], i, j, row.header);
+            this.createCell(lRow, this.columnDefinitions[j], i, j, row.header);
           } else {
-            this.createCell(eRow, this.columnDefinitions[j], i, j, "");
+            this.createCell(lRow, this.columnDefinitions[j], i, j, "");
           }
         } else {
-          this.createCell(eRow, this.columnDefinitions[j], i, j, this.columnDefinitions[j].formatValue(cell.value));
+          this.createCell(lRow, this.columnDefinitions[j], i, j, this.columnDefinitions[j].formatValue(cell.value));
+        }
+      }
+
+      for (var j = this.gridService.getNFixedColumns(); j < this.gridService.getNVisibleColumns(); j++) {
+        if (!this.columnDefinitions[j].visible) {
+          break;
+        }
+        cell = this.gridData[i].get(j);
+        if (this.columnDefinitions[j].field === "GROUPBY") {
+          if (row.hasHeader()) {
+            this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), row.header);
+          } else {
+            this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), "");
+          }
+        } else {
+          this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), this.columnDefinitions[j].formatValue(cell.value));
         }
       }
 
