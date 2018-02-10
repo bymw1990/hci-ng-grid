@@ -21,6 +21,7 @@ import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {CellTemplate} from "./cell/cell-template.component";
 import {InputCell} from "./cell/input-cell.component";
+import {Cell} from "./cell/cell";
 
 /**
  * A robust grid for angular.
@@ -643,6 +644,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   renderData() {
     console.debug("renderData");
+    this.changeDetectorRef.detectChanges();
     //this.updateRenderSize();
     this.updateGridSizes();
 
@@ -661,30 +663,40 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     console.debug("start: " + start);
-    let row: HTMLElement = null;
-    for (var i = start; i < end; i++) {
-      row = this.createRow(rightContainer, "right", i);
+    let cell: Cell = null;
+    let row: Row = null;
+    let eRow: HTMLElement = null;
+    for (var i = start; this.gridData.length; i++) {
+      row = this.gridData[i];
+      if (!row) {
+        return;
+      }
+
+      eRow = this.createRow(rightContainer, "right", i);
       this.renderedRows.push(i);
 
-      let j: number = 0;
-      for (let cell of this.gridData[i].cells) {
-        this.createCell(row, this.columnDefinitions[j], i, j, this.columnDefinitions[j].formatValue(cell.value));
-        j = j + 1;
-      }
-    }
-
-    /*let i: number = -1;
-    for (let rowId of this.rowRender) {
-      i = i + 1;
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
-        if (e) {
-          e.textContent = "";
-          this.renderer.removeClass(e, "editable");
+      for (var j = 0; j < row.cells.length; j++) {
+        if (!this.columnDefinitions[j].visible) {
+          break;
+        }
+        cell = this.gridData[i].get(j);
+        if (this.columnDefinitions[j].field === "GROUPBY") {
+          if (row.hasHeader()) {
+            this.createCell(eRow, this.columnDefinitions[j], i, j, row.header);
+          } else {
+            this.createCell(eRow, this.columnDefinitions[j], i, j, "");
+          }
+        } else {
+          this.createCell(eRow, this.columnDefinitions[j], i, j, this.columnDefinitions[j].formatValue(cell.value));
         }
       }
+
+      if (i === end) {
+        break;
+      }
     }
 
+    /*
     i = -1;
     for (let row of this.gridData) {
       console.debug("row: " + row.rowNum);
