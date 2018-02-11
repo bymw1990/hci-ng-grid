@@ -42,18 +42,6 @@ export class InputCell extends CellTemplate {
     }
   }
 
-  /**
-   * Override empty method in CellTemplate.
-   */
-  onFocus() {
-    //super.onFocus();
-    this.input.nativeElement.focus();
-  }
-
-  inputClick(event: MouseEvent) {
-    event.preventDefault();
-  }
-
   onInputKeyDown(event: KeyboardEvent) {
     console.log("InputCell.onInputKeyDown " + event.keyCode);
 

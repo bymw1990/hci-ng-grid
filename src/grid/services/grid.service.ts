@@ -11,6 +11,7 @@ import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {InputCell} from "../cell/input-cell.component";
 
 @Injectable()
 export class GridService {
@@ -21,7 +22,6 @@ export class GridService {
   rowSelect: boolean = false;
   cellSelect: boolean = false;
   keyNavigation: boolean = false;
-  nUtilityColumns: number = 0;
   columnDefinitions: Column[] = null;
   fixedColumns: string[] = null;
   groupBy: string[] = null;
@@ -50,6 +50,7 @@ export class GridService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
+  private nUtilityColumns: number = 0;
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
@@ -88,12 +89,6 @@ export class GridService {
         columnsChanged = true;
       }
       this.columnHeaders = config.columnHeaders;
-    }
-    if (config.nUtilityColumns !== undefined) {
-      if (this.nUtilityColumns !== config.nUtilityColumns) {
-        columnsChanged = true;
-      }
-      this.nUtilityColumns = config.nUtilityColumns;
     }
     if (config.fixedColumns !== undefined) {
       if (this.fixedColumns !== config.fixedColumns) {
@@ -156,11 +151,6 @@ export class GridService {
     this.initColumnDefinitions();
     this.sortColumnDefinitions();
 
-    let nLeft: number = 0;
-    let wLeft: number = 100;
-    let nRight: number = this.columnDefinitions.length;
-    let wRight: number = 100;
-
     this.nFixedColumns = 0;
     this.nNonFixedColumns = 0;
     for (var j = 0; j < this.columnDefinitions.length; j++) {
@@ -181,41 +171,6 @@ export class GridService {
     }
     if (!keyDefined && this.columnDefinitions.length > 0) {
       this.columnDefinitions[0].isKey = true;
-    }
-
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].sortOrder < 0) {
-        nLeft = nLeft + 1;
-        nRight = nRight - 1;
-        wLeft = wLeft - 10;
-      } else if (this.columnDefinitions[i].isFixed && this.columnDefinitions[i].visible) {
-        nLeft = nLeft + 1;
-        nRight = nRight - 1;
-      } else if (!this.columnDefinitions[i].isFixed && !this.columnDefinitions[i].visible) {
-        nRight = nRight - 1;
-      }
-    }
-
-    let maxWidth: number = 100;
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (!this.columnDefinitions[i].visible) {
-        this.columnDefinitions[i].width = 0;
-      } else if (this.columnDefinitions[i].sortOrder < 0) {
-        this.columnDefinitions[i].width = 5;
-        maxWidth = maxWidth - 5;
-      }
-    }
-
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].sortOrder < 0 || !this.columnDefinitions[i].visible) {
-        continue;
-      }
-
-      if (this.columnDefinitions[i].isFixed) {
-        this.columnDefinitions[i].width = maxWidth / this.nVisibleColumns;
-      } else {
-        this.columnDefinitions[i].width = maxWidth / this.nVisibleColumns;
-      }
     }
   }
 
@@ -272,21 +227,19 @@ export class GridService {
   }
 
   initColumnDefinitions() {
+    this.nUtilityColumns = 0;
     let nGroupBy: number = 0;
-    let nFixedColumns: number = 0;
     if (this.groupBy !== null) {
       nGroupBy = this.groupBy.length;
-    }
-    if (this.fixedColumns !== null) {
-      nFixedColumns = this.fixedColumns.length;
     }
 
     let groupByDisplay: string = null;
 
     if (this.rowSelect) {
-      let rowSelectColumn: Column = Column.deserialize({ name: "", template: "RowSelectCellComponent", minWidth: 30, maxWidth: 30 });
+      let rowSelectColumn: Column = Column.deserialize({ name: "", template: "InputCell", minWidth: 30, maxWidth: 30 });
       rowSelectColumn.sortable = false;
-      rowSelectColumn.sortOrder = -10;
+      rowSelectColumn.sortOrder = 0;
+      rowSelectColumn.isFixed = true;
       rowSelectColumn.isUtility = true;
       this.columnDefinitions.push(rowSelectColumn);
     }
@@ -301,13 +254,10 @@ export class GridService {
     this.nVisibleColumns = 0;
     this.columnHeaders = false;
 
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
+    /*for (var i = 0; i < this.columnDefinitions.length; i++) {
       if (this.columnDefinitions[i].name !== null) {
         this.columnHeaders = true;
       }
-      /*if (this.columnDefinitions[i].filterType === null && hasFilter) {
-        this.columnDefinitions[i].filterType = "";
-      }*/
 
       if (this.columnDefinitions[i].isUtility) {
         continue;
@@ -326,7 +276,7 @@ export class GridService {
         }
       }
       if (m === 0) {
-        for (var j = 0; j < nFixedColumns; j++) {
+        for (var j = 0; j < this.nFixedColumns; j++) {
           if (this.columnDefinitions[i].field === this.fixedColumns[j]) {
             this.columnDefinitions[i].isFixed = true;
             k = j;
@@ -337,7 +287,7 @@ export class GridService {
       }
 
       if (m === 0) {
-        this.columnDefinitions[i].sortOrder = nGroupBy + nFixedColumns + k + 1;
+        this.columnDefinitions[i].sortOrder = nGroupBy + this.nFixedColumns + k + 1;
       } else if (m === 1) {
         this.columnDefinitions[i].sortOrder = nGroupBy + k + 1;
       } else if (m === 2) {
@@ -350,10 +300,50 @@ export class GridService {
       } else {
         this.nVisibleColumns = this.nVisibleColumns + 1;
       }
+    }*/
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      if (this.columnDefinitions[j].name !== null) {
+        this.columnHeaders = true;
+      }
+
+      if (this.fixedColumns) {
+        for (var k = 0; k < this.fixedColumns.length; k++) {
+          if (this.columnDefinitions[j].field === this.fixedColumns[k]) {
+            this.columnDefinitions[j].isFixed = true;
+            break;
+          }
+        }
+      }
+      if (this.groupBy) {
+        for (var k = 0; k < this.groupBy.length; k++) {
+          if (this.columnDefinitions[j].field === this.groupBy[k]) {
+            groupByDisplay = (groupByDisplay === null) ? this.columnDefinitions[j].name : groupByDisplay + ", " + this.columnDefinitions[j].name;
+            this.columnDefinitions[j].isGroup = true;
+            this.columnDefinitions[j].visible = false;
+            break;
+          }
+        }
+      }
+
+      if (this.columnDefinitions[j].visible) {
+        this.nVisibleColumns = this.nVisibleColumns + 1;
+      } else {
+        this.columnDefinitions[j].selectable = false;
+      }
+
+      if (this.columnDefinitions[j].isUtility) {
+        this.columnDefinitions[j].sortOrder = 1000 + j;
+      } else if (this.columnDefinitions[j].isFixed) {
+        this.columnDefinitions[j].sortOrder = 2000 + j;
+      } else if (this.columnDefinitions[j].visible) {
+        this.columnDefinitions[j].sortOrder = 3000 + j;
+      } else {
+        this.columnDefinitions[j].sortOrder = 4000 + j;
+      }
     }
 
     if (nGroupBy > 0) {
-      let column: Column = new Column({sortOrder: nGroupBy, field: "GROUPBY", name: groupByDisplay, selectable: false});
+      let column: Column = new Column({sortOrder: 1999, field: "GROUPBY", name: groupByDisplay, selectable: false});
       this.columnDefinitions.push(column);
       this.nVisibleColumns = this.nVisibleColumns + 1;
     }
@@ -384,7 +374,7 @@ export class GridService {
 
     for (var j = 0; j < this.columnDefinitions.length; j++) {
       this.columnDefinitions[j].id = j;
-      console.debug("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
+      console.debug("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].sortOrder + " " + this.columnDefinitions[j].visible + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
     }
   }
 

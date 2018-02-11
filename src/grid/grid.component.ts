@@ -460,80 +460,82 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   updateGridSizes() {
     console.debug("updateGridSizes: " + this.initialized);
-    //if (this.initialized) {
-      //this.changeDetectorRef.detectChanges();
-      let e = this.gridContainer.nativeElement;
-      let gridWidth: number = e.offsetWidth;
-      let insideGridWidth: number = gridWidth;
-      let w: number = 0;
 
-      console.debug("gridWidth: " + gridWidth);
-      if (this.gridService.getNVisibleRows() < this.pageInfo.pageSize) {
-        insideGridWidth = gridWidth - 17;
+    let e = this.gridContainer.nativeElement;
+    let gridWidth: number = e.offsetWidth;
+    let insideGridWidth: number = gridWidth;
+    let w: number = 0;
+
+    console.debug("gridWidth: " + gridWidth);
+    if (this.gridService.getNVisibleRows() < this.pageInfo.pageSize) {
+      insideGridWidth = gridWidth - 17;
+    }
+
+    let fixedWidth: number = 0;
+    let fixedMinWidth: number = 0;
+    let nonFixedWidth: number = 0;
+    let nonFixedMinWidth: number = 0;
+
+    let exactWidth: number = 0;
+    let remainder: number = 0;
+
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      console.debug("Column: " + this.columnDefinitions[j].field);
+      if (!this.columnDefinitions[j].visible) {
+        break;
       }
 
-      let fixedWidth: number = 0;
-      let fixedMinWidth: number = 0;
-      let nonFixedWidth: number = 0;
-      let nonFixedMinWidth: number = 0;
-
-      let exactWidth: number = 0;
-      let remainder: number = 0;
-
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (!this.columnDefinitions[j].visible) {
-          break;
-        }
-
-        exactWidth = Math.max(insideGridWidth * (this.columnDefinitions[j].width / 100), this.columnDefinitions[j].minWidth);
-        if (exactWidth !== Math.floor(exactWidth)) {
-          remainder = remainder + exactWidth - Math.floor(exactWidth);
-        }
-
-        e = this.gridContainer.nativeElement.querySelector("#header-" + j);
-        w = Math.floor(exactWidth);
-        if (this.columnDefinitions.length - 1 === j) {
-          w = w + remainder;
-        }
-        if (e) {
-          this.columnDefinitions[j].renderWidth = w;
-          this.renderer.setStyle(e, "width", w + "px");
-        }
-        if (this.columnDefinitions[j].isFixed) {
-          this.columnDefinitions[j].renderLeft = Math.max(fixedWidth, fixedMinWidth);
-          fixedWidth = fixedWidth + w;
-          fixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
-        } else {
-          this.columnDefinitions[j].renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
-          nonFixedWidth = nonFixedWidth + w;
-          nonFixedMinWidth = nonFixedMinWidth + this.columnDefinitions[j].minWidth;
-        }
+      exactWidth = Math.max(insideGridWidth * (this.columnDefinitions[j].width / 100), this.columnDefinitions[j].minWidth);
+      if (exactWidth !== Math.floor(exactWidth)) {
+        remainder = remainder + exactWidth - Math.floor(exactWidth);
       }
+      e = this.gridContainer.nativeElement.querySelector("#header-" + j);
+      w = Math.floor(exactWidth);
 
-      e = this.gridContainer.nativeElement.querySelector("#leftView");
-      this.renderer.setStyle(e, "width", fixedWidth + "px");
-      this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
+      console.debug("exactWidth: " + exactWidth + " " + w + " " + remainder);
 
-      e = this.gridContainer.nativeElement.querySelector("#leftContainer");
-      this.renderer.setStyle(e, "width", fixedWidth + "px");
-      this.renderer.setStyle(e, "height", (30 * this.gridData.length) + "px");
+      if (this.columnDefinitions.length - 1 === j) {
+        w = w + remainder;
+      }
+      if (e) {
+        this.columnDefinitions[j].renderWidth = w;
+        this.renderer.setStyle(e, "width", w + "px");
+      }
+      if (this.columnDefinitions[j].isFixed) {
+        this.columnDefinitions[j].renderLeft = Math.max(fixedWidth, fixedMinWidth);
+        fixedWidth = fixedWidth + w;
+        fixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
+      } else {
+        this.columnDefinitions[j].renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
+        nonFixedWidth = nonFixedWidth + w;
+        nonFixedMinWidth = nonFixedMinWidth + this.columnDefinitions[j].minWidth;
+      }
+    }
 
-      e = this.gridContainer.nativeElement.querySelector("#rightContainer");
-      this.renderer.setStyle(e, "width", nonFixedWidth + "px");
-      this.renderer.setStyle(e, "min-width", nonFixedMinWidth + "px");
-      this.renderer.setStyle(e, "height", (30 * this.gridData.length) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#leftView");
+    this.renderer.setStyle(e, "width", fixedWidth + "px");
+    this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
 
-      e = this.gridContainer.nativeElement.querySelector("#headerContent");
-      this.renderer.setStyle(e, "width", gridWidth);
-      e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
-      this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-      e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
-      this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    this.renderer.setStyle(e, "width", fixedWidth + "px");
+    this.renderer.setStyle(e, "height", (30 * this.gridData.length) + "px");
 
-      e = this.gridContainer.nativeElement.querySelector("#rightView");
-      this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-      e = this.gridContainer.nativeElement.querySelector("#rightView");
-      this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#rightContainer");
+    this.renderer.setStyle(e, "width", nonFixedWidth + "px");
+    this.renderer.setStyle(e, "min-width", nonFixedMinWidth + "px");
+    this.renderer.setStyle(e, "height", (30 * this.gridData.length) + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#headerContent");
+    this.renderer.setStyle(e, "width", gridWidth);
+    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+    this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#rightView");
+    this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#rightView");
+    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
   }
 
   setGridData(gridData: Array<Row>) {
@@ -600,7 +602,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
           break;
         }
         cell = this.gridData[i].get(j);
-        if (this.columnDefinitions[j].field === "GROUPBY") {
+        if (this.columnDefinitions[j].isUtility) {
+          this.createCell(lRow, this.columnDefinitions[j], i, j, "");
+        } else if (this.columnDefinitions[j].field === "GROUPBY") {
           if (row.hasHeader()) {
             this.createCell(lRow, this.columnDefinitions[j], i, j, row.header);
           } else {
@@ -616,7 +620,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
           break;
         }
         cell = this.gridData[i].get(j);
-        if (this.columnDefinitions[j].field === "GROUPBY") {
+        if (this.columnDefinitions[j].isUtility) {
+          this.createCell(lRow, this.columnDefinitions[j], i, j, "");
+        } else if (this.columnDefinitions[j].field === "GROUPBY") {
           if (row.hasHeader()) {
             this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), row.header);
           } else {

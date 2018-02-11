@@ -10,8 +10,9 @@ export class Column {
   visible: boolean = true;
   validator: any;
   sortable: boolean = true;
-  sortOrder: number;
-  width: number = 15;
+  sortOrder: number = 0;
+  width: number = 0;
+  widthPercent: number = 0;
   minWidth: number = 135;
   maxWidth: number = 1000;
   isFixed: boolean = false;
@@ -94,6 +95,9 @@ export class Column {
     }
     if (object.width !== undefined) {
       this.width = object.width;
+    }
+    if (object.widthPercent !== undefined) {
+      this.widthPercent = object.widthPercent;
     }
     if (object.minWidth !== undefined) {
       this.minWidth = object.minWidth;

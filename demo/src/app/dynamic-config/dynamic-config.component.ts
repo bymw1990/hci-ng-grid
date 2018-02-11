@@ -30,12 +30,11 @@ import {Component} from "@angular/core";
           <button class="btn btn-primary" (click)="setColumnsB2()">Columns 2</button>
         </p>
         <p>
-          <!--
           <hci-ng-grid [title]="'Dynamic Columns Row Select'"
                        [data]="data"
                        [columnDefinitions]="columnsB"
                        [rowSelect]="true">
-          </hci-ng-grid>-->
+          </hci-ng-grid>
         </p>
       </div>
     </div>

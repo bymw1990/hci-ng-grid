@@ -21,14 +21,7 @@ export class CellTemplate {
 
   handleClick: boolean = false;
 
-  //@Input() focused: boolean = false;
   focused: boolean = false;
-
-  /*@Output() valueChange: EventEmitter<Object> = new EventEmitter<Object>();
-  @Output() keyEvent: EventEmitter<number> = new EventEmitter<number>();
-  @Output() tabEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() inputFocused: EventEmitter<Object> = new EventEmitter<Object>();
-  @Output() clickEvent: EventEmitter<Object> = new EventEmitter<Object>();*/
 
   keyEvent: Subject<number> = new Subject<number>();
 
@@ -49,7 +42,6 @@ export class CellTemplate {
   setLocation(hostElement: HTMLElement) {
     this.hostElement = hostElement;
     this.updateLocation();
-    //this.hostElement.addEventListener("scroll", this.updateLocation.bind(this), true);
   }
 
   updateLocation() {
@@ -92,7 +84,6 @@ export class CellTemplate {
   onClick(event: MouseEvent) {
     event.stopPropagation();
     event.preventDefault();
-    //this.clickEvent.emit(new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -103,22 +94,6 @@ export class CellTemplate {
       event.preventDefault();
       //this.tabEvent.emit(true);
     }
-  }
-
-  onFocus() {
-    //console.log("CellTemplate.onFocus");
-    //this.focused = true;
-  }
-
-  onFocusOut() {
-    //console.log("CellTemplate.onFocusOut");
-    //this.focused = false;
-  }
-
-  handleFocus(eventMeta: EventMeta) {
-    /*if (!this.focused) {
-      this.inputFocused.emit(eventMeta);
-    }*/
   }
 
   setFormat(format: string) {
