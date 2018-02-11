@@ -236,7 +236,8 @@ export class GridService {
     let groupByDisplay: string = null;
 
     if (this.rowSelect) {
-      let rowSelectColumn: Column = Column.deserialize({ name: "", template: "InputCell", minWidth: 30, maxWidth: 30 });
+      let rowSelectColumn: Column = Column.deserialize({ name: "", template: "InputCell", width: 30, minWidth: 30, maxWidth: 30 });
+      rowSelectColumn.field = "ROW_SELECT";
       rowSelectColumn.sortable = false;
       rowSelectColumn.sortOrder = 0;
       rowSelectColumn.isFixed = true;
@@ -658,15 +659,9 @@ export class GridService {
           row.key = this.getField(this.originalData[i], this.columnDefinitions[j].field);
         }
         if (this.columnDefinitions[j].field === "GROUPBY") {
-          row.add(new Cell({value: null, key: i}));
+          row.add(new Cell({value: "", key: i}));
         } else if (this.columnDefinitions[j].isUtility) {
-          /*if (this.columnDefinitions[j].defaultValue !== undefined) {
-            if (this.columnDefinitions[j].template === "RowSelectCellComponent" || this.columnDefinitions[j].component === RowSelectCellComponent) {
-              row.add(new Cell({value: false}));
-            }
-          } else {
-            row.add(new Cell({value: this.columnDefinitions[j].defaultValue}));
-          }*/
+            row.add(new Cell({value: false}));
         } else {
           row.add(new Cell({value: this.getField(this.originalData[i], this.columnDefinitions[j].field), key: i}));
         }

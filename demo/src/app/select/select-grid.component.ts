@@ -72,12 +72,12 @@ export class SelectGridComponent {
   ];
 
   columns1: Column[] = [
-    new Column({ isKey: true, field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "LabelCell", format: "date:shortDate" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "LabelCell" })
+    new Column({ isKey: true, field: "idPatient", name: "ID", visible: false }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "pcg.nLabs", name: "# Labs" }),
+    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];
 
   data2: Array<Object> = [
@@ -92,12 +92,12 @@ export class SelectGridComponent {
   ];
 
   columns2: Column[] = [
-    new Column({ isKey: true, field: "idPatient", name: "ID", template: "LabelCell", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", template: "LabelCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "LabelCell" }),
-    new Column({ field: "dob", name: "Date of Birth", template: "LabelCell", format: "date:shortDate" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs", template: "LabelCell" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path", template: "LabelCell" })
+    new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "pcg.nLabs", name: "# Labs" }),
+    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];
 
   ngOnInit() {

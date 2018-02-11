@@ -22,6 +22,7 @@ import {ExternalData} from "./utils/external-data";
 import {CellTemplate} from "./cell/cell-template.component";
 import {InputCell} from "./cell/input-cell.component";
 import {Cell} from "./cell/cell";
+import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
 
 /**
  * A robust grid for angular.
@@ -251,6 +252,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
 
   @Input("data") boundData: Object[] = null;
+  @Input("dataCall") onExternalDataCall: Function;
 
   @Input() config: any = {};
   @Input() title: string = null;
@@ -269,7 +271,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = 10;
 
-  @Input("dataCall") onExternalDataCall: Function;
+  @Input() rowSelectRenderer: string = "CheckRowSelectRenderer";
+
   @Input() onRowDoubleClick: Function;
 
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
@@ -479,18 +482,38 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let exactWidth: number = 0;
     let remainder: number = 0;
 
+    let nAutoWidth: number = 0;
     let availableWidth: number = insideGridWidth;
 
+    console.debug("availableWidth: " + availableWidth);
+
     for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      this.columnDefinitions[j].renderWidth = 0;
       if (this.columnDefinitions[j].width > 0) {
         this.columnDefinitions[j].renderWidth = Math.max(this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
         availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
       }
     }
 
+    let percentWidth: number = availableWidth;
+    console.debug("percentWidth: " + percentWidth);
+
     for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
       if (this.columnDefinitions[j].widthPercent > 0) {
-        this.columnDefinitions[j].renderWidth = Math.max(availableWidth / this.columnDefinitions[j].widthPercent, this.columnDefinitions[j].minWidth);
+        this.columnDefinitions[j].renderWidth = Math.max(percentWidth * (this.columnDefinitions[j].widthPercent / 100), this.columnDefinitions[j].minWidth);
+        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
+      } else if (this.columnDefinitions[j].width === 0) {
+        nAutoWidth = nAutoWidth + 1;
+      }
+    }
+
+    if (nAutoWidth > 0) {
+      console.debug("nAutoWidth: " + nAutoWidth);
+
+      for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+        if (this.columnDefinitions[j].renderWidth === 0) {
+          this.columnDefinitions[j].renderWidth = Math.max(availableWidth / nAutoWidth, this.columnDefinitions[j].minWidth);
+        }
       }
     }
 
@@ -516,17 +539,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (this.columnDefinitions[j].isFixed) {
         this.columnDefinitions[j].renderLeft = Math.max(fixedWidth, fixedMinWidth);
         fixedWidth = fixedWidth + w;
-        fixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
+        //fixedMinWidth = fixedMinWidth + this.columnDefinitions[j].minWidth;
       } else {
         this.columnDefinitions[j].renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
         nonFixedWidth = nonFixedWidth + w;
-        nonFixedMinWidth = nonFixedMinWidth + this.columnDefinitions[j].minWidth;
+        //nonFixedMinWidth = nonFixedMinWidth + this.columnDefinitions[j].minWidth;
       }
     }
 
     e = this.gridContainer.nativeElement.querySelector("#leftView");
     this.renderer.setStyle(e, "width", fixedWidth + "px");
-    this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
+    //this.renderer.setStyle(e, "min-width", fixedMinWidth + "px");
 
     e = this.gridContainer.nativeElement.querySelector("#leftContainer");
     this.renderer.setStyle(e, "width", fixedWidth + "px");
@@ -534,7 +557,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     e = this.gridContainer.nativeElement.querySelector("#rightContainer");
     this.renderer.setStyle(e, "width", nonFixedWidth + "px");
-    this.renderer.setStyle(e, "min-width", nonFixedMinWidth + "px");
+    //this.renderer.setStyle(e, "min-width", nonFixedMinWidth + "px");
     this.renderer.setStyle(e, "height", (30 * this.gridData.length) + "px");
 
     e = this.gridContainer.nativeElement.querySelector("#headerContent");
@@ -609,34 +632,32 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.renderedRows.push(i);
 
       for (var j = 0; j < this.gridService.getNFixedColumns(); j++) {
-        console.debug("Render Left: " + this.columnDefinitions[j].field);
         cell = this.gridData[i].get(j);
         if (this.columnDefinitions[j].isUtility) {
-          this.createCell(lRow, this.columnDefinitions[j], i, j, "");
+          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
         } else if (this.columnDefinitions[j].field === "GROUPBY") {
           if (row.hasHeader()) {
-            this.createCell(lRow, this.columnDefinitions[j], i, j, row.header);
+            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, row.header);
           } else {
-            this.createCell(lRow, this.columnDefinitions[j], i, j, "");
+            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
           }
         } else {
-          this.createCell(lRow, this.columnDefinitions[j], i, j, this.columnDefinitions[j].formatValue(cell.value));
+          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
         }
       }
 
       for (var j = this.gridService.getNFixedColumns(); j < this.gridService.getNVisibleColumns(); j++) {
-        console.debug("Render Right: " + j + " " + this.columnDefinitions[j].field);
         cell = this.gridData[i].get(j);
         if (this.columnDefinitions[j].isUtility) {
-          this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), "");
+          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
         } else if (this.columnDefinitions[j].field === "GROUPBY") {
           if (row.hasHeader()) {
-            this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), row.header);
+            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, row.header);
           } else {
-            this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), "");
+            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
           }
         } else {
-          this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), this.columnDefinitions[j].formatValue(cell.value));
+          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
         }
       }
 
@@ -644,64 +665,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         break;
       }
     }
-
-    /*
-    i = -1;
-    for (let row of this.gridData) {
-      console.debug("row: " + row.rowNum);
-
-      if (row.hasHeader()) {
-        i = i + 1;
-        let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-0");
-        if (e) {
-          e.textContent = "";
-          let value = row.getHeader();
-          let text = this.renderer.createText(value);
-          this.renderer.appendChild(e, text);
-        }
-        i = i - 1;
-
-        if (row.isExpanded()) {
-          i = i + 1;
-          let j: number = 0;
-          for (let cell of row.cells) {
-            if (j === 0) {
-              j = j + 1;
-              continue;
-            }
-            let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
-            if (e) {
-              e.textContent = "";
-              let value = this.columnDefinitions[j].formatValue(cell.value);
-              let text = this.renderer.createText(value);
-              this.renderer.appendChild(e, text);
-              this.renderer.addClass(e, "editable");
-            }
-            j = j + 1;
-          }
-        }
-      } else {
-        i = i + 1;
-
-        let j: number = 0;
-        for (let cell of row.cells) {
-          let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
-          if (i === 0 && j === 0) {
-            console.debug("cell 0 0");
-          }
-          if (e) {
-            if (i === 0 && j === 0) {
-              console.debug("cell text 0 0");
-            }
-            e.textContent = "";
-            let value = this.columnDefinitions[j].formatValue(cell.value);
-            let text = this.renderer.createText(value);
-            this.renderer.appendChild(e, text);
-          }
-          j = j + 1;
-        }
-      }
-    }*/
 
     this.changeDetectorRef.detectChanges();
     this.changeDetectorRef.markForCheck();
@@ -717,22 +680,27 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return row;
   }
 
-  createCell(row: HTMLElement, column: Column, i: number, j: number, value: string) {
-    let cell = this.renderer.createElement("div");
-    let text = this.renderer.createText(value);
-    this.renderer.appendChild(cell, text);
-    this.renderer.setAttribute(cell, "id", "cell-" + i + "-" + j);
-    this.renderer.setStyle(cell, "position", "absolute");
-    this.renderer.setStyle(cell, "border", "1px solid black");
-    this.renderer.setStyle(cell, "flex-wrap", "nowrap");
-    this.renderer.setStyle(cell, "height", "30px");
-    this.renderer.setStyle(cell, "vertical-align", "top");
-    this.renderer.setStyle(cell, "display", "inline-block");
-    this.renderer.setStyle(cell, "left", column.renderLeft + "px");
-    this.renderer.setStyle(cell, "min-width:", column.minWidth + "px");
-    this.renderer.setStyle(cell, "max-width", column.maxWidth + "px");
-    this.renderer.setStyle(cell, "width", column.renderWidth + "px");
-    this.renderer.appendChild(row, cell);
+  createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string) {
+    let eCell = this.renderer.createElement("div");
+    this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
+    this.renderer.setStyle(eCell, "position", "absolute");
+    this.renderer.setStyle(eCell, "border", "1px solid black");
+    this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
+    this.renderer.setStyle(eCell, "height", "30px");
+    this.renderer.setStyle(eCell, "vertical-align", "top");
+    this.renderer.setStyle(eCell, "display", "inline-block");
+    this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
+    this.renderer.setStyle(eCell, "min-width:", column.minWidth + "px");
+    this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
+    this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
+
+    if (column.field === "ROW_SELECT") {
+      this.renderer.appendChild(eCell, new CheckRowSelectRenderer().createCell(this.renderer, column, cell));
+    } else {
+      let text = this.renderer.createText(value);
+      this.renderer.appendChild(eCell, text);
+    }
+    this.renderer.appendChild(row, eCell);
   }
 
   selectComponent(i: number, j: number) {
@@ -960,7 +928,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     console.debug(idElement);
 
-    this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
+    if (idElement.id === "row-select") {
+      let parentId: string = idElement.parentElement.id;
+      let rowId: number = +parentId.split("-")[1];
+      let cellId: number = +parentId.split("-")[2];
+      this.gridData[rowId].get(cellId).value = !<boolean>this.gridData[rowId].get(cellId).value;
+      this.renderData();
+    } else {
+      this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
+    }
   }
 
   onFocus(event: Event) {
