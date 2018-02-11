@@ -479,13 +479,25 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let exactWidth: number = 0;
     let remainder: number = 0;
 
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
-      console.debug("Column: " + this.columnDefinitions[j].field);
-      if (!this.columnDefinitions[j].visible) {
-        break;
-      }
+    let availableWidth: number = insideGridWidth;
 
-      exactWidth = Math.max(insideGridWidth * (this.columnDefinitions[j].width / 100), this.columnDefinitions[j].minWidth);
+    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      if (this.columnDefinitions[j].width > 0) {
+        this.columnDefinitions[j].renderWidth = Math.max(this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
+        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
+      }
+    }
+
+    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      if (this.columnDefinitions[j].widthPercent > 0) {
+        this.columnDefinitions[j].renderWidth = Math.max(availableWidth / this.columnDefinitions[j].widthPercent, this.columnDefinitions[j].minWidth);
+      }
+    }
+
+    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      console.debug("Column: " + this.columnDefinitions[j].field);
+
+      exactWidth = this.columnDefinitions[j].renderWidth;
       if (exactWidth !== Math.floor(exactWidth)) {
         remainder = remainder + exactWidth - Math.floor(exactWidth);
       }
@@ -580,7 +592,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       end = start + end;
     }
 
-    console.debug("start: " + start);
     let cell: Cell = null;
     let row: Row = null;
     let lRow: HTMLElement = null;
@@ -598,9 +609,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.renderedRows.push(i);
 
       for (var j = 0; j < this.gridService.getNFixedColumns(); j++) {
-        if (!this.columnDefinitions[j].visible) {
-          break;
-        }
+        console.debug("Render Left: " + this.columnDefinitions[j].field);
         cell = this.gridData[i].get(j);
         if (this.columnDefinitions[j].isUtility) {
           this.createCell(lRow, this.columnDefinitions[j], i, j, "");
@@ -616,12 +625,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       for (var j = this.gridService.getNFixedColumns(); j < this.gridService.getNVisibleColumns(); j++) {
-        if (!this.columnDefinitions[j].visible) {
-          break;
-        }
+        console.debug("Render Right: " + j + " " + this.columnDefinitions[j].field);
         cell = this.gridData[i].get(j);
         if (this.columnDefinitions[j].isUtility) {
-          this.createCell(lRow, this.columnDefinitions[j], i, j, "");
+          this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), "");
         } else if (this.columnDefinitions[j].field === "GROUPBY") {
           if (row.hasHeader()) {
             this.createCell(rRow, this.columnDefinitions[j], i, j - this.gridService.getNFixedColumns(), row.header);
