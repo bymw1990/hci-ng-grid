@@ -236,7 +236,19 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
     .hci-ng-grid-busy-icon {
       color: rgba(255, 0, 0, 0.5);
     }
+
+    .row-select > span.selected-span {
+      display: none;
+    }
+
+    .row-select.selected > span.selected-span {
+      display: inherit;
+    }
     
+    .row-select.selected > span.unselected-span {
+      display: none;
+    }
+
   ` ],
   encapsulation: ViewEncapsulation.None
 })
@@ -925,7 +937,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.clickTimer = setTimeout(() => {
       if (!this.singleClickCancel) {
         console.debug("single click");
-        console.debug(event.srcElement);
 
         event.stopPropagation();
 
@@ -933,19 +944,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
         while (!idElement.id) {
           idElement = idElement.parentElement;
         }
-        console.debug(idElement);
 
         if (idElement.id === "row-select") {
           let parentId: string = idElement.parentElement.id;
           let rowId: number = +parentId.split("-")[1];
           let cellId: number = +parentId.split("-")[2];
           this.gridData[rowId].get(cellId).value = !<boolean>this.gridData[rowId].get(cellId).value;
-          this.renderData();
+          this.renderer.removeClass(idElement, "selected");
+          if (this.gridData[rowId].get(cellId).value) {
+            this.renderer.addClass(idElement, "selected");
+          }
         } else {
           this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
         }
       }
-    }, 250);
+    }, 150);
   }
 
   onDblClick(event: MouseEvent) {

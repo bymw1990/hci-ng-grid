@@ -10,21 +10,31 @@ export class CheckRowSelectRenderer {
     renderer.setStyle(span, "display", "inherit");
     renderer.setStyle(span, "text-align", "center");
     renderer.setStyle(span, "vertical-align", "middle");
+    renderer.addClass(span, "row-select");
 
-    let check = renderer.createElement("span");
-    renderer.addClass(check, "fa-lg");
+    let selectedSpan = renderer.createElement("span");
+    renderer.addClass(selectedSpan, "selected-span");
+    renderer.appendChild(span, selectedSpan);
 
-    if (<boolean>cell.value) {
-      renderer.addClass(check, "fas");
-      renderer.setStyle(check, "color", "green");
-      renderer.addClass(check, "fa-check-square");
-    } else {
-      renderer.addClass(check, "far");
-      renderer.setStyle(check, "color", "rgba(255, 0, 0, 0.2)");
-      renderer.addClass(check, "fa-times-circle");
-    }
+    let selectedSvg = renderer.createElement("span");
+    renderer.addClass(selectedSvg, "fas");
+    renderer.setStyle(selectedSvg, "color", "green");
+    renderer.addClass(selectedSvg, "fa-check-square");
+    renderer.addClass(selectedSvg, "fa-lg");
+    renderer.appendChild(selectedSpan, selectedSvg);
 
-    renderer.appendChild(span, check);
+    let unselectedSpan = renderer.createElement("span");
+    renderer.addClass(unselectedSpan, "unselected-span");
+    renderer.appendChild(span, unselectedSpan);
+
+    let unselectedSvg = renderer.createElement("span");
+    renderer.addClass(unselectedSvg, "far");
+    renderer.setStyle(unselectedSvg, "color", "rgba(255, 0, 0, 0.2)");
+    renderer.addClass(unselectedSvg, "fa-times-circle");
+    renderer.addClass(selectedSvg, "fa-lg");
+    renderer.appendChild(unselectedSpan, unselectedSvg);
+
+    renderer.appendChild(span, unselectedSpan);
     return span;
   }
 }
