@@ -41,7 +41,7 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
     GridEventService,
     GridMessageService],
   template: `
-    <div #gridContainer id="gridContainer" (click)="onClick($event)" (keydown)="onKeyDown($event)">
+    <div #gridContainer id="gridContainer" (click)="onClick($event)" (dblclick)="onDblClick($event)" (keydown)="onKeyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       <div #busyOverlay class="hci-ng-grid-busy" style="display: none;">
         <div class="hci-ng-grid-busy-div" [style.transform]="gridContainerHeightCalc">
@@ -285,6 +285,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   gridContainerHeight: number = 0;
   gridContainerHeightCalc: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("'translate(calc(50% - 2.5em), 0px)'");
 
+  clickTimer: any;
+  singleClickCancel: boolean = false;
   busy: boolean = false;
   busySubject: Subject<boolean> = new Subject<boolean>();
 
@@ -347,7 +349,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     /* If onRowDoubleClick is provided, then listen and send to function. */
-    if (this.onRowDoubleClick) {
+    /*if (this.onRowDoubleClick) {
       this.gridService.doubleClickObserved.subscribe((row: Row) => {
         let keys: number[] = this.gridService.getKeyColumns();
         if (keys.length === 0) {
@@ -356,7 +358,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           this.onRowDoubleClick(row.cells[keys[0]].value);
         }
       });
-    }
+    }*/
 
     /* Get initial page Info */
     this.pageInfo = this.gridService.pageInfo;
@@ -917,25 +919,52 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   onClick(event: MouseEvent) {
-    console.debug("click");
-    console.debug(event.srcElement);
+    this.clickTimer = 0;
+    this.singleClickCancel = false;
 
-    event.stopPropagation();
+    this.clickTimer = setTimeout(() => {
+      if (!this.singleClickCancel) {
+        console.debug("single click");
+        console.debug(event.srcElement);
 
-    let idElement: HTMLElement = <HTMLElement>event.srcElement;
-    while (!idElement.id) {
-      idElement = idElement.parentElement;
-    }
-    console.debug(idElement);
+        event.stopPropagation();
 
-    if (idElement.id === "row-select") {
-      let parentId: string = idElement.parentElement.id;
-      let rowId: number = +parentId.split("-")[1];
-      let cellId: number = +parentId.split("-")[2];
-      this.gridData[rowId].get(cellId).value = !<boolean>this.gridData[rowId].get(cellId).value;
-      this.renderData();
-    } else {
-      this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
+        let idElement: HTMLElement = <HTMLElement>event.srcElement;
+        while (!idElement.id) {
+          idElement = idElement.parentElement;
+        }
+        console.debug(idElement);
+
+        if (idElement.id === "row-select") {
+          let parentId: string = idElement.parentElement.id;
+          let rowId: number = +parentId.split("-")[1];
+          let cellId: number = +parentId.split("-")[2];
+          this.gridData[rowId].get(cellId).value = !<boolean>this.gridData[rowId].get(cellId).value;
+          this.renderData();
+        } else {
+          this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
+        }
+      }
+    }, 250);
+  }
+
+  onDblClick(event: MouseEvent) {
+    this.singleClickCancel = true;
+    clearTimeout(this.clickTimer);
+    console.debug("onDblClick");
+
+    if (this.onRowDoubleClick) {
+      let e = event.srcElement;
+      while (e.id.indexOf("row-") < 0) {
+        e = event.srcElement.parentElement;
+      }
+      let j: number = +e.id.split("-")[2];
+      let keys: number[] = this.gridService.getKeyColumns();
+      if (keys.length === 0) {
+        return;
+      } else {
+        this.onRowDoubleClick(this.gridData[j].cells[keys[0]].value);
+      }
     }
   }
 
