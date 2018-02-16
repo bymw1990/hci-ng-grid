@@ -15,10 +15,10 @@ import {Column, GridComponent} from "hci-ng-grid/index";
           <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
         </p>
         <p>
-          <hci-ng-grid [data]="data1"
-                       [columnDefinitions]="columns1"
-                       [onRowDoubleClick]="onRowDoubleClick">
-          </hci-ng-grid>
+          <hci-grid [data]="data1"
+                    [columnDefinitions]="columns1"
+                    [onRowDoubleClick]="onRowDoubleClick">
+          </hci-grid>
         </p>
       </div>
     </div>
@@ -40,14 +40,14 @@ import {Column, GridComponent} from "hci-ng-grid/index";
           <a class="btn btn-primary" (click)="deleteSelectedRows()" style="margin-left: 10px;">Delete Selected Rows</a>
         </p>
         <p>
-          <hci-ng-grid #grid2
-                       [data]="data2"
-                       [columnDefinitions]="columns2"
-                       [rowSelect]="true"
-                       (selectedRows)="setSelectedRows($event)"
-                       [pageSize]="5"
-                       [pageSizes]="[5, 10]">
-          </hci-ng-grid>
+          <hci-grid #grid2
+                    [data]="data2"
+                    [columnDefinitions]="columns2"
+                    [rowSelect]="true"
+                    (selectedRows)="setSelectedRows($event)"
+                    [pageSize]="5"
+                    [pageSizes]="[5, 10]">
+          </hci-grid>
         </p>
       </div>
     </div>

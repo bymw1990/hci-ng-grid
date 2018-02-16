@@ -17,10 +17,10 @@ import { Column } from "hci-ng-grid/index";
           Here we use a basic toast with a four second hide delay to post errors and warnings.
         </p>
         <p>
-          <hci-ng-grid [data]="data1"
-                       [columnDefinitions]="columns1"
-                       [cellSelect]="true">
-          </hci-ng-grid>
+          <hci-grid [data]="data1"
+                    [columnDefinitions]="columns1"
+                    [cellSelect]="true">
+          </hci-grid>
         </p>
       </div>
     </div>
@@ -34,10 +34,10 @@ import { Column } from "hci-ng-grid/index";
           release.  Will plan to just use the messaging service to broadcast errors and warnings.
         </p>
         <p>
-          <hci-ng-grid [data]="data2"
-                       [columnDefinitions]="columns2"
-                       [cellSelect]="true">
-          </hci-ng-grid>
+          <hci-grid [data]="data2"
+                    [columnDefinitions]="columns2"
+                    [cellSelect]="true">
+          </hci-grid>
         </p>
         <p>
           <span style="font-weight: bold;">Log</span>

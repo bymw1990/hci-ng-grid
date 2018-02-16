@@ -12,7 +12,7 @@
     "karma": "karma",
     "ngc": "ngc",
     "npmPub": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm publish",
-    "push": "cd dist && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && cd ..",
+    "push": "cd dist && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json|.css)\" ../demo/node_modules/hci-ng-grid && cd ..",
     "rimraf": "rimraf"
   },
   "main": "index.js",

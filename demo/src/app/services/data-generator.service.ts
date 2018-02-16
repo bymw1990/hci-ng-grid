@@ -92,11 +92,11 @@ export class DataGeneratorService {
     }
   }
 
-  getSimpleData4(): Observable<Array<Object>> {
+  getSimpleData4(delay: number): Observable<Array<Object>> {
     return new Observable(observer => {
       setTimeout(() => {
         observer.next(this.simpleData4);
-      }, 5000);
+      }, delay);
     });
   }
 

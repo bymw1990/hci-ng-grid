@@ -19,13 +19,13 @@ import { Column } from "hci-ng-grid/index";
           </div>
         </div>
         <p>
-          <hci-ng-grid [title]="'Filter Grid'"
-                       [data]="filteredData"
-                       [columnDefinitions]="filteredColumns"
-                       [pageSizes]="[10, 25, 100]"
-                       [cellSelect]="true"
-                       [keyNavigation]="true">
-          </hci-ng-grid>
+          <hci-grid [title]="'Filter Grid'"
+                    [data]="filteredData"
+                    [columnDefinitions]="filteredColumns"
+                    [pageSizes]="[10, 25, 100]"
+                    [cellSelect]="true"
+                    [keyNavigation]="true">
+          </hci-grid>
         </p>
       </div>
     </div>

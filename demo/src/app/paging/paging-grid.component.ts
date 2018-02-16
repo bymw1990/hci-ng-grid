@@ -16,12 +16,12 @@ import { Column } from "hci-ng-grid/index";
             <span>Size: </span><input [(ngModel)]="dataSize" />
           </p>
           <p>
-            <hci-ng-grid [title]="'Paging Grid'"
-                         [data]="pagingData"
-                         [columnDefinitions]="pagingColumns"
-                         [pageSize]="10"
-                         [pageSizes]="[ 10, 25, 100 ]">
-            </hci-ng-grid>
+            <hci-grid [title]="'Paging Grid'"
+                      [data]="pagingData"
+                      [columnDefinitions]="pagingColumns"
+                      [pageSize]="10"
+                      [pageSizes]="[ 10, 25, 100 ]">
+            </hci-grid>
           </p>
         </div>
       </div>

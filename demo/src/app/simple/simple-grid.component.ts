@@ -15,14 +15,16 @@ import { DataGeneratorService } from "../services/data-generator.service";
           
         </p>
         <p>
-          <!--<hci-grid [title]="'Simple Grid'"
-                    [data]="simpleData1">
-            <column-def [field]="'lastName'"></column-def>
-            <column-def [field]="'firstName'"></column-def>
-            <column-def [field]="'dob'"></column-def>
-            <column-def [field]="'pcg.nLabs'"></column-def>
-            <column-def [field]="'pcg.nested.nLabPath'"></column-def>
-          </hci-grid>-->
+          <hci-grid [title]="'Simple Grid'"
+                    [data]="simpleData1"
+                    [columnDefinitions]="[
+                      { field: 'lastName' },
+                      { field: 'firstName' },
+                      { field: 'dob', dataType: 'date', format: 'MM/DD/YYYY' },
+                      { field: 'pcg.nLabs' },
+                      { field: 'pcg.nested.nLabPath' }
+                    ]">
+          </hci-grid>
         </p>
       </div>
     </div>
@@ -37,15 +39,15 @@ import { DataGeneratorService } from "../services/data-generator.service";
           template type and that is all.  There is no filtering, header, sorting or paging.
         </p>
         <p>
-          <!--<hci-grid [data]="simpleData2">
-            <column-def [field]="'lastName'"></column-def>
-            <column-def [field]="'firstName'"></column-def>
-            <column-def [field]="'dob'">
-              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-            </column-def>
-            <column-def [field]="'pcg.nLabs'"></column-def>
-            <column-def [field]="'pcg.nested.nLabPath'"></column-def>
-          </hci-grid>-->
+          <hci-grid [data]="simpleData2"
+                    [columnDefinitions]="[
+                      { field: 'lastName' },
+                      { field: 'firstName' },
+                      { field: 'dob', dataType: 'date', format: 'MM/DD/YYYY' },
+                      { field: 'pcg.nLabs' },
+                      { field: 'pcg.nested.nLabPath' }
+                    ]">
+          </hci-grid>
         </p>
       </div>
     </div>
@@ -60,7 +62,12 @@ import { DataGeneratorService } from "../services/data-generator.service";
           in the object.
         </p>
         <p>
-          <hci-ng-grid [data]="simpleData3"></hci-ng-grid>
+          <hci-grid [data]="simpleData3"
+                    [columnDefinitions]="[
+                      { field: 'lastName', name: 'Last Name' },
+                      { field: 'firstName', name: 'First Name' }
+                    ]">
+          </hci-grid>
         </p>
       </div>
     </div>
@@ -74,23 +81,25 @@ import { DataGeneratorService } from "../services/data-generator.service";
           
         </p>
         <p>
-          <hci-ng-grid [title]="'Simple Grid Delayed'"
-                       [data]="simpleData4"
-                       [columnDefinitions]="[
-                         { field: 'idPatient', name: 'ID' },
-                         { field: 'lastName', name: 'Last Name' },
-                         { field: 'firstName', name: 'First Name' },
-                         { field: 'dob', name: 'Date of Birth' },
-                         { field: 'address', name: 'Address 1' },
-                         { field: 'citystatezip', name: 'Address 2' }
-                       ]">
-          </hci-ng-grid>
+          <hci-grid [title]="'Simple Grid Delayed'"
+                    [data]="simpleData4"
+                    [columnDefinitions]="columns4">
+          </hci-grid>
         </p>
       </div>
     </div>
   `
 })
 export class SimpleGridComponent implements OnInit {
+
+  columns4: Column[] = [
+    new Column({ field: "idPatient", name: "ID", visible: true }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "address", name: "Address 1" }),
+    new Column({ field: "citystatezip", name: "Address 2" })
+  ];
 
   simpleData1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1968-11-27T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -124,8 +133,8 @@ export class SimpleGridComponent implements OnInit {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.dataGeneratorService.generateSimpleData4(10);
-    this.dataGeneratorService.getSimpleData4().subscribe((simpleData4: Array<Object>) => {
+    this.dataGeneratorService.generateSimpleData4(55);
+    this.dataGeneratorService.getSimpleData4(5000).subscribe((simpleData4: Array<Object>) => {
       this.simpleData4 = simpleData4;
     });
   }

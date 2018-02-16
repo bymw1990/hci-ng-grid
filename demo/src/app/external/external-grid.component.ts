@@ -59,13 +59,13 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
           which leaves the paging to the grid.
         </p>
         <p>
-          <hci-ng-grid [columnDefinitions]="columns2"
-                       [dataCall]="onExternalDataCall2"
-                       [externalFiltering]="true"
-                       [externalSorting]="true"
-                       [externalPaging]="false"
-                       [pageSize]="10">
-          </hci-ng-grid>
+          <hci-grid [columnDefinitions]="columns2"
+                    [dataCall]="onExternalDataCall2"
+                    [externalFiltering]="true"
+                    [externalSorting]="true"
+                    [externalPaging]="false"
+                    [pageSize]="10">
+          </hci-grid>
         </p>
       </div>
     </div>
