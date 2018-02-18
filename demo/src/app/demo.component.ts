@@ -21,7 +21,6 @@ import {Component} from "@angular/core";
           <div ngbDropdownMenu aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
-            <a class="dropdown-item" routerLink="/style">Custom Styling</a>
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
             <a class="dropdown-item" routerLink="/empty">Empty Grid</a>
             <a class="dropdown-item" routerLink="/external">External Sort/Filter/Page</a>
@@ -32,6 +31,7 @@ import {Component} from "@angular/core";
             <a class="dropdown-item" routerLink="/row-group">Row Grouping</a>
             <a class="dropdown-item" routerLink="/row-select">Row Select</a>
             <a class="dropdown-item" routerLink="/simple">Simple</a>
+            <a class="dropdown-item" routerLink="/theming">Themes</a>
           </div>
         </div>
       </div>

@@ -327,7 +327,12 @@ export class GridService {
       }
     });
 
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
+    let lastSet: boolean = false;
+    for (var j = this.columnDefinitions.length - 1; j >= 0; j--) {
+      if (this.columnDefinitions[j].visible && !lastSet) {
+        this.columnDefinitions[j].isLast = true;
+        lastSet = true;
+      }
       this.columnDefinitions[j].id = j;
       console.debug("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].sortOrder + " " + this.columnDefinitions[j].visible + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
     }

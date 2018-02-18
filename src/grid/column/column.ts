@@ -25,6 +25,7 @@ export class Column {
   component: any = null;
   dataType: string = "string";
   selectable: boolean = true;
+  isLast: boolean = false;
 
   renderLeft: number = 0;
   renderWidth: number = 0;

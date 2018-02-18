@@ -1,4 +1,49 @@
 
-#gridContainer.excel {
-  border: red 2px solid;
+#gridContainer.excel #titleBar {
+  padding: 10px;
+  border-left: black 1px solid;
+  border-right: black 1px solid;
+  border-top: black 1px solid;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  font-weight: bold;
+  font-size: large;
+}
+
+#gridContainer.excel #mainContent {
+  border-left: black 1px solid;
+  border-right: black 1px solid;
+  border-bottom: black 1px solid;
+}
+
+#gridContainer.excel #gridFooter {
+  border: black 1px solid;
+}
+
+#gridContainer.excel #leftView {
+  border-top: black 1px solid;
+}
+
+#gridContainer.excel #rightView {
+  border-top: black 1px solid;
+}
+
+#gridContainer.excel #rightHeaderContainer {
+  border-top: black 1px solid;
+}
+
+#gridContainer.excel .hci-grid-header {
+  border-bottom: none;
+}
+
+#gridContainer.excel .hci-grid-header:not(.last) {
+  border-right: black 1px solid;
+}
+
+#gridContainer.excel .hci-grid-cell {
+  border-bottom: black 1px solid;
+}
+
+#gridContainer.excel .hci-grid-cell:not(.last) {
+  border-right: black 1px solid;
 }

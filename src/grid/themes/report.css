@@ -1,0 +1,12 @@
+
+#gridContainer.report #titleBar {
+  padding: 10px;
+}
+
+#gridContainer.report .hci-grid-row {
+  height: 45px;
+}
+
+#gridContainer.report .hci-grid-row.even {
+  background-color: #eeeeee;
+}

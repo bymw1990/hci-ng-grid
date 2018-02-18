@@ -21,7 +21,7 @@ import {ExternalGridComponent} from "./external/external-grid.component";
 import {CopyPasteGridComponent} from "./copypaste/copypaste-grid.component";
 import {AlertsGridComponent} from "./alerts/alerts-grid.component";
 import {PagingGridComponent} from "./paging/paging-grid.component";
-import {StyleGridComponent} from "./style/style-grid.component";
+import {ThemingComponent} from "./theming/theming.component";
 import {DynamicConfigGridComponent} from "./dynamic-config/dynamic-config.component";
 import {EmptyGridComponent} from "./empty/empty-grid.component";
 
@@ -35,7 +35,7 @@ import {ExternalGridModule} from "./external/external-grid.module";
 import {CopyPasteGridModule} from "./copypaste/copypaste-grid.module";
 import {AlertsGridModule} from "./alerts/alerts-grid.module";
 import {PagingGridModule} from "./paging/paging-grid.module";
-import {StyleGridModule} from "./style/style-grid.module";
+import {ThemingModule} from "./theming/theming.module";
 import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
 import {EmptyGridModule} from "./empty/empty-grid.module";
 
@@ -57,7 +57,7 @@ import {GridModule} from "hci-ng-grid/index";
     CopyPasteGridModule,
     AlertsGridModule,
     PagingGridModule,
-    StyleGridModule,
+    ThemingModule,
     DynamicConfigGridModule,
     EmptyGridModule,
     GridModule
@@ -74,7 +74,7 @@ import {GridModule} from "hci-ng-grid/index";
     CopyPasteGridComponent,
     AlertsGridComponent,
     PagingGridComponent,
-    StyleGridComponent,
+    ThemingComponent,
     DynamicConfigGridComponent,
     EmptyGridComponent
   ],
