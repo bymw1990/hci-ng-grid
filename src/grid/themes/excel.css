@@ -28,7 +28,11 @@
   border-top: black 1px solid;
 }
 
-#gridContainer.excel #rightHeaderContainer {
+#gridContainer.excel #leftHeaderView{
+  border-top: black 1px solid;
+}
+
+#gridContainer.excel #rightHeaderView{
   border-top: black 1px solid;
 }
 

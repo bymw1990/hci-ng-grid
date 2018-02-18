@@ -334,7 +334,10 @@ export class GridService {
         lastSet = true;
       }
       this.columnDefinitions[j].id = j;
-      console.debug("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].sortOrder + " " + this.columnDefinitions[j].visible + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
+      if (isDevMode()) {
+        console.info("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].sortOrder + " "
+            + this.columnDefinitions[j].visible + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
+      }
     }
   }
 
@@ -484,7 +487,9 @@ export class GridService {
 
   getField(row: Object, field: String): Object {
     if (!field) {
-      console.debug("getField: field is undefined.");
+      if (isDevMode()) {
+        console.debug("getField: field is undefined.");
+      }
       return null;
     }
 
@@ -506,7 +511,9 @@ export class GridService {
   }
 
   handleValueChange(i: number, j: number, key: number, value: any) {
-    console.log("handleValueChange: " + i + " " + j + " " + value);
+    if (isDevMode()) {
+      console.log("handleValueChange: " + i + " " + j + " " + value);
+    }
 
     this.setInputDataValue(key, this.columnDefinitions[j].field, value);
 
@@ -607,7 +614,9 @@ export class GridService {
   }
 
   prepareData() {
-    console.debug("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columnDefinitions.length);
+    if (isDevMode()) {
+      console.info("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columnDefinitions.length);
+    }
     this.preparedData = new Array<any>();
 
     for (var i = 0; i < this.originalData.length; i++) {

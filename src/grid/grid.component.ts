@@ -449,7 +449,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
 
     this.inputDataSubject.subscribe((boundData: Object[]) => {
-      console.debug("inputDataSubject.subscribe: " + boundData.length);
+      if (isDevMode()) {
+        console.debug("inputDataSubject.subscribe: " + boundData.length);
+      }
       this.busySubject.next(true);
       this.gridService.setOriginalData(this.boundData);
       this.gridService.initData();
@@ -458,7 +460,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.getViewDataSubject().subscribe((data: Array<Row>) => {
-      console.debug("data.subscribe: " + data.length);
+      if (isDevMode()) {
+        console.debug("data.subscribe: " + data.length);
+      }
       this.setGridData(data);
     });
 
@@ -473,7 +477,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.pageInfo = this.gridService.pageInfo;
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
-      console.debug("GridComponent.selectedLocationSubscription");
+      if (isDevMode()) {
+        console.debug("GridComponent.selectedLocationSubscription");
+      }
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
       this.componentRef = null;
@@ -517,357 +523,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  findBaseRowCell() {
-    this.rowHeight = this.gridContainer.nativeElement.querySelector("#base-row").offsetHeight;
-    if (!this.rowHeight || this.rowHeight === 0) {
-      this.rowHeight = 30;
-    }
+  /**
+   * TODO: Allow the implementing application to force the grid to re-draw.
+   */
+  public refresh() {
+    // redraw grid height
+    // rerender data
   }
 
-  updateGridSizes() {
-    console.debug("updateGridSizes: " + this.initialized);
-
-    let e = this.gridContainer.nativeElement;
-    let gridWidth: number = e.offsetWidth;
-    let insideGridWidth: number = gridWidth;
-    let w: number = 0;
-
-    console.debug("gridWidth: " + gridWidth);
-    if (this.gridService.getNVisibleRows() > 0
-        && ((this.pageInfo.pageSize > 0 && this.gridService.getNVisibleRows() < this.pageInfo.pageSize)
-        || (this.pageInfo.pageSize < 0 && this.gridService.getNVisibleRows() < this.gridData.length))) {
-      insideGridWidth = gridWidth - 17;
-    }
-
-    let fixedWidth: number = 0;
-    let fixedMinWidth: number = 0;
-    let nonFixedWidth: number = 0;
-    let nonFixedMinWidth: number = 0;
-
-    let exactWidth: number = 0;
-    let remainder: number = 0;
-
-    let nAutoWidth: number = 0;
-    let availableWidth: number = insideGridWidth;
-
-    console.debug("availableWidth: " + availableWidth);
-
-    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-      this.columnDefinitions[j].renderWidth = 0;
-      if (this.columnDefinitions[j].width > 0) {
-        this.columnDefinitions[j].renderWidth = Math.max(this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
-        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
-      }
-    }
-
-    let percentWidth: number = availableWidth;
-    console.debug("percentWidth: " + percentWidth);
-
-    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-      if (this.columnDefinitions[j].widthPercent > 0) {
-        this.columnDefinitions[j].renderWidth = Math.max(percentWidth * (this.columnDefinitions[j].widthPercent / 100), this.columnDefinitions[j].minWidth);
-        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
-      } else if (this.columnDefinitions[j].width === 0) {
-        nAutoWidth = nAutoWidth + 1;
-      }
-    }
-
-    if (nAutoWidth > 0) {
-      console.debug("nAutoWidth: " + nAutoWidth);
-
-      for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-        if (this.columnDefinitions[j].renderWidth === 0) {
-          this.columnDefinitions[j].renderWidth = Math.max(availableWidth / nAutoWidth, this.columnDefinitions[j].minWidth);
-        }
-      }
-    }
-
-    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-      console.debug("Column: " + this.columnDefinitions[j].field);
-
-      exactWidth = this.columnDefinitions[j].renderWidth;
-      if (exactWidth !== Math.floor(exactWidth)) {
-        remainder = remainder + exactWidth - Math.floor(exactWidth);
-      }
-      e = this.gridContainer.nativeElement.querySelector("#header-" + j);
-      w = Math.floor(exactWidth);
-
-      console.debug("exactWidth: " + exactWidth + " " + w + " " + remainder);
-
-      if (this.columnDefinitions.length - 1 === j) {
-        w = w + remainder;
-      }
-      if (e) {
-        this.columnDefinitions[j].renderWidth = w;
-        this.renderer.setStyle(e, "width", w + "px");
-        if (this.columnDefinitions[j].isLast) {
-          this.renderer.addClass(e, "last");
-        }
-      }
-      if (this.columnDefinitions[j].isFixed) {
-        this.columnDefinitions[j].renderLeft = Math.max(fixedWidth, fixedMinWidth);
-        fixedWidth = fixedWidth + w;
-      } else {
-        this.columnDefinitions[j].renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
-        nonFixedWidth = nonFixedWidth + w;
-      }
-    }
-
-    e = this.gridContainer.nativeElement.querySelector("#leftView");
-    this.renderer.setStyle(e, "width", fixedWidth + "px");
-
-    e = this.gridContainer.nativeElement.querySelector("#leftContainer");
-    this.renderer.setStyle(e, "width", fixedWidth + "px");
-    this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
-
-    e = this.gridContainer.nativeElement.querySelector("#rightContainer");
-    this.renderer.setStyle(e, "width", nonFixedWidth + "px");
-    this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
-
-    e = this.gridContainer.nativeElement.querySelector("#headerContent");
-    this.renderer.setStyle(e, "width", gridWidth);
-    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
-    this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
-    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
-
-    e = this.gridContainer.nativeElement.querySelector("#rightView");
-    this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-    e = this.gridContainer.nativeElement.querySelector("#rightView");
-    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
-  }
-
-  setGridData(gridData: Array<Row>) {
-    console.debug("setGridData");
-    console.debug(gridData);
-
-    this.changeDetectorRef.markForCheck();
-    this.gridData = gridData;
-    this.renderData();
-    this.busySubject.next(false);
-  }
-
-  renderData() {
-    console.debug("renderData");
-    this.changeDetectorRef.detectChanges();
-    this.updateGridContainerHeight();
-    this.updateGridSizes();
-
-    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
-    for (let i of this.renderedRows) {
-      try {
-        this.renderer.removeChild(leftContainer, leftContainer.querySelector("#row-left-" + i));
-      } catch (e) {
-        // Ignore
-      }
-    }
-    let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightContainer");
-    for (let i of this.renderedRows) {
-      try {
-        this.renderer.removeChild(rightContainer, rightContainer.querySelector("#row-right-" + i));
-      } catch (e) {
-        // Ignore
-      }
-    }
-    this.renderedRows = [];
-
-    let start: number = Math.floor(this.gridContainer.nativeElement.querySelector("#rightView").scrollTop / this.rowHeight);
-    let end: number = this.gridService.getNVisibleRows();
-    if (end < 0) {
-      end = this.gridData.length;
-    } else {
-      end = start + end;
-    }
-
-    let cell: Cell = null;
-    let row: Row = null;
-    let lRow: HTMLElement = null;
-    let rRow: HTMLElement = null;
-    for (var i = start; this.gridData.length; i++) {
-      row = this.gridData[i];
-      if (!row) {
-        return;
-      }
-
-      if (this.gridService.getNFixedColumns() > 0) {
-        lRow = this.createRow(leftContainer, "left", i);
-      }
-      rRow = this.createRow(rightContainer, "right", i);
-      this.renderedRows.push(i);
-
-      for (var j = 0; j < this.gridService.getNFixedColumns(); j++) {
-        cell = this.gridData[i].get(j);
-        if (this.columnDefinitions[j].isUtility) {
-          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
-        } else if (this.columnDefinitions[j].field === "GROUPBY") {
-          if (row.hasHeader()) {
-            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, row.header);
-          } else {
-            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
-          }
-        } else {
-          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
-        }
-      }
-
-      for (var j = this.gridService.getNFixedColumns(); j < this.gridService.getNVisibleColumns(); j++) {
-        cell = this.gridData[i].get(j);
-        if (this.columnDefinitions[j].isUtility) {
-          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
-        } else if (this.columnDefinitions[j].field === "GROUPBY") {
-          if (row.hasHeader()) {
-            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, row.header);
-          } else {
-            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
-          }
-        } else {
-          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
-        }
-      }
-
-      if (i === end) {
-        break;
-      }
-    }
-
-    this.changeDetectorRef.detectChanges();
-    this.changeDetectorRef.markForCheck();
-  }
-
-  createRow(container: Element, lr: string, i: number): HTMLElement {
-    let row = this.renderer.createElement("div");
-    this.renderer.setAttribute(row, "id", "row-" + lr + "-" + i);
-    this.renderer.addClass(row, "hci-grid-row");
-    if (i % 2 === 0) {
-      this.renderer.addClass(row, "even");
-    } else {
-      this.renderer.addClass(row, "odd");
-    }
-    this.renderer.setStyle(row, "position", "absolute");
-    this.renderer.setStyle(row, "display", "inline-block");
-    this.renderer.setStyle(row, "top", (i * this.rowHeight) + "px");
-    this.renderer.appendChild(container, row);
-    return row;
-  }
-
-  createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string) {
-    let eCell = this.renderer.createElement("div");
-    this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
-    this.renderer.addClass(eCell, "hci-grid-cell");
-    if (column.isLast) {
-      this.renderer.addClass(eCell, "last");
-    }
-    this.renderer.setStyle(eCell, "position", "absolute");
-    this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
-    this.renderer.setStyle(eCell, "height", this.rowHeight + "px");
-    this.renderer.setStyle(eCell, "padding-left", "8px");
-    this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
-    this.renderer.setStyle(eCell, "min-width:", column.minWidth + "px");
-    this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
-    this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
-
-    if (column.field === "ROW_SELECT") {
-      this.renderer.appendChild(eCell, new CheckRowSelectRenderer().createCell(this.renderer, column, cell));
-    } else {
-      let text = this.renderer.createText(value);
-      this.renderer.appendChild(eCell, text);
-    }
-    this.renderer.appendChild(row, eCell);
-  }
-
-  selectComponent(i: number, j: number) {
-    console.log("GridComponent.selectComponent: " + i + " " + j);
-    let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
-    this.createCellComponent(e);
-  }
-
-  createCellComponent(cellElement: HTMLElement) {
-    console.debug("createCellComponent: " + cellElement.id);
-
-    if (cellElement.id) {
-      let id: string = cellElement.id;
-      let ids = id.split("-");
-      let i: number = +ids[1];
-      let j: number = +ids[2];
-
-      try {
-        this.gridData[i].get(j);
-      } catch (e) {
-        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-      }
-
-      let column: Column = this.columnDefinitions[j];
-
-      if (!column.visible && this.gridEventService.getLastDx() === 1) {
-        this.gridEventService.repeatLastEvent();
-      } else if (!column.visible) {
-        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-      }
-
-      let factory = null;
-      /*if (column.component instanceof Type) {
-       var factories = Array.from(this.resolver["_factories"].keys());
-       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component.constructor.name);
-       factory = this.resolver.resolveComponentFactory(factoryClass);
-       } else if (column.component instanceof String) {
-       var factories = Array.from(this.resolver["_factories"].keys());
-       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component);
-       factory = this.resolver.resolveComponentFactory(factoryClass);
-       //this.componentRef.setValues(this.component);
-       } else {
-       factory = this.resolver.resolveComponentFactory(LabelCell);
-       }*/
-
-      factory = this.resolver.resolveComponentFactory(InputCell);
-      if (column.isFixed) {
-        this.componentRef = this.leftCellEditContainer.createComponent(factory).instance;
-      } else {
-        this.componentRef = this.rightCellEditContainer.createComponent(factory).instance;
-      }
-      this.componentRef.setPosition(i, j);
-      this.componentRef.setData(this.gridData[i].get(j));
-      this.componentRef.setLocation(cellElement);
-    }
-  }
-
-  @HostListener("window:resize", ["$event"])
-  onResize(event: Event) {
-    this.updateGridContainerHeight();
-    this.updateGridSizes();
-  }
-
-  updateGridContainerHeight() {
-    if (this.gridService.nVisibleRows) {
-      console.debug("updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
-
-      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#headerContent").offsetHeight;
-      if (this.gridService.getNVisibleRows() <= 0) {
-        let height: number = this.gridData.length * this.rowHeight;
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
-      } else {
-        let height: number = this.gridService.getNVisibleRows() * this.rowHeight;
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
-      }
-    }
-  }
-
-  postInit() {
-    console.debug("postInit");
-
-    this.pageInfo = this.gridService.pageInfo;
-    this.pageSizes = this.gridService.pageSizes;
-    this.updateGridContainerHeight();
-    this.updateGridSizes();
-
-    this.gridEventService.setSelectedLocation(null, null);
-    this.changeDetectorRef.markForCheck();
-  }
-
-  buildConfig() {
+  /**
+   * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
+   * combination of config and @Input settings.
+   */
+  public buildConfig() {
     if (this.rowSelect !== undefined) {
       this.config.rowSelect = this.rowSelect;
     }
@@ -908,40 +576,28 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.config.pageSizes = this.pageSizes;
     }
     if (this.cfgNVisibleRows !== undefined) {
-      console.debug("Set config.nVisibleRows");
       this.config.nVisibleRows = this.cfgNVisibleRows;
     }
   }
 
-  doPageFirst() {
+  public doPageFirst() {
     this.gridService.setPage(-2);
   }
 
-  doPagePrevious() {
+  public doPagePrevious() {
     this.gridService.setPage(-1);
   }
 
-  doPageSize(value: number) {
+  public doPageSize(value: number) {
     this.gridService.setPageSize(value);
   }
 
-  doPageNext() {
+  public doPageNext() {
     this.gridService.setPage(1);
   }
 
-  doPageLast() {
+  public doPageLast() {
     this.gridService.setPage(2);
-  }
-
-  initGridConfiguration() {
-    if (isDevMode()) {
-      console.debug("this.initGridConfiguration()");
-    }
-
-    this.gridService.pageInfo = this.gridService.pageInfo;
-    this.gridService.init();
-    this.columnDefinitions = this.gridService.columnDefinitions;
-    this.columnHeaders = this.gridService.getColumnHeaders();
   }
 
   public clearSelectedRows() {
@@ -963,7 +619,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   onScrollRightView(event: Event) {
-    console.debug("onScrollRightView");
+    if (isDevMode()) {
+      console.debug("onScrollRightView");
+    }
     let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
     let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightHeaderContainer");
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
@@ -979,7 +637,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.clickTimer = setTimeout(() => {
       if (!this.singleClickCancel) {
-        console.debug("single click");
+        if (isDevMode()) {
+          console.debug("single click");
+        }
 
         event.stopPropagation();
 
@@ -1007,7 +667,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   onDblClick(event: MouseEvent) {
     this.singleClickCancel = true;
     clearTimeout(this.clickTimer);
-    console.debug("onDblClick");
+    if (isDevMode()) {
+      console.debug("onDblClick");
+    }
 
     if (this.onRowDoubleClick) {
       let e = event.srcElement;
@@ -1033,7 +695,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    console.debug("GridComponent.onKeyDown");
+    if (isDevMode()) {
+      console.debug("GridComponent.onKeyDown");
+    }
 
     if (event.ctrlKey && event.keyCode === 67) {
       /*this.gridMessageService.debug("Copy Event");
@@ -1161,8 +825,395 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  private findBaseRowCell() {
+    this.rowHeight = this.gridContainer.nativeElement.querySelector("#base-row").offsetHeight;
+    if (!this.rowHeight || this.rowHeight === 0) {
+      this.rowHeight = 30;
+    }
+  }
+
+  private updateGridSizes() {
+    if (isDevMode()) {
+      console.debug("updateGridSizes: " + this.initialized);
+    }
+
+    let e = this.gridContainer.nativeElement;
+    let gridWidth: number = e.offsetWidth;
+    let insideGridWidth: number = gridWidth;
+    let w: number = 0;
+
+    if (isDevMode()) {
+      console.debug("gridWidth: " + gridWidth);
+    }
+    if (this.gridService.getNVisibleRows() > 0
+        && ((this.pageInfo.pageSize > 0 && this.gridService.getNVisibleRows() < this.pageInfo.pageSize)
+        || (this.pageInfo.pageSize < 0 && this.gridService.getNVisibleRows() < this.gridData.length))) {
+      insideGridWidth = gridWidth - 17;
+    }
+
+    let fixedWidth: number = 0;
+    let fixedMinWidth: number = 0;
+    let nonFixedWidth: number = 0;
+    let nonFixedMinWidth: number = 0;
+
+    let exactWidth: number = 0;
+    let remainder: number = 0;
+
+    let nAutoWidth: number = 0;
+    let availableWidth: number = insideGridWidth;
+
+    if (isDevMode()) {
+      console.debug("availableWidth: " + availableWidth);
+    }
+
+    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      this.columnDefinitions[j].renderWidth = 0;
+      if (this.columnDefinitions[j].width > 0) {
+        this.columnDefinitions[j].renderWidth = Math.max(this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
+        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
+      }
+    }
+
+    let percentWidth: number = availableWidth;
+    if (isDevMode()) {
+      console.debug("percentWidth: " + percentWidth);
+    }
+
+    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      if (this.columnDefinitions[j].widthPercent > 0) {
+        this.columnDefinitions[j].renderWidth = Math.max(percentWidth * (this.columnDefinitions[j].widthPercent / 100), this.columnDefinitions[j].minWidth);
+        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
+      } else if (this.columnDefinitions[j].width === 0) {
+        nAutoWidth = nAutoWidth + 1;
+      }
+    }
+
+    if (nAutoWidth > 0) {
+      if (isDevMode()) {
+        console.debug("nAutoWidth: " + nAutoWidth);
+      }
+
+      for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+        if (this.columnDefinitions[j].renderWidth === 0) {
+          this.columnDefinitions[j].renderWidth = Math.max(availableWidth / nAutoWidth, this.columnDefinitions[j].minWidth);
+        }
+      }
+    }
+
+    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
+      if (isDevMode()) {
+        console.debug("Column: " + this.columnDefinitions[j].field);
+      }
+
+      exactWidth = this.columnDefinitions[j].renderWidth;
+      if (exactWidth !== Math.floor(exactWidth)) {
+        remainder = remainder + exactWidth - Math.floor(exactWidth);
+      }
+      e = this.gridContainer.nativeElement.querySelector("#header-" + j);
+      w = Math.floor(exactWidth);
+
+      if (isDevMode()) {
+        console.debug("exactWidth: " + exactWidth + " " + w + " " + remainder);
+      }
+
+      if (this.columnDefinitions.length - 1 === j) {
+        w = w + remainder;
+      }
+      if (e) {
+        this.columnDefinitions[j].renderWidth = w;
+        this.renderer.setStyle(e, "width", w + "px");
+        if (this.columnDefinitions[j].isLast) {
+          this.renderer.addClass(e, "last");
+        }
+      }
+      if (this.columnDefinitions[j].isFixed) {
+        this.columnDefinitions[j].renderLeft = Math.max(fixedWidth, fixedMinWidth);
+        fixedWidth = fixedWidth + w;
+      } else {
+        this.columnDefinitions[j].renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
+        nonFixedWidth = nonFixedWidth + w;
+      }
+    }
+
+    e = this.gridContainer.nativeElement.querySelector("#leftView");
+    this.renderer.setStyle(e, "width", fixedWidth + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    this.renderer.setStyle(e, "width", fixedWidth + "px");
+    this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#rightContainer");
+    this.renderer.setStyle(e, "width", nonFixedWidth + "px");
+    this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#headerContent");
+    this.renderer.setStyle(e, "width", gridWidth);
+    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+    this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#rightView");
+    this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
+    e = this.gridContainer.nativeElement.querySelector("#rightView");
+    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+  }
+
+  private setGridData(gridData: Array<Row>) {
+    if (isDevMode()) {
+      console.debug("setGridData");
+      console.debug(gridData);
+    }
+
+    this.changeDetectorRef.markForCheck();
+    this.gridData = gridData;
+    this.renderData();
+    this.busySubject.next(false);
+  }
+
+  private renderData() {
+    if (isDevMode()) {
+      console.debug("renderData");
+    }
+    this.changeDetectorRef.detectChanges();
+    this.updateGridContainerHeight();
+    this.updateGridSizes();
+
+    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    for (let i of this.renderedRows) {
+      try {
+        this.renderer.removeChild(leftContainer, leftContainer.querySelector("#row-left-" + i));
+      } catch (e) {
+        // Ignore
+      }
+    }
+    let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightContainer");
+    for (let i of this.renderedRows) {
+      try {
+        this.renderer.removeChild(rightContainer, rightContainer.querySelector("#row-right-" + i));
+      } catch (e) {
+        // Ignore
+      }
+    }
+    this.renderedRows = [];
+
+    let start: number = Math.floor(this.gridContainer.nativeElement.querySelector("#rightView").scrollTop / this.rowHeight);
+    let end: number = this.gridService.getNVisibleRows();
+    if (end < 0) {
+      end = this.gridData.length;
+    } else {
+      end = start + end;
+    }
+
+    let cell: Cell = null;
+    let row: Row = null;
+    let lRow: HTMLElement = null;
+    let rRow: HTMLElement = null;
+    for (var i = start; this.gridData.length; i++) {
+      row = this.gridData[i];
+      if (!row) {
+        return;
+      }
+
+      if (this.gridService.getNFixedColumns() > 0) {
+        lRow = this.createRow(leftContainer, "left", i);
+      }
+      rRow = this.createRow(rightContainer, "right", i);
+      this.renderedRows.push(i);
+
+      for (var j = 0; j < this.gridService.getNFixedColumns(); j++) {
+        cell = this.gridData[i].get(j);
+        if (this.columnDefinitions[j].isUtility) {
+          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
+        } else if (this.columnDefinitions[j].field === "GROUPBY") {
+          if (row.hasHeader()) {
+            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, row.header);
+          } else {
+            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
+          }
+        } else {
+          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
+        }
+      }
+
+      for (var j = this.gridService.getNFixedColumns(); j < this.gridService.getNVisibleColumns(); j++) {
+        cell = this.gridData[i].get(j);
+        if (this.columnDefinitions[j].isUtility) {
+          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
+        } else if (this.columnDefinitions[j].field === "GROUPBY") {
+          if (row.hasHeader()) {
+            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, row.header);
+          } else {
+            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
+          }
+        } else {
+          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
+        }
+      }
+
+      if (i === end) {
+        break;
+      }
+    }
+
+    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private createRow(container: Element, lr: string, i: number): HTMLElement {
+    let row = this.renderer.createElement("div");
+    this.renderer.setAttribute(row, "id", "row-" + lr + "-" + i);
+    this.renderer.addClass(row, "hci-grid-row");
+    if (i % 2 === 0) {
+      this.renderer.addClass(row, "even");
+    } else {
+      this.renderer.addClass(row, "odd");
+    }
+    this.renderer.setStyle(row, "position", "absolute");
+    this.renderer.setStyle(row, "display", "inline-block");
+    this.renderer.setStyle(row, "top", (i * this.rowHeight) + "px");
+    this.renderer.appendChild(container, row);
+    return row;
+  }
+
+  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string) {
+    let eCell = this.renderer.createElement("div");
+    this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
+    this.renderer.addClass(eCell, "hci-grid-cell");
+    if (column.isLast) {
+      this.renderer.addClass(eCell, "last");
+    }
+    this.renderer.setStyle(eCell, "position", "absolute");
+    this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
+    this.renderer.setStyle(eCell, "height", this.rowHeight + "px");
+    this.renderer.setStyle(eCell, "padding-left", "8px");
+    this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
+    this.renderer.setStyle(eCell, "min-width:", column.minWidth + "px");
+    this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
+    this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
+
+    if (column.field === "ROW_SELECT") {
+      this.renderer.appendChild(eCell, new CheckRowSelectRenderer().createCell(this.renderer, column, cell));
+    } else {
+      let text = this.renderer.createText(value);
+      this.renderer.appendChild(eCell, text);
+    }
+    this.renderer.appendChild(row, eCell);
+  }
+
+  private selectComponent(i: number, j: number) {
+    if (isDevMode()) {
+      console.log("GridComponent.selectComponent: " + i + " " + j);
+    }
+    let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
+    this.createCellComponent(e);
+  }
+
+  private createCellComponent(cellElement: HTMLElement) {
+    if (isDevMode()) {
+      console.debug("createCellComponent: " + cellElement.id);
+    }
+
+    if (cellElement.id) {
+      let id: string = cellElement.id;
+      let ids = id.split("-");
+      let i: number = +ids[1];
+      let j: number = +ids[2];
+
+      try {
+        this.gridData[i].get(j);
+      } catch (e) {
+        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+      }
+
+      let column: Column = this.columnDefinitions[j];
+
+      if (!column.visible && this.gridEventService.getLastDx() === 1) {
+        this.gridEventService.repeatLastEvent();
+      } else if (!column.visible) {
+        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+      }
+
+      let factory = null;
+      /*if (column.component instanceof Type) {
+       var factories = Array.from(this.resolver["_factories"].keys());
+       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component.constructor.name);
+       factory = this.resolver.resolveComponentFactory(factoryClass);
+       } else if (column.component instanceof String) {
+       var factories = Array.from(this.resolver["_factories"].keys());
+       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component);
+       factory = this.resolver.resolveComponentFactory(factoryClass);
+       //this.componentRef.setValues(this.component);
+       } else {
+       factory = this.resolver.resolveComponentFactory(LabelCell);
+       }*/
+
+      factory = this.resolver.resolveComponentFactory(InputCell);
+      if (column.isFixed) {
+        this.componentRef = this.leftCellEditContainer.createComponent(factory).instance;
+      } else {
+        this.componentRef = this.rightCellEditContainer.createComponent(factory).instance;
+      }
+      this.componentRef.setPosition(i, j);
+      this.componentRef.setData(this.gridData[i].get(j));
+      this.componentRef.setLocation(cellElement);
+    }
+  }
+
+  @HostListener("window:resize", ["$event"])
+  private onResize(event: Event) {
+    this.updateGridContainerHeight();
+    this.updateGridSizes();
+  }
+
+  private updateGridContainerHeight() {
+    if (this.gridService.nVisibleRows) {
+      if (isDevMode()) {
+        console.debug("updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
+      }
+
+      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#headerContent").offsetHeight;
+      if (this.gridService.getNVisibleRows() <= 0) {
+        let height: number = this.gridData.length * this.rowHeight;
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+      } else {
+        let height: number = this.gridService.getNVisibleRows() * this.rowHeight;
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+      }
+    }
+  }
+
+  private postInit() {
+    if (isDevMode()) {
+      console.debug("postInit");
+    }
+
+    this.pageInfo = this.gridService.pageInfo;
+    this.pageSizes = this.gridService.pageSizes;
+    this.updateGridContainerHeight();
+    this.updateGridSizes();
+
+    this.gridEventService.setSelectedLocation(null, null);
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private initGridConfiguration() {
+    if (isDevMode()) {
+      console.debug("this.initGridConfiguration()");
+    }
+
+    this.gridService.pageInfo = this.gridService.pageInfo;
+    this.gridService.init();
+    this.columnDefinitions = this.gridService.columnDefinitions;
+    this.columnHeaders = this.gridService.getColumnHeaders();
+  }
+
   @HostListener("document:click", ["$event"])
-  clickout(event) {
+  private clickout(event) {
     if (!this.el.nativeElement.contains(event.target)) {
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
