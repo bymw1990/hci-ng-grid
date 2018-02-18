@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 
 import {Column} from "hci-ng-grid/index";
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "style-grid",
@@ -15,7 +16,7 @@ import {Column} from "hci-ng-grid/index";
         </p>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1">
+                    [columnDefinitions]="columns">
           </hci-grid>
         </p>
       </div>
@@ -31,7 +32,7 @@ import {Column} from "hci-ng-grid/index";
         </p>
         <p>
           <hci-grid [data]="data2"
-                    [columnDefinitions]="columns2"
+                    [columnDefinitions]="columns"
                     [theme]="''">
           </hci-grid>
         </p>
@@ -47,9 +48,11 @@ import {Column} from "hci-ng-grid/index";
           TODO
         </p>
         <p>
-          <hci-grid [data]="data3"
-                    [columnDefinitions]="columns3"
-                    [theme]="'report'">
+          <hci-grid [title]="'Demographics Report'"
+                    [data]="data3"
+                    [columnDefinitions]="columns"
+                    [theme]="'report'"
+                    [nVisibleRows]="-1">
           </hci-grid>
         </p>
       </div>
@@ -62,56 +65,25 @@ import {Column} from "hci-ng-grid/index";
 })
 export class ThemingComponent {
 
-  data1: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1971-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1972-11-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1973-12-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1945-12-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1947-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1958-11-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
+  data1: Array<Object> = [];
+  data2: Array<Object> = [];
+  data3: Array<Object> = [];
+
+  columns: Column[] = [
+    new Column({ field: "lastName", name: "Last" }),
+    new Column({ field: "firstName", name: "First" }),
+    new Column({ field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "gender", name: "Gender" }),
+    new Column({ field: "address", name: "Address" }),
+    new Column({ field: "nLabs", name: "# Labs" })
   ];
 
-  columns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
-  ];
+  constructor(private dataGeneratorService: DataGeneratorService) {}
 
-  data2: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1967-01-12T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1956-03-13T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1945-04-15T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1935-05-17T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1967-06-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1977-07-25T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
-
-  columns2: Column[] = [
-    new Column({ field: "lastName" }),
-    new Column({ field: "firstName" }),
-    new Column({ field: "dob", dataType: "date", format: "MM/DD/YYYY" }),
-    new Column({ field: "pcg.nLabs" }),
-    new Column({ field: "pcg.nested.nLabPath" })
-  ];
-
-  data3: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1967-01-12T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1956-03-13T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1945-04-15T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1935-05-17T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1967-06-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1977-07-25T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
-
-  columns3: Column[] = [
-    new Column({ field: "lastName" }),
-    new Column({ field: "firstName" }),
-    new Column({ field: "dob", dataType: "date", format: "MM/DD/YYYY" }),
-    new Column({ field: "pcg.nLabs" }),
-    new Column({ field: "pcg.nested.nLabPath" })
-  ];
+  ngOnInit() {
+    this.data1 = this.dataGeneratorService.getData(11);
+    this.data2 = this.dataGeneratorService.getData(13);
+    this.data3 = this.dataGeneratorService.getData(17);
+  }
 
 }

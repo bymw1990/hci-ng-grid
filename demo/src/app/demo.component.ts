@@ -36,7 +36,7 @@ import {Component} from "@angular/core";
         </div>
       </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" style="padding-bottom: 50px;">
       <router-outlet></router-outlet>
     </div>
     `,

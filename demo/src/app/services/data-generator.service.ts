@@ -46,8 +46,9 @@ export class DataGeneratorService {
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
       let dob: string = this.generateDate(1930, 1990);
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
+      let nLabs: number = Math.floor(Math.random() * 100);
 
-      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone });
+      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs });
     }
     return data;
   }

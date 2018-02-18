@@ -115,9 +115,9 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
           <div #rightView id="rightView">
             <div #rightRowContainer id="rightContainer">
               <div #rightCellEditContainer></div>
-              <!--<div id="base-row" class="hci-grid-row" style="position: absolute; left: -1000px; top: -1000px;">
-                <div id="base-cell" class="hci-grid-cell" style="position: absolute; left: -1000px; top: -1000px;"></div>
-              </div>-->
+              <div id="base-row" class="hci-grid-row" style="position: absolute; left: 0px; top: 0px;">
+                <div id="base-cell" class="hci-grid-cell" style="position: absolute; left: 0px; top: 0px;"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -149,7 +149,8 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
     </div>
   `,
   styleUrls: [
-    "./themes/excel.css"
+    "./themes/excel.css",
+    "./themes/report.css"
   ],
   styles: [ `
 
@@ -360,7 +361,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * Setup listeners and pass inputs to services (particularly the config service).
    */
   ngAfterContentInit() {
-    //this.findBaseRowCell();
+    this.findBaseRowCell();
 
     this.buildConfig();
     this.gridService.setConfig(this.config);
@@ -441,6 +442,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.findBaseRowCell();
+
     this.updateGridSizes();
 
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
@@ -516,6 +519,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   findBaseRowCell() {
     this.rowHeight = this.gridContainer.nativeElement.querySelector("#base-row").offsetHeight;
+    if (!this.rowHeight || this.rowHeight === 0) {
+      this.rowHeight = 30;
+    }
   }
 
   updateGridSizes() {
@@ -527,7 +533,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let w: number = 0;
 
     console.debug("gridWidth: " + gridWidth);
-    if (this.gridService.getNVisibleRows() < this.pageInfo.pageSize) {
+    if (this.gridService.getNVisibleRows() > 0
+        && ((this.pageInfo.pageSize > 0 && this.gridService.getNVisibleRows() < this.pageInfo.pageSize)
+        || (this.pageInfo.pageSize < 0 && this.gridService.getNVisibleRows() < this.gridData.length))) {
       insideGridWidth = gridWidth - 17;
     }
 
@@ -752,9 +760,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
     this.renderer.setStyle(eCell, "height", this.rowHeight + "px");
-    this.renderer.setStyle(eCell, "vertical-align", "top");
     this.renderer.setStyle(eCell, "padding-left", "8px");
-    this.renderer.setStyle(eCell, "display", "inline-block");
     this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
     this.renderer.setStyle(eCell, "min-width:", column.minWidth + "px");
     this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
@@ -831,22 +837,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   updateGridContainerHeight() {
-    if (this.config.nVisibleRows) {
-      console.debug("updateGridContainerHeight.nVisibleRows");
+    if (this.gridService.nVisibleRows) {
+      console.debug("updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
 
       let headerHeight: number = this.gridContainer.nativeElement.querySelector("#headerContent").offsetHeight;
-      let height: number = this.config.nVisibleRows * this.rowHeight;
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
-
-      height = this.rowHeight;
-      let cell = this.gridContainer.nativeElement.querySelector("#cell-0-0");
-      if (cell) {
-        height = cell.offsetHeight;
+      if (this.gridService.getNVisibleRows() <= 0) {
+        let height: number = this.gridData.length * this.rowHeight;
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+      } else {
+        let height: number = this.gridService.getNVisibleRows() * this.rowHeight;
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
       }
-      console.debug(this.gridContainer.nativeElement.querySelector("#rightContainer"));
-      let rows = this.gridContainer.nativeElement.querySelector("#rightContainer");
     }
   }
 
