@@ -7,3 +7,6 @@ export {ExternalInfo} from "./grid/utils/external-info";
 export {FilterInfo} from "./grid/utils/filter-info";
 export {PageInfo} from "./grid/utils/page-info";
 export {SortInfo} from "./grid/utils/sort-info";
+
+export {CellViewRenderer} from "./grid/cell/viewRenderers/cell-view-renderer.interface";
+export {CellNumberRangeView} from "./grid/cell/viewRenderers/cell-number-range-view";

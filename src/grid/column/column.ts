@@ -1,4 +1,6 @@
 import * as moment from "moment";
+import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
+import {CellTextView} from "../cell/viewRenderers/cell-text-view";
 
 export class Column {
   id: number;
@@ -27,6 +29,8 @@ export class Column {
   selectable: boolean = true;
   isLast: boolean = false;
 
+  viewRenderer: CellViewRenderer = new CellTextView();
+
   renderLeft: number = 0;
   renderWidth: number = 0;
 
@@ -44,6 +48,10 @@ export class Column {
 
   constructor(object: any) {
     this.setConfig(object);
+  }
+
+  getViewRenderer(): CellViewRenderer {
+    return this.viewRenderer;
   }
 
   formatValue(value: any): string {
@@ -135,6 +143,9 @@ export class Column {
     }
     if (object.selectable !== undefined) {
       this.selectable = object.selectable;
+    }
+    if (object.viewRenderer) {
+      this.viewRenderer = object.viewRenderer;
     }
   }
 

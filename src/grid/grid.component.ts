@@ -23,6 +23,7 @@ import {CellTemplate} from "./cell/cell-template.component";
 import {InputCell} from "./cell/input-cell.component";
 import {Cell} from "./cell/cell";
 import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
+import {CellTextView} from "./cell/viewRenderers/cell-text-view";
 
 /**
  * A robust grid for angular.
@@ -227,7 +228,8 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       position: absolute;
       margin-left: 0px;
       width: 0px;
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: auto;
       height: 250px;
     }
     
@@ -950,13 +952,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(e, "width", gridWidth);
     e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
 
     e = this.gridContainer.nativeElement.querySelector("#rightView");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-    e = this.gridContainer.nativeElement.querySelector("#rightView");
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+    if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
+      this.renderer.setStyle(e, "overflow-y", "hidden");
+    }
   }
 
   private setGridData(gridData: Array<Row>) {
@@ -1032,7 +1035,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
             this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
           }
         } else {
-          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
+          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, cell.value);
         }
       }
 
@@ -1047,7 +1050,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
             this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
           }
         } else {
-          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, this.columnDefinitions[j].formatValue(cell.value));
+          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, cell.value);
         }
       }
 
@@ -1095,8 +1098,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (column.field === "ROW_SELECT") {
       this.renderer.appendChild(eCell, new CheckRowSelectRenderer().createCell(this.renderer, column, cell));
     } else {
-      let text = this.renderer.createText(value);
-      this.renderer.appendChild(eCell, text);
+      this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value));
     }
     this.renderer.appendChild(row, eCell);
   }

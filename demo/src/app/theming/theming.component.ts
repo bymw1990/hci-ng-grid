@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from "@angular/core";
 
-import {Column} from "hci-ng-grid/index";
+import {Column, CellNumberRangeView} from "hci-ng-grid/index";
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -16,7 +16,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </p>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns">
+                    [columnDefinitions]="columns"
+                    [pageSize]="10"
+                    [pageSizes]="[5, 10, 25]">
           </hci-grid>
         </p>
       </div>
@@ -50,7 +52,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Demographics Report'"
                     [data]="data3"
-                    [columnDefinitions]="columns"
+                    [columnDefinitions]="columns3"
                     [theme]="'report'"
                     [nVisibleRows]="-1">
           </hci-grid>
@@ -76,6 +78,15 @@ export class ThemingComponent {
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
     new Column({ field: "nLabs", name: "# Labs" })
+  ];
+
+  columns3: Column[] = [
+    new Column({ field: "lastName", name: "Last" }),
+    new Column({ field: "firstName", name: "First" }),
+    new Column({ field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "gender", name: "Gender" }),
+    new Column({ field: "address", name: "Address" }),
+    new Column({ field: "nLabs", name: "# Labs", viewRenderer: new CellNumberRangeView({low: 15, high: 85, showIcon: true}) })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
