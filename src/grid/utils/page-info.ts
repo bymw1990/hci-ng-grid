@@ -5,6 +5,10 @@ export class PageInfo {
   dataSize: number = 0;
   numPages: number = 0;
 
+  toString(): string {
+    return "PageInfo: page: " + this.page + "; pageSize: " + this.pageSize + "; dataSize: " + this.dataSize + "; numPages: " + this.numPages;
+  }
+
   getPage(): number {
     return this.page;
   }

@@ -11,7 +11,7 @@ import {CellEditRenderer} from "./cell-edit-renderer";
            autofocus
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
-           (keydown)="onInputKeyDown($event);"
+           (keydown)="onInputKeyDown($event)"
            class="hci-ng-grid-cell-template hci-ng-grid-cell-input"
            [ngClass]="{ 'focused': focused }" />
   `,

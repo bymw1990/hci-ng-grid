@@ -168,6 +168,10 @@ export class Column {
     if (object.selectable !== undefined) {
       this.selectable = object.selectable;
     }
+
+    if (object.editRenderer) {
+      this.editRenderer = object.editRenderer;
+    }
     if (object.viewRenderer) {
       this.viewRenderer = object.viewRenderer;
     }

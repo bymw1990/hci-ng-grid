@@ -371,8 +371,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
     this.gridService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
+      if (isDevMode()) {
+        console.debug("this.gridService.pageInfoObserved: " + pageInfo.toString());
+      }
       this.pageInfo = pageInfo;
-      //this.updateRenderSize();
     });
 
     /* Listen to changes in Sort/Filter/Page.
@@ -390,7 +392,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
           this.gridService.setOriginalData(externalData.data);
 
           this.pageInfo = this.gridService.pageInfo;
-          //this.updateRenderSize();
         });
       });
     }
@@ -645,6 +646,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
         let idElement: HTMLElement = <HTMLElement>event.srcElement;
         while (!idElement.id) {
           idElement = idElement.parentElement;
+          if (idElement === null) {
+            return;
+          }
         }
 
         if (idElement.id.startsWith("filter-")) {
@@ -962,6 +966,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
     if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
       this.renderer.setStyle(e, "overflow-y", "hidden");
+    } else {
+      this.renderer.setStyle(e, "overflow-y", "auto");
     }
   }
 
