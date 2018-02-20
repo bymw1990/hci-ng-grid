@@ -1,7 +1,8 @@
-import { Component } from "@angular/core";
+import {Component} from "@angular/core";
 
-import { DataGeneratorService } from "../services/data-generator.service";
-import { Column } from "hci-ng-grid/index";
+import {DataGeneratorService} from "../services/data-generator.service";
+import {Column, TextFilterRenderer} from "hci-ng-grid/index";
+import {CompareFilterRenderer} from "hci-ng-grid/index";
 
 @Component({
   selector: "filter-grid",
@@ -13,7 +14,7 @@ import { Column } from "hci-ng-grid/index";
       <div class="card-body">
         <div class="card-text">
           <div class="d-flex flex-nowrap" style="align-items: center;">
-            <a class="btn btn-primary" (click)="initData();">Re-generate Data</a><br />
+            <a class="btn btn-primary" (click)="initData()">Re-generate Data</a><br />
             <span style="margin-left: 20px; font-size: 1.5em;">Size: </span>
             <input [(ngModel)]="dataSize" style="margin-left: 10px; font-size: 1.5em;" />
           </div>
@@ -37,13 +38,13 @@ export class FilterGridComponent {
   filteredData: Array<Object>;
 
   filteredColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", template: "LabelCell" }),
-    new Column({ field: "lastName", name: "Last Name", template: "InputCell", filterType: "input" }),
-    new Column({ field: "middleName", name: "Middle Name", template: "InputCell" }),
-    new Column({ field: "firstName", name: "First Name", template: "InputCell", filterType: "input" }),
+    new Column({ field: "idPatient", name: "ID", visible: false }),
+    new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
+    new Column({ field: "middleName", name: "Middle Name" }),
+    new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
-    new Column({ field: "gender", name: "Gender", template: "LabelCell", filterType: "select", filterOptions: [ "", "Female", "Male" ] }),
-    new Column({ field: "address", name: "Address", template: "LabelCell" })
+    new Column({ field: "gender", name: "Gender", filterRenderer: TextFilterRenderer }),
+    new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
@@ -53,7 +54,6 @@ export class FilterGridComponent {
   }
 
   initData() {
-    this.dataGeneratorService.generateFilteredData(this.dataSize);
-    this.filteredData = this.dataGeneratorService.getFilteredData(null, null, null);
+    this.filteredData = this.dataGeneratorService.getData(this.dataSize);
   }
 }

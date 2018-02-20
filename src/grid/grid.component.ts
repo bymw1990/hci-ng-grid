@@ -185,6 +185,7 @@ import {CellTextView} from "./cell/viewRenderers/cell-text-view";
       position: absolute;
       display: inline-block;
       white-space: nowrap;
+      overflow: visible;
     }
     
     #leftHeaderContainer {
@@ -197,7 +198,7 @@ import {CellTextView} from "./cell/viewRenderers/cell-text-view";
       white-space: nowrap;
       margin-left: 0px;
       margin-right: 0px;
-      overflow: hidden;
+      overflow: visible;
       width: 0px;
     }      
     
@@ -643,14 +644,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
           console.debug("single click");
         }
 
-        event.stopPropagation();
-
         let idElement: HTMLElement = <HTMLElement>event.srcElement;
         while (!idElement.id) {
           idElement = idElement.parentElement;
         }
 
-        if (idElement.id === "row-select") {
+        if (idElement.id.startsWith("filter-")) {
+          //
+        } else if (idElement.id === "row-select") {
+          event.stopPropagation();
+
           let parentId: string = idElement.parentElement.id;
           let rowId: number = +parentId.split("-")[1];
           let cellId: number = +parentId.split("-")[2];
@@ -660,6 +663,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
             this.renderer.addClass(idElement, "selected");
           }
         } else {
+          event.stopPropagation();
+
           this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
         }
       }
@@ -1164,10 +1169,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   @HostListener("window:resize", ["$event"])
   private onResize(event: Event) {
-    this.updateGridContainerHeight();
+    //this.updateGridContainerHeight();
     this.updateGridSizes();
+    this.renderData();
   }
 
+  /**
+   * Sets the height of the view containers based on either the rows allowed to render or the data size.
+   */
   private updateGridContainerHeight() {
     if (this.gridService.nVisibleRows) {
       if (isDevMode()) {

@@ -1,8 +1,13 @@
-import {Component, Input} from "@angular/core";
+import {
+  Component, ComponentFactoryResolver, ElementRef, Input, Renderer2, Type, ViewChild,
+  ViewContainerRef
+} from "@angular/core";
 
 import {Column} from "./column";
 import {GridService} from "../services/grid.service";
 import {SortInfo} from "../utils/sort-info";
+import {FilterRenderer} from "./filterRenderers/filter-renderer";
+import {Observable} from "rxjs/Observable";
 
 /**
  * fa-sort fa-sort-asc fa-sort-desc
@@ -10,12 +15,19 @@ import {SortInfo} from "../utils/sort-info";
 @Component({
   selector: "hci-column-header",
   template: `
-    <div class="d-flex flex-nowrap" style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;" (click)="doSort()">
-      <span>{{ column.name }}</span>
-      <!--<span *ngIf="asc === 0" class="sort-icon"><span class="fas fa-sort"></span></span>-->
+    <div class="d-flex flex-nowrap" style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
+      <span (click)="doSort()">{{ column.name }}</span>
       <div class="d-flex flex-nowrap sort-icon">
-        <div [id]="'filter-' + column.id" *ngIf="column.filterType !== null">
-          <span class="fas fa-filter"></span>
+        <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
+          <a id="filterDropdownToggle"
+             class="dropdown-toggle"
+             [style.color]="column.filters.length > 0 ? '#00aa00' : 'inherit'"
+             ngbDropdownToggle >
+            <i class="fas fa-filter"></i>
+          </a>
+          <div id="filterDropdownMenu" ngbDropdownMenu class="dropdown-menu" aria-labelledby="filterDropdown">
+            <ng-container #filterContainer></ng-container>
+          </div>
         </div>
         <div [id]="'sort-' + column.id" *ngIf="column.sortable" style="margin-left: 5px;">
           <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
@@ -23,28 +35,19 @@ import {SortInfo} from "../utils/sort-info";
         </div>
       </div>
     </div>
-    
-    <!--
-    <div *ngIf="column.filterType === 'input'" class="d-flex flex-nowrap" style="align-items: center;">
-      <input [ngModel]="column.filterValue"
-             (ngModelChange)="doFilterChange($event)"
-             style="width: 100%;" />
-      <div (click)="doFilterClear();" style="padding-left: 5px; padding-right: 5px;">
-        <span class="fas fa-times"></span>
-      </div>
-    </div>
-    <div *ngIf="column.filterType === 'select'" class="d-flex flex-nowrap" style="align-items: center;">
-      <select [ngModel]="column.filterValue"
-              (ngModelChange)="doFilterChange($event)"
-              style="height: 30px; width: 100%;">
-        <option *ngFor="let o of column.filterOptions" [ngValue]="o">{{ o }}</option>
-      </select>
-    </div>-->
   `,
   styles: [`
     .sort-icon {
       margin-left: auto;
       padding-right: 5px;
+    }
+
+    .dropdown-toggle::after {
+      display: none;
+    }
+    
+    .dropdown-menu {
+      padding: 0;
     }
   `],
 })
@@ -54,7 +57,12 @@ export class ColumnHeaderComponent {
 
   asc: number = 0;
 
-  constructor(private gridService: GridService) {}
+  @ViewChild("filterContainer", { read: ViewContainerRef })
+  private filterContainer: ViewContainerRef;
+
+  private filterComponent: FilterRenderer;
+
+  constructor(private gridService: GridService, private resolver: ComponentFactoryResolver, private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
     this.gridService.sortInfoObserved.subscribe((sortInfo: SortInfo) => {
@@ -70,13 +78,15 @@ export class ColumnHeaderComponent {
     });
   }
 
-  doFilterChange(value: any) {
-    this.column.filterValue = value;
-    this.gridService.filter();
-  }
-
-  doFilterClear() {
-    this.doFilterChange("");
+  ngAfterViewInit() {
+    if (this.column.filterRenderer) {
+      var factories = Array.from(this.resolver["_factories"].keys());
+      console.debug(this.column.filterRenderer);
+      let factory = this.resolver.resolveComponentFactory(this.column.filterRenderer);
+      this.filterComponent = this.filterContainer.createComponent(factory).instance;
+      this.filterComponent.column = this.column;
+      this.filterComponent.setConfig(this.column.filterConfig);
+    }
   }
 
   doSort() {

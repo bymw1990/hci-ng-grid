@@ -436,8 +436,8 @@ export class GridService {
     if (this.externalFiltering) {
       this.filterInfo = new Array<FilterInfo>();
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].filterValue !== null && this.columnDefinitions[j].filterValue !== "") {
-          this.filterInfo.push(new FilterInfo(this.columnDefinitions[j].field, this.columnDefinitions[j].filterValue));
+        if (this.columnDefinitions[j].filters.length > 0) {
+          this.filterInfo.concat(this.columnDefinitions[j].filters);
         }
       }
 
@@ -459,15 +459,62 @@ export class GridService {
     for (var i = 0; i < this.preparedData.length; i++) {
       let inc: boolean = true;
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].filterValue === null || this.columnDefinitions[j].filterValue === "") {
-          continue;
+        if (this.preparedData[i].get(j).value === null) {
+          inc = false;
+          break;
         }
 
-        if (this.columnDefinitions[j].filterType === "input" || this.columnDefinitions[j].filterType === "select") {
-          if (this.preparedData[i].get(j).value === null || this.preparedData[i].get(j).value.toString().indexOf(this.columnDefinitions[j].filterValue) === -1) {
-            inc = false;
-            break;
+        let colInc: boolean = true;
+        for (let filterInfo of this.columnDefinitions[j].filters) {
+          if (filterInfo.dataType === "number") {
+            colInc = false;
+            if (filterInfo.operator === "E") {
+              if (+this.preparedData[i].get(j).value === +filterInfo.value) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "LE") {
+              if (+this.preparedData[i].get(j).value <= +filterInfo.value) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "LT") {
+              if (+this.preparedData[i].get(j).value < +filterInfo.value) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "GE") {
+              if (+this.preparedData[i].get(j).value >= +filterInfo.value) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "GT") {
+              if (+this.preparedData[i].get(j).value > +filterInfo.value) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "B") {
+              if (+filterInfo.value <= +this.preparedData[i].get(j).value && +this.preparedData[i].get(j).value <= +filterInfo.highValue) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "O") {
+              if (+this.preparedData[i].get(j).value < +filterInfo.value || +filterInfo.highValue < +this.preparedData[i].get(j).value) {
+                colInc = true;
+                break;
+              }
+            }
+          } else {
+            if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
+              colInc = false;
+              break;
+            }
           }
+        }
+
+        if (!colInc) {
+          inc = false;
+          break;
         }
       }
       if (inc) {

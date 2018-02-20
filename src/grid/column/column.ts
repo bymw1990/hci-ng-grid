@@ -1,6 +1,10 @@
 import * as moment from "moment";
+
 import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
 import {CellTextView} from "../cell/viewRenderers/cell-text-view";
+import {FilterRenderer} from "./filterRenderers/filter-renderer";
+import {FilterInfo} from "../utils/filter-info";
+import {Type} from "@angular/core";
 
 export class Column {
   id: number;
@@ -21,15 +25,16 @@ export class Column {
   isGroup: boolean = false;
   isUtility: boolean = false;
   defaultValue: any;
-  filterType: string = null;
-  filterOptions: Array<any> = null;
-  filterValue: any = null;
   component: any = null;
   dataType: string = "string";
   selectable: boolean = true;
   isLast: boolean = false;
 
   viewRenderer: CellViewRenderer = new CellTextView();
+
+  filterConfig: any = {};
+  filterRenderer: Type<FilterRenderer>;
+  filters: Array<FilterInfo> = [];
 
   renderLeft: number = 0;
   renderWidth: number = 0;
@@ -52,6 +57,18 @@ export class Column {
 
   getViewRenderer(): CellViewRenderer {
     return this.viewRenderer;
+  }
+
+  addFilter(filterInfo: FilterInfo) {
+    this.filters.push(filterInfo);
+  }
+
+  removeFilter(filterInfo: FilterInfo) {
+    this.filters = [];
+  }
+
+  clearFilters() {
+    this.filters = [];
   }
 
   formatValue(value: any): string {
@@ -126,14 +143,11 @@ export class Column {
     if (object.defaultValue !== undefined) {
       this.defaultValue = object.defaultValue;
     }
-    if (object.filterType !== undefined) {
-      this.filterType = object.filterType;
+    if (object.filterConfig) {
+      this.filterConfig = object.filterConfig;
     }
-    if (object.filterOptions !== undefined) {
-      this.filterOptions = object.filterOptions;
-    }
-    if (object.filterValue !== undefined) {
-      this.filterValue = object.filterValue;
+    if (object.filterRenderer) {
+      this.filterRenderer = object.filterRenderer;
     }
     if (object.component !== undefined) {
       this.component = object.component;

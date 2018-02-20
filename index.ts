@@ -10,3 +10,7 @@ export {SortInfo} from "./src/grid";
 
 export {CellViewRenderer} from "./src/grid";
 export {CellNumberRangeView} from "./src/grid";
+
+export {FilterRenderer} from "./src/grid";
+export {TextFilterRenderer} from "./src/grid";
+export {CompareFilterRenderer} from "./src/grid";

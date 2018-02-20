@@ -10,3 +10,7 @@ export {SortInfo} from "./grid/utils/sort-info";
 
 export {CellViewRenderer} from "./grid/cell/viewRenderers/cell-view-renderer.interface";
 export {CellNumberRangeView} from "./grid/cell/viewRenderers/cell-number-range-view";
+
+export {FilterRenderer} from "./grid/column/filterRenderers/filter-renderer";
+export {TextFilterRenderer} from "./grid/column/filterRenderers/text-filter-renderer.component";
+export {CompareFilterRenderer} from "./grid/column/filterRenderers/compare-filter-renderer.component";
