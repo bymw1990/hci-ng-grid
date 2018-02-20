@@ -1,13 +1,19 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2} from "@angular/core";
+import {ElementRef, HostListener, Renderer2} from "@angular/core";
 
-import { EventMeta } from "../utils/event-meta";
-import {GridService} from "../services/grid.service";
-import {Cell} from "./cell";
 import {Subject} from "rxjs/Subject";
-import {GridEventService} from "../services/grid-event.service";
 
-export class CellTemplate {
+import {Cell} from "../cell";
+import {GridService} from "../../services/grid.service";
+import {GridEventService} from "../../services/grid-event.service";
+import {Column} from "../../column/column";
 
+/**
+ * The base class for cell edit components.  When you view the grid, you see view renderers.  When you select a
+ * cell to edit, an extension of this class is dynamically created on top of the cell view.
+ */
+export class CellEditRenderer {
+
+  column: Column;
   value: any;
   data: Cell = new Cell({key: null, value: null});
   valueValid: boolean = true;
@@ -37,6 +43,10 @@ export class CellTemplate {
     this.gridEventService = gridEventService;
     this.elementRef = elementRef;
     this.renderer = renderer;
+  }
+
+  setColumn(column: Column) {
+    this.column = column;
   }
 
   setLocation(hostElement: HTMLElement) {

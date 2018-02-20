@@ -1,10 +1,13 @@
+import {Type} from "@angular/core";
+
 import * as moment from "moment";
 
 import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
 import {CellTextView} from "../cell/viewRenderers/cell-text-view";
 import {FilterRenderer} from "./filterRenderers/filter-renderer";
 import {FilterInfo} from "../utils/filter-info";
-import {Type} from "@angular/core";
+import {CellEditRenderer} from "../cell/editRenderers/cell-edit-renderer";
+import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.component";
 
 export class Column {
   id: number;
@@ -29,6 +32,13 @@ export class Column {
   dataType: string = "string";
   selectable: boolean = true;
   isLast: boolean = false;
+
+  choices: Array<any> = [];
+  choiceValue: string = "value";
+  choiceDisplay: string = "display";
+  choiceUrl: string;
+
+  editRenderer: Type<CellEditRenderer> = TextEditRenderer;
 
   viewRenderer: CellViewRenderer = new CellTextView();
 
@@ -160,6 +170,19 @@ export class Column {
     }
     if (object.viewRenderer) {
       this.viewRenderer = object.viewRenderer;
+    }
+
+    if (object.choices) {
+      this.choices = object.choices;
+    }
+    if (object.choiceValue) {
+      this.choiceValue = object.choiceValue;
+    }
+    if (object.choiceDisplay) {
+      this.choiceDisplay = object.choiceDisplay;
+    }
+    if (object.choiceUrl) {
+      this.choiceUrl = object.choiceUrl;
     }
   }
 

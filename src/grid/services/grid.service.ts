@@ -1,5 +1,8 @@
 import {Injectable, isDevMode} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+
 import {Subject} from "rxjs/Rx";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 import {Cell} from "../cell/cell";
 import {Row} from "../row/row";
@@ -10,8 +13,6 @@ import {PageInfo} from "../utils/page-info";
 import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {InputCell} from "../cell/input-cell.component";
 
 @Injectable()
 export class GridService {
@@ -57,6 +58,8 @@ export class GridService {
   private valueSubject: Subject<Point> = new Subject<Point>();
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
+
+  constructor(private http: HttpClient) {}
 
   /**
    * Expects an object with the above configuration options as fields.
@@ -235,6 +238,14 @@ export class GridService {
   }
 
   initColumnDefinitions() {
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      if (this.columnDefinitions[j].choiceUrl) {
+        this.http.get(this.columnDefinitions[j].choiceUrl).subscribe((choices: any) => {
+          this.columnDefinitions[j].choices = choices;
+        });
+      }
+    }
+
     this.nUtilityColumns = 0;
     let nGroupBy: number = 0;
     if (this.groupBy !== null) {

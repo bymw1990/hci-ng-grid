@@ -1,7 +1,7 @@
 import {Component, ElementRef, ViewChild, ViewEncapsulation} from "@angular/core";
 
-import {Point} from "../utils/point";
-import {CellTemplate} from "./cell-template.component";
+import {Point} from "../../utils/point";
+import {CellEditRenderer} from "./cell-edit-renderer";
 
 @Component({
   selector: "hci-ng-grid-cell-input",
@@ -27,7 +27,7 @@ import {CellTemplate} from "./cell-template.component";
   `],
   encapsulation: ViewEncapsulation.None,
 })
-export class InputCell extends CellTemplate {
+export class TextEditRenderer extends CellEditRenderer {
 
   @ViewChild("input") input: ElementRef;
 
@@ -43,7 +43,7 @@ export class InputCell extends CellTemplate {
   }
 
   onInputKeyDown(event: KeyboardEvent) {
-    console.log("InputCell.onInputKeyDown " + event.keyCode);
+    console.log("TextEditRenderer.onInputKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
       this.data.value = this.gridService.parseData(this.j, this.value);

@@ -19,11 +19,9 @@ import {Column} from "./column/column";
 import {PageInfo} from "./utils/page-info";
 import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
-import {CellTemplate} from "./cell/cell-template.component";
-import {InputCell} from "./cell/input-cell.component";
+import {CellEditRenderer} from "./cell/editRenderers/cell-edit-renderer";
 import {Cell} from "./cell/cell";
 import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
-import {CellTextView} from "./cell/viewRenderers/cell-text-view";
 
 /**
  * A robust grid for angular.
@@ -347,7 +345,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   columnsChangedSubscription: Subscription;
 
-  private componentRef: CellTemplate = null;
+  private componentRef: CellEditRenderer = null;
   private selectedLocationSubscription: Subscription;
 
   constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
@@ -1141,26 +1139,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
       }
 
-      let factory = null;
-      /*if (column.component instanceof Type) {
-       var factories = Array.from(this.resolver["_factories"].keys());
-       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component.constructor.name);
-       factory = this.resolver.resolveComponentFactory(factoryClass);
-       } else if (column.component instanceof String) {
-       var factories = Array.from(this.resolver["_factories"].keys());
-       var factoryClass = <Type<any>> factories.find((o: any) => o.name === column.component);
-       factory = this.resolver.resolveComponentFactory(factoryClass);
-       //this.componentRef.setValues(this.component);
-       } else {
-       factory = this.resolver.resolveComponentFactory(LabelCell);
-       }*/
-
-      factory = this.resolver.resolveComponentFactory(InputCell);
+      let factory = this.resolver.resolveComponentFactory(column.editRenderer);
       if (column.isFixed) {
         this.componentRef = this.leftCellEditContainer.createComponent(factory).instance;
       } else {
         this.componentRef = this.rightCellEditContainer.createComponent(factory).instance;
       }
+      this.componentRef.setColumn(column);
       this.componentRef.setPosition(i, j);
       this.componentRef.setData(this.gridData[i].get(j));
       this.componentRef.setLocation(cellElement);
