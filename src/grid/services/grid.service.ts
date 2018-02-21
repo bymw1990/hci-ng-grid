@@ -31,7 +31,7 @@ export class GridService {
   externalSorting: boolean = false;
   externalPaging: boolean = false;
   pageSizes: number[] = [10, 25, 50];
-  nVisibleRows: number = null;
+  nVisibleRows: number = -1;
 
   originalData: Object[];
   preparedData: Array<Row>;
@@ -132,7 +132,7 @@ export class GridService {
       this.nVisibleRows = config.nVisibleRows;
     }
 
-    if (this.nVisibleRows === null) {
+    if (this.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
       this.nVisibleRows = this.pageInfo.pageSize;
     }
 

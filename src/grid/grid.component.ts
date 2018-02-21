@@ -316,7 +316,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() externalPaging: boolean;
   @Input() pageSize: number;
   @Input() pageSizes: number[];
-  @Input("nVisibleRows") cfgNVisibleRows: number = 10;
+  @Input("nVisibleRows") cfgNVisibleRows: number = -1;
 
   @Input() rowSelectRenderer: string = "CheckRowSelectRenderer";
 
