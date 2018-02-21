@@ -18,6 +18,7 @@ import {TextEditRenderer} from "./cell/editRenderers/text-edit-renderer.componen
 import {TextFilterRenderer} from "./column/filterRenderers/text-filter-renderer.component";
 import {CompareFilterRenderer} from "./column/filterRenderers/compare-filter-renderer.component";
 import {ChoiceEditRenderer} from "./cell/editRenderers/choice-edit-renderer.component";
+import {DateEditRenderer} from "./cell/editRenderers/date-edit-renderer.component";
 
 @NgModule({
   imports: [
@@ -34,12 +35,14 @@ import {ChoiceEditRenderer} from "./cell/editRenderers/choice-edit-renderer.comp
     IsFixedPipe,
     IsRowVisiblePipe,
     TextEditRenderer,
+    DateEditRenderer,
     ChoiceEditRenderer,
     TextFilterRenderer,
     CompareFilterRenderer
   ],
   entryComponents: [
     TextEditRenderer,
+    DateEditRenderer,
     ChoiceEditRenderer,
     TextFilterRenderer,
     CompareFilterRenderer

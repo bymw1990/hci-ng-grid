@@ -1,6 +1,7 @@
 import {CellViewRenderer} from "./cell-view-renderer.interface";
 import {Renderer2} from "@angular/core";
 import {Column} from "../../column/column";
+import {CellTextView} from "./cell-text-view";
 
 export class CellNumberRangeView implements CellViewRenderer {
 
@@ -11,10 +12,6 @@ export class CellNumberRangeView implements CellViewRenderer {
   highColor: string = "green";
 
   showIcon: boolean = false;
-
-  constructor(private config: any) {
-    this.setConfig(config);
-  }
 
   setConfig(config: any) {
     if (config.low) {

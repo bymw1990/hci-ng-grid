@@ -14,6 +14,7 @@ export {CellNumberRangeView} from "./src/grid";
 
 export {CellEditRenderer} from "./src/grid";
 export {TextEditRenderer} from "./src/grid";
+export {DateEditRenderer} from "./src/grid";
 export {ChoiceEditRenderer} from "./src/grid";
 
 export {FilterRenderer} from "./src/grid";

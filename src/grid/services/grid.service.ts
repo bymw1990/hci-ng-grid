@@ -188,7 +188,7 @@ export class GridService {
     } else if (column.dataType === "date") {
       return column.formatValue(value);
     } else {
-      return "Add Formatter";
+      return value;
     }
   }
 
@@ -199,7 +199,7 @@ export class GridService {
     } else if (column.dataType === "date") {
       return column.parseValue(value);
     } else {
-      return "Add Parser";
+      return value;
     }
   }
 

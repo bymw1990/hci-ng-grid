@@ -4,6 +4,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 import {Column, TextFilterRenderer} from "hci-ng-grid/index";
 import {CompareFilterRenderer} from "hci-ng-grid/index";
 import {ChoiceEditRenderer} from "hci-ng-grid/index";
+import {DateEditRenderer} from "hci-ng-grid/index";
 
 @Component({
   selector: "filter-grid",
@@ -43,7 +44,7 @@ export class FilterGridComponent {
     new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Date of Birth", editRenderer: DateEditRenderer, dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: TextFilterRenderer }),
     new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
   ];

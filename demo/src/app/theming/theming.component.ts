@@ -86,7 +86,7 @@ export class ThemingComponent {
     new Column({ field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
-    new Column({ field: "nLabs", name: "# Labs", viewRenderer: new CellNumberRangeView({low: 15, high: 85, showIcon: true}) })
+    new Column({ field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 15, high: 85, showIcon: true} })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

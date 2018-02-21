@@ -40,7 +40,9 @@ export class Column {
 
   editRenderer: Type<CellEditRenderer> = TextEditRenderer;
 
-  viewRenderer: CellViewRenderer = new CellTextView();
+  viewConfig: any = {};
+  viewRenderer: Type<CellViewRenderer> = CellTextView;
+  viewRendererInstance: CellViewRenderer;
 
   filterConfig: any = {};
   filterRenderer: Type<FilterRenderer>;
@@ -65,8 +67,17 @@ export class Column {
     this.setConfig(object);
   }
 
+  getViewConfig(): any {
+    return this.viewConfig;
+  }
+
   getViewRenderer(): CellViewRenderer {
-    return this.viewRenderer;
+    if (!this.viewRendererInstance) {
+      this.viewRendererInstance = Object.create(this.viewRenderer.prototype);
+      this.viewRendererInstance.setConfig(this.viewConfig);
+    }
+
+    return this.viewRendererInstance;
   }
 
   addFilter(filterInfo: FilterInfo) {

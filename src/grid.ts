@@ -14,6 +14,7 @@ export {CellNumberRangeView} from "./grid/cell/viewRenderers/cell-number-range-v
 
 export {CellEditRenderer} from "./grid/cell/editRenderers/cell-edit-renderer";
 export {TextEditRenderer} from "./grid/cell/editRenderers/text-edit-renderer.component";
+export {DateEditRenderer} from "./grid/cell/editRenderers/date-edit-renderer.component";
 export {ChoiceEditRenderer} from "./grid/cell/editRenderers/choice-edit-renderer.component";
 
 export {FilterRenderer} from "./grid/column/filterRenderers/filter-renderer";

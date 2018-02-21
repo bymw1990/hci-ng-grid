@@ -1,10 +1,10 @@
-import {Component, ElementRef, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, ElementRef, ViewChild} from "@angular/core";
 
 import {Point} from "../../utils/point";
 import {CellEditRenderer} from "./cell-edit-renderer";
 
 @Component({
-  selector: "hci-ng-grid-cell-input",
+  selector: "hci-grid-text-edit",
   template: `
     <input #input
            [ngModel]="value"
@@ -12,20 +12,19 @@ import {CellEditRenderer} from "./cell-edit-renderer";
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
            (keydown)="onInputKeyDown($event)"
-           class="hci-ng-grid-cell-template hci-ng-grid-cell-input"
+           class="hci-grid-text-edit"
            [ngClass]="{ 'focused': focused }" />
   `,
   styles: [ `
       
-    .hci-ng-grid-cell-input, .hci-ng-grid-cell-input:focus {
+    .hci-grid-text-edit, .hci-grid-text-edit:focus {
       overflow-x: hidden;
       border: none;
       outline: none;
       width: -webkit-fill-available;
       height: -webkit-fill-available;
     }
-  `],
-  encapsulation: ViewEncapsulation.None,
+  `]
 })
 export class TextEditRenderer extends CellEditRenderer {
 

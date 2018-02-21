@@ -52,7 +52,7 @@ export class ChoiceEditRenderer extends CellEditRenderer {
   }
 
   onInputKeyDown(event: KeyboardEvent) {
-    console.log("TextEditRenderer.onInputKeyDown " + event.keyCode);
+    console.log("ChoiceEditRenderer.onInputKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 || event.keyCode === 39) {
       this.data.value = this.gridService.parseData(this.j, this.value);

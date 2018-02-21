@@ -4,7 +4,9 @@ import {Column} from "../../column/column";
 
 export class CellTextView implements CellViewRenderer {
 
-  setConfig(config: any) {}
+  setConfig(config: any) {
+    // None
+  }
 
   createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
     let text = renderer.createText(column.formatValue(value));
