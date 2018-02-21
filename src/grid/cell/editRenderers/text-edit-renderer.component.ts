@@ -41,6 +41,12 @@ export class TextEditRenderer extends CellEditRenderer {
     }
   }
 
+  updateLocation() {
+    super.updateLocation();
+    this.renderer.setStyle(this.elementRef.nativeElement, "border", "red 1px solid");
+    this.renderer.setStyle(this.elementRef.nativeElement, "background-color", "white");
+  }
+
   onInputKeyDown(event: KeyboardEvent) {
     console.log("TextEditRenderer.onInputKeyDown " + event.keyCode);
 

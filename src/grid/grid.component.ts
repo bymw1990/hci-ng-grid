@@ -227,8 +227,7 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       position: absolute;
       margin-left: 0px;
       width: 0px;
-      overflow-x: auto;
-      overflow-y: auto;
+      overflow: visible;
       height: 250px;
     }
     
@@ -964,11 +963,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     e = this.gridContainer.nativeElement.querySelector("#rightView");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
-    if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
+    /*if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
       this.renderer.setStyle(e, "overflow-y", "hidden");
     } else {
-      this.renderer.setStyle(e, "overflow-y", "auto");
-    }
+      this.renderer.setStyle(e, "overflow", "visible");
+    }*/
   }
 
   private setGridData(gridData: Array<Row>) {

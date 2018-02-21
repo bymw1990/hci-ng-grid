@@ -38,6 +38,12 @@ export class ChoiceEditRenderer extends CellEditRenderer {
     this.select.nativeElement.focus();
   }
 
+  updateLocation() {
+    super.updateLocation();
+    this.renderer.setStyle(this.elementRef.nativeElement, "border", "red 1px solid");
+    this.renderer.setStyle(this.elementRef.nativeElement, "background-color", "white");
+  }
+
   onClick(event: MouseEvent) {
     if (isDevMode()) {
       console.debug("ChoiceEditRenderer.onClick");
