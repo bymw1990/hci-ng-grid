@@ -132,7 +132,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 [title]="'Demographics Report'"
                 [data]="data4"
                 [columnDefinitions]="columns3"
-                [theme]="'report'"
+                [theme]="'report override'"
                 [nVisibleRows]="-1"&gt;
               &lt;/hci-grid&gt;
               
@@ -142,7 +142,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
-              field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 15, high: 85, showIcon: true{{"}"}}
+              field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 20, high: 80, showIcon: true{{"}"}}
             </pre>
           </ng-template>
         </div>
@@ -150,7 +150,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid [title]="'Demographics Report'"
                     [data]="data4"
                     [columnDefinitions]="columns3"
-                    [theme]="'report'"
+                    [theme]="'report override'"
                     [nVisibleRows]="-1">
           </hci-grid>
         </p>
@@ -209,11 +209,11 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `,
   styles: [`
 
-    #gridContainer.report #titleBar {
+    #gridContainer.report.override #titleBar {
       border-bottom: red 2px solid !important;
     }
 
-    #gridContainer.report #headerContent {
+    #gridContainer.report.override #headerContent {
       border-bottom: blue 1px solid !important;;
     }
 
@@ -243,14 +243,14 @@ export class ThemingComponent {
     new Column({ field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
-    new Column({ field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 15, high: 85, showIcon: true} })
+    new Column({ field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
     this.data1 = this.dataGeneratorService.getData(11);
-    this.data2 = this.dataGeneratorService.getData(13);
+    this.data2 = this.dataGeneratorService.getData(6);
     this.data3 = this.dataGeneratorService.getData(17);
     this.data4 = this.dataGeneratorService.getData(3);
     this.data5 = this.dataGeneratorService.getData(5);

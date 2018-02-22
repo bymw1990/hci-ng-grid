@@ -222,7 +222,8 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       position: absolute;
       margin-left: 0px;
       width: 0px;
-      overflow: visible;
+      overflow-x: auto;
+      overflow-y: hidden;
       height: 250px;
     }
     
@@ -836,8 +837,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   private updateGridSizes() {
+    this.gridService.setNVisibleRows();
     if (isDevMode()) {
-      console.debug("updateGridSizes: " + this.initialized);
+      console.debug("updateGridSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
     }
 
     let e = this.gridContainer.nativeElement;
@@ -958,11 +960,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     e = this.gridContainer.nativeElement.querySelector("#rightView");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
-    /*if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
+    if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
       this.renderer.setStyle(e, "overflow-y", "hidden");
     } else {
-      this.renderer.setStyle(e, "overflow", "visible");
-    }*/
+      this.renderer.setStyle(e, "overflow-y", "auto");
+    }
   }
 
   private setGridData(gridData: Array<Row>) {

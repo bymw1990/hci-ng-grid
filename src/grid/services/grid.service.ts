@@ -136,10 +136,18 @@ export class GridService {
       this.nVisibleRows = this.pageInfo.pageSize;
     }
 
+    this.setNVisibleRows();
+
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
       //this.init();
       this.columnsChangedSubject.next(true);
+    }
+  }
+
+  setNVisibleRows() {
+    if (this.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
+      this.nVisibleRows = this.pageInfo.pageSize;
     }
   }
 
@@ -769,6 +777,8 @@ export class GridService {
   setPageSize(pageSize: number) {
     this.pageInfo.setPageSize(pageSize);
     this.pageInfo.setPage(0);
+
+    this.setNVisibleRows();
 
     if (this.externalPaging) {
       this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
