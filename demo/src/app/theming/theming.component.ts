@@ -11,9 +11,27 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <h4>Excel (default) Theme</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          This is the default theme which borders every cell.
-        </p>
+        <div class="card-text">
+          This is the default theme which borders every cell.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="defaultTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #defaultTheme>
+            <pre>
+              &lt;hci-grid [data]="data1"
+                       [columnDefinitions]="columns"
+                       [pageSize]="10"
+                       [pageSizes]="[5, 10, 25]"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [data]="data1"
                     [columnDefinitions]="columns"
@@ -29,9 +47,27 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <h4>No Theme (override the default)</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          TODO
-        </p>
+        <div class="card-text">
+          Force overriding of the theme to one that doesn't exist will show the default which has no borders or
+          decorations of any kind.  If implementing your own theme, this is your starting point.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="noTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #noTheme>
+            <pre>
+              &lt;hci-grid [data]="data2"
+                       [columnDefinitions]="columns"
+                       [theme]="''"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [data]="data2"
                     [columnDefinitions]="columns"
@@ -46,12 +82,73 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <h4>Report Theme</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          TODO
-        </p>
-        <p>
+        <div class="card-text">
+          A reporting theme designed to look more like a row/column layout in a pdf rather than a spreadsheet.  Special
+          view renderers can be added to provide some flare.  In this case we color text and add an icon if number values
+          are outside of a range.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="reportTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #reportTheme>
+            <pre>
+              &lt;hci-grid [title]="'Demographics Report'"
+                        [data]="data3"
+                        [columnDefinitions]="columns3"
+                        [theme]="'report'"
+                        [nVisibleRows]="-1"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 15, high: 85, showIcon: true{{"}"}}
+            </pre>
+          </ng-template>
+        </div>
+        <div class="card-text">
           <hci-grid [title]="'Demographics Report'"
                     [data]="data3"
+                    [columnDefinitions]="columns3"
+                    [theme]="'report'"
+                    [nVisibleRows]="-1">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Override Theme</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Take an existing theme and in your app's css, override specific parts.  In this case, change coloring of the
+          report theme.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="overrideTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #overrideTheme>
+            <pre>
+              &lt;hci-grid
+                [title]="'Demographics Report'"
+                [data]="data4"
+                [columnDefinitions]="columns3"
+                [theme]="'report'"
+                [nVisibleRows]="-1"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 15, high: 85, showIcon: true{{"}"}}
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [title]="'Demographics Report'"
+                    [data]="data4"
                     [columnDefinitions]="columns3"
                     [theme]="'report'"
                     [nVisibleRows]="-1">
@@ -59,10 +156,68 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </p>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>New Theme</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Creating our own theme which makes the font larger.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="overrideTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #overrideTheme>
+            <pre>
+              &lt;hci-grid
+                [title]="'Demographics Report'"
+                [data]="data5"
+                [columnDefinitions]="columns"
+                [theme]="'big'"
+                [nVisibleRows]="-1"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs"
+              
+              #gridContainer.big {{"{"}}
+                font-family: Arial;
+                font-size: 20px;
+                font-style: italic;
+                font-weight: 100;
+              {{"}"}}
+              
+              #gridContainer.big .hci-grid-row.even {{"{"}}
+                color: gray;
+              {{"}"}}
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [title]="'Demographics Report'"
+                    [data]="data5"
+                    [columnDefinitions]="columns"
+                    [theme]="'big'"
+                    [nVisibleRows]="-1">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
   `,
-  styles: [ `
-  
-  ` ],
+  styles: [`
+
+    #gridContainer.report #titleBar {
+      border-bottom: red 2px solid !important;
+    }
+
+    #gridContainer.report #headerContent {
+      border-bottom: blue 1px solid !important;;
+    }
+
+  `],
   encapsulation: ViewEncapsulation.None
 })
 export class ThemingComponent {
@@ -70,6 +225,8 @@ export class ThemingComponent {
   data1: Array<Object> = [];
   data2: Array<Object> = [];
   data3: Array<Object> = [];
+  data4: Array<Object> = [];
+  data5: Array<Object> = [];
 
   columns: Column[] = [
     new Column({ field: "lastName", name: "Last" }),
@@ -95,6 +252,8 @@ export class ThemingComponent {
     this.data1 = this.dataGeneratorService.getData(11);
     this.data2 = this.dataGeneratorService.getData(13);
     this.data3 = this.dataGeneratorService.getData(17);
+    this.data4 = this.dataGeneratorService.getData(3);
+    this.data5 = this.dataGeneratorService.getData(5);
   }
 
 }

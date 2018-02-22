@@ -1,13 +1,17 @@
 
 #gridContainer.excel #titleBar {
   padding: 10px;
+  font-weight: bold;
+  font-size: large;
   border-left: black 1px solid;
   border-right: black 1px solid;
   border-top: black 1px solid;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
+}
+
+#gridContainer.excel #headerContent {
   font-weight: bold;
-  font-size: large;
 }
 
 #gridContainer.excel #mainContent {

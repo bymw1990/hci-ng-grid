@@ -6,5 +6,3 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome/index";
 import "@fortawesome/fontawesome-free-regular/index";
 import "@fortawesome/fontawesome-free-solid/index";
-
-import "app/demo.css";

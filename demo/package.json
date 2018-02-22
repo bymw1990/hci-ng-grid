@@ -12,7 +12,7 @@
     "rimraf": "rimraf",
     "serve": "node server.js",
     "start": "npm run clean && npm run ngc && webpack-dev-server --config webpack/webpack.live.js",
-    "start-prod": "npm run build:live && npm run serve",
+    "start-prod": "npm run build:server && npm run serve",
     "webpack": "webpack"
   },
   "optionalDependencies": {

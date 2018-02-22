@@ -158,11 +158,7 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       width: 100%;
     }
     
-    #titleBar {
-      padding: 10px;
-      font-weight: bold;
-      font-size: large;
-    }
+    #titleBar {}
 
     #mainContent {
       width: 100%;
@@ -171,7 +167,6 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
     
     #headerContent {
       position: relative;
-      font-weight: bold;
     }
     
     #headerContent.hide {

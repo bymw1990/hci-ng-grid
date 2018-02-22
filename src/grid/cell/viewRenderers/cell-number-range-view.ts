@@ -1,5 +1,5 @@
 import {CellViewRenderer} from "./cell-view-renderer.interface";
-import {Renderer2} from "@angular/core";
+import {isDevMode, Renderer2} from "@angular/core";
 import {Column} from "../../column/column";
 import {CellTextView} from "./cell-text-view";
 
@@ -14,6 +14,10 @@ export class CellNumberRangeView implements CellViewRenderer {
   showIcon: boolean = false;
 
   setConfig(config: any) {
+    this.lowColor = "red";
+    this.highColor = "green";
+    this.showIcon = false;
+
     if (config.low) {
       this.low = config.low;
     }
@@ -32,6 +36,10 @@ export class CellNumberRangeView implements CellViewRenderer {
   }
 
   createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
+    if (isDevMode()) {
+      console.debug("CellNumberRangeView.createElement: " + this.low + " " + this.lowColor + " " + this.high + " " + this.highColor);
+    }
+
     let div = renderer.createElement("div");
     let span1 = renderer.createElement("span");
     let span2 = renderer.createElement("span");

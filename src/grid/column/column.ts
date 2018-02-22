@@ -183,6 +183,9 @@ export class Column {
     if (object.editRenderer) {
       this.editRenderer = object.editRenderer;
     }
+    if (object.viewConfig) {
+      this.viewConfig = object.viewConfig;
+    }
     if (object.viewRenderer) {
       this.viewRenderer = object.viewRenderer;
     }

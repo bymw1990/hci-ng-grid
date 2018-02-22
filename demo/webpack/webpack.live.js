@@ -17,7 +17,8 @@ module.exports = function(env) {
     entry: {
       "main": "./main.ts",
       "polyfills": "./polyfills.ts",
-      "vendor": "./vendor.ts"
+      "vendor": "./vendor.ts",
+      "styles": "./styles.ts"
     },
 
     resolve: {
@@ -55,14 +56,7 @@ module.exports = function(env) {
         },
         {
           test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: "style-loader",
-            use: [
-              {
-                loader: "css-loader?sourceMap"
-              }
-            ]
-          })
+          use: ["style-loader", "css-loader"]
         },
         {
           test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -89,7 +83,7 @@ module.exports = function(env) {
 
     plugins: [
       new webpack.optimize.CommonsChunkPlugin({
-        name: ["main", "vendor", "polyfills"]
+        name: ["styles", "main", "vendor", "polyfills"]
       }),
 
       new UglifyJsPlugin({
