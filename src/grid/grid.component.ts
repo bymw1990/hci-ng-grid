@@ -57,9 +57,9 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       
       <div #mainContent id="mainContent">
         
-        <div *ngIf="gridData.length === 0" class="d-flex flex-nowrap empty-content">
-          <div *ngIf="!busy" class="empty-content-text">No Data</div>
-          <div *ngIf="busy" class="empty-content-text">Loading Data...</div>
+        <div #emptyContent [style.display]="gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
+          <div [style.display]="!busy ? 'flex' : 'none'" class="empty-content-text">No Data</div>
+          <div [style.display]="busy ? 'flex' : 'none'" class="empty-content-text">Loading Data...</div>
         </div>
         
         <div #headerContent
@@ -242,10 +242,14 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       width: 100%;
       background-color: rgba(0, 0, 0, 0.2);
       position: absolute;
+      height: 0px;
     }
     
     .hci-grid-busy-div {
-      transform-origin: top left;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: auto;
+      margin-right: auto;
     }
     
     .hci-grid-busy-icon {
@@ -289,6 +293,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: ElementRef;
   @ViewChild("busyOverlay") busyOverlay: ElementRef;
+  @ViewChild("emptyContent") emptyContent: ElementRef;
   @ViewChild("focuser1") focuser1: ElementRef;
   @ViewChild("focuser2") focuser2: ElementRef;
   @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
@@ -331,7 +336,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   rowHeight: number = 30;
   clickTimer: any;
   singleClickCancel: boolean = false;
-  busy: boolean = false;
+  busy: boolean = true;
   busySubject: Subject<boolean> = new Subject<boolean>();
 
   inputDataSubject: Subject<Object[]> = new Subject<Object[]>();
@@ -395,18 +400,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.selectedRows.emit(selectedRows);
     });
 
-    /* If onRowDoubleClick is provided, then listen and send to function. */
-    /*if (this.onRowDoubleClick) {
-      this.gridService.doubleClickObserved.subscribe((row: Row) => {
-        let keys: number[] = this.gridService.getKeyColumns();
-        if (keys.length === 0) {
-          return;
-        } else {
-          this.onRowDoubleClick(row.cells[keys[0]].value);
-        }
-      });
-    }*/
-
     /* Get initial page Info */
     this.pageInfo = this.gridService.pageInfo;
 
@@ -466,8 +459,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.busySubject.subscribe((busy: boolean) => {
       this.busy = busy;
       if (this.busyOverlay && this.busyOverlay.nativeElement) {
-        this.renderer.setStyle(this.busyOverlay.nativeElement, "display", busy ? "block" : "none");
-        this.renderer.setStyle(this.busyOverlay.nativeElement, "height", this.gridContainerHeight + "px");
+        this.renderer.setStyle(this.busyOverlay.nativeElement, "display", busy ? "flex" : "none");
+        this.renderer.setStyle(this.emptyContent.nativeElement, "display", busy ? "flex" : "none");
       }
     });
 
@@ -1172,15 +1165,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let headerHeight: number = this.gridContainer.nativeElement.querySelector("#headerContent").offsetHeight;
       if (this.gridService.getNVisibleRows() <= 0) {
-        let height: number = this.gridData.length * this.rowHeight;
+        let height: number = Math.max(100, this.gridData.length * this.rowHeight);
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       } else {
-        let height: number = this.gridService.getNVisibleRows() * this.rowHeight;
+        let height: number = Math.max(100, this.gridService.getNVisibleRows() * this.rowHeight);
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       }
     }
   }

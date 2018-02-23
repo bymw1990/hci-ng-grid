@@ -143,6 +143,14 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 20, high: 80, showIcon: true{{"}"}}
+              
+              #gridContainer.report.override #titleBar {{"{"}}
+                border-bottom: red 2px solid !important;
+              {{"}"}}
+          
+              #gridContainer.report.override #headerContent {{"{"}}
+                border-bottom: blue 1px solid !important;;
+              {{"}"}}
             </pre>
           </ng-template>
         </div>
@@ -164,8 +172,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
       <div class="card-body">
         <div class="card-text">
           Creating our own theme which makes the font larger.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="overrideTheme" popoverTitle="Config" placement="right">Show Config</button>
-          <ng-template #overrideTheme>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="newTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #newTheme>
             <pre>
               &lt;hci-grid
                 [title]="'Demographics Report'"
