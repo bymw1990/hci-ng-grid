@@ -523,6 +523,49 @@ export class GridService {
                 break;
               }
             }
+          } else if (filterInfo.dataType === "date") {
+            colInc = false;
+            let v: any = this.preparedData[i].get(j).value.substr(0, 10);
+            let f1: any = filterInfo.value.substr(0, 10);
+            let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
+
+            if (filterInfo.operator === "E") {
+              console.debug("E " + v + " " + f1);
+              if (v === f1) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "LE") {
+              if (v <= f1) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "LT") {
+              if (v < f1) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "GE") {
+              if (v >= f1) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "GT") {
+              if (v > f1) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "B") {
+              if (f1 <= v && v <= f2) {
+                colInc = true;
+                break;
+              }
+            } else if (filterInfo.operator === "O") {
+              if (v < f1 || f2 < v) {
+                colInc = true;
+                break;
+              }
+            }
           } else {
             if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
               colInc = false;
