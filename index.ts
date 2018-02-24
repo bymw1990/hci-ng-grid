@@ -19,4 +19,5 @@ export {ChoiceEditRenderer} from "./src/grid";
 
 export {FilterRenderer} from "./src/grid";
 export {TextFilterRenderer} from "./src/grid";
+export {SelectFilterRenderer} from "./src/grid";
 export {CompareFilterRenderer} from "./src/grid";

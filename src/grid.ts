@@ -1,4 +1,5 @@
 import {ChoiceEditRenderer} from "./grid/cell/editRenderers/choice-edit-renderer.component";
+import {SelectFilterRenderer} from "./grid/column/filterRenderers/select-filter-renderer.component";
 
 export {GridModule} from "./grid/grid.module";
 export {GridComponent} from "./grid/grid.component";
@@ -19,4 +20,5 @@ export {ChoiceEditRenderer} from "./grid/cell/editRenderers/choice-edit-renderer
 
 export {FilterRenderer} from "./grid/column/filterRenderers/filter-renderer";
 export {TextFilterRenderer} from "./grid/column/filterRenderers/text-filter-renderer.component";
+export {SelectFilterRenderer} from "./grid/column/filterRenderers/select-filter-renderer.component";
 export {CompareFilterRenderer} from "./grid/column/filterRenderers/compare-filter-renderer.component";

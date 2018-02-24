@@ -192,6 +192,7 @@ export class Column {
 
     if (object.choices) {
       this.choices = object.choices;
+      this.dataType = "choice";
     }
     if (object.choiceValue) {
       this.choiceValue = object.choiceValue;
@@ -201,6 +202,7 @@ export class Column {
     }
     if (object.choiceUrl) {
       this.choiceUrl = object.choiceUrl;
+      this.dataType = "choice";
     }
   }
 

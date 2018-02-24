@@ -469,9 +469,6 @@ export class GridService {
     }
   }
 
-  /**
-   * TODO: Make filter case insensitive.
-   */
   filterPreparedData() {
     let filteredData: Array<Row> = new Array<Row>();
 
@@ -483,100 +480,119 @@ export class GridService {
           break;
         }
 
-        let colInc: boolean = true;
-        for (let filterInfo of this.columnDefinitions[j].filters) {
-          if (filterInfo.dataType === "number") {
-            colInc = false;
-            if (filterInfo.operator === "E") {
-              if (+this.preparedData[i].get(j).value === +filterInfo.value) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "LE") {
-              if (+this.preparedData[i].get(j).value <= +filterInfo.value) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "LT") {
-              if (+this.preparedData[i].get(j).value < +filterInfo.value) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "GE") {
-              if (+this.preparedData[i].get(j).value >= +filterInfo.value) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "GT") {
-              if (+this.preparedData[i].get(j).value > +filterInfo.value) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "B") {
-              if (+filterInfo.value <= +this.preparedData[i].get(j).value && +this.preparedData[i].get(j).value <= +filterInfo.highValue) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "O") {
-              if (+this.preparedData[i].get(j).value < +filterInfo.value || +filterInfo.highValue < +this.preparedData[i].get(j).value) {
-                colInc = true;
-                break;
-              }
-            }
-          } else if (filterInfo.dataType === "date") {
-            colInc = false;
-            let v: any = this.preparedData[i].get(j).value.substr(0, 10);
-            let f1: any = filterInfo.value.substr(0, 10);
-            let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
-
-            if (filterInfo.operator === "E") {
-              console.debug("E " + v + " " + f1);
-              if (v === f1) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "LE") {
-              if (v <= f1) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "LT") {
-              if (v < f1) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "GE") {
-              if (v >= f1) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "GT") {
-              if (v > f1) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "B") {
-              if (f1 <= v && v <= f2) {
-                colInc = true;
-                break;
-              }
-            } else if (filterInfo.operator === "O") {
-              if (v < f1 || f2 < v) {
-                colInc = true;
-                break;
-              }
-            }
+        if (this.columnDefinitions[j].dataType === "choice") {
+          if (this.columnDefinitions[j].filters.length === 0) {
+            inc = true;
           } else {
-            if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
-              colInc = false;
+            let colInc: boolean = false;
+            for (let filterInfo of this.columnDefinitions[j].filters) {
+              if (this.preparedData[i].get(j).value === filterInfo.value) {
+                colInc = true;
+                break;
+              }
+            }
+
+            if (!colInc) {
+              inc = false;
               break;
             }
           }
-        }
+        } else {
+          let colInc: boolean = true;
+          for (let filterInfo of this.columnDefinitions[j].filters) {
+            if (filterInfo.dataType === "number") {
+              colInc = false;
+              if (filterInfo.operator === "E") {
+                if (+this.preparedData[i].get(j).value === +filterInfo.value) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "LE") {
+                if (+this.preparedData[i].get(j).value <= +filterInfo.value) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "LT") {
+                if (+this.preparedData[i].get(j).value < +filterInfo.value) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "GE") {
+                if (+this.preparedData[i].get(j).value >= +filterInfo.value) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "GT") {
+                if (+this.preparedData[i].get(j).value > +filterInfo.value) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "B") {
+                if (+filterInfo.value <= +this.preparedData[i].get(j).value && +this.preparedData[i].get(j).value <= +filterInfo.highValue) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "O") {
+                if (+this.preparedData[i].get(j).value < +filterInfo.value || +filterInfo.highValue < +this.preparedData[i].get(j).value) {
+                  colInc = true;
+                  break;
+                }
+              }
+            } else if (filterInfo.dataType === "date") {
+              colInc = false;
+              let v: any = this.preparedData[i].get(j).value.substr(0, 10);
+              let f1: any = filterInfo.value.substr(0, 10);
+              let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
 
-        if (!colInc) {
-          inc = false;
-          break;
+              if (filterInfo.operator === "E") {
+                console.debug("E " + v + " " + f1);
+                if (v === f1) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "LE") {
+                if (v <= f1) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "LT") {
+                if (v < f1) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "GE") {
+                if (v >= f1) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "GT") {
+                if (v > f1) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "B") {
+                if (f1 <= v && v <= f2) {
+                  colInc = true;
+                  break;
+                }
+              } else if (filterInfo.operator === "O") {
+                if (v < f1 || f2 < v) {
+                  colInc = true;
+                  break;
+                }
+              }
+            } else {
+              if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
+                colInc = false;
+                break;
+              }
+            }
+          }
+
+          if (!colInc) {
+            inc = false;
+            break;
+          }
         }
       }
       if (inc) {
