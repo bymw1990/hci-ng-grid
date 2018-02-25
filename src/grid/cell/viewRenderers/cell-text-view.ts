@@ -9,6 +9,7 @@ export class CellTextView implements CellViewRenderer {
   }
 
   createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
+    console.debug("createElement " + column.dataType);
     let text = renderer.createText(column.formatValue(value));
     return text;
   }

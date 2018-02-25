@@ -190,7 +190,7 @@ export class Column {
       this.viewRenderer = object.viewRenderer;
     }
 
-    if (object.choices) {
+    if (object.choices !== undefined && object.choices.length > 0) {
       this.choices = object.choices;
       this.dataType = "choice";
     }
@@ -200,7 +200,7 @@ export class Column {
     if (object.choiceDisplay) {
       this.choiceDisplay = object.choiceDisplay;
     }
-    if (object.choiceUrl) {
+    if (object.choiceUrl !== undefined) {
       this.choiceUrl = object.choiceUrl;
       this.dataType = "choice";
     }

@@ -545,7 +545,6 @@ export class GridService {
               let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
 
               if (filterInfo.operator === "E") {
-                console.debug("E " + v + " " + f1);
                 if (v === f1) {
                   colInc = true;
                   break;
