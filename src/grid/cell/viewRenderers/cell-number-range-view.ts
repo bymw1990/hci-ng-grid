@@ -35,7 +35,7 @@ export class CellNumberRangeView implements CellViewRenderer {
     }
   }
 
-  createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
+  createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number): HTMLElement {
     if (isDevMode()) {
       console.debug("CellNumberRangeView.createElement: " + this.low + " " + this.lowColor + " " + this.high + " " + this.highColor);
     }

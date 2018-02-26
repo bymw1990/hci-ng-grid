@@ -5,5 +5,5 @@ export interface CellViewRenderer {
 
   setConfig(config: any);
 
-  createElement(renderer: Renderer2, column: Column, value: any): HTMLElement;
+  createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number): HTMLElement;
 }

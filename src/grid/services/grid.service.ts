@@ -401,6 +401,25 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
+  negateSelectedRow(i: number, j: number): boolean {
+    let key: any = this.getKey(i, j);
+    let value: boolean = !this.getRow(i).get(j).value;
+    this.getRow(i).get(j).value = value;
+
+    if (value) {
+      if (this.selectedRows.indexOf(key) === -1) {
+        this.selectedRows.push(key);
+      }
+    } else {
+      if (this.selectedRows.indexOf(key) !== -1) {
+        this.selectedRows.splice(this.selectedRows.indexOf(key, 1));
+      }
+    }
+    this.selectedRowsSubject.next(this.selectedRows);
+
+    return value;
+  }
+
   setSelectedRow(i: number, j: number) {
     let key: any = this.getKey(i, j);
     this.getRow(i).get(j).value = true;

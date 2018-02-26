@@ -413,6 +413,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.selectedRows.emit(selectedRows);
+      this.renderData();
     });
 
     /* Get initial page Info */
@@ -610,6 +611,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   public clearSelectedRows() {
+    let rows: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".row-select");
+    for (let row of rows) {
+      let location: Point = HtmlUtil.getLocation(row);
+      this.gridService.getRow(location.i).get(location.j).value = false;
+    }
     this.gridService.clearSelectedRows();
   }
 
@@ -690,24 +696,22 @@ export class GridComponent implements OnChanges, AfterViewInit {
             return;
           }
         }
+        let id: string = idElement.id;
+        let location: Point = HtmlUtil.getLocation(idElement);
 
-        if (idElement.id.startsWith("filter-")) {
+        if (id.startsWith("filter-")) {
           //
-        } else if (idElement.id === "row-select") {
+        } else if (id.startsWith("row-select-")) {
+          if (isDevMode()) {
+            console.debug("onClick row-select");
+          }
           event.stopPropagation();
 
-          let parentId: string = idElement.parentElement.id;
-          let rowId: number = +parentId.split("-")[1];
-          let cellId: number = +parentId.split("-")[2];
-          this.gridData[rowId].get(cellId).value = !<boolean>this.gridData[rowId].get(cellId).value;
-          this.renderer.removeClass(idElement, "selected");
-          if (this.gridData[rowId].get(cellId).value) {
-            this.renderer.addClass(idElement, "selected");
-          }
+          this.gridService.negateSelectedRow(location.i, location.j);
         } else {
           event.stopPropagation();
 
-          this.gridEventService.setSelectedLocation(Point.getPoint(idElement.id), null);
+          this.gridEventService.setSelectedLocation(location, null);
         }
       }
     }, 100);
@@ -1145,7 +1149,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
     this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
 
-    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value));
+    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, i, j));
     this.renderer.appendChild(row, eCell);
   }
 

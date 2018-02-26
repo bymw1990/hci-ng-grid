@@ -8,7 +8,7 @@ export class CellTextView implements CellViewRenderer {
     // None
   }
 
-  createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
+  createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number): HTMLElement {
     console.debug("createElement " + column.dataType);
     let span = renderer.createElement("span");
     renderer.setStyle(span, "padding-left", "8px");

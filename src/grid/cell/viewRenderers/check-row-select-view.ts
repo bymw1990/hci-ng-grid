@@ -9,14 +9,17 @@ export class CheckRowSelectView implements CellViewRenderer {
     // None
   }
 
-  createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
+  createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number): HTMLElement {
     let span = renderer.createElement("span");
-    renderer.setAttribute(span, "id", "row-select");
+    renderer.setAttribute(span, "id", "row-select-" + i + "-" + j);
     renderer.setStyle(span, "margin-top", "auto");
     renderer.setStyle(span, "margin-bottom", "auto");
     renderer.setStyle(span, "margin-left", "auto");
     renderer.setStyle(span, "margin-right", "auto");
     renderer.addClass(span, "row-select");
+    if (<boolean>value) {
+      renderer.addClass(span, "selected");
+    }
 
     let selectedSpan = renderer.createElement("span");
     renderer.addClass(selectedSpan, "selected-span");
