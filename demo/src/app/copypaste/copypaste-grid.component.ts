@@ -35,7 +35,7 @@ import { Column } from "hci-ng-grid/index";
           <hci-grid [title]="'Copy Paste Grid'"
                     [data]="copyPasteData"
                     [columnDefinitions]="copyPasteColumns"
-                    [cellSelect]="true">
+                    [rangeSelect]="true">
           </hci-grid>
         </p>
         <div style="padding: 20px;">

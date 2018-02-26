@@ -1,15 +1,21 @@
 import {Renderer2} from "@angular/core";
 
-import {Column} from "../column/column";
-import {Cell} from "../cell/cell";
+import {Column} from "../../column/column";
+import {CellViewRenderer} from "./cell-view-renderer.interface";
 
-export class CheckRowSelectRenderer {
-  createCell(renderer: Renderer2, column: Column, cell: Cell): HTMLElement {
+export class CheckRowSelectView implements CellViewRenderer {
+
+  setConfig(config: any) {
+    // None
+  }
+
+  createElement(renderer: Renderer2, column: Column, value: any): HTMLElement {
     let span = renderer.createElement("span");
     renderer.setAttribute(span, "id", "row-select");
-    renderer.setStyle(span, "display", "inherit");
-    renderer.setStyle(span, "text-align", "center");
-    renderer.setStyle(span, "vertical-align", "middle");
+    renderer.setStyle(span, "margin-top", "auto");
+    renderer.setStyle(span, "margin-bottom", "auto");
+    renderer.setStyle(span, "margin-left", "auto");
+    renderer.setStyle(span, "margin-right", "auto");
     renderer.addClass(span, "row-select");
 
     let selectedSpan = renderer.createElement("span");

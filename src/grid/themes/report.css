@@ -25,4 +25,18 @@
   align-items: center;
 }
 
+#gridContainer.report .hci-grid-cell.selected.top.left {
+  border-top-left-radius: 10px;
+}
 
+#gridContainer.report .hci-grid-cell.selected.top.right {
+  border-top-right-radius: 10px;
+}
+
+#gridContainer.report .hci-grid-cell.selected.bottom.left {
+  border-bottom-left-radius: 10px;
+}
+
+#gridContainer.report .hci-grid-cell.selected.bottom.right {
+  border-bottom-right-radius: 10px;
+}

@@ -1,6 +1,6 @@
 import {Component, ViewChild} from "@angular/core";
 
-import {Column, GridComponent} from "hci-ng-grid/index";
+import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
 
 @Component({
   selector: "select-grid",
@@ -43,7 +43,6 @@ import {Column, GridComponent} from "hci-ng-grid/index";
           <hci-grid #grid2
                     [data]="data2"
                     [columnDefinitions]="columns2"
-                    [rowSelect]="true"
                     (selectedRows)="setSelectedRows($event)"
                     [pageSize]="5"
                     [pageSizes]="[5, 10]">
@@ -92,6 +91,7 @@ export class SelectGridComponent {
   ];
 
   columns2: Column[] = [
+    new Column({ field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 }),
     new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "firstName", name: "First Name" }),

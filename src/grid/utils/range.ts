@@ -6,7 +6,7 @@ export class Range {
 
   constructor(min: Point, max: Point) {
     this._min = min;
-    this._max = max;
+    this._max = new Point(max.i, max.j);
   }
 
   contains(point: Point): boolean {
@@ -15,7 +15,7 @@ export class Range {
 
   setInitial(point: Point) {
     this._min = point;
-    this._max = point;
+    this._max = new Point(point.i, point.j);
   }
 
   toString(): string {
@@ -23,10 +23,15 @@ export class Range {
   }
 
   update(point: Point) {
-    if (point.lessThan(this._min)) {
-      this._min = point;
-    } else if (point.greaterThan(this._max)) {
-      this._max = point;
+    if (point.i < this._min.i) {
+      this._min.i = point.i;
+    } else if (point.i > this._max.i) {
+      this._max.i = point.i;
+    }
+    if (point.j < this._min.j) {
+      this._min.j = point.j;
+    } else if (point.j > this._max.j) {
+      this._max.j = point.j;
     }
   }
 

@@ -12,6 +12,7 @@ export {SortInfo} from "./grid/utils/sort-info";
 
 export {CellViewRenderer} from "./grid/cell/viewRenderers/cell-view-renderer.interface";
 export {CellNumberRangeView} from "./grid/cell/viewRenderers/cell-number-range-view";
+export {CheckRowSelectView} from "./grid/cell/viewRenderers/check-row-select-view";
 
 export {CellEditRenderer} from "./grid/cell/editRenderers/cell-edit-renderer";
 export {TextEditRenderer} from "./grid/cell/editRenderers/text-edit-renderer.component";

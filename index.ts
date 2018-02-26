@@ -11,6 +11,7 @@ export {SortInfo} from "./src/grid";
 
 export {CellViewRenderer} from "./src/grid";
 export {CellNumberRangeView} from "./src/grid";
+export {CheckRowSelectView} from "./src/grid";
 
 export {CellEditRenderer} from "./src/grid";
 export {TextEditRenderer} from "./src/grid";

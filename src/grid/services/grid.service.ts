@@ -726,10 +726,6 @@ export class GridService {
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].isUtility) {
           if (this.columnDefinitions[j].defaultValue !== undefined) {
-            /*if (this.columnDefinitions[j].template === "RowSelectCellComponent" || this.columnDefinitions[j].component === RowSelectCellComponent) {
-              this.preparedData[i].get(j).value = false;
-            }*/
-          } else {
             this.preparedData[i].get(j).value = this.columnDefinitions[j].defaultValue;
           }
         }

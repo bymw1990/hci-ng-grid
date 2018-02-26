@@ -22,7 +22,6 @@ import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {CellEditRenderer} from "./cell/editRenderers/cell-edit-renderer";
 import {Cell} from "./cell/cell";
-import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
 import {HtmlUtil} from "./utils/html-util";
 
 /**
@@ -297,22 +296,6 @@ import {HtmlUtil} from "./utils/html-util";
       background-color: #ffffaa;
     }
     
-    /*.hci-grid-cell.selected.top.left {
-      border-top-left-radius: 10px;
-    }
-
-    .hci-grid-cell.selected.top.right {
-      border-top-right-radius: 10px;
-    }
-
-    .hci-grid-cell.selected.bottom.left {
-      border-bottom-left-radius: 10px;
-    }
-
-    .hci-grid-cell.selected.bottom.right {
-      border-bottom-right-radius: 10px;
-    }*/
-
   `],
   encapsulation: ViewEncapsulation.None
 })
@@ -336,6 +319,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() theme: string = "excel";
   @Input() rowSelect: boolean;
   @Input() cellSelect: boolean;
+  @Input() rangeSelect: boolean;
   @Input() keyNavigation: boolean;
   @Input() nUtilityColumns: number;
   @Input() columnDefinitions: Column[] = [];
@@ -348,8 +332,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = -1;
-
-  @Input() rowSelectRenderer: string = "CheckRowSelectRenderer";
 
   @Input() onRowDoubleClick: Function;
 
@@ -660,13 +642,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   onMouseDown(event: MouseEvent) {
     console.debug("onMouseDown " + event.srcElement.id);
-    event.stopPropagation();
-    event.preventDefault();
 
-    this.mouseDrag = true;
-    this.lastMouseEventId = event.srcElement.id;
+    this.lastMouseEventId = HtmlUtil.getId(<HTMLElement>event.srcElement);
+    if (this.rangeSelect && this.lastMouseEventId.startsWith("cell-")) {
+      this.mouseDrag = true;
+      event.stopPropagation();
+      event.preventDefault();
 
-    this.gridEventService.clearSelectedLocation();
+      this.gridEventService.clearSelectedLocation();
+    }
   }
 
   onMouseUp(event: MouseEvent) {
@@ -1153,19 +1137,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.renderer.addClass(eCell, "last");
     }
     this.renderer.setStyle(eCell, "position", "absolute");
+    this.renderer.setStyle(eCell, "display", "flex");
     this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
     this.renderer.setStyle(eCell, "height", this.rowHeight + "px");
-    this.renderer.setStyle(eCell, "padding-left", "8px");
     this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
     this.renderer.setStyle(eCell, "min-width:", column.minWidth + "px");
     this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
     this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
 
-    if (column.field === "ROW_SELECT") {
-      this.renderer.appendChild(eCell, new CheckRowSelectRenderer().createCell(this.renderer, column, cell));
-    } else {
-      this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value));
-    }
+    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value));
     this.renderer.appendChild(row, eCell);
   }
 
