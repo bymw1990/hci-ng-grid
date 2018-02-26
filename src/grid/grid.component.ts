@@ -297,6 +297,22 @@ import {HtmlUtil} from "./utils/html-util";
       background-color: #ffffaa;
     }
     
+    /*.hci-grid-cell.selected.top.left {
+      border-top-left-radius: 10px;
+    }
+
+    .hci-grid-cell.selected.top.right {
+      border-top-right-radius: 10px;
+    }
+
+    .hci-grid-cell.selected.bottom.left {
+      border-bottom-left-radius: 10px;
+    }
+
+    .hci-grid-cell.selected.bottom.right {
+      border-bottom-right-radius: 10px;
+    }*/
+
   `],
   encapsulation: ViewEncapsulation.None
 })
@@ -644,6 +660,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   onMouseDown(event: MouseEvent) {
     console.debug("onMouseDown " + event.srcElement.id);
+    event.stopPropagation();
+    event.preventDefault();
 
     this.mouseDrag = true;
     this.lastMouseEventId = event.srcElement.id;
@@ -653,6 +671,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   onMouseUp(event: MouseEvent) {
     console.debug("onMouseUp " + event.srcElement.id);
+    event.stopPropagation();
+    event.preventDefault();
 
     this.mouseDrag = false;
     this.lastMouseEventId = event.srcElement.id;
@@ -661,6 +681,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   onMouseDrag(event: MouseEvent) {
     if (this.mouseDrag) {
       console.debug("onMouseDrag " + event.srcElement.id);
+      event.stopPropagation();
+      event.preventDefault();
       this.lastMouseEventId = event.srcElement.id;
 
       this.gridEventService.setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.srcElement));
@@ -1274,6 +1296,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
             console.debug("updateSelectedCells " + i + " " + j);
             let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
             this.renderer.addClass(e, "selected");
+            if (i === range.min.i) {
+              this.renderer.addClass(e, "top");
+            }
+            if (i === range.max.i) {
+              this.renderer.addClass(e, "bottom");
+            }
+            if (j === range.min.j) {
+              this.renderer.addClass(e, "left");
+            }
+            if (j === range.max.j) {
+              this.renderer.addClass(e, "right");
+            }
           }
         }
       }
