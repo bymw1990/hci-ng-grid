@@ -14,6 +14,7 @@ import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
 import {GridMessageService} from "./services/grid-message.service";
 import {Point} from "./utils/point";
+import {Range} from "./utils/range";
 import {Row} from "./row/row";
 import {Column} from "./column/column";
 import {PageInfo} from "./utils/page-info";
@@ -22,6 +23,7 @@ import {ExternalData} from "./utils/external-data";
 import {CellEditRenderer} from "./cell/editRenderers/cell-edit-renderer";
 import {Cell} from "./cell/cell";
 import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
+import {HtmlUtil} from "./utils/html-util";
 
 /**
  * A robust grid for angular.
@@ -41,7 +43,15 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
     GridMessageService
   ],
   template: `
-    <div #gridContainer id="gridContainer" [ngClass]="theme" (click)="onClick($event)" (dblclick)="onDblClick($event)" (keydown)="onKeyDown($event)">
+    <div #gridContainer
+         id="gridContainer"
+         [ngClass]="theme"
+         (click)="onClick($event)"
+         (mousedown)="onMouseDown($event)"
+         (mouseup)="onMouseUp($event)"
+         (mousemove)="onMouseDrag($event)"
+         (dblclick)="onDblClick($event)"
+         (keydown)="onKeyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       <div #busyOverlay class="hci-grid-busy" style="display: none;">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
@@ -283,6 +293,10 @@ import {CheckRowSelectRenderer} from "./cell/check-row-select-renderer";
       color: lightgrey;
     }
 
+    .hci-grid-cell.selected {
+      background-color: #ffffaa;
+    }
+    
   `],
   encapsulation: ViewEncapsulation.None
 })
@@ -344,6 +358,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   renderedRows: Array<number> = [];
 
   columnsChangedSubscription: Subscription;
+
+  mouseDrag: boolean = false;
+  lastMouseEventId: string;
 
   private componentRef: CellEditRenderer = null;
   private selectedLocationSubscription: Subscription;
@@ -476,6 +493,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (p.isNotNegative()) {
         this.selectComponent(p.i, p.j);
       }
+    });
+
+    this.gridEventService.getSelectedRange().subscribe((range: Range) => {
+      this.updateSelectedCells(range);
     });
 
     this.gridService.getValueSubject().subscribe((location: Point) => {
@@ -619,6 +640,31 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
     this.updateGridSizes();
     this.renderData();
+  }
+
+  onMouseDown(event: MouseEvent) {
+    console.debug("onMouseDown " + event.srcElement.id);
+
+    this.mouseDrag = true;
+    this.lastMouseEventId = event.srcElement.id;
+
+    this.gridEventService.clearSelectedLocation();
+  }
+
+  onMouseUp(event: MouseEvent) {
+    console.debug("onMouseUp " + event.srcElement.id);
+
+    this.mouseDrag = false;
+    this.lastMouseEventId = event.srcElement.id;
+  }
+
+  onMouseDrag(event: MouseEvent) {
+    if (this.mouseDrag) {
+      console.debug("onMouseDrag " + event.srcElement.id);
+      this.lastMouseEventId = event.srcElement.id;
+
+      this.gridEventService.setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.srcElement));
+    }
   }
 
   onClick(event: MouseEvent) {
@@ -1205,6 +1251,33 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.init();
     this.columnDefinitions = this.gridService.columnDefinitions;
     this.columnHeaders = this.gridService.getColumnHeaders();
+  }
+
+  private updateSelectedCells(range: Range) {
+    console.debug("updateSelectedCells");
+
+    let es: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-cell");
+
+    console.debug("remove: " + es.length + " range: " + ((range === null) ? "null" : range.toString()));
+
+    if (es) {
+      for (let e of es) {
+        this.renderer.removeClass(e, "selected");
+        this.renderer.removeClass(e, "left");
+        this.renderer.removeClass(e, "right");
+        this.renderer.removeClass(e, "top");
+        this.renderer.removeClass(e, "bottom");
+      }
+      if (range !== null) {
+        for (var i = range.min.i; i <= range.max.i; i++) {
+          for (var j = range.min.j; j <= range.max.j; j++) {
+            console.debug("updateSelectedCells " + i + " " + j);
+            let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
+            this.renderer.addClass(e, "selected");
+          }
+        }
+      }
+    }
   }
 
   @HostListener("document:click", ["$event"])

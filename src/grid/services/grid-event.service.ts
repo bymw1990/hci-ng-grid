@@ -18,7 +18,6 @@ export class GridEventService {
 
   private _currentRange: Range = null;
   private selectedRange = new Subject<Range>();
-  private selectedRangeObservable = this.selectedRange.asObservable();
 
   private lastDx: number = 0;
   private lastDy: number = 0;
@@ -43,6 +42,19 @@ export class GridEventService {
 
   clearSelectedLocation() {
     this.setSelectedLocation(new Point(-1, -1), null);
+    this._currentRange = null;
+    this.selectedRange.next(this._currentRange);
+  }
+
+  setMouseDragSelected(location: Point) {
+    console.debug("setMouseOnDownSelected: " + location.toString());
+
+    if (this._currentRange === null) {
+      this._currentRange = new Range(location, location);
+    } else {
+      this._currentRange.update(location);
+    }
+    this.selectedRange.next(this._currentRange);
   }
 
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
@@ -194,8 +206,8 @@ export class GridEventService {
     return this.selectedLocationSubject;
   }
 
-  getSelecetdRangeObservable(): Observable<Range> {
-    return this.selectedRangeObservable;
+  getSelectedRange(): Subject<Range> {
+    return this.selectedRange;
   }
 
   isLastEventArrow(): boolean {
