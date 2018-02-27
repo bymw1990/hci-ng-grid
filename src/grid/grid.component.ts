@@ -647,7 +647,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   onMouseDown(event: MouseEvent) {
-    console.debug("onMouseDown " + event.srcElement.id);
+    if (isDevMode()) {
+      console.debug("onMouseDown " + event.srcElement.id);
+    }
 
     this.lastMouseEventId = HtmlUtil.getId(<HTMLElement>event.srcElement);
     if (this.rangeSelect && this.lastMouseEventId.startsWith("cell-")) {
@@ -660,17 +662,22 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   onMouseUp(event: MouseEvent) {
-    console.debug("onMouseUp " + event.srcElement.id);
+    if (isDevMode()) {
+      console.debug("onMouseUp " + event.srcElement.id);
+    }
     event.stopPropagation();
     event.preventDefault();
 
     this.mouseDrag = false;
     this.lastMouseEventId = event.srcElement.id;
+    this.focuser1.nativeElement.focus();
   }
 
   onMouseDrag(event: MouseEvent) {
     if (this.mouseDrag) {
-      console.debug("onMouseDrag " + event.srcElement.id);
+      if (isDevMode()) {
+        console.debug("onMouseDrag " + event.srcElement.id);
+      }
       event.stopPropagation();
       event.preventDefault();
       this.lastMouseEventId = event.srcElement.id;
@@ -753,7 +760,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     if (event.ctrlKey && event.keyCode === 67) {
-      /*this.gridMessageService.debug("Copy Event");
+      console.debug("Copy Event");
 
       let range: Range = this.gridEventService.currentRange;
       if (range != null && !range.min.equals(range.max)) {
@@ -761,29 +768,28 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
         for (var i = range.min.i; i <= range.max.i; i++) {
           for (var j = range.min.j; j <= range.max.j; j++) {
-            for (var k = range.min.k; k <= range.max.k; k++) {
-              copy += this.gridService.getRowGroup(i).get(j).get(k).value;
-              if (k < range.max.k) {
-                copy += "\t";
-              }
+            copy += this.gridService.getRow(i).get(j).value;
+            if (j < range.max.j) {
+              copy += "\t";
             }
-            if (i < range.max.i) {
-              copy += "\n";
-            } else if (i === range.max.i && j < range.max.j) {
-              copy += "\n";
-            }
+          }
+
+          if (i < range.max.i) {
+            copy += "\n";
+          } else if (i === range.max.i && j < range.max.j) {
+            copy += "\n";
           }
         }
 
         this.copypastearea.nativeElement.value = copy;
         this.copypastearea.nativeElement.select();
         event.stopPropagation();
-      }*/
+      }
     } else if (event.ctrlKey && event.keyCode === 86) {
-      /*this.copypastearea.nativeElement.select();
+      this.copypastearea.nativeElement.select();
       let paste: string = this.copypastearea.nativeElement.value;
 
-      this.gridMessageService.debug("Paste Event: " + paste);
+      console.debug("Paste Event: " + paste);
 
       let range: Range = this.gridEventService.currentRange;
       if (range === null) {
@@ -796,7 +802,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let i = range.min.i;
       let j = range.min.j;
-      //let k = range.min.k;
       let cols: string[] = null;
 
       if (paste.endsWith("\n")) {
@@ -807,29 +812,26 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let rows: string[] = paste.split("\n");
       for (var ii = 0; ii < rows.length; ii++) {
         cols = rows[ii].split("\t");
-        for (var kk = 0; kk < cols.length; kk++) {
-          if (this.gridService.getRowGroup(i) == null) {
+        for (var jj = 0; jj < cols.length; jj++) {
+          if (this.gridService.getRow(i) == null) {
             allowPaste = false;
             break;
-          } else if (this.gridService.getRowGroup(i).get(j) == null) {
-            allowPaste = false;
-            break;
-          } else if (this.gridService.getRowGroup(i).get(j).get(k) == null) {
+          } else if (this.gridService.getRow(i).get(j) == null) {
             allowPaste = false;
             break;
           }
-          //k = k + 1;
+          j = j + 1;
         }
         if (!allowPaste) {
           break;
-        } else if (this.gridService.getRowGroup(i).get(j + 1) != null) {
+        } else if (this.gridService.getRow(i).get(j + 1) != null) {
           j = j + 1;
         } else {
           i = i + 1;
           j = 0;
         }
-        //k = range.min.k;
-        if (this.gridService.getRowGroup(i) == null && ii !== rows.length - 1) {
+        j = range.min.j;
+        if (this.gridService.getRow(i) == null && ii !== rows.length - 1) {
           allowPaste = false;
           break;
         }
@@ -837,29 +839,26 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       i = range.min.i;
       j = range.min.j;
-      //k = range.min.k;
 
+      if (isDevMode()) {
+        console.debug("allowPaste: " + allowPaste);
+      }
       if (allowPaste) {
         for (var ii = 0; ii < rows.length; ii++) {
           cols = rows[ii].split("\t");
-          for (var kk = 0; kk < cols.length; kk++) {
-            this.gridService.getRowGroup(i).get(j).get(k).value = cols[kk];
-            k = k + 1;
+          for (var jj = 0; jj < cols.length; jj++) {
+            this.gridService.getRow(i).get(j).value = cols[jj];
+            j = j + 1;
           }
 
-          if (this.gridService.getRowGroup(i).get(j + 1) != null) {
-            j = j + 1;
-          } else {
-            i = i + 1;
-            j = 0;
-          }
-          k = range.min.k;
+          i = i + 1;
+          j = range.min.j;
         }
 
-        //this.gridService.cellDataUpdate(new Range(range.min, new Point(i, j, k + cols.length - 1)));
+        this.renderData();
       } else {
         this.gridMessageService.warn("Paste went out of range");
-      }*/
+      }
     } else if (event.keyCode === 9) {
       event.stopPropagation();
       this.gridEventService.tabFrom(null, null);
@@ -1260,11 +1259,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   private updateSelectedCells(range: Range) {
-    console.debug("updateSelectedCells");
+    if (isDevMode()) {
+      console.debug("updateSelectedCells: " + ((range) ? range.toString() : "null"));
+    }
 
     let es: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-cell");
-
-    console.debug("remove: " + es.length + " range: " + ((range === null) ? "null" : range.toString()));
 
     if (es) {
       for (let e of es) {
@@ -1277,7 +1276,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (range !== null) {
         for (var i = range.min.i; i <= range.max.i; i++) {
           for (var j = range.min.j; j <= range.max.j; j++) {
-            console.debug("updateSelectedCells " + i + " " + j);
             let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
             this.renderer.addClass(e, "selected");
             if (i === range.min.i) {
