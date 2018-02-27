@@ -3,7 +3,7 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef, Type
 } from "@angular/core";
 import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
@@ -23,6 +23,11 @@ import {ExternalData} from "./utils/external-data";
 import {CellEditRenderer} from "./cell/editRenderers/cell-edit-renderer";
 import {Cell} from "./cell/cell";
 import {HtmlUtil} from "./utils/html-util";
+import {ClickCellEditListener} from "./event/click-cell-edit.listener";
+import {EventListener} from "./event/event-listener";
+import {ClickListener} from "./event/click.interface";
+import {RangeSelectListener} from "./event/range-select.listener";
+import {ClickRowSelectListener} from "./event/click-row-select.listener";
 
 /**
  * A robust grid for angular.
@@ -45,12 +50,12 @@ import {HtmlUtil} from "./utils/html-util";
     <div #gridContainer
          id="gridContainer"
          [ngClass]="theme"
-         (click)="onClick($event)"
-         (mousedown)="onMouseDown($event)"
-         (mouseup)="onMouseUp($event)"
-         (mousemove)="onMouseDrag($event)"
-         (dblclick)="onDblClick($event)"
-         (keydown)="onKeyDown($event)">
+         (click)="click($event)"
+         (mousedown)="mouseDown($event)"
+         (mouseup)="mouseUp($event)"
+         (mousemove)="mouseDrag($event)"
+         (dblclick)="dblClick($event)"
+         (keydown)="keyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
       <div #busyOverlay class="hci-grid-busy" style="display: none;">
         <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
@@ -332,6 +337,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = -1;
+  @Input() eventListeners: Array<Type<EventListener>> = [RangeSelectListener, ClickRowSelectListener, ClickCellEditListener];
 
   @Input() onRowDoubleClick: Function;
 
@@ -357,17 +363,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   columnsChangedSubscription: Subscription;
 
-  mouseDrag: boolean = false;
-  lastMouseEventId: string;
-
   private componentRef: CellEditRenderer = null;
   private selectedLocationSubscription: Subscription;
+
+  private clickListeners: Array<EventListener> = [];
+  private mouseDownListeners: Array<EventListener> = [];
+  private mouseDragListeners: Array<EventListener> = [];
+  private mouseUpListeners: Array<EventListener> = [];
 
   constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
               private domSanitizer: DomSanitizer, private gridService: GridService, private gridEventService: GridEventService,
               private gridMessageService: GridMessageService) {}
 
   ngOnInit() {
+    this.registerEventListeners();
+
     this.gridMessageService.messageObservable.subscribe((message: string) => {
       this.warning.emit(message);
     });
@@ -590,6 +600,36 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  public registerEventListeners() {
+    if (isDevMode()) {
+      console.debug("registerEventListeners");
+    }
+
+    for (let eventListener of this.eventListeners) {
+      //let instance: Function = Object.create(eventListener.prototype, {grid: this});
+      //let o = Object.create(eventListener.prototype);
+      let instance: EventListener = Object.create(eventListener.prototype);
+      instance.setGrid(this);
+
+      if ("click" in instance) {
+        this.clickListeners.push(instance);
+      }
+      if ("mouseDown" in instance) {
+        this.mouseDownListeners.push(instance);
+      }
+      if ("mouseDrag" in instance) {
+        this.mouseDragListeners.push(instance);
+      }
+      if ("mouseUp" in instance) {
+        this.mouseUpListeners.push(instance);
+      }
+    }
+  }
+
+  public addClickListener(clickListener: EventListener) {
+    this.clickListeners.push(clickListener);
+  }
+
   public doPageFirst() {
     this.gridService.setPage(-2);
   }
@@ -623,6 +663,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.deleteSelectedRows();
   }
 
+  getGridService(): GridService {
+    return this.gridService;
+  }
+
+  getGridEventService(): GridEventService {
+    return this.gridEventService;
+  }
+
+  doRenderData() {
+    this.renderData();
+  }
+
   onScroll() {
     if (isDevMode()) {
       console.debug("onScroll");
@@ -646,47 +698,39 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderData();
   }
 
-  onMouseDown(event: MouseEvent) {
+  mouseDown(event: MouseEvent) {
     if (isDevMode()) {
-      console.debug("onMouseDown " + event.srcElement.id);
+      console.debug("mouseDown " + event.srcElement.id);
     }
 
-    this.lastMouseEventId = HtmlUtil.getId(<HTMLElement>event.srcElement);
-    if (this.rangeSelect && this.lastMouseEventId.startsWith("cell-")) {
-      this.mouseDrag = true;
-      event.stopPropagation();
-      event.preventDefault();
-
-      this.gridEventService.clearSelectedLocation();
-    }
-  }
-
-  onMouseUp(event: MouseEvent) {
-    if (isDevMode()) {
-      console.debug("onMouseUp " + event.srcElement.id);
-    }
-    event.stopPropagation();
-    event.preventDefault();
-
-    this.mouseDrag = false;
-    this.lastMouseEventId = event.srcElement.id;
-    this.focuser1.nativeElement.focus();
-  }
-
-  onMouseDrag(event: MouseEvent) {
-    if (this.mouseDrag) {
-      if (isDevMode()) {
-        console.debug("onMouseDrag " + event.srcElement.id);
+    for (let mouseDownListener of this.mouseDownListeners) {
+      if (mouseDownListener["mouseDown"](event)) {
+        break;
       }
-      event.stopPropagation();
-      event.preventDefault();
-      this.lastMouseEventId = event.srcElement.id;
-
-      this.gridEventService.setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.srcElement));
     }
   }
 
-  onClick(event: MouseEvent) {
+  mouseUp(event: MouseEvent) {
+    if (isDevMode()) {
+      console.debug("mouseUp " + event.srcElement.id);
+    }
+
+    for (let mouseUpListener of this.mouseUpListeners) {
+      if (mouseUpListener["mouseUp"](event)) {
+        break;
+      }
+    }
+  }
+
+  mouseDrag(event: MouseEvent) {
+    for (let mouseDragListener of this.mouseDragListeners) {
+      if (mouseDragListener["mouseDrag"](event)) {
+        break;
+      }
+    }
+  }
+
+  click(event: MouseEvent) {
     this.clickTimer = 0;
     this.singleClickCancel = false;
 
@@ -695,36 +739,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
         if (isDevMode()) {
           console.debug("single click");
         }
-
-        let idElement: HTMLElement = <HTMLElement>event.srcElement;
-        while (!idElement.id) {
-          idElement = idElement.parentElement;
-          if (idElement === null) {
-            return;
+        for (let clickListener of this.clickListeners) {
+          if (clickListener["click"](event)) {
+            break;
           }
-        }
-        let id: string = idElement.id;
-        let location: Point = HtmlUtil.getLocation(idElement);
-
-        if (id.startsWith("filter-")) {
-          //
-        } else if (id.startsWith("row-select-")) {
-          if (isDevMode()) {
-            console.debug("onClick row-select");
-          }
-          event.stopPropagation();
-
-          this.gridService.negateSelectedRow(location.i, location.j);
-        } else {
-          event.stopPropagation();
-
-          this.gridEventService.setSelectedLocation(location, null);
         }
       }
     }, 100);
   }
 
-  onDblClick(event: MouseEvent) {
+  dblClick(event: MouseEvent) {
     this.singleClickCancel = true;
     clearTimeout(this.clickTimer);
     if (isDevMode()) {
@@ -741,7 +765,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (keys.length === 0) {
         return;
       } else {
-        this.onRowDoubleClick(this.gridData[j].cells[keys[0]].value);
+        this.onRowDoubleClick(this);
       }
     }
   }
@@ -754,7 +778,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  onKeyDown(event: KeyboardEvent) {
+  keyDown(event: KeyboardEvent) {
     if (isDevMode()) {
       console.debug("GridComponent.onKeyDown");
     }

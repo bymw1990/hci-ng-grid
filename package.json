@@ -23,7 +23,7 @@
   },
   "files": [
     "index.+(js|d.ts|js.map|metadata.json)",
-    "src/**/!(*spec).+(js|d.ts|js.map|metadata.json|.css)"
+    "src/**/!(*spec).+(js|d.ts|js.map|metadata.json|css)"
   ],
   "dependencies": {
     "moment": "^2.18.1"

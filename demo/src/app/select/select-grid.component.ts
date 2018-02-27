@@ -59,8 +59,6 @@ export class SelectGridComponent {
   selectedRows: any[] = [];
   clickedData: Object = null;
 
-  public onRowDoubleClick: Function;
-
   data1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1973-01-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
@@ -100,13 +98,12 @@ export class SelectGridComponent {
     new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];
 
-  ngOnInit() {
-    this.onRowDoubleClick = this.handleRowDoubleClick.bind(this);
+  onRowDoubleClick: Function = (grid: GridComponent) => {
+    console.debug("onRowDoubleClick");
+    console.debug(grid.getGridService().getNVisibleRows());
   }
 
-  public handleRowDoubleClick(id: Object): void {
-    this.clickedData = id;
-  }
+  ngOnInit() {}
 
   setSelectedRows(selectedRows: any[]) {
     this.selectedRows = selectedRows;
