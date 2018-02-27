@@ -8,7 +8,7 @@ export class ClickCellEditListener extends EventListener implements ClickListene
     console.debug("ClickCellEditListener.click");
 
     let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.srcElement);
-    if (idElement.id.startsWith("cell-")) {
+    if (idElement !== null && idElement.id.startsWith("cell-")) {
       this.grid.getGridEventService().setSelectedLocation(HtmlUtil.getLocation(idElement), null);
       return true;
     } else {

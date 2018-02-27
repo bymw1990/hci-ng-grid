@@ -699,6 +699,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   mouseDown(event: MouseEvent) {
+    if (!event || !event.srcElement) {
+      return;
+    }
+
     if (isDevMode()) {
       console.debug("mouseDown " + event.srcElement.id);
     }
@@ -711,6 +715,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   mouseUp(event: MouseEvent) {
+    if (!event || !event.srcElement) {
+      return;
+    }
+
+
     if (isDevMode()) {
       console.debug("mouseUp " + event.srcElement.id);
     }
@@ -723,6 +732,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   mouseDrag(event: MouseEvent) {
+    if (!event || !event.srcElement) {
+      return;
+    }
+
+
     for (let mouseDragListener of this.mouseDragListeners) {
       if (mouseDragListener["mouseDrag"](event)) {
         break;
@@ -731,6 +745,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   click(event: MouseEvent) {
+    if (!event || !event.srcElement) {
+      return;
+    }
+
+
     this.clickTimer = 0;
     this.singleClickCancel = false;
 

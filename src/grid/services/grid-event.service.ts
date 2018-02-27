@@ -47,7 +47,11 @@ export class GridEventService {
   }
 
   setMouseDragSelected(location: Point) {
-    console.debug("setMouseOnDownSelected: " + location.toString());
+    console.debug("setMouseOnDownSelected: " + ((location !== null) ? location.toString() : "null"));
+
+    if (location === null) {
+      return;
+    }
 
     if (this._currentRange === null) {
       this._currentRange = new Range(location, location);

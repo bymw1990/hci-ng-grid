@@ -9,7 +9,7 @@ export class ClickRowSelectListener extends EventListener implements ClickListen
     console.debug("ClickCellEditListener.click");
 
     let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.srcElement);
-    if (idElement.id.startsWith("row-select-")) {
+    if (idElement !== null && idElement.id.startsWith("row-select-")) {
       event.stopPropagation();
 
       let location: Point = HtmlUtil.getLocation(idElement);
