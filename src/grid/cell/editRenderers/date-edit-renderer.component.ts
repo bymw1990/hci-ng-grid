@@ -10,6 +10,8 @@ import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
     <ngb-datepicker #datepicker
                     [ngModel]="value"
                     (ngModelChange)="onModelChange($event)"
+                    (mouseup)="stop($event)"
+                    (mousedown)="stop($event)"
                     (click)="onClick($event)"
                     (keydown)="onInputKeyDown($event)"
                     class="edit-renderer"></ngb-datepicker>
@@ -20,13 +22,7 @@ import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
       background-color: white;
       border: red 1px solid;
     }
-    /*.edit-renderer, .edit-renderer:focus {
-      overflow-x: hidden;
-      border: none;
-      outline: none;
-      width: -webkit-fill-available;
-      height: -webkit-fill-available;
-    }*/
+
   `]
 })
 export class DateEditRenderer extends CellEditRenderer {
@@ -39,6 +35,10 @@ export class DateEditRenderer extends CellEditRenderer {
 
   onModelChange(value: Object) {
     this.value = this.ngbDateToString(<NgbDateStruct>value);
+  }
+
+  stop(event: MouseEvent) {
+    event.stopPropagation();
   }
 
   onClick(event: MouseEvent) {

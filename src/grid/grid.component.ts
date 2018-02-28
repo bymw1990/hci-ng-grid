@@ -69,8 +69,9 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
       </div>
       
       <div #mainContent id="mainContent">
-        <div #mainPopupContainer></div>
+        <div #mainContentPopupContainer></div>
         
+        <!-- Overlay messages for loading content or re-rendering. -->
         <div #emptyContent [style.display]="gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
           <div [style.display]="!busy ? 'flex' : 'none'" class="empty-content-text">No Data</div>
           <div [style.display]="busy ? 'flex' : 'none'" class="empty-content-text">Loading Data...</div>
@@ -308,7 +309,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
-  @ViewChild("mainPopupContainer", { read: ViewContainerRef }) popupContainer: ViewContainerRef;
+  @ViewChild("mainContentPopupContainer", { read: ViewContainerRef }) popupContainer: ViewContainerRef;
   @ViewChild("leftCellEditContainer", { read: ViewContainerRef }) leftCellEditContainer: ViewContainerRef;
   @ViewChild("rightCellEditContainer", { read: ViewContainerRef }) rightCellEditContainer: ViewContainerRef;
   @ViewChild("copypastearea") copypastearea: any;
@@ -1287,6 +1288,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.updateGridSizes();
 
     this.gridEventService.setSelectedLocation(null, null);
+    this.busySubject.next(false);
     this.changeDetectorRef.markForCheck();
   }
 

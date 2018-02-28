@@ -494,7 +494,7 @@ export class GridService {
     for (var i = 0; i < this.preparedData.length; i++) {
       let inc: boolean = true;
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.preparedData[i].get(j).value === null) {
+        if (this.columnDefinitions[j].filters.length > 0 && this.preparedData[i].get(j).value === null) {
           inc = false;
           break;
         }

@@ -12,7 +12,7 @@ import {FilterInfo} from "../../utils/filter-info";
          (mouseup)="stop($event)"
          (click)="stop($event)"
          [style.width.px]="width"
-         style="align-items: center; padding: 5px; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
+         style="align-items: center; padding: 0.5rem 0; margin: 0 0.5rem; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
              [ngModel]="filterInfo.value"
              (ngModelChange)="valueChange($event)"
@@ -60,6 +60,8 @@ export class TextFilterRenderer extends FilterRenderer {
   }
 
   valueClear() {
+    super.valueClear();
+
     this.reset();
     this.column.clearFilters();
     this.gridService.filter();

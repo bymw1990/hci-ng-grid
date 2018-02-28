@@ -12,17 +12,17 @@ import { DataGeneratorService } from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <p class="card-text">
-          What a grid looks like with no data.
+          What a grid with no data looks like.
         </p>
         <p>
-          <!--<hci-grid [title]="'Empty Grid'"
-                    [data]="data">
-            <column-def [field]="'lastName'"></column-def>
-            <column-def [field]="'firstName'"></column-def>
-            <column-def [field]="'dob'">
-              <hci-grid-cell-date #template [dateFormat]="'longDate'"></hci-grid-cell-date>
-            </column-def>
-          </hci-grid>-->
+          <hci-grid [title]="'Empty Grid'"
+                    [data]="data"
+                    [columnDefinitions]="[
+                      { field: 'lastName' },
+                      { field: 'firstName' },
+                      { field: 'dob', dataType: 'date', format: 'MM/DD/YYYY' }
+                    ]">
+          </hci-grid>
         </p>
       </div>
     </div>

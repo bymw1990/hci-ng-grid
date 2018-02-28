@@ -1,4 +1,5 @@
 import {Component} from "@angular/core";
+import {CheckRowSelectView, Column} from "hci-ng-grid";
 
 @Component({
   selector: "dynamic-config-grid",
@@ -8,10 +9,37 @@ import {Component} from "@angular/core";
         <h4>Dynamic Config Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
+          The grid starts with two columns.  Clicking the buttons toggles between two sets of column definitions.  The
+          second one adds a third column.  When the columns change, the grid refreshes.
+        </div>
+        <div class="card-text">
           <button class="btn btn-primary" (click)="setColumnsA1()">Columns 1</button>
           <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1>
+            <pre>
+              &lt;hci-grid
+                [title]="'Dynamic Columns'"
+                [data]="data"
+                [columnDefinitions]="columnsA"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns1:
+              field: "idPatient", name: "ID", template: "LabelCell", visible: false
+              field: "lastName", name: "Last Name", template: "InputCell"
+              field: "firstName", name: "First Name", template: "InputCell"
+              
+              Columns2:
+              field: "idPatient", name: "ID", template: "LabelCell", visible: false
+              field: "lastName", name: "Last Name", template: "InputCell"
+              field: "firstName", name: "First Name", template: "InputCell"
+              field: "middleName", name: "Middle Name", template: "InputCell"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [title]="'Dynamic Columns'"
                     [data]="data"
@@ -25,15 +53,43 @@ import {Component} from "@angular/core";
         <h4>Dynamic Grid Row Select</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          <button class="btn btn-primary" (click)="setColumnsB1()">Columns 1</button>
-          <button class="btn btn-primary" (click)="setColumnsB2()">Columns 2</button>
-        </p>
+        <div class="card-text">
+          The grid starts with two columns.  Clicking the buttons toggles between two sets of column definitions.  The
+          second one adds a third column.  When the columns change, the grid refreshes.
+        </div>
+        <div class="card-text">
+          <button class="btn btn-primary" (click)="setColumnsA1()">Columns 1</button>
+          <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                [title]="'Dynamic Columns Row Select'"
+                [data]="data"
+                [columnDefinitions]="columnsB"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns1:
+              field: "idPatient", name: "ID", template: "LabelCell", visible: false
+              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
+              field: "lastName", name: "Last Name", template: "InputCell"
+              field: "firstName", name: "First Name", template: "InputCell"
+              
+              Columns2:
+              field: "idPatient", name: "ID", template: "LabelCell", visible: false
+              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
+              field: "lastName", name: "Last Name", template: "InputCell"
+              field: "firstName", name: "First Name", template: "InputCell"
+              field: "middleName", name: "Middle Name", template: "InputCell"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [title]="'Dynamic Columns Row Select'"
                     [data]="data"
-                    [columnDefinitions]="columnsB"
-                    [rowSelect]="true">
+                    [columnDefinitions]="columnsB">
           </hci-grid>
         </p>
       </div>
@@ -67,12 +123,14 @@ export class DynamicConfigGridComponent {
 
   columnsB1: any[] = [
     { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
+    { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
     { field: "lastName", name: "Last Name", template: "InputCell" },
     { field: "firstName", name: "First Name", template: "InputCell" }
   ];
 
   columnsB2: any[] = [
     { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
+    { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
     { field: "lastName", name: "Last Name", template: "InputCell" },
     { field: "firstName", name: "First Name", template: "InputCell" },
     { field: "middleName", name: "Middle Name", template: "InputCell" }

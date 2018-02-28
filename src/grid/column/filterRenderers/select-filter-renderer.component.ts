@@ -150,6 +150,8 @@ export class SelectFilterRenderer extends FilterRenderer {
    * Removes all filters on this column.
    */
   valueClear() {
+    super.valueClear();
+
     this.changed = false;
     this.deselectAll();
     this.column.clearFilters();

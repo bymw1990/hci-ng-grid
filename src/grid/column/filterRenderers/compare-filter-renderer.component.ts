@@ -223,6 +223,8 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   valueClear() {
+    super.valueClear();
+
     this.reset();
     this.column.clearFilters();
     this.gridService.filter();

@@ -1,9 +1,11 @@
-import {ElementRef} from "@angular/core";
+import {ElementRef, EventEmitter, Output} from "@angular/core";
 
 import {Column} from "../../column/column";
 import {GridService} from "../../services/grid.service";
 
 export class FilterRenderer {
+
+  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   config: any = {};
   column: Column;
@@ -30,4 +32,7 @@ export class FilterRenderer {
     event.stopPropagation();
   }
 
+  valueClear() {
+    this.close.emit(true);
+  }
 }

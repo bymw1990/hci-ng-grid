@@ -15,7 +15,8 @@ import {Observable} from "rxjs/Observable";
 @Component({
   selector: "hci-column-header",
   template: `
-    <div class="d-flex flex-nowrap" style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
+    <div class="d-flex flex-nowrap"
+         style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
       <span (click)="doSort()">{{ column.name }}</span>
       <div class="d-flex flex-nowrap sort-icon">
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
@@ -82,6 +83,9 @@ export class ColumnHeaderComponent {
       this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
       this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "position", "absolute");
       this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "z-index", "50");
+      this.filterComponent.close.subscribe((closed: boolean) => {
+        this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
+      });
     }
   }
 

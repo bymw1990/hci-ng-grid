@@ -11,14 +11,38 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
         <h4>External Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
           250 rows of data is generated in our service and stored.  We bind the onExternalDataCall which takes an object
           containing filtering/sorting/paging info.  Our data service applies the sorts/filters/pages to return a subset
           of data back to the grid.  This service mimics what a backend query would do with the same information.<br />
           In this demo we specify external call for all filter/sort/paging.  So any time a filter is changed, the page
           size is updated, or the next page is selected, this external function is called to retrieve the data.<br />
           To simulate an api call, a delay of 1 s has been added.
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1>
+            <pre>
+              &lt;hci-grid
+                [columnDefinitions]="columns"
+                [dataCall]="onExternalDataCall1"
+                [externalFiltering]="true"
+                [externalSorting]="true"
+                [externalPaging]="true"
+                [pageSize]="10"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID"
+              field: "lastName", name: "Last Name"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [columnDefinitions]="columns"
                     [dataCall]="onExternalDataCall1"
@@ -35,11 +59,35 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
         <h4>Partially External Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
           The previous example had external filter/sort/page.  Here we have external filter and sort, but paging is left
           to the grid.  So our service applies filters and sorts to the data and always returns the full remaining dataset
           which leaves the paging to the grid.
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1>
+            <pre>
+              &lt;hci-grid
+                [columnDefinitions]="columns"
+                [dataCall]="onExternalDataCall2"
+                [externalFiltering]="true"
+                [externalSorting]="true"
+                [externalPaging]="false"
+                [pageSize]="10"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID"
+              field: "lastName", name: "Last Name"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [columnDefinitions]="columns"
                     [dataCall]="onExternalDataCall2"
