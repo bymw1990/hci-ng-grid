@@ -1,4 +1,4 @@
-import {Injectable, isDevMode} from "@angular/core";
+import {Injectable, isDevMode, Type} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
 import {Subject} from "rxjs/Rx";

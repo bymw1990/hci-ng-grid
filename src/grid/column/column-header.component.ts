@@ -1,5 +1,5 @@
 import {
-  Component, ComponentFactoryResolver, ElementRef, Input, Renderer2, Type, ViewChild,
+  Component, ComponentFactoryResolver, ElementRef, HostListener, Input, Renderer2, Type, ViewChild,
   ViewContainerRef
 } from "@angular/core";
 
@@ -20,14 +20,11 @@ import {Observable} from "rxjs/Observable";
       <div class="d-flex flex-nowrap sort-icon">
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
           <a id="filterDropdownToggle"
+             (click)="showFilter()"
              class="dropdown-toggle"
-             [style.color]="column.filters.length > 0 ? '#00aa00' : 'inherit'"
-             ngbDropdownToggle >
+             [style.color]="column.filters.length > 0 ? '#00aa00' : 'inherit'">
             <i class="fas fa-filter"></i>
           </a>
-          <div id="filterDropdownMenu" ngbDropdownMenu class="dropdown-menu" aria-labelledby="filterDropdown">
-            <ng-container #filterContainer></ng-container>
-          </div>
         </div>
         <div [id]="'sort-' + column.id" *ngIf="column.sortable" style="margin-left: 5px;">
           <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
@@ -54,11 +51,9 @@ import {Observable} from "rxjs/Observable";
 export class ColumnHeaderComponent {
 
   @Input() column: Column;
+  @Input("container") popupContainer: ViewContainerRef;
 
   asc: number = 0;
-
-  @ViewChild("filterContainer", { read: ViewContainerRef })
-  private filterContainer: ViewContainerRef;
 
   private filterComponent: FilterRenderer;
 
@@ -80,16 +75,32 @@ export class ColumnHeaderComponent {
 
   ngAfterViewInit() {
     if (this.column.filterRenderer) {
-      var factories = Array.from(this.resolver["_factories"].keys());
-      console.debug(this.column.filterRenderer);
+      console.debug(this.popupContainer);
       let factory = this.resolver.resolveComponentFactory(this.column.filterRenderer);
-      this.filterComponent = this.filterContainer.createComponent(factory).instance;
+      this.filterComponent = this.popupContainer.createComponent(factory).instance;
       this.filterComponent.column = this.column;
       this.filterComponent.setConfig(this.column.filterConfig);
+      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
+      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "position", "absolute");
+      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "z-index", "50");
     }
+  }
+
+  showFilter() {
+    let x: number = this.el.nativeElement.offsetLeft + this.el.nativeElement.offsetWidth - 60;
+    this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "inherit");
+    this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-top", "30px");
+    this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-left", x + "px");
   }
 
   doSort() {
     this.gridService.sort(this.column.field);
+  }
+
+  @HostListener("document:click", ["$event"])
+  private clickout(event) {
+    if (!this.el.nativeElement.contains(event.target) && this.filterComponent) {
+      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
+    }
   }
 }

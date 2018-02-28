@@ -1,8 +1,9 @@
-import {Component, Input} from "@angular/core";
+import {Component, ElementRef, Input} from "@angular/core";
 
 import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
+import {GridService} from "../../services/grid.service";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -13,7 +14,7 @@ import {FilterInfo} from "../../utils/filter-info";
   selector: "hci-grid-select-filter",
   template: `
     <div class="d-flex flex-nowrap"
-         style="width: 300px; padding: .5rem 0;">
+         style="width: 300px; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <div class="parent">
         <div class="form-group" style="margin-bottom: 8px;" (click)="stop($event)">
           <button class="btn btn-primary" (click)="selectAll()">Select All</button>

@@ -1,10 +1,11 @@
-import {Component, Input} from "@angular/core";
+import {Component, ElementRef, Input, isDevMode} from "@angular/core";
 
 import * as moment from "moment";
 
 import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
+import {GridService} from "../../services/grid.service";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -15,10 +16,13 @@ import {FilterInfo} from "../../utils/filter-info";
   selector: "hci-grid-compare-filter",
   template: `
     <div class="d-flex flex-nowrap"
-         style="width: 300px; padding: .5rem 0;"
+         (mousedown)="stop($event)"
+         (mouseup)="stop($event)"
+         (click)="stop($event)"
+         style="width: 300px; padding: .5rem 0; background-color: white; border: black 1px solid;"
          [style.background-color]="valid ? 'inherit' : '#ffccaa;'">
       <div class="parent">
-        <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" (click)="stop($event)" class="operator inputs">
+        <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" class="operator inputs">
           <option *ngFor="let o of options" [ngValue]="o.value" [selected]="o.value === operator.value">
             {{ o.display }}
           </option>
@@ -40,8 +44,7 @@ import {FilterInfo} from "../../utils/filter-info";
               </div>
             </div>
             <div *ngIf="operator === 'B' || operator === 'O'"
-                 class="input-group flex-nowrap"
-                 (click)="stop($event)">
+                 class="input-group flex-nowrap">
               <input ngbDatepicker #d2="ngbDatepicker"
                      [ngModel]="highValue"
                      (ngModelChange)="highValueChange($event)"
@@ -59,12 +62,10 @@ import {FilterInfo} from "../../utils/filter-info";
         <ng-container *ngIf="column.dataType !== 'date'">
           <input [ngModel]="filterInfo.value"
                  (ngModelChange)="valueChange($event)"
-                 (click)="stop($event)"
                  class="value inputs" />
           <input *ngIf="operator === 'B' || operator === 'O'"
                  [ngModel]="filterInfo.highValue"
                  (ngModelChange)="highValueChange($event)"
-                 (click)="stop($event)"
                  class="value inputs" />
         </ng-container>
       </div>
@@ -159,6 +160,9 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   stop(event: MouseEvent) {
+    if (isDevMode()) {
+      console.debug("CompareFilterRenderer.stop");
+    }
     event.stopPropagation();
   }
 

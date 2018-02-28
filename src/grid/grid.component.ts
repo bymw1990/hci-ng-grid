@@ -25,7 +25,6 @@ import {Cell} from "./cell/cell";
 import {HtmlUtil} from "./utils/html-util";
 import {ClickCellEditListener} from "./event/click-cell-edit.listener";
 import {EventListener} from "./event/event-listener";
-import {ClickListener} from "./event/click.interface";
 import {RangeSelectListener} from "./event/range-select.listener";
 import {ClickRowSelectListener} from "./event/click-row-select.listener";
 
@@ -70,6 +69,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
       </div>
       
       <div #mainContent id="mainContent">
+        <div #mainPopupContainer></div>
         
         <div #emptyContent [style.display]="gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
           <div [style.display]="!busy ? 'flex' : 'none'" class="empty-content-text">No Data</div>
@@ -87,6 +87,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
+                                 [container]="popupContainer"
                                  class="hci-grid-header hci-grid-row-height"
                                  [class.hci-grid-row-height]="column.filterType === null"
                                  [class.hci-grid-row-height-filter]="column.filterType !== null"
@@ -104,6 +105,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
+                                 [container]="popupContainer"
                                  class="hci-grid-header hci-grid-row-height"
                                  [class.hci-grid-row-height]="column.filterType === null"
                                  [class.hci-grid-row-height-filter]="column.filterType !== null"
@@ -205,7 +207,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
       white-space: nowrap;
       margin-left: 0px;
       margin-right: 0px;
-      overflow: visible;
+      overflow: hidden;
       width: 0px;
     }      
     
@@ -306,8 +308,9 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
-  @ViewChild("leftCellEditContainer", { read: ViewContainerRef }) leftCellEditContainer: any;
-  @ViewChild("rightCellEditContainer", { read: ViewContainerRef }) rightCellEditContainer: any;
+  @ViewChild("mainPopupContainer", { read: ViewContainerRef }) popupContainer: ViewContainerRef;
+  @ViewChild("leftCellEditContainer", { read: ViewContainerRef }) leftCellEditContainer: ViewContainerRef;
+  @ViewChild("rightCellEditContainer", { read: ViewContainerRef }) rightCellEditContainer: ViewContainerRef;
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: ElementRef;
   @ViewChild("busyOverlay") busyOverlay: ElementRef;
@@ -719,7 +722,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       return;
     }
 
-
     if (isDevMode()) {
       console.debug("mouseUp " + event.srcElement.id);
     }
@@ -736,7 +738,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       return;
     }
 
-
     for (let mouseDragListener of this.mouseDragListeners) {
       if (mouseDragListener["mouseDrag"](event)) {
         break;
@@ -748,7 +749,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (!event || !event.srcElement) {
       return;
     }
-
 
     this.clickTimer = 0;
     this.singleClickCancel = false;

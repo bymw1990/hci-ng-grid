@@ -7,7 +7,8 @@ import {FilterInfo} from "../../utils/filter-info";
 @Component({
   selector: "hci-grid-text-filter",
   template: `
-    <div class="d-flex flex-nowrap" style="align-items: center; padding: 5px; width: 200px;">
+    <div class="d-flex flex-nowrap"
+         style="width: 200px; align-items: center; padding: 5px; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
              [ngModel]="filterInfo.value"
              (ngModelChange)="valueChange($event)"
