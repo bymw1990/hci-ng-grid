@@ -19,7 +19,8 @@ import {GridService} from "../../services/grid.service";
          (mousedown)="stop($event)"
          (mouseup)="stop($event)"
          (click)="stop($event)"
-         style="width: 300px; padding: .5rem 0; background-color: white; border: black 1px solid;"
+         style="padding: .5rem 0; background-color: white; border: black 1px solid;"
+         [style.width.px]="width"
          [style.background-color]="valid ? 'inherit' : '#ffccaa;'">
       <div class="parent">
         <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" class="operator inputs">
@@ -133,6 +134,7 @@ export class CompareFilterRenderer extends FilterRenderer {
 
   @Input() column: Column;
 
+  width: number = 300;
   changed: boolean = false;
   valid: boolean = false;
   filterInfo: FilterInfo;
@@ -157,13 +159,6 @@ export class CompareFilterRenderer extends FilterRenderer {
     this.column.addFilter(this.filterInfo);
     this.gridService.filter();
     this.changed = false;
-  }
-
-  stop(event: MouseEvent) {
-    if (isDevMode()) {
-      console.debug("CompareFilterRenderer.stop");
-    }
-    event.stopPropagation();
   }
 
   setConfig(config: any) {

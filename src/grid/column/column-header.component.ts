@@ -75,7 +75,6 @@ export class ColumnHeaderComponent {
 
   ngAfterViewInit() {
     if (this.column.filterRenderer) {
-      console.debug(this.popupContainer);
       let factory = this.resolver.resolveComponentFactory(this.column.filterRenderer);
       this.filterComponent = this.popupContainer.createComponent(factory).instance;
       this.filterComponent.column = this.column;
@@ -87,8 +86,14 @@ export class ColumnHeaderComponent {
   }
 
   showFilter() {
-    let x: number = this.el.nativeElement.offsetLeft + this.el.nativeElement.offsetWidth - 60;
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "inherit");
+    let cw: number = this.filterComponent.width;
+    let main: number = this.el.nativeElement.parentElement.parentElement.parentElement.parentElement.offsetWidth;
+    let cl: number = this.el.nativeElement.parentElement.offsetLeft;
+    let x: number = cl + this.el.nativeElement.offsetLeft + this.el.nativeElement.offsetWidth - 30;
+    if (x + cw > main) {
+      x = main - cw;
+    }
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-top", "30px");
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-left", x + "px");
   }

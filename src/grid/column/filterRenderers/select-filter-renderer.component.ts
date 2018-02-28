@@ -14,14 +14,18 @@ import {GridService} from "../../services/grid.service";
   selector: "hci-grid-select-filter",
   template: `
     <div class="d-flex flex-nowrap"
-         style="width: 300px; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
+         (mousedown)="stop($event)"
+         (mouseup)="stop($event)"
+         (click)="stop($event)"
+         [style.width.px]="width"
+         style="padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <div class="parent">
-        <div class="form-group" style="margin-bottom: 8px;" (click)="stop($event)">
+        <div class="form-group" style="margin-bottom: 8px;">
           <button class="btn btn-primary" (click)="selectAll()">Select All</button>
           <button class="btn btn-secondary" (click)="deselectAll()">Deselect All</button>
         </div>
         
-        <div class="form-group choice-list" (click)="stop($event)">
+        <div class="form-group choice-list">
           <div *ngFor="let choice of column.choices" class="input-group flex-nowrap" (click)="valueChange(choice.value)">
             <input type="checkbox" id="choiceCheckbox" [ngModel]="choice.selected" class="form-control" />
             <label class="form-check-label" for="choiceCheckbox">{{choice.display}}</label>
@@ -98,6 +102,7 @@ export class SelectFilterRenderer extends FilterRenderer {
 
   @Input() column: Column;
 
+  width: number = 300;
   init: boolean = false;
   changed: boolean = false;
 
@@ -111,10 +116,6 @@ export class SelectFilterRenderer extends FilterRenderer {
 
     this.gridService.filter();
     this.changed = false;
-  }
-
-  stop(event: MouseEvent) {
-    event.stopPropagation();
   }
 
   deselectAll() {

@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
 import { Column } from "hci-ng-grid/index";
+import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 @Component({
   selector: "fixed-grid",
@@ -59,12 +60,12 @@ export class FixedGridComponent {
     new Column({ field: "idPatient", name: "ID", visible: false }),
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
     new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "address", name: "Address", minWidth: 300 }),
+    new Column({ field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer }),
     new Column({ field: "citystatezip", name: "City, State Zip", minWidth: 300 }),
-    new Column({ field: "phone", name: "Phone" })
+    new Column({ field: "phone", name: "Phone", filterRenderer: TextFilterRenderer })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

@@ -8,7 +8,11 @@ import {FilterInfo} from "../../utils/filter-info";
   selector: "hci-grid-text-filter",
   template: `
     <div class="d-flex flex-nowrap"
-         style="width: 200px; align-items: center; padding: 5px; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
+         (mousedown)="stop($event)"
+         (mouseup)="stop($event)"
+         (click)="stop($event)"
+         [style.width.px]="width"
+         style="align-items: center; padding: 5px; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
              [ngModel]="filterInfo.value"
              (ngModelChange)="valueChange($event)"
@@ -26,6 +30,7 @@ export class TextFilterRenderer extends FilterRenderer {
 
   @Input() column: Column;
 
+  width: number = 200;
   filterInfo: FilterInfo;
 
   ngAfterViewInit() {

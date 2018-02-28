@@ -7,6 +7,7 @@ export class FilterRenderer {
 
   config: any = {};
   column: Column;
+  width: number = 250;
   gridService: GridService;
   elementRef: ElementRef;
 
@@ -23,6 +24,10 @@ export class FilterRenderer {
     if (config) {
       this.config = config;
     }
+  }
+
+  stop(event: MouseEvent) {
+    event.stopPropagation();
   }
 
 }
