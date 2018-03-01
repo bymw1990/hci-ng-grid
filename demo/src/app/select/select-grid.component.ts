@@ -10,10 +10,30 @@ import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
         <h4>Row Select</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
           Double click on a row.
           <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1>
+            <pre>
+              &lt;hci-grid
+                [data]="data1"
+                [columnDefinitions]="columns1"
+                [onRowDoubleClick]="onRowDoubleClick"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              isKey: true, field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "pcg.nLabs", name: "# Labs"
+              field: "pcg.nested.nLabPath", name: "# Lab Path"
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [data]="data1"
                     [columnDefinitions]="columns1"
@@ -27,18 +47,54 @@ import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
         <h4>Multiple Row Select</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
           Click on check boxes.
           <span>Selected Row IDs:</span>
           <span *ngIf="selectedRows.length === 0">None</span>
           <span *ngFor="let selectedRow of selectedRows" style="padding-left: 5px;">
            {{selectedRow}}
          </span>
-        </p>
-        <p>
+        </div>
+        <div class="card-text">
           <a class="btn btn-primary" (click)="clearSelectedRows()">Clear Selected Rows</a>
           <a class="btn btn-primary" (click)="deleteSelectedRows()" style="margin-left: 10px;">Delete Selected Rows</a>
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                #grid2
+                [data]="data2"
+                [columnDefinitions]="columns2"
+                (selectedRows)="setSelectedRows($event)"
+                [pageSize]="5"
+                [pageSizes]="[5, 10]"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
+              isKey: true, field: "idPatient", name: "ID", visible: true
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "pcg.nLabs", name: "# Labs"
+              field: "pcg.nested.nLabPath", name: "# Lab Path"
+              
+              setSelectedRows(selectedRows: any[]) {{"{"}}
+                this.selectedRows = selectedRows;
+              {{"}"}}
+            
+              clearSelectedRows() {{"{"}}
+                this.grid2.clearSelectedRows();
+              {{"}"}}
+            
+              deleteSelectedRows() {{"{"}}
+                this.grid2.deleteSelectedRows();
+              {{"}"}}
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid #grid2
                     [data]="data2"
@@ -103,8 +159,6 @@ export class SelectGridComponent {
     console.debug(grid.getGridService().getNVisibleRows());
   }
 
-  ngOnInit() {}
-
   setSelectedRows(selectedRows: any[]) {
     this.selectedRows = selectedRows;
   }
@@ -112,6 +166,7 @@ export class SelectGridComponent {
   clearSelectedRows() {
     this.grid2.clearSelectedRows();
   }
+
   deleteSelectedRows() {
     this.grid2.deleteSelectedRows();
   }

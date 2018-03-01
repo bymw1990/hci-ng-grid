@@ -11,9 +11,27 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <h4>Simple Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          
-        </p>
+        <div class="card-text">
+          A grid uses the default configuration.  Only inputs are title, data and columns.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1>
+            <pre>
+              &lt;hci-grid
+                [title]="'Simple Grid'"
+                [data]="simpleData1"
+                [columnDefinitions]="[
+                  {{"{"}} field: 'lastName' {{"}"}},
+                  {{"{"}} field: 'firstName' {{"}"}},
+                  {{"{"}} field: 'dob', dataType: 'date', format: 'MM/DD/YYYY' {{"}"}},
+                  {{"{"}} field: 'pcg.nLabs' {{"}"}},
+                  {{"{"}} field: 'pcg.nested.nLabPath' {{"}"}},
+                ]&gt;
+              &lt;/hci-grid&gt;
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [title]="'Simple Grid'"
                     [data]="simpleData1"
@@ -34,10 +52,27 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <h4>More Simple Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
           Here we pass the data array and column definitions.  The column definitions specify the complex data path and the
           template type and that is all.  There is no filtering, header, sorting or paging.
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                [data]="simpleData2"
+                [columnDefinitions]="[
+                  {{"{"}} field: 'lastName' {{"}"}},
+                  {{"{"}} field: 'firstName' {{"}"}},
+                  {{"{"}} field: 'dob', dataType: 'date', format: 'MM/DD/YYYY' {{"}"}},
+                  {{"{"}} field: 'pcg.nLabs' {{"}"}},
+                  {{"{"}} field: 'pcg.nested.nLabPath' {{"}"}}
+                ]&gt;
+              &lt;/hci-grid&gt;
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [data]="simpleData2"
                     [columnDefinitions]="[
@@ -57,10 +92,24 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <h4>Even More Simple Grid</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
+        <div class="card-text">
           Here the only thing passed in is the data.  Visible label columns are created automatically based on every key
           in the object.
-        </p>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config3>
+            <pre>
+              &lt;hci-grid
+                [data]="simpleData3"
+                [columnDefinitions]="[
+                  {{"{"}} field: 'lastName', name: 'Last Name' {{"}"}},
+                  {{"{"}} field: 'firstName', name: 'First Name' {{"}"}}
+                ]&gt;
+              &lt;/hci-grid&gt;
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [data]="simpleData3"
                     [columnDefinitions]="[
@@ -77,9 +126,21 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <h4>Simple Grid - 5s Delayed Input</h4>
       </div>
       <div class="card-body">
-        <p class="card-text">
-          
-        </p>
+        <div class="card-text">
+          Typical data input passed in bulk, but with a 5s delay in receiving the data.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config4>
+            <pre>
+              &lt;hci-grid
+                [title]="'Simple Grid Delayed'"
+                [data]="simpleData4"
+                [columnDefinitions]="columns4"&gt;
+              &lt;/hci-grid&gt;
+            </pre>
+          </ng-template>
+        </div>
         <p>
           <hci-grid [title]="'Simple Grid Delayed'"
                     [data]="simpleData4"
