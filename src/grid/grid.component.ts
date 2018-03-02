@@ -165,11 +165,10 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
       </div>
     </div>
   `,
-  styleUrls: [
-    "./themes/excel.css",
-    "./themes/report.css"
-  ],
-  styles: [ `
+  styles: [
+    require("./themes/excel.css"),
+    require("./themes/report.css"),
+    `
 
     #gridContainer {
       display: inline-block;

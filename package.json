@@ -1,6 +1,6 @@
 {
   "name": "hci-ng-grid",
-  "version": "1.0.0-alpha.22",
+  "version": "1.0.0-alpha.23",
   "description": "Comprehensive angular grid component",
   "repository": "https://ri-source.hci.utah.edu/hcidevs/hci-ng-grid.git",
   "scripts": {
