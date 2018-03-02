@@ -23,6 +23,7 @@ import {Component} from "@angular/core";
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
             <a class="dropdown-item" routerLink="/empty">Empty Grid</a>
+            <a class="dropdown-item" routerLink="/event">Event Listeners</a>
             <a class="dropdown-item" routerLink="/external">External Sort/Filter/Page</a>
             <a class="dropdown-item" routerLink="/edit">Inline Edit and Key Nav</a>
             <a class="dropdown-item" routerLink="/filter">Filtering</a>

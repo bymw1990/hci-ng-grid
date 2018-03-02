@@ -36,8 +36,7 @@ import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1"
-                    [onRowDoubleClick]="onRowDoubleClick">
+                    [columnDefinitions]="columns1">
           </hci-grid>
         </p>
       </div>
@@ -153,11 +152,6 @@ export class SelectGridComponent {
     new Column({ field: "pcg.nLabs", name: "# Labs" }),
     new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];
-
-  onRowDoubleClick: Function = (grid: GridComponent) => {
-    console.debug("onRowDoubleClick");
-    console.debug(grid.getGridService().getNVisibleRows());
-  }
 
   setSelectedRows(selectedRows: any[]) {
     this.selectedRows = selectedRows;

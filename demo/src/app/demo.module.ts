@@ -24,6 +24,7 @@ import {PagingGridComponent} from "./paging/paging-grid.component";
 import {ThemingComponent} from "./theming/theming.component";
 import {DynamicConfigGridComponent} from "./dynamic-config/dynamic-config.component";
 import {EmptyGridComponent} from "./empty/empty-grid.component";
+import {EventComponent} from "./event/event.component";
 
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
@@ -38,6 +39,7 @@ import {PagingGridModule} from "./paging/paging-grid.module";
 import {ThemingModule} from "./theming/theming.module";
 import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
 import {EmptyGridModule} from "./empty/empty-grid.module";
+import {EventModule} from "./event/event.module";
 
 import {GridModule} from "hci-ng-grid/index";
 
@@ -60,6 +62,7 @@ import {GridModule} from "hci-ng-grid/index";
     ThemingModule,
     DynamicConfigGridModule,
     EmptyGridModule,
+    EventModule,
     GridModule
   ],
   declarations: [
@@ -76,6 +79,7 @@ import {GridModule} from "hci-ng-grid/index";
     PagingGridComponent,
     ThemingComponent,
     DynamicConfigGridComponent,
+    EventComponent,
     EmptyGridComponent
   ],
   providers: [

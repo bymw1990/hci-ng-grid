@@ -27,6 +27,7 @@ import {ClickCellEditListener} from "./event/click-cell-edit.listener";
 import {EventListener} from "./event/event-listener";
 import {RangeSelectListener} from "./event/range-select.listener";
 import {ClickRowSelectListener} from "./event/click-row-select.listener";
+import {EventListenerArg} from "./config/event-listener-arg.interface";
 
 /**
  * A robust grid for angular.
@@ -341,10 +342,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = -1;
-  @Input() eventListeners: Array<Type<EventListener>> = [RangeSelectListener, ClickRowSelectListener, ClickCellEditListener];
+  @Input() eventListeners: Array<EventListenerArg> = [
+    { type: RangeSelectListener },
+    { type: ClickRowSelectListener },
+    { type: ClickCellEditListener }
+  ];
 
-  @Input() onRowDoubleClick: Function;
-
+  @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
@@ -612,11 +616,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
     for (let eventListener of this.eventListeners) {
       //let instance: Function = Object.create(eventListener.prototype, {grid: this});
       //let o = Object.create(eventListener.prototype);
-      let instance: EventListener = Object.create(eventListener.prototype);
+      let instance: EventListener = Object.create(eventListener.type.prototype);
       instance.setGrid(this);
+      /*if (eventListener.config) {
+        instance.setConfig(eventListener.config);
+      } else {
+        instance.setConfig({});
+      }*/
 
       if ("click" in instance) {
         this.clickListeners.push(instance);
+      }
+      if ("dblclick" in instance) {
+        //this.dblClickListeners.push(instance);
       }
       if ("mouseDown" in instance) {
         this.mouseDownListeners.push(instance);
@@ -775,19 +787,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("onDblClick");
     }
 
-    if (this.onRowDoubleClick) {
-      let e = event.srcElement;
-      while (e.id.indexOf("row-") < 0) {
-        e = event.srcElement.parentElement;
+    /*for (let dblClickListener of this.dblClickListeners) {
+      if (dblClickListener["dblclick"](event)) {
+        break;
       }
-      let j: number = +e.id.split("-")[2];
-      let keys: number[] = this.gridService.getKeyColumns();
-      if (keys.length === 0) {
-        return;
-      } else {
-        this.onRowDoubleClick(this);
-      }
-    }
+    }*/
   }
 
   onFocus(event: Event) {
