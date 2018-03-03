@@ -3,9 +3,8 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef, Type
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef
 } from "@angular/core";
-import {DomSanitizer, SafeStyle} from "@angular/platform-browser";
 
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
@@ -30,12 +29,13 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
 import {EventListenerArg} from "./config/event-listener-arg.interface";
 
 /**
- * A robust grid for angular.
- * Features:
- *   Row Grouping
- *   Fixed Columns
- *   Excel like editing
- *   Copy and paste
+ * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
+ * purely viewing with many styling options but also can handle many types of event listeners and editing possibilities.
+ * In a true edit mode, all cells can be edited as text with key navigation and tabbing to switch between cells.
+ *
+ * Listeners.  One concept is that throughout most headers, rows and cells, events are allowed to bubble up to the top
+ * of the grid.  At this point, an array of listeners (defaut or added by the user) will gobble up the event.  A listener
+ * if designed to process a particular event for a particular element can handle that and cancel further propagation.
  *
  * @since 1.0.0
  */
@@ -57,11 +57,6 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
          (dblclick)="dblClick($event)"
          (keydown)="keyDown($event)">
       <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
-      <div #busyOverlay class="hci-grid-busy" style="display: none;">
-        <div class="hci-grid-busy-div" [style.transform]="gridContainerHeightCalc">
-          <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
-        </div>
-      </div>
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
@@ -71,6 +66,13 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
       
       <div #mainContent id="mainContent">
         <div #mainContentPopupContainer></div>
+
+        <!-- Busy spinner for loading data. -->
+        <div #busyOverlay class="hci-grid-busy" [style.display]="busy ? 'flex' : 'none'">
+          <div class="hci-grid-busy-div">
+            <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
+          </div>
+        </div>
         
         <!-- Overlay messages for loading content or re-rendering. -->
         <div #emptyContent [style.display]="gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
@@ -347,6 +349,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     { type: ClickCellEditListener }
   ];
 
+  @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
@@ -356,15 +359,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
   initialized: boolean = false;
   columnHeaders: boolean = false;
   gridContainerHeight: number = 0;
-  gridContainerHeightCalc: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("'translate(calc(50% - 2.5em), 0px)'");
 
-  rowHeight: number = 30;
+  /* Timers and data to determine the difference between single and double clicks. */
   clickTimer: any;
   singleClickCancel: boolean = false;
+
+  /* The height of cell rows which is used to calculate the total grid size. */
+  rowHeight: number = 30;
+
+  /* The busy flag controls animations during data load. */
   busy: boolean = true;
   busySubject: Subject<boolean> = new Subject<boolean>();
 
-  inputDataSubject: Subject<Object[]> = new Subject<Object[]>();
+  boundDataSubject: Subject<Object[]> = new Subject<Object[]>();
 
   renderedRows: Array<number> = [];
 
@@ -373,14 +380,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private componentRef: CellEditRenderer = null;
   private selectedLocationSubscription: Subscription;
 
+  /* Arrays of listeners for different types.  A single instance of a listener can exist on multiple types. */
   private clickListeners: Array<EventListener> = [];
   private mouseDownListeners: Array<EventListener> = [];
   private mouseDragListeners: Array<EventListener> = [];
   private mouseUpListeners: Array<EventListener> = [];
 
   constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
-              private domSanitizer: DomSanitizer, private gridService: GridService, private gridEventService: GridEventService,
-              private gridMessageService: GridMessageService) {}
+              private gridService: GridService, private gridEventService: GridEventService, private gridMessageService: GridMessageService) {}
 
   ngOnInit() {
     this.registerEventListeners();
@@ -464,6 +471,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
   }
 
+  /**
+   * Everything here now knows that the DOM has been created.
+   */
   ngAfterViewInit() {
     this.findBaseRowCell();
 
@@ -471,9 +481,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
 
-    this.inputDataSubject.subscribe((boundData: Object[]) => {
+    /* When the bound data updates, pass it off to the grid service for processing. */
+    this.boundDataSubject.subscribe((boundData: Object[]) => {
       if (isDevMode()) {
-        console.debug("inputDataSubject.subscribe: " + boundData.length);
+        console.debug("boundDataSubject.subscribe: " + boundData.length);
       }
       this.busySubject.next(true);
       this.gridService.setOriginalData(this.boundData);
@@ -489,6 +500,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.setGridData(data);
     });
 
+    /* Subscribe to busy change.  Update the busy boolean. */
     this.busySubject.subscribe((busy: boolean) => {
       this.busy = busy;
       if (this.busyOverlay && this.busyOverlay.nativeElement) {
@@ -497,6 +509,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     });
 
+    /* Update the pageInfo from the proper one in the gridService. */
     this.pageInfo = this.gridService.pageInfo;
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
@@ -531,9 +544,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.initialized = true;
   }
 
+  /**
+   * Listen for changes which is either data or configuration.  If configuration, pass the new config to the gridService
+   * for updating.  Any changes, particularly to columns, will be notified to the grid through a subscription.
+   *
+   * @param {{[p: string]: SimpleChange}} changes
+   */
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
     if (changes["boundData"]) {
-      this.inputDataSubject.next(this.boundData);
+      this.boundDataSubject.next(this.boundData);
     } else if (changes["config"]) {
       this.gridService.setConfig(this.config);
     } else {
@@ -607,6 +626,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Create instances of the event listeners and place them in the appropriate event type arrays.
+   */
   public registerEventListeners() {
     if (isDevMode()) {
       console.debug("registerEventListeners");
