@@ -12,12 +12,12 @@ import {FilterInfo} from "../../utils/filter-info";
          (mouseup)="stop($event)"
          (click)="stop($event)"
          [style.width.px]="width"
-         style="align-items: center; padding: 0.5rem 0; margin: 0 0.5rem; background-color: white; border: black 1px solid; position: absolute;">
+         style="align-items: center; padding: 0.5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
              [ngModel]="filterInfo.value"
              (ngModelChange)="valueChange($event)"
              (click)="inputClick($event)"
-             style="width: 100%;" />
+             style="width: 100%; margin: 0 0.5rem;" />
       <div (click)="valueClear()" style="padding-left: 5px; padding-right: 5px; color: red;">
         <span class="fas fa-times"></span>
       </div>

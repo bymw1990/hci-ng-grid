@@ -368,7 +368,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   rowHeight: number = 30;
 
   /* The busy flag controls animations during data load. */
-  busy: boolean = true;
+  busy: boolean = false;
   busySubject: Subject<boolean> = new Subject<boolean>();
 
   boundDataSubject: Subject<Object[]> = new Subject<Object[]>();
