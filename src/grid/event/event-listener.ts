@@ -2,15 +2,18 @@ import {GridComponent} from "../grid.component";
 
 export class EventListener {
 
+  stopEvent: boolean = true;
   grid: GridComponent;
 
-  /*constructor(grid: GridComponent) {
-    this.grid = grid;
-  }
+  setConfig(config: any) {
+    if (!config) {
+      return;
+    }
 
-  create<T extends EventListener>(instance: (new (grid: GridComponent) => T), grid: GridComponent): T {
-    return new instance(grid);
-  }*/
+    if (config.stopEvent !== undefined) {
+      this.stopEvent = config.stopEvent;
+    }
+  }
 
   create<T extends EventListener>(instance: (new () => T)): T {
     return new instance();

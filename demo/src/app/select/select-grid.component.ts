@@ -1,6 +1,7 @@
 import {Component, ViewChild} from "@angular/core";
 
-import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
+import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid/index";
+import {ClickViewListener} from "hci-ng-grid";
 
 @Component({
   selector: "select-grid",
@@ -12,7 +13,9 @@ import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
       <div class="card-body">
         <div class="card-text">
           Double click on a row.
-          <span *ngIf="clickedData !== null" style="margin-left: 40px; font-weight: bold;">Double Clicked Key: <span style="color: red;">{{ clickedData }}</span></span>
+          <div class="d-flex flex-nowrap" style="align-items: center; font-size: larger; font-weight: bold;">
+            Double Clicked Key: <span style="margin-left: 10px; color: red;">{{clickedRow}}</span>
+          </div>
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -36,7 +39,9 @@ import {Column, GridComponent, CheckRowSelectView} from "hci-ng-grid/index";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1">
+                    [columnDefinitions]="columns1"
+                    [eventListeners]="listeners1"
+                    (rowDblClick)="rowDblClick($event)">
           </hci-grid>
         </p>
       </div>
@@ -112,7 +117,11 @@ export class SelectGridComponent {
   @ViewChild("grid2") grid2: GridComponent;
 
   selectedRows: any[] = [];
-  clickedData: Object = null;
+  clickedRow: any;
+
+  listeners1: Array<any> = [
+    { type: RowDblClickListener }
+  ];
 
   data1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -163,5 +172,9 @@ export class SelectGridComponent {
 
   deleteSelectedRows() {
     this.grid2.deleteSelectedRows();
+  }
+
+  rowDblClick(event: any) {
+    this.clickedRow = +event;
   }
 }

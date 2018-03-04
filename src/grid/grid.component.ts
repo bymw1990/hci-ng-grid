@@ -351,6 +351,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output("rowDblClick") outputRowDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
@@ -382,6 +383,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   /* Arrays of listeners for different types.  A single instance of a listener can exist on multiple types. */
   private clickListeners: Array<EventListener> = [];
+  private dblClickListeners: Array<EventListener> = [];
   private mouseDownListeners: Array<EventListener> = [];
   private mouseDragListeners: Array<EventListener> = [];
   private mouseUpListeners: Array<EventListener> = [];
@@ -649,7 +651,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.clickListeners.push(instance);
       }
       if ("dblclick" in instance) {
-        //this.dblClickListeners.push(instance);
+        this.dblClickListeners.push(instance);
       }
       if ("mouseDown" in instance) {
         this.mouseDownListeners.push(instance);
@@ -808,11 +810,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("onDblClick");
     }
 
-    /*for (let dblClickListener of this.dblClickListeners) {
+    for (let dblClickListener of this.dblClickListeners) {
       if (dblClickListener["dblclick"](event)) {
         break;
       }
-    }*/
+    }
   }
 
   onFocus(event: Event) {

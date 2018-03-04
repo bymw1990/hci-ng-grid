@@ -2,11 +2,11 @@ import {Point} from "./point";
 
 export class HtmlUtil {
 
-  static getId(e: HTMLElement): string {
+  static getId(e: HTMLElement, id?: string): string {
     if (!e || e === null) {
       return "";
     }
-    while (e.id === "") {
+    while ((!id && e.id === "") || (id && !e.id.startsWith(id))) {
       if (e.parentElement) {
         e = e.parentElement;
       }
