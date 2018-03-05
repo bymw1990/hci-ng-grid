@@ -1,7 +1,6 @@
 import {Component, ViewChild} from "@angular/core";
 
 import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid/index";
-import {ClickViewListener} from "hci-ng-grid";
 
 @Component({
   selector: "select-grid",
@@ -24,7 +23,8 @@ import {ClickViewListener} from "hci-ng-grid";
               &lt;hci-grid
                 [data]="data1"
                 [columnDefinitions]="columns1"
-                [onRowDoubleClick]="onRowDoubleClick"&gt;
+                [eventListeners]="listeners1"
+                (rowDblClick)="rowDblClick($event)"&gt;
               &lt;/hci-grid&gt;
               
               Columns:
@@ -34,6 +34,11 @@ import {ClickViewListener} from "hci-ng-grid";
               field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
               field: "pcg.nLabs", name: "# Labs"
               field: "pcg.nested.nLabPath", name: "# Lab Path"
+              
+              Listeners:
+              listeners1: Array&lt;any&gt; = [
+                {{"{"}} type: RowDblClickListener {{"}"}}
+              ];
             </pre>
           </ng-template>
         </div>
