@@ -11,7 +11,7 @@ module.exports = function (config) {
     exclude: [],
 
     client: {
-      captureConsole: false
+        captureConsole: true
     },
 
     /**
@@ -60,7 +60,7 @@ module.exports = function (config) {
     ],
     port: 9876,
     colors: true,
-    logLevel: config.LOG_WARN,
+    logLevel: config.LOG_DEBUG,
     autoWatch: false,
     singleRun: true,
     failOnEmptyTestSuite: false
