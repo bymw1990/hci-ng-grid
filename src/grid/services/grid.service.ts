@@ -475,8 +475,11 @@ export class GridService {
       this.filterInfo = new Array<FilterInfo>();
       for (var j = 0; j < this.columnDefinitions.length; j++) {
         if (this.columnDefinitions[j].filters.length > 0) {
-          this.filterInfo.concat(this.columnDefinitions[j].filters);
+          this.filterInfo = this.filterInfo.concat(this.columnDefinitions[j].filters);
         }
+      }
+      if (isDevMode()) {
+        console.debug("GridService.filter: externalFiltering: n: " + this.filterInfo.length);
       }
 
       this.pageInfo.setPage(0);

@@ -439,7 +439,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.selectedRows.emit(selectedRows);
-      this.renderData();
+      this.renderCellsAndData();
     });
 
     /* Get initial page Info */
@@ -479,7 +479,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit() {
     this.findBaseRowCell();
 
-    this.updateGridSizes();
+    this.updateGridContainerAndColumnSizes();
 
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
 
@@ -710,8 +710,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return this.gridEventService;
   }
 
-  doRenderData() {
-    this.renderData();
+  dorenderCellsAndData() {
+    this.renderCellsAndData();
   }
 
   onScroll() {
@@ -733,10 +733,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
     this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
-    this.updateGridSizes();
-    this.renderData();
+    this.updateGridContainerAndColumnSizes();
+    this.renderCellsAndData();
   }
 
+  /**
+   * Handled for mouseDown event.
+   *
+   * @param {MouseEvent} event
+   */
   mouseDown(event: MouseEvent) {
     if (!event || !event.srcElement) {
       return;
@@ -753,6 +758,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Handled for mouseUp event.
+   *
+   * @param {MouseEvent} event
+   */
   mouseUp(event: MouseEvent) {
     if (!event || !event.srcElement) {
       return;
@@ -769,6 +779,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Handled for mouseDrag event.
+   *
+   * @param {MouseEvent} event
+   */
   mouseDrag(event: MouseEvent) {
     if (!event || !event.srcElement) {
       return;
@@ -781,6 +796,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Handled for click event.
+   *
+   * @param {MouseEvent} event
+   */
   click(event: MouseEvent) {
     if (!event || !event.srcElement) {
       return;
@@ -803,6 +823,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }, 100);
   }
 
+  /**
+   * Handled for dblClick event.
+   *
+   * @param {MouseEvent} event
+   */
   dblClick(event: MouseEvent) {
     this.singleClickCancel = true;
     clearTimeout(this.clickTimer);
@@ -825,6 +850,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Handled for keyDown event.
+   *
+   * @param {MouseEvent} event
+   */
   keyDown(event: KeyboardEvent) {
     if (isDevMode()) {
       console.debug("GridComponent.onKeyDown");
@@ -926,7 +956,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           j = range.min.j;
         }
 
-        this.renderData();
+        this.renderCellsAndData();
       } else {
         this.gridMessageService.warn("Paste went out of range");
       }
@@ -955,7 +985,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private updateGridSizes() {
+  /**
+   * Calculate the sizes of the containers and column header sizes.
+   */
+  private updateGridContainerAndColumnSizes() {
     this.gridService.setNVisibleRows();
     if (isDevMode()) {
       console.debug("updateGridSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
@@ -1094,17 +1127,20 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.changeDetectorRef.markForCheck();
     this.gridData = gridData;
-    this.renderData();
+    this.renderCellsAndData();
     this.busySubject.next(false);
   }
 
-  private renderData() {
+  /**
+   * Removed currently rendered rows.  Then render cells and inject html from the view renderers in to each cell.
+   */
+  private renderCellsAndData() {
     if (isDevMode()) {
       console.debug("renderData");
     }
     this.changeDetectorRef.detectChanges();
     this.updateGridContainerHeight();
-    this.updateGridSizes();
+    this.updateGridContainerAndColumnSizes();
 
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
     for (let i of this.renderedRows) {
@@ -1272,8 +1308,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @HostListener("window:resize", ["$event"])
   private onResize(event: Event) {
     //this.updateGridContainerHeight();
-    this.updateGridSizes();
-    this.renderData();
+    this.updateGridContainerAndColumnSizes();
+    this.renderCellsAndData();
   }
 
   /**
@@ -1312,7 +1348,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.pageInfo = this.gridService.pageInfo;
     this.pageSizes = this.gridService.pageSizes;
     this.updateGridContainerHeight();
-    this.updateGridSizes();
+    this.updateGridContainerAndColumnSizes();
 
     this.gridEventService.setSelectedLocation(null, null);
     this.busySubject.next(false);

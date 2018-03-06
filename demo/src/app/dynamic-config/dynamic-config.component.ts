@@ -28,15 +28,15 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
               &lt;/hci-grid&gt;
               
               Columns1:
-              field: "idPatient", name: "ID", template: "LabelCell", visible: false
-              field: "lastName", name: "Last Name", template: "InputCell"
-              field: "firstName", name: "First Name", template: "InputCell"
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
               
               Columns2:
-              field: "idPatient", name: "ID", template: "LabelCell", visible: false
-              field: "lastName", name: "Last Name", template: "InputCell"
-              field: "firstName", name: "First Name", template: "InputCell"
-              field: "middleName", name: "Middle Name", template: "InputCell"
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+              field: "middleName", name: "Middle Name"
             </pre>
           </ng-template>
         </div>
@@ -58,8 +58,8 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
           second one adds a third column.  When the columns change, the grid refreshes.
         </div>
         <div class="card-text">
-          <button class="btn btn-primary" (click)="setColumnsA1()">Columns 1</button>
-          <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
+          <button class="btn btn-primary" (click)="setColumnsB1()">Columns 1</button>
+          <button class="btn btn-primary" (click)="setColumnsB2()">Columns 2</button>
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
@@ -72,17 +72,17 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
               &lt;/hci-grid&gt;
               
               Columns1:
-              field: "idPatient", name: "ID", template: "LabelCell", visible: false
+              field: "idPatient", name: "ID", visible: false
               field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
-              field: "lastName", name: "Last Name", template: "InputCell"
-              field: "firstName", name: "First Name", template: "InputCell"
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
               
               Columns2:
-              field: "idPatient", name: "ID", template: "LabelCell", visible: false
+              field: "idPatient", name: "ID", visible: false
               field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
-              field: "lastName", name: "Last Name", template: "InputCell"
-              field: "firstName", name: "First Name", template: "InputCell"
-              field: "middleName", name: "Middle Name", template: "InputCell"
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+              field: "middleName", name: "Middle Name"
             </pre>
           </ng-template>
         </div>
@@ -109,31 +109,31 @@ export class DynamicConfigGridComponent {
   ];
 
   columnsA1: any[] = [
-    { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
-    { field: "lastName", name: "Last Name", template: "InputCell" },
-    { field: "firstName", name: "First Name", template: "InputCell" }
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" }
   ];
 
   columnsA2: any[] = [
-    { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
-    { field: "lastName", name: "Last Name", template: "InputCell" },
-    { field: "firstName", name: "First Name", template: "InputCell" },
-    { field: "middleName", name: "Middle Name", template: "InputCell" }
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "middleName", name: "Middle Name" }
   ];
 
   columnsB1: any[] = [
-    { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
+    { field: "idPatient", name: "ID", visible: false },
     { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
-    { field: "lastName", name: "Last Name", template: "InputCell" },
-    { field: "firstName", name: "First Name", template: "InputCell" }
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" }
   ];
 
   columnsB2: any[] = [
-    { field: "idPatient", name: "ID", template: "LabelCell", visible: false },
+    { field: "idPatient", name: "ID", visible: false },
     { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
-    { field: "lastName", name: "Last Name", template: "InputCell" },
-    { field: "firstName", name: "First Name", template: "InputCell" },
-    { field: "middleName", name: "Middle Name", template: "InputCell" }
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "middleName", name: "Middle Name" }
   ];
 
   columnsA: any = this.columnsA1;
