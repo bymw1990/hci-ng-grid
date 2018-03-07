@@ -1223,6 +1223,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.changeDetectorRef.markForCheck();
   }
 
+  /**
+   * Creates a div that is a row which is a container for cells.  The id is formatted such as row-right-0.
+   *
+   * @param {Element} container The grid container, either left or right.
+   * @param {string} lr Either left or right which is used to build the id.
+   * @param {number} i The row number.
+   * @returns {HTMLElement} The created dom element.
+   */
   private createRow(container: Element, lr: string, i: number): HTMLElement {
     let row = this.renderer.createElement("div");
     this.renderer.setAttribute(row, "id", "row-" + lr + "-" + i);
@@ -1239,6 +1247,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return row;
   }
 
+  /**
+   * Create the cell element.  This creates a holder div which then appends the result of the cell view renderer.
+   *
+   * @param {HTMLElement} row The parent row element.
+   * @param {Column} column The column element.
+   * @param {Cell} cell The data for the cell.
+   * @param {number} i The row number.
+   * @param {number} j The cell number.
+   * @param {string} value The original value to display after formatting.
+   */
   private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string) {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
@@ -1259,6 +1277,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.appendChild(row, eCell);
   }
 
+  /**
+   * Select a cell based on the row and column then call a cell edit renderer.
+   *
+   * @param {number} i The row number.
+   * @param {number} j The column number.
+   */
   private selectComponent(i: number, j: number) {
     if (isDevMode()) {
       console.log("GridComponent.selectComponent: " + i + " " + j);
@@ -1267,6 +1291,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.createCellComponent(e);
   }
 
+  /**
+   * Inject a cell edit renderer at a cell when that cell is selected.
+   *
+   * @param {HTMLElement} cellElement The cell dom element.
+   */
   private createCellComponent(cellElement: HTMLElement) {
     if (isDevMode()) {
       console.debug("createCellComponent: " + cellElement.id);
@@ -1305,9 +1334,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Upon window and therefore (probably) parent resize, re-calculate grid sizes.
+   *
+   * @param {Event} event The window event.
+   */
   @HostListener("window:resize", ["$event"])
   private onResize(event: Event) {
-    //this.updateGridContainerHeight();
     this.updateGridContainerAndColumnSizes();
     this.renderCellsAndData();
   }
@@ -1340,6 +1373,23 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Calls the initialization of the gridService, then pull in the configured column definitions.
+   */
+  private initGridConfiguration() {
+    if (isDevMode()) {
+      console.debug("this.initGridConfiguration()");
+    }
+
+    this.gridService.pageInfo = this.gridService.pageInfo;
+    this.gridService.init();
+    this.columnDefinitions = this.gridService.columnDefinitions;
+    this.columnHeaders = this.gridService.getColumnHeaders();
+  }
+
+  /**
+   * A post initialization method called after configuration.
+   */
   private postInit() {
     if (isDevMode()) {
       console.debug("postInit");
@@ -1355,17 +1405,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.changeDetectorRef.markForCheck();
   }
 
-  private initGridConfiguration() {
-    if (isDevMode()) {
-      console.debug("this.initGridConfiguration()");
-    }
-
-    this.gridService.pageInfo = this.gridService.pageInfo;
-    this.gridService.init();
-    this.columnDefinitions = this.gridService.columnDefinitions;
-    this.columnHeaders = this.gridService.getColumnHeaders();
-  }
-
+  /**
+   * When a range of cells is selected, de-select everything, then select the range.
+   *
+   * @param {Range} range The min and max cell location that represents the selection.
+   */
   private updateSelectedCells(range: Range) {
     if (isDevMode()) {
       console.debug("updateSelectedCells: " + ((range) ? range.toString() : "null"));
@@ -1404,6 +1448,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * If an event occurs out of the grid, then de-select everything.
+   *
+   * @param event The window event.
+   */
   @HostListener("document:click", ["$event"])
   private clickout(event) {
     if (!this.el.nativeElement.contains(event.target)) {
