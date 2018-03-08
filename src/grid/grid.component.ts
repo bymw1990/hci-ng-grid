@@ -279,11 +279,19 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
       display: none;
     }
 
-    .row-select.selected > span.selected-span {
+    /*.row-select.selected > span.selected-span {
       display: inherit;
     }
     
     .row-select.selected > span.unselected-span {
+      display: none;
+    }*/
+    
+    .hci-grid-row.selected .row-select span.selected-span {
+      display: inherit;
+    }
+    
+    .hci-grid-row.selected .row-select span.unselected-span {
       display: none;
     }
 
@@ -305,8 +313,12 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
     .hci-grid-cell.selected {
       background-color: #ffffaa;
     }
-    
-  `],
+
+    .hci-grid-row.selected {
+      background-color: #ffffaa;
+    }
+
+    `],
   encapsulation: ViewEncapsulation.None
 })
 export class GridComponent implements OnChanges, AfterViewInit {
@@ -690,7 +702,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   public clearSelectedRows() {
-    let rows: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".row-select");
+    let rows: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-row");
+
+    if (rows) {
+      for (let row of rows) {
+        this.renderer.removeClass(row, "selected");
+      }
+    }
+
+    rows = this.gridContainer.nativeElement.querySelectorAll(".row-select");
     for (let row of rows) {
       let location: Point = HtmlUtil.getLocation(row);
       this.gridService.getRow(location.i).get(location.j).value = false;
@@ -978,6 +998,32 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Removes old selectors and adds new ones based on the passed in range.
+   *
+   * @param {Range} range The min and max row location that represents the selection.  The j of the range is disregarded.
+   */
+  updateSelectedRows(range: Range) {
+    if (isDevMode()) {
+      console.debug("updateSelectedRows: " + ((range) ? range.toString() : "null"));
+    }
+
+    this.clearSelectedRows();
+
+    if (range !== null) {
+      for (var i = range.min.i; i <= range.max.i; i++) {
+        let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + i);
+        if (e) {
+          this.renderer.addClass(e, "selected");
+        }
+        e = this.gridContainer.nativeElement.querySelector("#row-right-" + i);
+        if (e) {
+          this.renderer.addClass(e, "selected");
+        }
+      }
+    }
+  }
+
   private findBaseRowCell() {
     this.rowHeight = this.gridContainer.nativeElement.querySelector("#base-row").offsetHeight;
     if (!this.rowHeight || this.rowHeight === 0) {
@@ -1243,6 +1289,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(row, "position", "absolute");
     this.renderer.setStyle(row, "display", "inline-block");
     this.renderer.setStyle(row, "top", (i * this.rowHeight) + "px");
+    this.renderer.setStyle(row, "height", this.rowHeight + "px");
+    this.renderer.setStyle(row, "width", "calc(100% - 2px)");
     this.renderer.appendChild(container, row);
     return row;
   }
