@@ -15,11 +15,7 @@ export class ClickRowSelectListener extends EventListener implements ClickListen
 
       let location: Point = HtmlUtil.getLocation(idElement);
       let value: boolean = this.grid.getGridService().negateSelectedRow(location.i, location.j);
-      if (value) {
-        this.grid.updateSelectedRows(new Range(location, location));
-      } else {
-        this.grid.clearSelectedRows();
-      }
+      this.grid.updateSelectedRows(new Range(location, location), false, value);
       return true;
     } else {
       return false;

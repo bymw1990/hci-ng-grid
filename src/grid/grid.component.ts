@@ -310,14 +310,6 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
       color: lightgrey;
     }
 
-    .hci-grid-cell.selected {
-      background-color: #ffffaa;
-    }
-
-    .hci-grid-row.selected {
-      background-color: #ffffaa;
-    }
-
     `],
   encapsulation: ViewEncapsulation.None
 })
@@ -451,7 +443,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.selectedRows.emit(selectedRows);
-      this.renderCellsAndData();
+      //this.renderCellsAndData();
     });
 
     /* Get initial page Info */
@@ -1003,22 +995,40 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {Range} range The min and max row location that represents the selection.  The j of the range is disregarded.
    */
-  updateSelectedRows(range: Range) {
+  updateSelectedRows(range: Range, clear?: boolean, value?: boolean) {
     if (isDevMode()) {
       console.debug("updateSelectedRows: " + ((range) ? range.toString() : "null"));
     }
 
-    this.clearSelectedRows();
+    if (clear !== undefined && clear) {
+      this.clearSelectedRows();
+    }
 
     if (range !== null) {
       for (var i = range.min.i; i <= range.max.i; i++) {
         let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + i);
         if (e) {
-          this.renderer.addClass(e, "selected");
+          if (value !== undefined) {
+            if (value) {
+              this.renderer.addClass(e, "selected");
+            } else {
+              this.renderer.removeClass(e, "selected");
+            }
+          } else {
+            this.renderer.addClass(e, "selected");
+          }
         }
         e = this.gridContainer.nativeElement.querySelector("#row-right-" + i);
         if (e) {
-          this.renderer.addClass(e, "selected");
+          if (value !== undefined) {
+            if (value) {
+              this.renderer.addClass(e, "selected");
+            } else {
+              this.renderer.removeClass(e, "selected");
+            }
+          } else {
+            this.renderer.addClass(e, "selected");
+          }
         }
       }
     }

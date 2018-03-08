@@ -3,6 +3,7 @@ import {EventListener} from "./event-listener";
 import {HtmlUtil} from "../utils/html-util";
 import {Point} from "../utils/point";
 import {isDevMode} from "@angular/core";
+import {Range} from "../utils/range";
 
 export class ClickViewListener extends EventListener implements ClickListener {
 
@@ -18,6 +19,7 @@ export class ClickViewListener extends EventListener implements ClickListener {
       if (isDevMode()) {
         console.debug("outputRowClick Emit: " + key);
       }
+      this.grid.updateSelectedRows(new Range(location, location), true);
       this.grid.outputRowClick.emit(key);
       return true;
     } else {

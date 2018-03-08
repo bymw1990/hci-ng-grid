@@ -40,3 +40,23 @@
 #gridContainer.report .hci-grid-cell.selected.bottom.right {
   border-bottom-right-radius: 10px;
 }
+
+#gridContainer.report .hci-grid-cell.selected.left {
+  border-left: #ffee00 2px solid;
+}
+
+#gridContainer.report .hci-grid-cell.selected.right {
+  border-right: #ffee00 2px solid;
+}
+
+#gridContainer.report .hci-grid-cell.selected.top {
+  border-top: #ffee00 2px solid;
+}
+
+#gridContainer.report .hci-grid-cell.selected.bottom {
+  border-bottom: #ffee00 2px solid;
+}
+
+.hci-grid-cell.selected {
+  background-color: rgba(255, 255, 200, 0.4);
+}

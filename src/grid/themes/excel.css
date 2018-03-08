@@ -55,3 +55,11 @@
 #gridContainer.excel .hci-grid-cell:not(.last) {
   border-right: black 1px solid;
 }
+
+.hci-grid-cell.selected {
+  background-color: #ffffaa;
+}
+
+.hci-grid-row.selected {
+  background-color: #ffffaa;
+}
