@@ -279,14 +279,6 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
       display: none;
     }
 
-    /*.row-select.selected > span.selected-span {
-      display: inherit;
-    }
-    
-    .row-select.selected > span.unselected-span {
-      display: none;
-    }*/
-    
     .hci-grid-row.selected .row-select span.selected-span {
       display: inherit;
     }
@@ -354,6 +346,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ];
 
   @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowDblClick") outputRowDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
@@ -392,8 +385,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private mouseDragListeners: Array<EventListener> = [];
   private mouseUpListeners: Array<EventListener> = [];
 
-  constructor(private el: ElementRef, private renderer: Renderer2, private resolver: ComponentFactoryResolver, private changeDetectorRef: ChangeDetectorRef,
-              private gridService: GridService, private gridEventService: GridEventService, private gridMessageService: GridMessageService) {}
+  constructor(private el: ElementRef,
+              private renderer: Renderer2,
+              private resolver: ComponentFactoryResolver,
+              private changeDetectorRef: ChangeDetectorRef,
+              private gridService: GridService,
+              private gridEventService: GridEventService,
+              private gridMessageService: GridMessageService) {}
 
   ngOnInit() {
     this.registerEventListeners();
@@ -873,7 +871,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     if (event.ctrlKey && event.keyCode === 67) {
-      console.debug("Copy Event");
+      if (isDevMode()) {
+        console.debug("Copy Event");
+      }
 
       let range: Range = this.gridEventService.currentRange;
       if (range != null && !range.min.equals(range.max)) {
@@ -902,7 +902,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.copypastearea.nativeElement.select();
       let paste: string = this.copypastearea.nativeElement.value;
 
-      console.debug("Paste Event: " + paste);
+      if (isDevMode()) {
+        console.debug("Paste Event: " + paste);
+      }
 
       let range: Range = this.gridEventService.currentRange;
       if (range === null) {

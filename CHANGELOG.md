@@ -1,10 +1,4 @@
-<a name="1.0.0"></a>
-# [1.0.0](http://ri-source.hci.utah.edu/hcidevs/hci-ng-grid)
+# Change Log
 
-### Bug Fixes
-
-* **Key navigation:** now works on row groups and row group headers
-
-### Features
-
-* **Row Select:** On row select, send row ID to callback.
+## 1.0.0
+    - Initial Release.  See README.md for features.
