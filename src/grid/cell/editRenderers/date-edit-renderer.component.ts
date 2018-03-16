@@ -29,6 +29,9 @@ export class DateEditRenderer extends CellEditRenderer {
 
   @ViewChild("datepicker") datepicker: ElementRef;
 
+  /**
+   * Upon creation of the datepicker, focus on it to enable key nav.
+   */
   ngAfterViewInit() {
     //this.datepicker.nativeElement.focus();
   }

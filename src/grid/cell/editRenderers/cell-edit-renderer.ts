@@ -21,7 +21,10 @@ export class CellEditRenderer {
   format: string = null;
   formatType: string = null;
   activeOnRowHeader: boolean = false;
+
+  // Deprecated
   valueable: boolean = true;
+
   i: number;
   j: number;
 
@@ -54,8 +57,10 @@ export class CellEditRenderer {
     this.updateLocation();
   }
 
+  /**
+   * Correctly position the editor popup over the selected cell.
+   */
   updateLocation() {
-    console.debug("updateLocation: " + this.hostElement.offsetLeft + " " + this.hostElement.parentElement.scrollLeft + " " + this.hostElement.offsetTop + " " + this.hostElement.parentElement.scrollTop);
     this.renderer.setStyle(this.elementRef.nativeElement, "position", "absolute");
     this.renderer.setStyle(this.elementRef.nativeElement, "margin-left", this.hostElement.offsetLeft + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "margin-top", this.hostElement.parentElement.offsetTop + "px");
@@ -79,14 +84,14 @@ export class CellEditRenderer {
     this.j = j;
   }
 
+  /**
+   * Update the bound value.
+   * TODO: Handle validation;
+   *
+   * @param {Object} value
+   */
   onModelChange(value: Object) {
     this.value = value;
-    /*console.debug("onModelChange: " + value);
-    this.data.value = value;
-    if (this.valueValid) {
-      //this.valueChange.emit(value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.k, this.data.value);
-    }*/
   }
 
   onClick(event: MouseEvent) {
@@ -121,8 +126,11 @@ export class CellEditRenderer {
     }
   }
 
-  setValues(o: Object) {
-    // For sub classes
-  }
+  /**
+   * Allow configuration options to be set.
+   *
+   * @param {Object} o
+   */
+  setValues(o: Object) {}
 
 }
