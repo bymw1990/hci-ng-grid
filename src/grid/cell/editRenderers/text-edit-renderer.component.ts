@@ -12,8 +12,7 @@ import {CellEditRenderer} from "./cell-edit-renderer";
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
            (keydown)="onInputKeyDown($event)"
-           class="hci-grid-text-edit"
-           [ngClass]="{ 'focused': focused }" />
+           class="hci-grid-text-edit" />
   `,
   styles: [ `
       

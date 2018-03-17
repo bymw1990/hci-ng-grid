@@ -1,4 +1,4 @@
-import {ElementRef, HostListener, Renderer2} from "@angular/core";
+import {ChangeDetectorRef, ElementRef, HostListener, Renderer2} from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
 
@@ -30,22 +30,23 @@ export class CellEditRenderer {
 
   handleClick: boolean = false;
 
-  focused: boolean = false;
-
   keyEvent: Subject<number> = new Subject<number>();
 
   gridService: GridService;
   gridEventService: GridEventService;
   elementRef: ElementRef;
   renderer: Renderer2;
+  changeDetectorRef: ChangeDetectorRef;
 
   private hostElement: HTMLElement;
 
-  constructor(gridService: GridService, gridEventService: GridEventService, elementRef: ElementRef, renderer: Renderer2) {
+  constructor(gridService: GridService, gridEventService: GridEventService, elementRef: ElementRef,
+              renderer: Renderer2, changeDetectorRef: ChangeDetectorRef) {
     this.gridService = gridService;
     this.gridEventService = gridEventService;
     this.elementRef = elementRef;
     this.renderer = renderer;
+    this.changeDetectorRef = changeDetectorRef;
   }
 
   setColumn(column: Column) {

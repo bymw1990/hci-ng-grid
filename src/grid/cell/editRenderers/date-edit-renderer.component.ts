@@ -27,13 +27,15 @@ import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 })
 export class DateEditRenderer extends CellEditRenderer {
 
-  @ViewChild("datepicker") datepicker: ElementRef;
+  @ViewChild("datepicker", {read: ElementRef}) datepicker: ElementRef;
 
   /**
    * Upon creation of the datepicker, focus on it to enable key nav.
    */
   ngAfterViewInit() {
-    //this.datepicker.nativeElement.focus();
+    this.changeDetectorRef.markForCheck();
+    this.datepicker.nativeElement.focus();
+    this.changeDetectorRef.detectChanges();
   }
 
   onModelChange(value: Object) {
