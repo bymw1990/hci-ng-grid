@@ -11,7 +11,7 @@ import {CellEditRenderer} from "./cell-edit-renderer";
            autofocus
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
-           (keydown)="onInputKeyDown($event)"
+           (keydown)="onKeyDown($event)"
            class="hci-grid-text-edit" />
   `,
   styles: [ `
@@ -46,8 +46,8 @@ export class TextEditRenderer extends CellEditRenderer {
     this.renderer.setStyle(this.elementRef.nativeElement, "background-color", "white");
   }
 
-  onInputKeyDown(event: KeyboardEvent) {
-    console.log("TextEditRenderer.onInputKeyDown " + event.keyCode);
+  onKeyDown(event: KeyboardEvent) {
+    console.log("TextEditRenderer.onKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
       this.data.value = this.gridService.parseData(this.j, this.value);

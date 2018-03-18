@@ -100,16 +100,6 @@ export class CellEditRenderer {
     event.preventDefault();
   }
 
-  onKeyDown(event: KeyboardEvent) {
-    if (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 39 || event.keyCode === 40) {
-      this.keyEvent.next(event.keyCode);
-    } else if (event.keyCode === 9) {
-      // Tab
-      event.preventDefault();
-      //this.tabEvent.emit(true);
-    }
-  }
-
   setFormat(format: string) {
     if (format === null) {
       return;

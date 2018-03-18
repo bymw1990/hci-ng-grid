@@ -10,7 +10,7 @@ import {Point} from "../../utils/point";
             [ngModel]="value"
             (ngModelChange)="onModelChange($event)"
             (click)="onClick($event)"
-            (keydown)="onInputKeyDown($event)"
+            (keydown)="onKeyDown($event)"
             class="edit-renderer">
       <option *ngFor="let choice of column.choices"
               [ngValue]="choice[column.choiceValue]"
@@ -57,8 +57,8 @@ export class ChoiceEditRenderer extends CellEditRenderer {
     event.preventDefault();
   }
 
-  onInputKeyDown(event: KeyboardEvent) {
-    console.log("ChoiceEditRenderer.onInputKeyDown " + event.keyCode);
+  onKeyDown(event: KeyboardEvent) {
+    console.log("ChoiceEditRenderer.onKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 || event.keyCode === 39) {
       this.data.value = this.gridService.parseData(this.j, this.value);

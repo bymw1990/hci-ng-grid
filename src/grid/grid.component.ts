@@ -533,13 +533,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.gridService.getValueSubject().subscribe((location: Point) => {
-      let e = this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j);
+      /*let e = this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j);
       if (e) {
         e.textContent = "";
         let value = this.columnDefinitions[location.j].formatValue(this.gridService.getCell(location.i, location.j).value);
         let text = this.renderer.createText(value);
         this.renderer.appendChild(e, text);
-      }
+      }*/
+      this.renderCellsAndData();
     });
 
     let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
@@ -720,7 +721,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return this.gridEventService;
   }
 
-  dorenderCellsAndData() {
+  doRenderCellsAndData() {
     this.renderCellsAndData();
   }
 

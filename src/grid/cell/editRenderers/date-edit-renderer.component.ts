@@ -1,8 +1,9 @@
 import {Component, ElementRef, isDevMode, ViewChild} from "@angular/core";
 
+import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+
 import {CellEditRenderer} from "./cell-edit-renderer";
 import {Point} from "../../utils/point";
-import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "hci-grid-date-edit",
@@ -13,7 +14,7 @@ import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
                     (mouseup)="stop($event)"
                     (mousedown)="stop($event)"
                     (click)="onClick($event)"
-                    (keydown)="onInputKeyDown($event)"
+                    (keydown)="onKeyDown($event)"
                     class="edit-renderer"></ngb-datepicker>
   `,
   styles: [ `
@@ -59,8 +60,8 @@ export class DateEditRenderer extends CellEditRenderer {
     event.preventDefault();
   }
 
-  onInputKeyDown(event: KeyboardEvent) {
-    console.log("TextEditRenderer.onInputKeyDown " + event.keyCode);
+  onKeyDown(event: KeyboardEvent) {
+    console.log("TextEditRenderer.onKeyDown " + event.keyCode);
 
     if (event.keyCode === 13) {
       this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
