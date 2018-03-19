@@ -1,5 +1,5 @@
-import {Injectable} from "@angular/core";
-import {Subject, Observable} from "rxjs/Rx";
+import {Injectable, isDevMode} from "@angular/core";
+import {Subject} from "rxjs/Rx";
 
 import {GridService} from "./grid.service";
 import {Point} from "../utils/point";
@@ -10,6 +10,10 @@ export const CLICK = 0;
 export const TAB = 1;
 export const ARROW = 2;
 
+/**
+ * This service specifically handles events such as key strokes and clicks when such events change what cell or cells
+ * are selected.  It also then emits the new selected cell or range of cells so the grid can update rendering.
+ */
 @Injectable()
 export class GridEventService {
   private nColumns: number = 0;
@@ -34,7 +38,9 @@ export class GridEventService {
   }
 
   setCurrentLocation(location: Point) {
-    console.debug("GridEvent.setCurrentLocation: " + (location === null ? "null" : location.toString()));
+    if (isDevMode()) {
+      console.debug("GridEvent.setCurrentLocation: " + (location === null ? "null" : location.toString()));
+    }
 
     this.selectedLocation = location;
     this.selectedLocationSubject.next(this.selectedLocation);
@@ -47,7 +53,9 @@ export class GridEventService {
   }
 
   setMouseDragSelected(location: Point) {
-    console.debug("setMouseOnDownSelected: " + ((location !== null) ? location.toString() : "null"));
+    if (isDevMode()) {
+      console.debug("setMouseOnDownSelected: " + ((location !== null) ? location.toString() : "null"));
+    }
 
     if (location === null) {
       return;
@@ -62,7 +70,10 @@ export class GridEventService {
   }
 
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
-    console.debug("GridEvent.setSelectedLocation");
+    if (isDevMode()) {
+      console.debug("GridEvent.setSelectedLocation");
+    }
+
     if (!this.gridService.cellSelect) {
       return;
     } else if (location === null) {
@@ -74,17 +85,6 @@ export class GridEventService {
     } else if (eventMeta === null) {
       this.setCurrentLocation(location);
     }
-
-    /*if (this._currentRange == null) {
-      this._currentRange = new Range(location, location);
-      this.selectedRange.next(this._currentRange);
-    } else if (eventMeta == null || eventMeta.isNull()) {
-      this._currentRange.setInitial(location);
-      this.selectedRange.next(this._currentRange);
-    } else if (eventMeta.ctrl) {
-      this._currentRange.update(location);
-      this.selectedRange.next(this._currentRange);
-    }*/
   }
 
   setSelectedRange(location: Point, eventMeta: EventMeta) {
@@ -159,15 +159,15 @@ export class GridEventService {
       this.selectedLocation.i = this.selectedLocation.i + dy;
     }
 
-    if (this.gridService.getRow(this.selectedLocation.i) === null) {
-      this.selectedLocation = new Point(-1, -1);
-    } else if (this.selectedLocation.isNegative()) {
-      this.selectedLocation = new Point(-1, -1);
-    } else if (!this.gridService.isColumnSelectable(this.selectedLocation.j)) {
+    if (this.gridService.getRow(this.selectedLocation.i) === null
+        || this.selectedLocation.isNegative()
+        || !this.gridService.isColumnSelectable(this.selectedLocation.j)) {
       this.selectedLocation = new Point(-1, -1);
     }
 
-    console.debug("arrowFrom: to: " + this.selectedLocation.toString());
+    if (isDevMode()) {
+      console.debug("arrowFrom: to: " + this.selectedLocation.toString());
+    }
 
     this.selectedLocationSubject.next(this.selectedLocation);
   }
