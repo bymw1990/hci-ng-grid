@@ -13,7 +13,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-         TODO
+          If a cell has a large block of text, it shows a ... at the overflow.  To show the full text, you can add a listener
+          such that when you hover over the cell, a popup appears with the full text.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -21,18 +22,18 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               TODO
               &lt;hci-grid
-                [title]="'Row Select'"
+                [title]="'Cell Popup'"
                 [data]="data1"
                 [columnDefinitions]="columns1"
+                [fixedColumns]="['firstName', 'lastName']"
                 [eventListeners]="listeners1"
-                (rowClick)="rowClick($event)"
                 [nVisibleRows]="10"&gt;
               &lt;/hci-grid&gt;
               
               Columns:
               field: "idPatient", name: "ID"
               field: "lastName", name: "Last Name", popupRenderer: BigTextPopup
-              field: "middleName", name: "Middle Name"
+              field: "middleName", name: "Middle Name", popupRenderer: BigTextPopup
               field: "firstName", name: "First Name"
               field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
               field: "gender", name: "Gender"
@@ -44,7 +45,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid [title]="'Cell Popup'"
                     [data]="data1"
                     [columnDefinitions]="columns1"
-                    [cellSelect]="true"
+                    [fixedColumns]="['firstName', 'lastName']"
                     [eventListeners]="listeners1"
                     [nVisibleRows]="10">
           </hci-grid>
@@ -64,7 +65,7 @@ export class PopupComponent {
   columns1: Column[] = [
     new Column({ field: "idPatient", name: "ID" }),
     new Column({ field: "lastName", name: "Last Name", popupRenderer: BigTextPopup }),
-    new Column({ field: "middleName", name: "Middle Name" }),
+    new Column({ field: "middleName", name: "Middle Name", popupRenderer: BigTextPopup }),
     new Column({ field: "firstName", name: "First Name" }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "gender", name: "Gender" }),
