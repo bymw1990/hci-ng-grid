@@ -20,6 +20,8 @@ import {CompareFilterRenderer} from "./column/filterRenderers/compare-filter-ren
 import {ChoiceEditRenderer} from "./cell/editRenderers/choice-edit-renderer.component";
 import {DateEditRenderer} from "./cell/editRenderers/date-edit-renderer.component";
 import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-renderer.component";
+import {BigTextPopup} from "./cell/viewPopupRenderer/bigtext-popup.component";
+import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 
 @NgModule({
   imports: [
@@ -40,7 +42,8 @@ import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-rende
     ChoiceEditRenderer,
     TextFilterRenderer,
     SelectFilterRenderer,
-    CompareFilterRenderer
+    CompareFilterRenderer,
+    BigTextPopup
   ],
   entryComponents: [
     TextEditRenderer,
@@ -48,7 +51,8 @@ import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-rende
     ChoiceEditRenderer,
     TextFilterRenderer,
     SelectFilterRenderer,
-    CompareFilterRenderer
+    CompareFilterRenderer,
+    BigTextPopup
   ],
   exports: [
     GridComponent

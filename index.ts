@@ -1,4 +1,3 @@
-import {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";
 
 export {GridModule} from "./src/grid/grid.module";
 export {GridComponent} from "./src/grid/grid.component";
@@ -24,7 +23,11 @@ export {TextFilterRenderer} from "./src/grid/column/filterRenderers/text-filter-
 export {SelectFilterRenderer} from "./src/grid/column/filterRenderers/select-filter-renderer.component";
 export {CompareFilterRenderer} from "./src/grid/column/filterRenderers/compare-filter-renderer.component";
 
+export {BigTextPopup} from "./src/grid/cell/viewPopupRenderer/bigtext-popup.component";
+
+export {ClickCellEditListener} from "./src/grid/event/click-cell-edit.listener";
 export {ClickViewListener} from "./src/grid/event/click-view.listener";
 export {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";
+export {CellHoverPopupListener} from "./src/grid/event/cell-hover-popup.listener";
 
 export {EventListenerArg} from "./src/grid/config/event-listener-arg.interface";

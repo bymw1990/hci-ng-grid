@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
 import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
-import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 @Component({
   selector: "external-grid",
@@ -115,7 +115,7 @@ export class ExternalGridComponent implements OnInit {
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", filterRenderer: CompareFilterRenderer }),
-    new Column({ field: "gender", name: "Gender" }),
+    new Column({ field: "gender", name: "Gender", choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer }),
     new Column({ field: "address", name: "Address" })
   ];
 

@@ -1,9 +1,8 @@
-import {Component, ElementRef, Input} from "@angular/core";
+import {Component, Input} from "@angular/core";
 
 import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
-import {GridService} from "../../services/grid.service";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -26,9 +25,9 @@ import {GridService} from "../../services/grid.service";
         </div>
         
         <div class="form-group choice-list">
-          <div *ngFor="let choice of column.choices" class="input-group flex-nowrap" (click)="valueChange(choice.value)">
+          <div *ngFor="let choice of column.choices" class="input-group flex-nowrap" (click)="valueChange(choice[column.choiceValue])">
             <input type="checkbox" id="choiceCheckbox" [ngModel]="choice.selected" class="form-control" />
-            <label class="form-check-label" for="choiceCheckbox">{{choice.display}}</label>
+            <label class="form-check-label" for="choiceCheckbox">{{choice[column.choiceDisplay]}}</label>
           </div>
         </div>
       </div>

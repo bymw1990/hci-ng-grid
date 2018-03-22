@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Rx";
 
-import {ExternalData, ExternalInfo} from "hci-ng-grid/index";
+import {ExternalData, ExternalInfo, FilterInfo} from "hci-ng-grid/index";
 import {PageInfo} from "hci-ng-grid/index";
 
 const momentRandom = require("moment-random");
@@ -184,13 +184,35 @@ export class DataGeneratorService {
       filtered = this.externalData1;
     } else {
       for (var i = 0; i < this.externalData1.length; i++) {
-        let add: boolean = true;
-        for (var j = 0; j < filters.length; j++) {
-          if (this.externalData1[i][filters[j]["field"]].indexOf(filters[j]["value"]) === -1) {
-            add = false;
+        filters = filters.sort((a: FilterInfo, b: FilterInfo) => {
+          return a.field.localeCompare(b.field);
+        });
+
+        let choiceFilters: FilterInfo[] = filters.filter((f: FilterInfo) => {
+          return f.dataType === "choice";
+        });
+        let otherFilters: FilterInfo[] = filters.filter((f: FilterInfo) => {
+          return f.dataType !== "choice";
+        });
+
+        let addChoice: boolean = true;
+        if (choiceFilters.length > 0) {
+          addChoice = false;
+          for (var j = 0; j < choiceFilters.length; j++) {
+            if (this.externalData1[i][choiceFilters[j]["field"]].indexOf(filters[j]["value"]) === -1) {
+              addChoice = true;
+              break;
+            }
           }
         }
-        if (add) {
+
+        let addOther: boolean = true;
+        for (var j = 0; j < otherFilters.length; j++) {
+          if (this.externalData1[i][otherFilters[j]["field"]].indexOf(filters[j]["value"]) === -1) {
+            addOther = false;
+          }
+        }
+        if (addChoice && addOther) {
           filtered.push(this.externalData1[i]);
         }
       }

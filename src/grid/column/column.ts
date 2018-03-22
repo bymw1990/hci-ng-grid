@@ -8,6 +8,7 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
 import {FilterInfo} from "../utils/filter-info";
 import {CellEditRenderer} from "../cell/editRenderers/cell-edit-renderer";
 import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.component";
+import {CellPopupRenderer} from "../cell/viewPopupRenderer/cell-popup-renderer";
 
 export class Column {
   id: number;
@@ -37,6 +38,8 @@ export class Column {
   choiceValue: string = "value";
   choiceDisplay: string = "display";
   choiceUrl: string;
+
+  popupRenderer: Type<CellPopupRenderer>;
 
   editRenderer: Type<CellEditRenderer> = TextEditRenderer;
 
@@ -180,6 +183,9 @@ export class Column {
       this.selectable = object.selectable;
     }
 
+    if (object.popupRenderer) {
+      this.popupRenderer = object.popupRenderer;
+    }
     if (object.editRenderer) {
       this.editRenderer = object.editRenderer;
     }

@@ -11,6 +11,8 @@ export class CellTextView implements CellViewRenderer {
     renderer.setStyle(span, "padding-left", "8px");
     renderer.setStyle(span, "margin-top", "auto");
     renderer.setStyle(span, "margin-bottom", "auto");
+    renderer.setStyle(span, "overflow-x", "hidden");
+    renderer.setStyle(span, "text-overflow", "ellipsis");
 
     let text = renderer.createText(column.formatValue(value));
     renderer.appendChild(span, text);

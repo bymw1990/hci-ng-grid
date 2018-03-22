@@ -27,6 +27,7 @@ import {EventListener} from "./event/event-listener";
 import {RangeSelectListener} from "./event/range-select.listener";
 import {ClickRowSelectListener} from "./event/click-row-select.listener";
 import {EventListenerArg} from "./config/event-listener-arg.interface";
+import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -51,6 +52,7 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
          id="gridContainer"
          [ngClass]="theme"
          (click)="click($event)"
+         (mouseover)="mouseOver($event)"
          (mousedown)="mouseDown($event)"
          (mouseup)="mouseUp($event)"
          (mousemove)="mouseDrag($event)"
@@ -375,6 +377,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   columnsChangedSubscription: Subscription;
 
+  private popupRef: CellPopupRenderer = null;
   private componentRef: CellEditRenderer = null;
   private selectedLocationSubscription: Subscription;
 
@@ -384,6 +387,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private mouseDownListeners: Array<EventListener> = [];
   private mouseDragListeners: Array<EventListener> = [];
   private mouseUpListeners: Array<EventListener> = [];
+  private mouseOverListeners: Array<EventListener> = [];
 
   constructor(private el: ElementRef,
               private renderer: Renderer2,
@@ -665,6 +669,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if ("mouseUp" in instance) {
         this.mouseUpListeners.push(instance);
       }
+      if ("mouseOver" in instance) {
+        this.mouseOverListeners.push(instance);
+      }
     }
   }
 
@@ -764,6 +771,22 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     for (let mouseDownListener of this.mouseDownListeners) {
       if (mouseDownListener["mouseDown"](event)) {
+        break;
+      }
+    }
+  }
+
+  mouseOver(event: MouseEvent) {
+    if (!event || !event.srcElement) {
+      return;
+    }
+
+    if (isDevMode()) {
+      console.debug("mouseOver " + event.srcElement.id);
+    }
+
+    for (let mouseOverListener of this.mouseOverListeners) {
+      if (mouseOverListener["mouseOver"](event)) {
         break;
       }
     }
@@ -991,6 +1014,36 @@ export class GridComponent implements OnChanges, AfterViewInit {
       event.stopPropagation();
       this.gridEventService.arrowFrom(null, 0, 1, null);
     }
+  }
+
+  /**
+   * Inject a popup over the cell.
+   *
+   * @param {Point} location The cell location to perform popup on.
+   */
+  createPopup(location: Point) {
+    if (isDevMode()) {
+      console.debug("createPopup at " + location.toString());
+    }
+
+    let column: Column = this.columnDefinitions[location.j];
+    if (!column.popupRenderer) {
+      return;
+    }
+    if (this.popupRef && this.popupRef.i === location.i && this.popupRef.j === location.j) {
+      return;
+    }
+
+    this.leftCellEditContainer.clear();
+    this.rightCellEditContainer.clear();
+    let factory = this.resolver.resolveComponentFactory(column.popupRenderer);
+    if (column.isFixed) {
+      this.popupRef = this.leftCellEditContainer.createComponent(factory).instance;
+    } else {
+      this.popupRef = this.rightCellEditContainer.createComponent(factory).instance;
+    }
+    this.popupRef.setPosition(location);
+    this.popupRef.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
   }
 
   /**

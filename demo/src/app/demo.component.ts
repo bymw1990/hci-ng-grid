@@ -20,6 +20,7 @@ import {Component} from "@angular/core";
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
+            <a class="dropdown-item" routerLink="/popup">Cell Popup</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
             <a class="dropdown-item" routerLink="/empty">Empty Grid</a>

@@ -474,8 +474,8 @@ export class GridService {
     if (this.externalFiltering) {
       this.filterInfo = new Array<FilterInfo>();
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].filters.length > 0) {
-          this.filterInfo = this.filterInfo.concat(this.columnDefinitions[j].filters);
+        for (var k = 0; k < this.columnDefinitions[j].filters.length; k++) {
+          this.filterInfo.push(this.columnDefinitions[j].filters[k]);
         }
       }
       if (isDevMode()) {

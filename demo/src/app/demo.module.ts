@@ -25,6 +25,7 @@ import {ThemingComponent} from "./theming/theming.component";
 import {DynamicConfigGridComponent} from "./dynamic-config/dynamic-config.component";
 import {EmptyGridComponent} from "./empty/empty-grid.component";
 import {EventComponent} from "./event/event.component";
+import {PopupComponent} from "./popup/popup.component";
 
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
@@ -40,6 +41,7 @@ import {ThemingModule} from "./theming/theming.module";
 import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
 import {EmptyGridModule} from "./empty/empty-grid.module";
 import {EventModule} from "./event/event.module";
+import {PopupModule} from "./popup/popup.module";
 
 import {GridModule} from "hci-ng-grid/index";
 
@@ -63,6 +65,7 @@ import {GridModule} from "hci-ng-grid/index";
     DynamicConfigGridModule,
     EmptyGridModule,
     EventModule,
+    PopupModule,
     GridModule
   ],
   declarations: [
@@ -80,6 +83,7 @@ import {GridModule} from "hci-ng-grid/index";
     ThemingComponent,
     DynamicConfigGridComponent,
     EventComponent,
+    PopupComponent,
     EmptyGridComponent
   ],
   providers: [

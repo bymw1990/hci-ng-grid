@@ -14,7 +14,7 @@ export class Range {
   }
 
   setInitial(point: Point) {
-    this._min = point;
+    this._min = new Point(point.i, point.j);
     this._max = new Point(point.i, point.j);
   }
 

@@ -3,12 +3,14 @@ import {Point} from "./point";
 export class HtmlUtil {
 
   static getId(e: HTMLElement, id?: string): string {
-    if (!e || e === null) {
+    if (!e) {
       return "";
     }
     while ((!id && e.id === "") || (id && !e.id.startsWith(id))) {
       if (e.parentElement) {
         e = e.parentElement;
+      } else {
+        break;
       }
     }
 
@@ -16,12 +18,14 @@ export class HtmlUtil {
   }
 
   static getIdElement(e: HTMLElement): HTMLElement {
-    if (!e || e === null) {
+    if (!e) {
       return null;
     }
     while (e.id === "") {
       if (e.parentElement) {
         e = e.parentElement;
+      } else {
+        break;
       }
     }
 
