@@ -3,6 +3,7 @@ import {Component} from "@angular/core";
 import {ClickCellEditListener, CellHoverPopupListener, BigTextPopup, ClickView, ClickViewListener, Column, EventListenerArg} from "hci-ng-grid/index";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {CompareFilterRenderer} from "hci-ng-grid";
 
 @Component({
   selector: "event-demo",
@@ -37,7 +38,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "firstName", name: "First Name"
               field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
               field: "gender", name: "Gender"
-              field: "nLabs", name: "# Labs", dataType: "number"
+              field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
             </pre>
           </ng-template>
         </div>
@@ -47,6 +48,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                     [columnDefinitions]="columns1"
                     [fixedColumns]="['firstName', 'lastName']"
                     [eventListeners]="listeners1"
+                    [cellSelect]="true"
                     [nVisibleRows]="10">
           </hci-grid>
         </p>
@@ -69,7 +71,7 @@ export class PopupComponent {
     new Column({ field: "firstName", name: "First Name" }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "nLabs", name: "# Labs", dataType: "number" })
+    new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

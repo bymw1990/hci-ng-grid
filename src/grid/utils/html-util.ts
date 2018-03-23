@@ -1,5 +1,8 @@
 import {Point} from "./point";
 
+/**
+ * Convenience class for pulling things such as id from an element.
+ */
 export class HtmlUtil {
 
   static getId(e: HTMLElement, id?: string): string {

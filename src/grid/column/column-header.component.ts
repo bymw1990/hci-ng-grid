@@ -52,7 +52,7 @@ import {Observable} from "rxjs/Observable";
 export class ColumnHeaderComponent {
 
   @Input() column: Column;
-  @Input("container") popupContainer: ViewContainerRef;
+  @Input("container") headerContainer: ViewContainerRef;
 
   asc: number = 0;
 
@@ -77,7 +77,7 @@ export class ColumnHeaderComponent {
   ngAfterViewInit() {
     if (this.column.filterRenderer) {
       let factory = this.resolver.resolveComponentFactory(this.column.filterRenderer);
-      this.filterComponent = this.popupContainer.createComponent(factory).instance;
+      this.filterComponent = this.headerContainer.createComponent(factory).instance;
       this.filterComponent.column = this.column;
       this.filterComponent.setConfig(this.column.filterConfig);
       this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
@@ -91,12 +91,12 @@ export class ColumnHeaderComponent {
 
   showFilter() {
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "inherit");
-    let cw: number = this.filterComponent.width;
-    let main: number = this.el.nativeElement.parentElement.parentElement.parentElement.parentElement.offsetWidth;
-    let cl: number = this.el.nativeElement.parentElement.offsetLeft;
-    let x: number = cl + this.el.nativeElement.offsetLeft + this.el.nativeElement.offsetWidth - 30;
-    if (x + cw > main) {
-      x = main - cw;
+    let wHost: number = this.filterComponent.width;
+    let mainContent: number = (<HTMLElement>this.el.nativeElement.closest("#mainContent")).offsetWidth;
+    let xView: number = (<HTMLElement>this.el.nativeElement.closest(".header-view")).offsetLeft;
+    let x: number = xView + this.el.nativeElement.offsetLeft + this.el.nativeElement.offsetWidth - 30;
+    if (x + wHost > mainContent) {
+      x = mainContent - wHost;
     }
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-top", "30px");
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-left", x + "px");

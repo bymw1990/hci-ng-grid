@@ -21,7 +21,6 @@ export class GridService {
 
   columnHeaders: boolean = true;
   rowSelect: boolean = false;
-  cellSelect: boolean = false;
   keyNavigation: boolean = false;
   columnDefinitions: Column[] = null;
   fixedColumns: string[] = null;
@@ -74,9 +73,6 @@ export class GridService {
     // Selection Related Configuration
     if (config.rowSelect !== undefined) {
       this.rowSelect = config.rowSelect;
-    }
-    if (config.cellSelect !== undefined) {
-      this.cellSelect = config.cellSelect;
     }
     if (config.keyNavigation !== undefined) {
       this.keyNavigation = config.keyNavigation;

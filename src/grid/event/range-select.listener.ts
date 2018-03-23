@@ -1,10 +1,10 @@
-import {ClickListener} from "./click.interface";
+import {isDevMode} from "@angular/core";
+
 import {EventListener} from "./event-listener";
 import {HtmlUtil} from "../utils/html-util";
 import {MouseDownListener} from "./mouse-down.interface";
 import {MouseDragListener} from "./mouse-drag.interface";
 import {MouseUpListener} from "./mouse-up.interface";
-import {isDevMode} from "@angular/core";
 
 export class RangeSelectListener extends EventListener implements MouseDownListener, MouseDragListener, MouseUpListener {
 
@@ -12,7 +12,9 @@ export class RangeSelectListener extends EventListener implements MouseDownListe
   lastEventId: string = "";
 
   mouseDown(event: MouseEvent): boolean {
-    console.debug("RangeSelectListener.mouseDown");
+    if (isDevMode()) {
+      console.debug("RangeSelectListener.mouseDown");
+    }
 
     this.lastEventId = HtmlUtil.getId(<HTMLElement>event.srcElement);
     if (this.lastEventId.startsWith("cell-")) {
@@ -20,7 +22,7 @@ export class RangeSelectListener extends EventListener implements MouseDownListe
       event.stopPropagation();
       event.preventDefault();
 
-      this.grid.getGridEventService().clearSelectedLocation();
+      this.gridEventService.clearSelectedLocation();
       return true;
     } else {
       return false;
@@ -51,7 +53,7 @@ export class RangeSelectListener extends EventListener implements MouseDownListe
       event.preventDefault();
       this.lastEventId = event.srcElement.id;
 
-      this.grid.getGridEventService().setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.srcElement));
+      this.gridEventService.setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.srcElement));
       return true;
     }
     return false;

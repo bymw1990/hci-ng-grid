@@ -3,7 +3,7 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef, Injector
 } from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
@@ -28,6 +28,7 @@ import {RangeSelectListener} from "./event/range-select.listener";
 import {ClickRowSelectListener} from "./event/click-row-select.listener";
 import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
+import {InjectableFactory} from "./utils/injectable.factory";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -67,6 +68,7 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
       </div>
       
       <div #mainContent id="mainContent">
+        <div #mainContentHeaderContainer></div>
         <div #mainContentPopupContainer></div>
 
         <!-- Busy spinner for loading data. -->
@@ -82,18 +84,20 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
           <div [style.display]="busy ? 'flex' : 'none'" class="empty-content-text">Loading Data...</div>
         </div>
         
+        <!-- Container for the header.  Split in to a left view (for fixed columns) and right view. -->
         <div #headerContent
              id="headerContent"
              [class.hide]="!columnHeaders"
              [style.height.px]="rowHeight">
           <div #leftHeaderView
                id="leftHeaderView"
+               class="header-view"
                [style.height.px]="rowHeight">
             <div id="leftHeaderContainer" *ngIf="columnDefinitions.length > 0">
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
-                                 [container]="popupContainer"
+                                 [container]="headerContainer"
                                  class="hci-grid-header hci-grid-row-height"
                                  [class.hci-grid-row-height]="column.filterType === null"
                                  [class.hci-grid-row-height-filter]="column.filterType !== null"
@@ -106,12 +110,13 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
           </div>
           <div #rightHeaderView
                id="rightHeaderView"
+               class="header-view"
                [style.height.px]="rowHeight">
             <div id="rightHeaderContainer" *ngIf="columnDefinitions.length > 0">
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
-                                 [container]="popupContainer"
+                                 [container]="headerContainer"
                                  class="hci-grid-header hci-grid-row-height"
                                  [class.hci-grid-row-height]="column.filterType === null"
                                  [class.hci-grid-row-height-filter]="column.filterType !== null"
@@ -126,14 +131,14 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 
         <!-- Content -->
         <div #gridContent id="gridContent">
-          <div #leftView id="leftView">
+          <div #leftView id="leftView" class="cell-view">
             <div #leftContainer id="leftContainer" class="hci-grid-left-row-container">
               <div #leftCellEditContainer></div>
             </div>
           </div>
 
           <!-- Right (Main) Content -->
-          <div #rightView id="rightView">
+          <div #rightView id="rightView" class="cell-view">
             <div #rightRowContainer id="rightContainer">
               <div #rightCellEditContainer></div>
               <div id="base-row" class="hci-grid-row" style="position: absolute; left: 0px; top: 0px;">
@@ -309,6 +314,7 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
+  @ViewChild("mainContentHeaderContainer", { read: ViewContainerRef }) headerContainer: ViewContainerRef;
   @ViewChild("mainContentPopupContainer", { read: ViewContainerRef }) popupContainer: ViewContainerRef;
   @ViewChild("leftCellEditContainer", { read: ViewContainerRef }) leftCellEditContainer: ViewContainerRef;
   @ViewChild("rightCellEditContainer", { read: ViewContainerRef }) rightCellEditContainer: ViewContainerRef;
@@ -393,6 +399,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
               private renderer: Renderer2,
               private resolver: ComponentFactoryResolver,
               private changeDetectorRef: ChangeDetectorRef,
+              private injector: Injector,
               private gridService: GridService,
               private gridEventService: GridEventService,
               private gridMessageService: GridMessageService) {}
@@ -526,6 +533,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (isDevMode()) {
         console.debug("GridComponent.selectedLocationSubscription");
       }
+      this.popupContainer.clear();
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
       this.componentRef = null;
@@ -539,13 +547,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.gridService.getValueSubject().subscribe((location: Point) => {
-      /*let e = this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j);
-      if (e) {
-        e.textContent = "";
-        let value = this.columnDefinitions[location.j].formatValue(this.gridService.getCell(location.i, location.j).value);
-        let text = this.renderer.createText(value);
-        this.renderer.appendChild(e, text);
-      }*/
       this.renderCellsAndData();
     });
 
@@ -596,9 +597,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.rowSelect !== undefined) {
       this.config.rowSelect = this.rowSelect;
     }
-    if (this.cellSelect !== undefined) {
-      this.config.cellSelect = this.cellSelect;
-    }
     if (this.keyNavigation !== undefined) {
       this.config.keyNavigation = this.keyNavigation;
     }
@@ -646,15 +644,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     for (let eventListener of this.eventListeners) {
-      //let instance: Function = Object.create(eventListener.prototype, {grid: this});
-      //let o = Object.create(eventListener.prototype);
-      let instance: EventListener = Object.create(eventListener.type.prototype);
+      let instance: EventListener = new InjectableFactory<EventListener>(eventListener.type, this.injector).getInstance();
       instance.setGrid(this);
-      /*if (eventListener.config) {
+      if (eventListener.config) {
         instance.setConfig(eventListener.config);
       } else {
         instance.setConfig({});
-      }*/
+      }
 
       if ("click" in instance) {
         this.clickListeners.push(instance);
@@ -1411,6 +1407,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (isDevMode()) {
       console.debug("createCellComponent: " + cellElement.id);
     }
+    this.popupContainer.clear();
+    this.leftCellEditContainer.clear();
+    this.rightCellEditContainer.clear();
 
     if (cellElement.id) {
       let id: string = cellElement.id;
@@ -1567,6 +1566,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @HostListener("document:click", ["$event"])
   private clickout(event) {
     if (!this.el.nativeElement.contains(event.target)) {
+      this.popupContainer.clear();
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
       this.componentRef = null;

@@ -1,3 +1,5 @@
+import {isDevMode} from "@angular/core";
+
 import {ClickListener} from "./click.interface";
 import {EventListener} from "./event-listener";
 import {HtmlUtil} from "../utils/html-util";
@@ -7,14 +9,16 @@ import {Range} from "../utils/range";
 export class ClickRowSelectListener extends EventListener implements ClickListener {
 
   click(event: MouseEvent): boolean {
-    console.debug("ClickRowSelectListener.click");
+    if (isDevMode()) {
+      console.debug("ClickRowSelectListener.click");
+    }
 
     let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.srcElement);
     if (idElement !== null && idElement.id.startsWith("row-select-")) {
       event.stopPropagation();
 
       let location: Point = HtmlUtil.getLocation(idElement);
-      let value: boolean = this.grid.getGridService().negateSelectedRow(location.i, location.j);
+      let value: boolean = this.gridService.negateSelectedRow(location.i, location.j);
       this.grid.updateSelectedRows(new Range(location, location), false, value);
       return true;
     } else {

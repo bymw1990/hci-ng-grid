@@ -47,21 +47,17 @@ export class CellPopupRenderer {
     this.renderer.setStyle(this.elementRef.nativeElement, "height", this.hostElement.offsetHeight + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "z-index", "99");
 
-    /*let cw: number = this.hostElement.offsetWidth;
-    let main: number = this.hostElement.parentElement.parentElement.parentElement.parentElement.offsetWidth;
-    let cl: number = this.hostElement.parentElement.offsetLeft;
-    let x: number = cl + this.hostElement.offsetLeft + this.hostElement.offsetWidth - 30;*/
-    let cw: number = this.hostElement.offsetWidth;
-    let main: number = this.hostElement.parentElement.parentElement.parentElement.parentElement.parentElement.offsetWidth;
-    let cl: number = this.hostElement.parentElement.parentElement.parentElement.offsetLeft;
-    let x: number = cl + this.hostElement.offsetLeft + this.hostElement.offsetWidth - 30;
-    if (x + cw > main) {
-      x = main - cw;
+    let wHost: number = this.hostElement.offsetWidth;
+    let mainContent: number = (<HTMLElement>this.hostElement.closest("#mainContent")).offsetWidth;
+    let xView: number = (<HTMLElement>this.hostElement.closest(".cell-view")).offsetLeft;
+    let x: number = xView + this.hostElement.offsetLeft + this.hostElement.offsetWidth - 30;
+    if (x + wHost > mainContent) {
+      x = mainContent - wHost;
     }
 
-    let yScroll: number = this.gridService.gridElement.querySelector("#rightView").scrollTop;
+    let sRightView: number = this.gridService.gridElement.querySelector("#rightView").scrollTop;
     this.renderer.setStyle(this.elementRef.nativeElement, "margin-top",
-        (this.hostElement.offsetHeight + this.hostElement.parentElement.offsetTop - yScroll + 15) + "px");
+        (this.hostElement.offsetHeight + this.hostElement.parentElement.offsetTop - sRightView + 15) + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "margin-left", x + "px");
   }
 

@@ -74,9 +74,7 @@ export class GridEventService {
       console.debug("GridEvent.setSelectedLocation");
     }
 
-    if (!this.gridService.cellSelect) {
-      return;
-    } else if (location === null) {
+    if (location === null) {
       return;
     } else if (location.isNegative()) {
       this.setCurrentLocation(location);
@@ -88,9 +86,6 @@ export class GridEventService {
   }
 
   setSelectedRange(location: Point, eventMeta: EventMeta) {
-    if (!this.gridService.cellSelect) {
-      return;
-    }
     this.selectedLocation = location;
 
     if (this._currentRange == null) {
@@ -129,9 +124,6 @@ export class GridEventService {
   arrowFrom(location: Point, dx: number, dy: number, eventMeta: EventMeta) {
     this.lastEvent = ARROW;
 
-    if (!this.gridService.cellSelect) {
-      return;
-    }
     if (location !== null) {
       this.selectedLocation = location;
     } else if (this.selectedLocation.isNegative()) {

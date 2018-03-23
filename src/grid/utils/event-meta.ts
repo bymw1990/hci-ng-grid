@@ -15,7 +15,7 @@ export class EventMeta {
   }
 
   toString(): string {
-    return "EventMeta(" + this._alt + "," + this._ctrl + "," + this._shift + ")";
+    return "EventMeta: { alt: " + this._alt + ", ctrl: " + this._ctrl + ", shift: " + this._shift + "}";
   }
 
   get alt(): boolean {
