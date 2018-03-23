@@ -51,6 +51,8 @@ export class GridService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
+  gridElement: HTMLElement
+
   private nUtilityColumns: number = 0;
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
@@ -362,6 +364,10 @@ export class GridService {
 
   getColumnsChangedSubject(): Subject<boolean> {
     return this.columnsChangedSubject;
+  }
+
+  setGridElement(gridElement: HTMLElement) {
+    this.gridElement = gridElement;
   }
 
   getOriginalDataSize(): number {

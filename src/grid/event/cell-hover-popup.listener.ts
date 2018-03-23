@@ -15,8 +15,7 @@ export class CellHoverPopupListener extends EventListener implements MouseOverLi
     if (idElement !== null && idElement.id.startsWith("cell-")) {
       let location: Point = HtmlUtil.getLocation(idElement);
       if (!location || !this.grid.getGridService().getColumn(location.j).popupRenderer) {
-        this.grid.rightCellEditContainer.clear();
-        this.grid.leftCellEditContainer.clear();
+        this.grid.popupContainer.clear();
         return false;
       }
       this.grid.createPopup(location);

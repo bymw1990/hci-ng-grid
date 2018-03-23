@@ -483,6 +483,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * Everything here now knows that the DOM has been created.
    */
   ngAfterViewInit() {
+    this.gridService.setGridElement(this.gridContainer.nativeElement);
+
     this.findBaseRowCell();
 
     this.updateGridContainerAndColumnSizes();
@@ -1034,14 +1036,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       return;
     }
 
-    this.leftCellEditContainer.clear();
-    this.rightCellEditContainer.clear();
+    this.popupContainer.clear();
     let factory = this.resolver.resolveComponentFactory(column.popupRenderer);
-    if (column.isFixed) {
-      this.popupRef = this.leftCellEditContainer.createComponent(factory).instance;
-    } else {
-      this.popupRef = this.rightCellEditContainer.createComponent(factory).instance;
-    }
+    this.popupRef = this.popupContainer.createComponent(factory).instance;
     this.popupRef.setPosition(location);
     this.popupRef.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
   }

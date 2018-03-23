@@ -44,10 +44,25 @@ export class CellPopupRenderer {
    */
   updateLocation() {
     this.renderer.setStyle(this.elementRef.nativeElement, "position", "absolute");
-    this.renderer.setStyle(this.elementRef.nativeElement, "margin-left", (this.hostElement.offsetWidth + this.hostElement.offsetLeft) + "px");
-    this.renderer.setStyle(this.elementRef.nativeElement, "margin-top", this.hostElement.parentElement.offsetTop + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "height", this.hostElement.offsetHeight + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "z-index", "99");
+
+    /*let cw: number = this.hostElement.offsetWidth;
+    let main: number = this.hostElement.parentElement.parentElement.parentElement.parentElement.offsetWidth;
+    let cl: number = this.hostElement.parentElement.offsetLeft;
+    let x: number = cl + this.hostElement.offsetLeft + this.hostElement.offsetWidth - 30;*/
+    let cw: number = this.hostElement.offsetWidth;
+    let main: number = this.hostElement.parentElement.parentElement.parentElement.parentElement.parentElement.offsetWidth;
+    let cl: number = this.hostElement.parentElement.parentElement.parentElement.offsetLeft;
+    let x: number = cl + this.hostElement.offsetLeft + this.hostElement.offsetWidth - 30;
+    if (x + cw > main) {
+      x = main - cw;
+    }
+
+    let yScroll: number = this.gridService.gridElement.querySelector("#rightView").scrollTop;
+    this.renderer.setStyle(this.elementRef.nativeElement, "margin-top",
+        (this.hostElement.offsetHeight + this.hostElement.parentElement.offsetTop - yScroll + 15) + "px");
+    this.renderer.setStyle(this.elementRef.nativeElement, "margin-left", x + "px");
   }
 
 }
