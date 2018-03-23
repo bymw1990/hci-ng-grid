@@ -1,9 +1,11 @@
 import {Component} from "@angular/core";
 
-import {ClickCellEditListener, CellHoverPopupListener, BigTextPopup, ClickView, ClickViewListener, Column, EventListenerArg} from "hci-ng-grid/index";
+import {ClickCellEditListener, CellHoverPopupListener, BigTextPopup, Column} from "hci-ng-grid/index";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {CompareFilterRenderer} from "hci-ng-grid";
+import {LabFP} from "../components/lab.formatter";
+import {LabPopup} from "../components/lab.component";
 
 @Component({
   selector: "event-demo",
@@ -16,12 +18,14 @@ import {CompareFilterRenderer} from "hci-ng-grid";
         <div class="card-text">
           If a cell has a large block of text, it shows a ... at the overflow.  To show the full text, you can add a listener
           such that when you hover over the cell, a popup appears with the full text.
+          Last and middle name have a basic popup that shows a string with wrap around.  Lab shows a custom popup to
+          show additional data.
+          Hover over lastName, middleName or lab.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config1>
             <pre>
-              TODO
               &lt;hci-grid
                 [title]="'Cell Popup'"
                 [data]="data1"
@@ -32,13 +36,19 @@ import {CompareFilterRenderer} from "hci-ng-grid";
               &lt;/hci-grid&gt;
               
               Columns:
-              field: "idPatient", name: "ID"
+              field: "idPatient", name: "ID", visible: false
               field: "lastName", name: "Last Name", popupRenderer: BigTextPopup
               field: "middleName", name: "Middle Name", popupRenderer: BigTextPopup
               field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Date of Birth", dataType: "date"
               field: "gender", name: "Gender"
               field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
+              field: "lab", name: "Lab", formatterParser: LabFP, popupRenderer: LabPopup
+              
+              listeners1: Array&lt;any&gt; = [
+                {{"{"}} type: ClickCellEditListener {{"}"}},
+                {{"{"}} type: CellHoverPopupListener {{"}"}}
+              ];
             </pre>
           </ng-template>
         </div>
@@ -65,13 +75,14 @@ export class PopupComponent {
   ];
 
   columns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID" }),
+    new Column({ field: "idPatient", name: "ID", visible: false }),
     new Column({ field: "lastName", name: "Last Name", popupRenderer: BigTextPopup }),
     new Column({ field: "middleName", name: "Middle Name", popupRenderer: BigTextPopup }),
     new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
     new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
+    new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer }),
+    new Column({ field: "lab", name: "Lab", formatterParser: LabFP, popupRenderer: LabPopup })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

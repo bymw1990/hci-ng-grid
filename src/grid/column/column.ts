@@ -1,7 +1,5 @@
 import {Type} from "@angular/core";
 
-import * as moment from "moment";
-
 import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
 import {CellTextView} from "../cell/viewRenderers/cell-text-view";
 import {FilterRenderer} from "./filterRenderers/filter-renderer";
@@ -9,7 +7,13 @@ import {FilterInfo} from "../utils/filter-info";
 import {CellEditRenderer} from "../cell/editRenderers/cell-edit-renderer";
 import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.component";
 import {CellPopupRenderer} from "../cell/viewPopupRenderer/cell-popup-renderer";
+import {FormatterParser} from "./formatters/formatter-parser";
+import {EmptyFactory} from "../utils/empty.factory";
+import {DateFP} from "./formatters/date.formatter";
 
+/**
+ * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
+ */
 export class Column {
   id: number;
   isKey: boolean = false;
@@ -38,6 +42,10 @@ export class Column {
   choiceValue: string = "value";
   choiceDisplay: string = "display";
   choiceUrl: string;
+
+  formatterParserConfig: any = {};
+  formatterParser: Type<FormatterParser> = FormatterParser;
+  formatterParserInstance: FormatterParser;
 
   popupRenderer: Type<CellPopupRenderer>;
 
@@ -76,7 +84,7 @@ export class Column {
 
   getViewRenderer(): CellViewRenderer {
     if (!this.viewRendererInstance) {
-      this.viewRendererInstance = Object.create(this.viewRenderer.prototype);
+      this.viewRendererInstance = (new EmptyFactory<CellViewRenderer>(this.viewRenderer)).getInstance();
       this.viewRendererInstance.setConfig(this.viewConfig);
     }
 
@@ -96,23 +104,11 @@ export class Column {
   }
 
   formatValue(value: any): string {
-    if (value === undefined || value === null) {
-      return "";
-    } else if (this.dataType === "date") {
-      return moment((new Date(<string>value))).format(this.format);
-    } else {
-      return value;
-    }
+    return this.formatterParserInstance.format(value);
   }
 
   parseValue(value: any): string {
-    if (value === undefined || value === null) {
-      return "";
-    } else if (this.dataType === "date") {
-      return moment(<string>value, this.format).toISOString();
-    } else {
-      return value;
-    }
+    return this.formatterParserInstance.parse(value);
   }
 
   setConfig(object: any) {
@@ -210,6 +206,20 @@ export class Column {
       this.choiceUrl = object.choiceUrl;
       this.dataType = "choice";
     }
+
+    if (object.formatterParserConfig) {
+      this.formatterParserConfig = object.formatterParserConfig;
+    }
+    if (object.formatterParser) {
+      this.formatterParser = object.formatterParser;
+    }
+
+    if (this.dataType === "date" && object.formatterParser === FormatterParser) {
+      this.formatterParser = DateFP;
+    }
+
+    this.formatterParserInstance = (new EmptyFactory<FormatterParser>(this.formatterParser)).getInstance();
+    this.formatterParserInstance.setConfig(this.formatterParserConfig);
   }
 
 }

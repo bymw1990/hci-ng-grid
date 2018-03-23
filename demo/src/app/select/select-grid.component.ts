@@ -31,7 +31,7 @@ import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hc
               isKey: true, field: "idPatient", name: "ID", visible: false
               field: "lastName", name: "Last Name"
               field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Date of Birth", dataType: "date"
               field: "pcg.nLabs", name: "# Labs"
               field: "pcg.nested.nLabPath", name: "# Lab Path"
               
@@ -86,7 +86,7 @@ import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hc
               isKey: true, field: "idPatient", name: "ID", visible: true
               field: "lastName", name: "Last Name"
               field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Date of Birth", dataType: "date"
               field: "pcg.nLabs", name: "# Labs"
               field: "pcg.nested.nLabPath", name: "# Lab Path"
               
@@ -141,7 +141,7 @@ export class SelectGridComponent {
     new Column({ isKey: true, field: "idPatient", name: "ID", visible: false }),
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
     new Column({ field: "pcg.nLabs", name: "# Labs" }),
     new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];
@@ -162,7 +162,7 @@ export class SelectGridComponent {
     new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
     new Column({ field: "pcg.nLabs", name: "# Labs" }),
     new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];

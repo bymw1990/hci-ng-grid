@@ -7,6 +7,7 @@ export {ExternalInfo} from "./src/grid/utils/external-info";
 export {FilterInfo} from "./src/grid/utils/filter-info";
 export {PageInfo} from "./src/grid/utils/page-info";
 export {SortInfo} from "./src/grid/utils/sort-info";
+export {Point} from "./src/grid/utils/point";
 
 export {CellViewRenderer} from "./src/grid/cell/viewRenderers/cell-view-renderer.interface";
 export {CellNumberRangeView} from "./src/grid/cell/viewRenderers/cell-number-range-view";
@@ -23,6 +24,7 @@ export {TextFilterRenderer} from "./src/grid/column/filterRenderers/text-filter-
 export {SelectFilterRenderer} from "./src/grid/column/filterRenderers/select-filter-renderer.component";
 export {CompareFilterRenderer} from "./src/grid/column/filterRenderers/compare-filter-renderer.component";
 
+export {CellPopupRenderer} from "./src/grid/cell/viewPopupRenderer/cell-popup-renderer";
 export {BigTextPopup} from "./src/grid/cell/viewPopupRenderer/bigtext-popup.component";
 
 export {ClickCellEditListener} from "./src/grid/event/click-cell-edit.listener";
@@ -31,3 +33,5 @@ export {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";
 export {CellHoverPopupListener} from "./src/grid/event/cell-hover-popup.listener";
 
 export {EventListenerArg} from "./src/grid/config/event-listener-arg.interface";
+
+export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";

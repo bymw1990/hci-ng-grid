@@ -16,7 +16,7 @@
     "webpack": "webpack"
   },
   "optionalDependencies": {
-    "hci-ng-grid": "^1.0.0-beta.1"
+    "hci-ng-grid": "^1.0.0-beta.2"
   },
   "dependencies": {
     "@angular/common": "^5.2.0",

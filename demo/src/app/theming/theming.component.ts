@@ -25,7 +25,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               Columns:
               field: "lastName", name: "Last"
               field: "firstName", name: "First"
-              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Birth Date", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "nLabs", name: "# Labs"
@@ -61,7 +61,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               Columns:
               field: "lastName", name: "Last"
               field: "firstName", name: "First"
-              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Birth Date", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "nLabs", name: "# Labs"
@@ -99,7 +99,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               Columns:
               field: "lastName", name: "Last"
               field: "firstName", name: "First"
-              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Birth Date", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 15, high: 85, showIcon: true{{"}"}}
@@ -139,7 +139,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               Columns:
               field: "lastName", name: "Last"
               field: "firstName", name: "First"
-              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Birth Date", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 20, high: 80, showIcon: true{{"}"}}
@@ -186,7 +186,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               Columns:
               field: "lastName", name: "Last"
               field: "firstName", name: "First"
-              field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Birth Date", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "nLabs", name: "# Labs"
@@ -239,7 +239,7 @@ export class ThemingComponent {
   columns: Column[] = [
     new Column({ field: "lastName", name: "Last" }),
     new Column({ field: "firstName", name: "First" }),
-    new Column({ field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Birth Date", dataType: "date" }),
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
     new Column({ field: "nLabs", name: "# Labs" })
@@ -248,7 +248,7 @@ export class ThemingComponent {
   columns3: Column[] = [
     new Column({ field: "lastName", name: "Last" }),
     new Column({ field: "firstName", name: "First" }),
-    new Column({ field: "dob", name: "Birth Date", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Birth Date", dataType: "date" }),
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
     new Column({ field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} })

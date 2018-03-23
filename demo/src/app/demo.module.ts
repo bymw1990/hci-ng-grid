@@ -44,6 +44,7 @@ import {EventModule} from "./event/event.module";
 import {PopupModule} from "./popup/popup.module";
 
 import {GridModule} from "hci-ng-grid/index";
+import {LabPopup} from "./components/lab.component";
 
 @NgModule({
   imports: [
@@ -84,13 +85,17 @@ import {GridModule} from "hci-ng-grid/index";
     DynamicConfigGridComponent,
     EventComponent,
     PopupComponent,
-    EmptyGridComponent
+    EmptyGridComponent,
+    LabPopup
   ],
   providers: [
     DataGeneratorService
   ],
   bootstrap: [
     DemoComponent
+  ],
+  entryComponents: [
+    LabPopup
   ]
 })
 export class DemoModule {}

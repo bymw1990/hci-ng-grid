@@ -34,7 +34,7 @@ import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-n
               field: "lastName", name: "Last Name"
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
+              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
               field: "gender", name: "Gender"
               field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer
               field: "citystatezip", name: "City, State Zip", minWidth: 300
@@ -85,7 +85,7 @@ export class FixedGridComponent {
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer }),
     new Column({ field: "citystatezip", name: "City, State Zip", minWidth: 300 }),

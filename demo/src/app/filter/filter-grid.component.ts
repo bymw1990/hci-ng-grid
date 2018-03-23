@@ -39,7 +39,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
+              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
               field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {{"{"}}value: "Female", display: "Female"{{"}"}}, {{"{"}}value: "Male", display: "Male"{{"}"}} ], filterRenderer: SelectFilterRenderer
               field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
             </pre>
@@ -68,7 +68,7 @@ export class FilterGridComponent {
     new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
     new Column({ field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer }),
     new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
   ];

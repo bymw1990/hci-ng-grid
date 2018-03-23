@@ -20,7 +20,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
                     [columnDefinitions]="[
                       { field: 'lastName' },
                       { field: 'firstName' },
-                      { field: 'dob', dataType: 'date', format: 'MM/DD/YYYY' }
+                      { field: 'dob', dataType: 'date' }
                     ]">
           </hci-grid>
         </p>

@@ -1,5 +1,4 @@
 import {Injector} from "@angular/core";
-import {InjectableConstructor} from "./injectable.interface";
 
 /**
  * Allows instantiation of any generic type if the type expects an injector argument.  See the implementation of
@@ -11,4 +10,8 @@ export class InjectableFactory<T> {
   getInstance(): T {
     return new this.ic(this.injector);
   }
+}
+
+export interface InjectableConstructor<T> {
+  new(injector: Injector): T;
 }

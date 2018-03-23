@@ -37,7 +37,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "lastName", name: "Last Name"
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Date of Birth", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
               field: "phone", name: "Phone"
@@ -102,7 +102,7 @@ export class RowGroupGridComponent {
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
     new Column({ field: "phone", name: "Phone" })

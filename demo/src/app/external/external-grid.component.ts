@@ -38,7 +38,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
               field: "lastName", name: "Last Name"
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Date of Birth", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
@@ -83,7 +83,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
               field: "lastName", name: "Last Name"
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
+              field: "dob", name: "Date of Birth", dataType: "date"
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>

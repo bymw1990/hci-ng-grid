@@ -27,6 +27,7 @@ export class DataGeneratorService {
   private _streets1: string[] = [ "Pine", "Red", "Green", "Oak", "Aspen" ];
   private _streets2: string[] = [ "acres", "shade", "wood", "dale" ];
   private _stypes: string[] = [ "Ln", "Rd", "St", "Dr" ];
+  private _labTypes: string[] = [ "ANA", "PTT", "BMP", "CBC", "CMP", "ESR", "A1C" ];
 
   generateDate(startYear: number, endYear: number): string {
     let date: Date = momentRandom(endYear + "-12-31", startYear + "-01-01");
@@ -47,8 +48,13 @@ export class DataGeneratorService {
       let dob: string = this.generateDate(1930, 1990);
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
       let nLabs: number = Math.floor(Math.random() * 100);
+      let lab = {
+        tech: this._lastNames[Math.floor(Math.random() * this._lastNames.length)],
+        type: this._labTypes[Math.floor(Math.random() * this._labTypes.length)],
+        value: Math.floor(Math.random() * 200)
+      };
 
-      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs });
+      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab });
     }
     return data;
   }
