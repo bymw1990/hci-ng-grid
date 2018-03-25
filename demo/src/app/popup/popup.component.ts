@@ -18,9 +18,13 @@ import {LabPopup} from "../components/lab.component";
         <div class="card-text">
           If a cell has a large block of text, it shows a ... at the overflow.  To show the full text, you can add a listener
           such that when you hover over the cell, a popup appears with the full text.
+        </div>
+        <div class="card-text">
           Last and middle name have a basic popup that shows a string with wrap around.  Lab shows a custom popup to
           show additional data.
-          Hover over lastName, middleName or lab.
+        </div>
+        <div class="card-text">
+          Hover over lastName, middleName or lab.  Enter in some very large text in lastName to see the popup word wrap.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -93,6 +97,7 @@ export class PopupComponent {
 
   initData() {
     this.data1 = this.dataGeneratorService.getData(50);
+    this.data1[0]["lastName"] = "Byrne Smith Roberts Reynolds III Esquire";
   }
 
 }
