@@ -35,3 +35,5 @@ export {CellHoverPopupListener} from "./src/grid/event/cell-hover-popup.listener
 export {EventListenerArg} from "./src/grid/config/event-listener-arg.interface";
 
 export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";
+export {DateFormatter} from "./src/grid/column/formatters/date.formatter";
+export {NumberFormatter} from "./src/grid/column/formatters/number.formatter";

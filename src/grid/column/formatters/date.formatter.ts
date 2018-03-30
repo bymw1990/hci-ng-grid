@@ -2,7 +2,7 @@ import * as moment from "moment";
 
 import {FormatterParser} from "./formatter-parser";
 
-export class DateFP extends FormatterParser {
+export class DateFormatter extends FormatterParser {
 
   dateFormat: string = "MM/DD/YYYY";
 

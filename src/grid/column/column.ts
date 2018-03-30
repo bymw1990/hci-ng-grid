@@ -9,7 +9,7 @@ import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.compone
 import {CellPopupRenderer} from "../cell/viewPopupRenderer/cell-popup-renderer";
 import {FormatterParser} from "./formatters/formatter-parser";
 import {EmptyFactory} from "../utils/empty.factory";
-import {DateFP} from "./formatters/date.formatter";
+import {DateFormatter} from "./formatters/date.formatter";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -214,8 +214,8 @@ export class Column {
       this.formatterParser = object.formatterParser;
     }
 
-    if (this.dataType === "date" && object.formatterParser === FormatterParser) {
-      this.formatterParser = DateFP;
+    if (this.dataType === "date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
+      this.formatterParser = DateFormatter;
     }
 
     this.formatterParserInstance = (new EmptyFactory<FormatterParser>(this.formatterParser)).getInstance();
