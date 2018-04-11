@@ -4,14 +4,14 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { ExternalGridComponent } from "./external-grid.component";
+import { ExternalDataComponent } from "./external-data.component";
 
 const routes: Routes = [
-  { path: "external", component: ExternalGridComponent }
+  { path: "external-data", component: ExternalDataComponent }
 ];
 
 @NgModule({
   imports: [ RouterModule.forRoot(routes) ],
   exports: [ RouterModule ]
 })
-export class ExternalGridModule {}
+export class ExternalDataModule {}

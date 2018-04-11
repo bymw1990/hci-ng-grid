@@ -5,7 +5,7 @@ import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
 import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 @Component({
-  selector: "external-grid",
+  selector: "external-data-demo",
   template: `
     <div class="card">
       <div class="card-header">
@@ -102,7 +102,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
     </div>
     `
 })
-export class ExternalGridComponent implements OnInit {
+export class ExternalDataComponent implements OnInit {
 
   dataSize: number = 250;
 

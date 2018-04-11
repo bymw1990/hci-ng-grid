@@ -8,6 +8,7 @@ import {
 
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
+import {takeWhile} from "rxjs/operators";
 
 import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
@@ -29,6 +30,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
 import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
+import {Observable} from "rxjs/Observable";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -382,6 +384,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   renderedRows: Array<number> = [];
 
   columnsChangedSubscription: Subscription;
+  doRenderSubscription: Subscription;
 
   private popupRef: CellPopupRenderer = null;
   private componentRef: CellEditRenderer = null;
@@ -579,6 +582,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.columnsChangedSubscription) {
       this.columnsChangedSubscription.unsubscribe();
     }
+    if (this.doRenderSubscription) {
+      this.doRenderSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -726,8 +732,53 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return this.gridEventService;
   }
 
-  doRenderCellsAndData() {
-    this.renderCellsAndData();
+  /**
+   * Public facing function for triggering render.  Note, if you have a hidden parent, not only do you need to call this
+   * to re-render, but you might need to include a slight delay.
+   *
+   * @param {number} delay (Optional) In ms, the delay or interval delay until trying to render.
+   * @param {string} id (Optional) Id of a dom parent, loops until the display is not "none".
+   */
+  doRender(delay?: number, id?: string) {
+    if (this.doRenderSubscription) {
+      this.doRenderSubscription.unsubscribe();
+    }
+
+    let el: HTMLElement;
+    if (id) {
+      el = this.el.nativeElement.closest("#" + id);
+    }
+
+    if (delay && el) {
+      if (isDevMode()) {
+        console.debug("doRender: delay && el: " + el.style.display);
+      }
+      this.doRenderSubscription = Observable.interval(delay)
+          .takeWhile((i: any) => {
+            return el.style.display === "none" && i < 10;
+          })
+          .subscribe(
+            (value) => {},
+            (error) => {},
+            () => {
+              this.renderCellsAndData();
+            }
+          );
+    } else if (delay) {
+      if (isDevMode()) {
+        console.debug("doRender: delay");
+      }
+      this.doRenderSubscription = Observable.interval(delay)
+          .take(1)
+          .subscribe(i => {
+            this.renderCellsAndData();
+          });
+    } else {
+      if (isDevMode()) {
+        console.debug("doRender: none");
+      }
+      this.renderCellsAndData();
+    }
   }
 
   onScroll() {
@@ -1096,7 +1147,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private updateGridContainerAndColumnSizes() {
     this.gridService.setNVisibleRows();
     if (isDevMode()) {
-      console.debug("updateGridSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
+      console.debug("updateGridContainerAndColumnSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
     }
 
     let e = this.gridContainer.nativeElement;
@@ -1451,7 +1502,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   @HostListener("window:resize", ["$event"])
   private onResize(event: Event) {
-    this.updateGridContainerAndColumnSizes();
     this.renderCellsAndData();
   }
 

@@ -16,7 +16,7 @@ import {Component} from "@angular/core";
     <div class="navbar navbar-dark bg-dark box-shadow">
       <div class="container d-flex justify-content-between">
         <a class="navbar-brand d-flex align-items-center" routerLink="/simple">hci-ng-grid Demo</a>
-        <span style="color: gray; margin-left: 0; margin-right: auto;">v1.0.0-beta.3</span>
+        <span style="color: gray; margin-left: 0; margin-right: auto;">v1.0.0-beta.4</span>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu aria-labelledby="routeList">
@@ -26,7 +26,8 @@ import {Component} from "@angular/core";
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
             <a class="dropdown-item" routerLink="/empty">Empty Grid</a>
             <a class="dropdown-item" routerLink="/event">Event Listeners</a>
-            <a class="dropdown-item" routerLink="/external">External Sort/Filter/Page</a>
+            <a class="dropdown-item" routerLink="/external-ctrl">External Control</a>
+            <a class="dropdown-item" routerLink="/external-data">External Sort/Filter/Page</a>
             <a class="dropdown-item" routerLink="/edit">Inline Edit and Key Nav</a>
             <a class="dropdown-item" routerLink="/filter">Filtering</a>
             <a class="dropdown-item" routerLink="/fixed">Fixed Columns</a>

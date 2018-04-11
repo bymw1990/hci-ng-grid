@@ -16,7 +16,7 @@
     "webpack": "webpack"
   },
   "optionalDependencies": {
-    "hci-ng-grid": "^1.0.0-beta.3"
+    "hci-ng-grid": "^1.0.0-beta.4"
   },
   "dependencies": {
     "@angular/common": "^5.2.0",
@@ -35,7 +35,7 @@
     "moment": "2.15.1",
     "moment-random": "^1.0.3",
     "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.4.3",
+    "rxjs": "^5.5.5",
     "zone.js": "^0.8.5"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "@types/node": "^7.0.0",
     "@types/selenium-webdriver": "~2.53.39",
     "@types/source-map": "^0.5.0",
-    "@types/webpack": "^3.0.4",
+    "@types/webpack": "4.1.2",
     "angular-router-loader": "^0.6.0",
     "angular2-template-loader": "^0.6.2",
     "autoprefixer": "^7.1.2",
@@ -80,7 +80,7 @@
     "uglify-es": "^3.0.25",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "url-loader": "^0.5.8",
-    "webpack": "^3.3.0",
+    "webpack": "3.11.0",
     "webpack-dev-server": "2.4.1",
     "webpack-merge": "^4.1.0",
     "webpack-stream": "^3.2.0"

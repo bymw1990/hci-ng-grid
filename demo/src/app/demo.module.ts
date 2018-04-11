@@ -17,7 +17,8 @@ import {EditGridComponent} from "./edit/edit-grid.component";
 import {RowGroupGridComponent} from "./row-group/row-group-grid.component";
 import {FixedGridComponent} from "./fixed/fixed-grid.component";
 import {FilterGridComponent} from "./filter/filter-grid.component";
-import {ExternalGridComponent} from "./external/external-grid.component";
+import {ExternalControlComponent} from "./external-ctrl/external-ctrl.component";
+import {ExternalDataComponent} from "./external-data/external-data.component";
 import {CopyPasteGridComponent} from "./copypaste/copypaste-grid.component";
 import {AlertsGridComponent} from "./alerts/alerts-grid.component";
 import {PagingGridComponent} from "./paging/paging-grid.component";
@@ -33,7 +34,8 @@ import {EditGridModule} from "./edit/edit-grid.module";
 import {RowGroupGridModule} from "./row-group/row-group-grid.module";
 import {FixedGridModule} from "./fixed/fixed-grid.module";
 import {FilterGridModule} from "./filter/filter-grid.module";
-import {ExternalGridModule} from "./external/external-grid.module";
+import {ExternalControlModule} from "./external-ctrl/external-ctrl.module";
+import {ExternalDataModule} from "./external-data/external-data.module";
 import {CopyPasteGridModule} from "./copypaste/copypaste-grid.module";
 import {AlertsGridModule} from "./alerts/alerts-grid.module";
 import {PagingGridModule} from "./paging/paging-grid.module";
@@ -58,7 +60,8 @@ import {LabPopup} from "./components/lab.component";
     RowGroupGridModule,
     FixedGridModule,
     FilterGridModule,
-    ExternalGridModule,
+    ExternalControlModule,
+    ExternalDataModule,
     CopyPasteGridModule,
     AlertsGridModule,
     PagingGridModule,
@@ -77,7 +80,8 @@ import {LabPopup} from "./components/lab.component";
     RowGroupGridComponent,
     FixedGridComponent,
     FilterGridComponent,
-    ExternalGridComponent,
+    ExternalControlComponent,
+    ExternalDataComponent,
     CopyPasteGridComponent,
     AlertsGridComponent,
     PagingGridComponent,
