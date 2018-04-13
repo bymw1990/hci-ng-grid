@@ -1,3 +1,4 @@
+import {RangeSelectListener} from "./src/grid/event/range-select.listener";
 
 export {GridModule} from "./src/grid/grid.module";
 export {GridComponent} from "./src/grid/grid.component";
@@ -27,11 +28,12 @@ export {CompareFilterRenderer} from "./src/grid/column/filterRenderers/compare-f
 export {CellPopupRenderer} from "./src/grid/cell/viewPopupRenderer/cell-popup-renderer";
 export {BigTextPopup} from "./src/grid/cell/viewPopupRenderer/bigtext-popup.component";
 
-export {ClickRowSelectListener} from "./src/grid/event/click-row-select.listener";
-export {ClickCellEditListener} from "./src/grid/event/click-cell-edit.listener";
-export {ClickViewListener} from "./src/grid/event/click-view.listener";
-export {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";
 export {CellHoverPopupListener} from "./src/grid/event/cell-hover-popup.listener";
+export {ClickCellEditListener} from "./src/grid/event/click-cell-edit.listener";
+export {ClickRowSelectListener} from "./src/grid/event/click-row-select.listener";
+export {ClickViewListener} from "./src/grid/event/click-view.listener";
+export {RangeSelectListener} from "./src/grid/event/range-select.listener";
+export {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";
 
 export {EventListenerArg} from "./src/grid/config/event-listener-arg.interface";
 

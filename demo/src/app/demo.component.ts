@@ -3,6 +3,8 @@
  */
 import {Component} from "@angular/core";
 
+declare const VERSION: string;
+
 /**
  * The demo will route to many different types of grids depending on what features are to be shown.
  *
@@ -16,7 +18,7 @@ import {Component} from "@angular/core";
     <div class="navbar navbar-dark bg-dark box-shadow">
       <div class="container d-flex justify-content-between">
         <a class="navbar-brand d-flex align-items-center" routerLink="/simple">hci-ng-grid Demo</a>
-        <span style="color: gray; margin-left: 0; margin-right: auto;">v1.0.0-beta.4</span>
+        <span style="color: gray; margin-left: 0; margin-right: auto;">v{{version}}</span>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu aria-labelledby="routeList">
@@ -50,4 +52,8 @@ import {Component} from "@angular/core";
     }
   ` ]
 })
-export class DemoComponent {}
+export class DemoComponent {
+
+  version: string = VERSION;
+
+}

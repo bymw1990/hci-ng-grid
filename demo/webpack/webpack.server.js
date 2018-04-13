@@ -126,7 +126,8 @@ module.exports = function(env) {
           "ENV": "'production'",
           "NODE_ENV": "'production'"
         },
-        "CONTENT_PATH": "'/hci-ng-grid-demo/'"
+        "CONTENT_PATH": "'/hci-ng-grid-demo/'",
+        "VERSION": JSON.stringify(require("../../package.json").version)
       }),
 
       new ExtractTextPlugin("[name].css"),

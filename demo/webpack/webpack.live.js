@@ -119,7 +119,8 @@ module.exports = function(env) {
           "ENV": "'production'",
           "NODE_ENV": "'production'"
         },
-        "CONTENT_PATH": "'/'"
+        "CONTENT_PATH": "'/'",
+        "VERSION": JSON.stringify(require("../../package.json").version)
       }),
 
       new ExtractTextPlugin("[name].css"),
