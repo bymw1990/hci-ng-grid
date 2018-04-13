@@ -403,9 +403,25 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
+  /**
+   * Given the key on row i, negate the value at i, j.  This is expected to be a column with a boolean value
+   * that governs the selected property.
+   *
+   * @param {number} i The row.
+   * @param {number} j The column.
+   * @returns {boolean} Returns the negated value.
+   */
   negateSelectedRow(i: number, j: number): boolean {
+    if (isDevMode()) {
+      console.debug("negateSelectedRow: " + i + " " + j);
+    }
     let key: any = this.getKey(i, j);
-    let value: boolean = !this.getRow(i).get(j).value;
+    // If the value doesn't exist, assume it would have been previously false, so set to true.
+    let value: boolean = true;
+    if (this.getRow(i).get(j).value) {
+      value = !this.getRow(i).get(j).value;
+    }
+
     this.getRow(i).get(j).value = value;
 
     if (value) {
@@ -414,7 +430,7 @@ export class GridService {
       }
     } else {
       if (this.selectedRows.indexOf(key) !== -1) {
-        this.selectedRows.splice(this.selectedRows.indexOf(key, 1));
+        this.selectedRows.splice(this.selectedRows.indexOf(key), 1);
       }
     }
     this.selectedRowsSubject.next(this.selectedRows);

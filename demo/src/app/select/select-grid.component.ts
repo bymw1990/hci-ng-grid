@@ -1,6 +1,7 @@
 import {Component, ViewChild} from "@angular/core";
 
 import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid/index";
+import {ClickRowSelectListener} from "hci-ng-grid";
 
 @Component({
   selector: "select-grid",
@@ -108,6 +109,7 @@ import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hc
           <hci-grid #grid2
                     [data]="data2"
                     [columnDefinitions]="columns2"
+                    [eventListeners]="listeners2"
                     (selectedRows)="setSelectedRows($event)"
                     [pageSize]="5"
                     [pageSizes]="[5, 10]">
@@ -165,6 +167,10 @@ export class SelectGridComponent {
     new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
     new Column({ field: "pcg.nLabs", name: "# Labs" }),
     new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
+  ];
+
+  listeners2: Array<any> = [
+    { type: ClickRowSelectListener }
   ];
 
   setSelectedRows(selectedRows: any[]) {

@@ -27,6 +27,7 @@ export {CompareFilterRenderer} from "./src/grid/column/filterRenderers/compare-f
 export {CellPopupRenderer} from "./src/grid/cell/viewPopupRenderer/cell-popup-renderer";
 export {BigTextPopup} from "./src/grid/cell/viewPopupRenderer/bigtext-popup.component";
 
+export {ClickRowSelectListener} from "./src/grid/event/click-row-select.listener";
 export {ClickCellEditListener} from "./src/grid/event/click-cell-edit.listener";
 export {ClickViewListener} from "./src/grid/event/click-view.listener";
 export {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";

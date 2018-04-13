@@ -349,11 +349,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = -1;
-  @Input() eventListeners: Array<EventListenerArg> = [
-    { type: RangeSelectListener },
-    { type: ClickRowSelectListener },
-    { type: ClickCellEditListener }
-  ];
+  @Input() eventListeners: Array<EventListenerArg> = [];
 
   @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
