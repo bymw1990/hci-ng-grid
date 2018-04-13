@@ -5,6 +5,10 @@ import {CellViewRenderer} from "./cell-view-renderer.interface";
 
 export class CheckRowSelectView implements CellViewRenderer {
 
+  updateColumn(column: Column) {
+    column.editable = false;
+  }
+
   setConfig(config: any) {
     // None
   }

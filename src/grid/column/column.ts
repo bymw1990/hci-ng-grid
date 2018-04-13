@@ -21,7 +21,6 @@ export class Column {
   name: string = null;
   template: string = "LabelCell";
   format: string = null;
-  visible: boolean = true;
   validator: any;
   sortable: boolean = true;
   sortOrder: number = 0;
@@ -37,6 +36,10 @@ export class Column {
   dataType: string = "string";
   selectable: boolean = true;
   isLast: boolean = false;
+
+  visible: boolean = true;
+  editable: boolean = true;
+  clickable: boolean = true;
 
   choices: Array<any> = [];
   choiceValue: string = "value";
@@ -86,6 +89,7 @@ export class Column {
     if (!this.viewRendererInstance) {
       this.viewRendererInstance = (new EmptyFactory<CellViewRenderer>(this.viewRenderer)).getInstance();
       this.viewRendererInstance.setConfig(this.viewConfig);
+      this.viewRendererInstance.updateColumn(this);
     }
 
     return this.viewRendererInstance;
@@ -129,9 +133,6 @@ export class Column {
     }
     if (object.format !== undefined) {
       this.format = object.format;
-    }
-    if (object.visible !== undefined) {
-      this.visible = object.visible;
     }
     if (object.validator !== undefined) {
       this.validator = object.validator;
@@ -177,6 +178,16 @@ export class Column {
     }
     if (object.selectable !== undefined) {
       this.selectable = object.selectable;
+    }
+
+    if (object.visible !== undefined) {
+      this.visible = object.visible;
+    }
+    if (object.editable !== undefined) {
+      this.editable = object.editable;
+    }
+    if (object.clickable !== undefined) {
+      this.clickable = object.clickable;
     }
 
     if (object.popupRenderer) {

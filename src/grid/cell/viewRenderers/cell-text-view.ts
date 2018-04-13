@@ -4,6 +4,8 @@ import {Column} from "../../column/column";
 
 export class CellTextView implements CellViewRenderer {
 
+  updateColumn(column: Column) {}
+
   setConfig(config: any) {}
 
   createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number): HTMLElement {

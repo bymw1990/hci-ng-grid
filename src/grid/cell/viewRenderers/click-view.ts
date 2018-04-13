@@ -10,6 +10,8 @@ export class ClickView implements CellViewRenderer {
   icon: string;
   style: string;
 
+  updateColumn(column: Column) {}
+
   setConfig(config: any) {
     if (!config) {
       return;

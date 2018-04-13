@@ -109,7 +109,6 @@ import {ClickRowSelectListener} from "hci-ng-grid";
           <hci-grid #grid2
                     [data]="data2"
                     [columnDefinitions]="columns2"
-                    [eventListeners]="listeners2"
                     (selectedRows)="setSelectedRows($event)"
                     [pageSize]="5"
                     [pageSizes]="[5, 10]">

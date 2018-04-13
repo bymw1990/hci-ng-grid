@@ -13,6 +13,8 @@ export class CellNumberRangeView implements CellViewRenderer {
 
   showIcon: boolean = false;
 
+  updateColumn(column: Column) {}
+
   setConfig(config: any) {
     this.lowColor = "red";
     this.highColor = "green";

@@ -349,7 +349,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input() pageSizes: number[];
   @Input("nVisibleRows") cfgNVisibleRows: number = -1;
-  @Input() eventListeners: Array<EventListenerArg> = [];
+  @Input() eventListeners: Array<EventListenerArg> = [
+    { type: RangeSelectListener },
+    { type: ClickRowSelectListener },
+    { type: ClickCellEditListener }
+  ];
 
   @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
@@ -827,7 +831,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     if (isDevMode()) {
-      console.debug("mouseOver " + event.srcElement.id);
+      //Suppress until Trace added.
+      //console.debug("mouseOver " + event.srcElement.id);
     }
 
     for (let mouseOverListener of this.mouseOverListeners) {
