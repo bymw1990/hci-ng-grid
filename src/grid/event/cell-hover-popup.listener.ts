@@ -9,10 +9,10 @@ export class CellHoverPopupListener extends EventListener implements MouseOverLi
 
   mouseOver(event: MouseEvent): boolean {
     if (isDevMode()) {
-      console.debug("CellHoverPopupListener.mouseOver " + event.srcElement.id);
+      console.debug("CellHoverPopupListener.mouseOver " + (<HTMLElement>event.target).id);
     }
 
-    let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.srcElement);
+    let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.target);
     if (idElement.id.startsWith("popup-")) {
       return false;
     }

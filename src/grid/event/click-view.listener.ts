@@ -13,7 +13,7 @@ export class ClickViewListener extends EventListener implements ClickListener {
       console.debug("ClickViewListener.click");
     }
 
-    let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.srcElement);
+    let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.target);
     if (idElement !== null && idElement.id.startsWith("click-")) {
       event.stopPropagation();
 

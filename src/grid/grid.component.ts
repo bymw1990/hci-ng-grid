@@ -810,12 +810,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {MouseEvent} event
    */
   mouseDown(event: MouseEvent) {
-    if (!event || !event.srcElement) {
+    if (!event || !event.target) {
       return;
     }
 
     if (isDevMode()) {
-      console.debug("mouseDown " + event.srcElement.id);
+      console.debug("mouseDown " + (<HTMLElement>event.target).id);
     }
 
     for (let mouseDownListener of this.mouseDownListeners) {
@@ -826,13 +826,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   mouseOver(event: MouseEvent) {
-    if (!event || !event.srcElement) {
+    if (!event || !event.target) {
       return;
     }
 
     if (isDevMode()) {
       //Suppress until Trace added.
-      //console.debug("mouseOver " + event.srcElement.id);
+      //console.debug("mouseOver " + (<HTMLElement>event.target).id);
     }
 
     for (let mouseOverListener of this.mouseOverListeners) {
@@ -848,12 +848,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {MouseEvent} event
    */
   mouseUp(event: MouseEvent) {
-    if (!event || !event.srcElement) {
+    if (!event || !event.target) {
       return;
     }
 
     if (isDevMode()) {
-      console.debug("mouseUp " + event.srcElement.id);
+      console.debug("mouseUp " + (<HTMLElement>event.target).id);
     }
 
     for (let mouseUpListener of this.mouseUpListeners) {
@@ -869,7 +869,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {MouseEvent} event
    */
   mouseDrag(event: MouseEvent) {
-    if (!event || !event.srcElement) {
+    if (!event || !event.target) {
       return;
     }
 
@@ -886,7 +886,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {MouseEvent} event
    */
   click(event: MouseEvent) {
-    if (!event || !event.srcElement) {
+    if (!event || !event.target) {
       return;
     }
 
@@ -928,7 +928,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   onFocus(event: Event) {
     event.stopPropagation();
-    let id: string = event.srcElement.id;
+    let id: string = (<HTMLElement>event.target).id;
     if (id === "focuser2") {
       this.focuser1.nativeElement.focus();
     }

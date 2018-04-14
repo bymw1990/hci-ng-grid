@@ -13,7 +13,7 @@ export class ClickRowSelectListener extends EventListener implements ClickListen
       console.debug("ClickRowSelectListener.click");
     }
 
-    let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.srcElement);
+    let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.target);
     if (idElement !== null && idElement.id.startsWith("row-select-")) {
       event.stopPropagation();
 

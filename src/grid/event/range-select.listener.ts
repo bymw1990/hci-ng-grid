@@ -16,7 +16,7 @@ export class RangeSelectListener extends EventListener implements MouseDownListe
       console.debug("RangeSelectListener.mouseDown");
     }
 
-    this.lastEventId = HtmlUtil.getId(<HTMLElement>event.srcElement);
+    this.lastEventId = HtmlUtil.getId(<HTMLElement>event.target);
     if (this.lastEventId.startsWith("cell-")) {
       this.dragging = true;
       event.stopPropagation();
@@ -31,14 +31,14 @@ export class RangeSelectListener extends EventListener implements MouseDownListe
 
   mouseUp(event: MouseEvent): boolean {
     if (isDevMode()) {
-      console.debug("mouseUp " + event.srcElement.id);
+      console.debug("mouseUp " + (<HTMLElement>event.target).id);
     }
 
     event.stopPropagation();
     event.preventDefault();
 
     this.dragging = false;
-    this.lastEventId = event.srcElement.id;
+    this.lastEventId = (<HTMLElement>event.target).id;
     this.grid.focuser1.nativeElement.focus();
 
     return true;
@@ -47,13 +47,13 @@ export class RangeSelectListener extends EventListener implements MouseDownListe
   mouseDrag(event: MouseEvent): boolean {
     if (this.dragging) {
       if (isDevMode()) {
-        console.debug("mouseDrag " + event.srcElement.id);
+        console.debug("mouseDrag " + (<HTMLElement>event.target).id);
       }
       event.stopPropagation();
       event.preventDefault();
-      this.lastEventId = event.srcElement.id;
+      this.lastEventId = (<HTMLElement>event.target).id;
 
-      this.gridEventService.setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.srcElement));
+      this.gridEventService.setMouseDragSelected(HtmlUtil.getLocation(<HTMLElement>event.target));
       return true;
     }
     return false;

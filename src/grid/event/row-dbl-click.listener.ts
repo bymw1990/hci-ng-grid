@@ -11,7 +11,7 @@ export class RowDblClickListener extends EventListener implements DblClickListen
       console.debug("RowDblClickListener.dblclick");
     }
 
-    let id: string = HtmlUtil.getId(<HTMLElement>event.srcElement, "row-");
+    let id: string = HtmlUtil.getId(<HTMLElement>event.target, "row-");
     if (id) {
       event.stopPropagation();
 
