@@ -1503,7 +1503,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   @HostListener("window:resize", ["$event"])
   private onResize(event: Event) {
-    this.renderCellsAndData();
+    this.doRender(100);
   }
 
   /**

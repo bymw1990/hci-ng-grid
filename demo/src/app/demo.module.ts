@@ -27,6 +27,7 @@ import {DynamicConfigGridComponent} from "./dynamic-config/dynamic-config.compon
 import {EmptyGridComponent} from "./empty/empty-grid.component";
 import {EventComponent} from "./event/event.component";
 import {PopupComponent} from "./popup/popup.component";
+import {ResizeDemoComponent} from "./resize/resize.component";
 
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
@@ -44,6 +45,7 @@ import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
 import {EmptyGridModule} from "./empty/empty-grid.module";
 import {EventModule} from "./event/event.module";
 import {PopupModule} from "./popup/popup.module";
+import {ResizeDemoModule} from "./resize/resize.module";
 
 import {GridModule} from "hci-ng-grid/index";
 import {LabPopup} from "./components/lab.component";
@@ -70,6 +72,7 @@ import {LabPopup} from "./components/lab.component";
     EmptyGridModule,
     EventModule,
     PopupModule,
+    ResizeDemoModule,
     GridModule
   ],
   declarations: [
@@ -90,6 +93,7 @@ import {LabPopup} from "./components/lab.component";
     EventComponent,
     PopupComponent,
     EmptyGridComponent,
+    ResizeDemoComponent,
     LabPopup
   ],
   providers: [
