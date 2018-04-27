@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {Column} from "hci-ng-grid/index";
+import {Column} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -13,7 +13,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-          Test a parent resize.
+          Test grid resizing when the parent is resized.
           <div class="d-flex flex-nowrap" style="align-items: center;">
             <span style="margin-left: 20px; font-size: 1.5em;">Width: </span>
             <input [ngModel]="width" (ngModelChange)="setWidth($event)" style="margin-left: 10px; font-size: 1.5em;" />
@@ -24,11 +24,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config1>
             <pre>
               &lt;hci-grid
-                [title]="'Paging Grid'"
                 [data]="data"
-                [columnDefinitions]="pagingColumns"
-                [pageSize]="10"
-                [pageSizes]="[10, 25, 100]&gt;
+                [columnDefinitions]="columns"
+                [pageSize]="5"
+                [pageSizes]="[5, 10, 25]&gt;
               &lt;/hci-grid&gt;
               
               Columns:
@@ -43,11 +42,93 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </ng-template>
         </div>
         <div [style.width.px]="width">
-          <hci-grid [title]="'Paging Grid'"
-                    [data]="data"
+          <hci-grid [data]="data"
                     [columnDefinitions]="columns"
-                    [pageSize]="10"
-                    [pageSizes]="[10, 25, 100]">
+                    [pageSize]="5"
+                    [pageSizes]="[5, 10, 25]">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h4>Panel Resize</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Test grid resizing when the parent is resized by a button.
+        </div>
+        <div class="card-text">
+          <button (click)="width2 = 600">600</button>
+          <button (click)="width2 = 700">700</button>
+          <button (click)="width2 = 800">800</button>
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                [data]="data"
+                [columnDefinitions]="columns"
+                [pageSize]="5"
+                [pageSizes]="[5, 10, 25]&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
+        <div [style.width.px]="width2">
+          <hci-grid [data]="data"
+                    [columnDefinitions]="columns"
+                    [pageSize]="5"
+                    [pageSizes]="[5, 10, 25]">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h4>Window Resize</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Test grid resizing when the parent is 100% and changed by window resize.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config3>
+            <pre>
+              &lt;hci-grid
+                [data]="data"
+                [columnDefinitions]="columns"
+                [pageSize]="5"
+                [pageSizes]="[5, 10, 25]&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
+        <div style="width: 100%;">
+          <hci-grid [data]="data"
+                    [columnDefinitions]="columns"
+                    [pageSize]="5"
+                    [pageSizes]="[5, 10, 25]">
           </hci-grid>
         </div>
       </div>
@@ -57,6 +138,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 export class ResizeDemoComponent {
 
     width: number = 800;
+    width2: number = 800;
 
     dataSize: number = 250;
     data: Array<Object>;
@@ -83,6 +165,5 @@ export class ResizeDemoComponent {
 
     setWidth(width: number) {
         this.width = width;
-        window.dispatchEvent(new Event("resize"));
     }
 }

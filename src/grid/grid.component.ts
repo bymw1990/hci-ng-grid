@@ -51,6 +51,8 @@ import {Observable} from "rxjs/Observable";
     GridMessageService
   ],
   template: `
+    <iframe #iframeSensor style="width:100%; height: 0px; display: block; z-index: -1; position: relative; border: none; background-color: transparent;"
+            allowtransparency="true"></iframe>
     <div #gridContainer
          id="gridContainer"
          [ngClass]="theme"
@@ -327,6 +329,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("focuser1") focuser1: ElementRef;
   @ViewChild("focuser2") focuser2: ElementRef;
   @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
+  @ViewChild("iframeSensor") iframeSensor: ElementRef;
 
   @Input("data") boundData: Object[] = null;
   @Input("dataCall") onExternalDataCall: Function;
@@ -495,6 +498,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit() {
     this.gridService.setGridElement(this.gridContainer.nativeElement);
 
+    (<HTMLIFrameElement>this.iframeSensor.nativeElement).contentWindow.addEventListener("resize", () => {
+      this.doRender();
+    });
+
     this.findBaseRowCell();
 
     this.updateGridContainerAndColumnSizes();
@@ -585,14 +592,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.doRenderSubscription) {
       this.doRenderSubscription.unsubscribe();
     }
-  }
-
-  /**
-   * TODO: Allow the implementing application to force the grid to re-draw.
-   */
-  public refresh() {
-    // redraw grid height
-    // rerender data
   }
 
   /**
@@ -1494,16 +1493,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.componentRef.setData(this.gridData[i].get(j));
       this.componentRef.setLocation(cellElement);
     }
-  }
-
-  /**
-   * Upon window and therefore (probably) parent resize, re-calculate grid sizes.
-   *
-   * @param {Event} event The window event.
-   */
-  @HostListener("window:resize", ["$event"])
-  private onResize(event: Event) {
-    this.doRender(100);
   }
 
   /**
