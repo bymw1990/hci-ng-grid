@@ -6,6 +6,31 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
   template: `
     <div class="card">
       <div class="card-header">
+        <h4>User Config Grid</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          TODO
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config0" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config0>
+            <pre>
+              
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [title]="'Dynamic Columns'"
+                    [data]="data"
+                    [configurable]="true"
+                    [columnDefinitions]="columnsA">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
         <h4>Dynamic Config Grid</h4>
       </div>
       <div class="card-body">

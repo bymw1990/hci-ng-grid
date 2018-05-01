@@ -19,7 +19,6 @@ export class Column {
   isKey: boolean = false;
   field: string;
   name: string = null;
-  template: string = "LabelCell";
   format: string = null;
   validator: any;
   sortable: boolean = true;
@@ -32,7 +31,6 @@ export class Column {
   isGroup: boolean = false;
   isUtility: boolean = false;
   defaultValue: any;
-  component: any = null;
   dataType: string = "string";
   selectable: boolean = true;
   isLast: boolean = false;
@@ -128,9 +126,6 @@ export class Column {
     if (object.name !== undefined) {
       this.name = object.name;
     }
-    if (object.template !== undefined) {
-      this.template = object.template;
-    }
     if (object.format !== undefined) {
       this.format = object.format;
     }
@@ -169,9 +164,6 @@ export class Column {
     }
     if (object.filterRenderer) {
       this.filterRenderer = object.filterRenderer;
-    }
-    if (object.component !== undefined) {
-      this.component = object.component;
     }
     if (object.dataType !== undefined) {
       this.dataType = object.dataType;

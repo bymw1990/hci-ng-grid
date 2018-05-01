@@ -7,8 +7,8 @@ import {
 } from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
+import {Observable} from "rxjs/Observable";
 import {Subscription} from "rxjs/Subscription";
-import {takeWhile} from "rxjs/operators";
 
 import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
@@ -30,7 +30,6 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
 import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
-import {Observable} from "rxjs/Observable";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -68,7 +67,15 @@ import {Observable} from "rxjs/Observable";
       
       <!-- Title Bar -->
       <div *ngIf="title !== null" id="titleBar">
-        <span>{{title}}</span>
+        <div>{{title}}</div>
+        <div *ngIf="configurable" class="right" ngbDropdown placement="bottom-right">
+          <a id="groupDropdown" class="dropdown-toggle" ngbDropdownToggle>
+            <i class="fas fa-cog fa-lg"></i>
+          </a>
+          <ul ngbDropdownMenu aria-labelledby="groupDropdown" class="dropdown-menu">
+            <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
+          </ul>
+        </div>
       </div>
       
       <div #mainContent id="mainContent">
@@ -188,8 +195,20 @@ import {Observable} from "rxjs/Observable";
       width: 100%;
     }
     
-    #titleBar {}
+    #titleBar {
+      display: inline-flex;
+      width: 100%;
+    }
 
+    #titleBar .right {
+      margin-left: auto;
+      margin-right: 0px;
+    }
+
+    #titleBar .dropdown-toggle::after {
+      display: none;
+    }
+    
     #mainContent {
       width: 100%;
       height: 0px;
@@ -335,6 +354,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("dataCall") onExternalDataCall: Function;
 
   @Input() config: any = {};
+  @Input() configurable: boolean = false;
   @Input() title: string = null;
   @Input() theme: string = "excel";
   @Input() rowSelect: boolean;
@@ -351,7 +371,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() externalPaging: boolean;
   @Input() pageSize: number;
   @Input() pageSizes: number[];
-  @Input("nVisibleRows") cfgNVisibleRows: number = -1;
+  @Input("nVisibleRows") inputNVisibleRows: number = -1;
   @Input() eventListeners: Array<EventListenerArg> = [
     { type: RangeSelectListener },
     { type: ClickRowSelectListener },
@@ -635,8 +655,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.pageSizes !== undefined) {
       this.config.pageSizes = this.pageSizes;
     }
-    if (this.cfgNVisibleRows !== undefined) {
-      this.config.nVisibleRows = this.cfgNVisibleRows;
+    if (this.inputNVisibleRows !== undefined) {
+      this.config.nVisibleRows = this.inputNVisibleRows;
     }
   }
 

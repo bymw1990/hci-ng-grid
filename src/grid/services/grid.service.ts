@@ -17,6 +17,8 @@ import {ExternalInfo} from "../utils/external-info";
 @Injectable()
 export class GridService {
 
+  config: any = {};
+
   columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
 
   columnHeaders: boolean = true;
@@ -50,7 +52,7 @@ export class GridService {
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
-  gridElement: HTMLElement
+  gridElement: HTMLElement;
 
   private nUtilityColumns: number = 0;
   private nFixedColumns: number = 0;
@@ -62,12 +64,21 @@ export class GridService {
 
   constructor(private http: HttpClient) {}
 
+  getConfig(): any {
+    return this.config;
+  }
+
   /**
    * Expects an object with the above configuration options as fields.
    *
    * @param config
    */
   setConfig(config: any) {
+    if (isDevMode()) {
+      console.debug("setConfig: " + JSON.stringify(config));
+    }
+    this.config = Object.assign({}, this.config, config);
+
     let columnsChanged: boolean = false;
 
     // Selection Related Configuration
@@ -130,15 +141,10 @@ export class GridService {
       this.nVisibleRows = config.nVisibleRows;
     }
 
-    if (this.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
-      this.nVisibleRows = this.pageInfo.pageSize;
-    }
-
     this.setNVisibleRows();
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
-      //this.init();
       this.columnsChangedSubject.next(true);
     }
   }

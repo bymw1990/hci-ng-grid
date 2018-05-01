@@ -22,6 +22,7 @@ import {DateEditRenderer} from "./cell/editRenderers/date-edit-renderer.componen
 import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-renderer.component";
 import {BigTextPopup} from "./cell/viewPopupRenderer/bigtext-popup.component";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
+import {ConfigMenuComponent} from "./config/config-menu.component";
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
     TextFilterRenderer,
     SelectFilterRenderer,
     CompareFilterRenderer,
-    BigTextPopup
+    BigTextPopup,
+    ConfigMenuComponent
   ],
   entryComponents: [
     TextEditRenderer,
