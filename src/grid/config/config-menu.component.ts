@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {ChangeDetectorRef, Component, Input} from "@angular/core";
 
 import {GridService} from "../services/grid.service";
 import {GridComponent} from "../grid.component";
@@ -12,24 +12,26 @@ import {GridComponent} from "../grid.component";
     <div class="window" (click)="stop($event)" (mouseup)="stop($event)" (mousedown)="stop($event)">
       <ng-container *ngIf="state === 0">
         <div class="panel">
-          <div class="cfg-row" (click)="setState(1)">
+          <div class="pad" (click)="setState(1)">
             <button class="btn btn-primary">General</button>
           </div>
-          <div class="cfg-row" (click)="setState(2)">
+          <div class="pad" (click)="setState(2)">
             <button class="btn btn-primary">Columns</button>
           </div>
         </div>
       </ng-container>
       <ng-container *ngIf="state === 1">
-        <div class="header" (click)="setState(0)">
-          <span class="">
+        <div class="header">
+          <span (click)="setState(0)">
             <i class="fas fa-chevron-circle-left fa-lg"></i>
           </span>
         </div>
         <div class="panel">
           <div class="cfg-row">
             <div class="label">Theme</div>
-            <div class="input"></div>
+            <div class="input">
+              <input type="text" [ngModel]="config.theme" (ngModelChange)="update('theme', $event)">
+            </div>
           </div>
           <div class="cfg-row">
             <div class="label">Column Headers</div>
@@ -52,37 +54,54 @@ import {GridComponent} from "../grid.component";
         </div>
       </ng-container>
       <ng-container *ngIf="state === 2">
-        <div class="header" (click)="setState(0)">
-          <span class="">
+        <div class="header">
+          <span (click)="setState(0)">
             <i class="fas fa-chevron-circle-left fa-lg"></i>
           </span>
+          <div class="right" ngbDropdown placement="bottom-right" #columnDropDown="ngbDropdown">
+            <a id="groupDropdown" class="dropdown-toggle" ngbDropdownToggle>
+              {{selectedColumn.name}}
+            </a>
+            <ul ngbDropdownMenu aria-labelledby="groupDropdown" class="dropdown-menu pad">
+              <ng-container *ngFor="let column of config.columnDefinitions">
+                <li (click)="setSelectedColumn(column); columnDropDown.close();"
+                    [style.color]="column.visible ? 'green' : 'red'">
+                  {{column.name}}
+                </li>
+              </ng-container>
+            </ul>
+          </div>
         </div>
         <div class="panel">
           <div class="cfg-row">
             <div class="label">Visible</div>
             <div class="input">
-              
+              <input type="checkbox" [checked]="selectedColumn.visible" (change)="updateColumn('visible', $event.target.checked)">
             </div>
           </div>
           <div class="cfg-row">
             <div class="label">Width (px)</div>
-            <div class="input"></div>
+            <div class="input">
+              <input type="number" [ngModel]="selectedColumn.width" (ngModelChange)="updateColumn('width', $event)">
+            </div>
           </div>
           <div class="cfg-row">
             <div class="label">Width (%)</div>
-            <div class="input"></div>
+            <div class="input">
+              <input type="number" [ngModel]="selectedColumn.widthPercent" (ngModelChange)="updateColumn('widthPercent', $event)">
+            </div>
           </div>
           <div class="cfg-row">
             <div class="label">Min Width (px)</div>
-            <div class="input"></div>
+            <div class="input">
+              <input type="number" [ngModel]="selectedColumn.minWidth" (ngModelChange)="updateColumn('minWidth', $event)">
+            </div>
           </div>
           <div class="cfg-row">
             <div class="label">Max Width (px)</div>
-            <div class="input"></div>
-          </div>
-          <div class="cfg-row">
-            <div class="label">PageSizes</div>
-            <div class="input"></div>
+            <div class="input">
+              <input type="number" [ngModel]="selectedColumn.maxWidth" (ngModelChange)="updateColumn('maxWidth', $event)">
+            </div>
           </div>
         </div>
       </ng-container>
@@ -109,6 +128,7 @@ import {GridComponent} from "../grid.component";
       }
       
       .cfg-row {
+        display: inline-flex;
         padding-left: 0px;
         padding-bottom: 5px;
       }
@@ -122,25 +142,51 @@ import {GridComponent} from "../grid.component";
         flex: 0 1 50%;
         min-width: 200px;
       }
+      
+      .pad {
+        padding: 0.5rem 0.5rem;
+      }
   `]
 })
 export class ConfigMenuComponent {
 
+  @Input() grid: GridComponent;
+
   state: number = 0;
 
   config: any;
+  selectedColumn: any;
 
-  @Input() grid: GridComponent;
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   setState(state: number) {
     this.state = state;
     this.config = this.grid.getGridService().getConfig();
+    this.selectedColumn = this.config.columnDefinitions[0];
   }
 
   update(key: string, value: any) {
     let config = {};
     config[key] = value;
     this.grid.getGridService().setConfig(config);
+    this.config = this.grid.getGridService().getConfig();
+    this.grid.doRender();
+  }
+
+  setSelectedColumn(column: any) {
+    this.selectedColumn = column;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  updateColumn(key: string, value: any) {
+    let i: number = 0;
+    for (i = 0; i < this.config.columnDefinitions.length; i++) {
+      if (this.config.columnDefinitions[i].field === this.selectedColumn.field) {
+        this.config.columnDefinitions[i][key] = value;
+      }
+    }
+
+    this.grid.getGridService().setConfig(this.config);
     this.config = this.grid.getGridService().getConfig();
     this.grid.doRender();
   }

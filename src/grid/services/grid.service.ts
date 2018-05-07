@@ -1,4 +1,4 @@
-import {Injectable, isDevMode, Type} from "@angular/core";
+import {Injectable, isDevMode} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
 import {Subject} from "rxjs/Rx";
@@ -16,6 +16,10 @@ import {ExternalInfo} from "../utils/external-info";
 
 @Injectable()
 export class GridService {
+
+  static defaultConfig: any = {
+    theme: "excel"
+  }
 
   config: any = {};
 
@@ -73,11 +77,11 @@ export class GridService {
    *
    * @param config
    */
-  setConfig(config: any) {
+  setConfig(config: any): any {
     if (isDevMode()) {
       console.debug("setConfig: " + JSON.stringify(config));
     }
-    this.config = Object.assign({}, this.config, config);
+    this.config = Object.assign({}, GridService.defaultConfig, this.config, config);
 
     let columnsChanged: boolean = false;
 
@@ -93,6 +97,10 @@ export class GridService {
     if (config.columnDefinitions !== undefined) {
       if (this.columnDefinitions !== config.columnDefinitions) {
         columnsChanged = true;
+      }
+      // Bring in column defaults to config
+      for (var i = 0; i < config.columnDefinitions.length; i++) {
+        config.columnDefinitions[i] = Object.assign({}, Column.defaultConfig, config.columnDefinitions[i]);
       }
       this.columnDefinitions = Column.deserializeArray(config.columnDefinitions);
     }
@@ -147,6 +155,8 @@ export class GridService {
     if (columnsChanged) {
       this.columnsChangedSubject.next(true);
     }
+
+    return this.config;
   }
 
   setNVisibleRows() {

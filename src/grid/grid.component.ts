@@ -54,7 +54,7 @@ import {InjectableFactory} from "./utils/injectable.factory";
             allowtransparency="true"></iframe>
     <div #gridContainer
          id="gridContainer"
-         [ngClass]="theme"
+         [ngClass]="config.theme"
          (click)="click($event)"
          (mouseover)="mouseOver($event)"
          (mousedown)="mouseDown($event)"
@@ -66,10 +66,10 @@ import {InjectableFactory} from "./utils/injectable.factory";
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="title !== null" id="titleBar">
+      <div *ngIf="title !== null || configurable" id="titleBar">
         <div>{{title}}</div>
         <div *ngIf="configurable" class="right" ngbDropdown placement="bottom-right">
-          <a id="groupDropdown" class="dropdown-toggle" ngbDropdownToggle>
+          <a id="groupDropdown" class="dropdown-toggle no-arrow" ngbDropdownToggle>
             <i class="fas fa-cog fa-lg"></i>
           </a>
           <ul ngbDropdownMenu aria-labelledby="groupDropdown" class="dropdown-menu">
@@ -205,7 +205,7 @@ import {InjectableFactory} from "./utils/injectable.factory";
       margin-right: 0px;
     }
 
-    #titleBar .dropdown-toggle::after {
+    #titleBar .dropdown-toggle.no-arrow::after {
       display: none;
     }
     
@@ -354,9 +354,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("dataCall") onExternalDataCall: Function;
 
   @Input() config: any = {};
+
+  // The following inputs are useful shortcuts for what can be provided via the config input.
   @Input() configurable: boolean = false;
   @Input() title: string = null;
-  @Input() theme: string = "excel";
+  @Input("theme") inputTheme: string;
   @Input() rowSelect: boolean;
   @Input() cellSelect: boolean;
   @Input() rangeSelect: boolean;
@@ -378,6 +380,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     { type: ClickCellEditListener }
   ];
 
+  @Output("onConfigChange") onConfigChange: EventEmitter<any> = new EventEmitter<any>();
   @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
@@ -390,6 +393,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   initialized: boolean = false;
   columnHeaders: boolean = false;
   gridContainerHeight: number = 0;
+
+  configSubject: Subject<any> = new Subject<any>();
 
   /* Timers and data to determine the difference between single and double clicks. */
   clickTimer: any;
@@ -436,6 +441,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridMessageService.messageObservable.subscribe((message: string) => {
       this.warning.emit(message);
     });
+
+    this.configSubject.subscribe((config: any) => {
+      this.config = config;
+      this.onConfigChange.emit(this.config);
+    });
   }
 
   /**
@@ -445,7 +455,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.findBaseRowCell();
 
     this.buildConfig();
-    this.gridService.setConfig(this.config);
+    this.config = this.gridService.setConfig(this.config);
+
     this.initGridConfiguration();
     this.updateGridContainerHeight();
 
@@ -478,7 +489,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.selectedRows.emit(selectedRows);
-      //this.renderCellsAndData();
     });
 
     /* Get initial page Info */
@@ -599,7 +609,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.gridService.setConfig(this.config);
     } else {
       this.buildConfig();
-      this.gridService.setConfig(this.config);
+      this.config = this.gridService.setConfig(this.config);
+      this.changeDetectorRef.markForCheck();
+      console.debug(this.config);
     }
 
     this.updateGridContainerHeight();
@@ -657,6 +669,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.inputNVisibleRows !== undefined) {
       this.config.nVisibleRows = this.inputNVisibleRows;
+    }
+    if (this.inputTheme !== undefined) {
+      this.config.theme = this.inputTheme;
     }
   }
 

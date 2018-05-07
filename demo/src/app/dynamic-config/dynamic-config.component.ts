@@ -21,10 +21,10 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
           </ng-template>
         </div>
         <p>
-          <hci-grid [title]="'Dynamic Columns'"
-                    [data]="data"
+          <hci-grid [data]="data1"
                     [configurable]="true"
-                    [columnDefinitions]="columnsA">
+                    [columnDefinitions]="columns1"
+                    (onConfigChange)="configChange($event)">
           </hci-grid>
         </p>
       </div>
@@ -123,6 +123,22 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
 })
 export class DynamicConfigGridComponent {
 
+  data1: Array<Object> = [
+    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "middleName": "A", "dob": "1952-01-03T00:00-07:00" },
+    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "middleName": "B", "dob": "1971-11-01T00:00-07:00" },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "middleName": "C", "dob": "1980-05-21T00:00-07:00" },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "middleName": "D", "dob": "1976-02-11T00:00-07:00" },
+    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "middleName": "E", "dob": "1955-08-21T00:00-07:00" },
+    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "middleName": "F", "dob": "1950-09-11T00:00-07:00" },
+    { "idPatient": 7, "firstName": "Jimmy", "lastName": "Zephod", "middleName": "F", "dob": "1960-01-17T00:00-07:00" }
+  ];
+
+  columns1: any[] = [
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name", widthPercent: 50 },
+    { field: "firstName", name: "First Name" }
+  ];
+
   data: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "middleName": "A", "dob": "1952-01-03T00:00-07:00" },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "middleName": "B", "dob": "1971-11-01T00:00-07:00" },
@@ -178,5 +194,10 @@ export class DynamicConfigGridComponent {
 
   setColumnsB2() {
     this.columnsB = this.columnsB2;
+  }
+
+  configChange(config: any) {
+    console.debug("configChange");
+    console.debug(config);
   }
 }

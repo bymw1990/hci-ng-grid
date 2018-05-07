@@ -15,6 +15,37 @@ import {DateFormatter} from "./formatters/date.formatter";
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
  */
 export class Column {
+
+  static defaultConfig: any = {
+    isKey: false,
+    name: null,
+    format: null,
+    sortOrder: 0,
+    width: 0,
+    widthPercent:  0,
+    minWidth: 135,
+    maxWidth: 1000,
+    isFixed: false,
+    isGroup: false,
+    isUtility: false,
+    dataType: "string",
+    selectable: true,
+    isLast: false,
+    visible: true,
+    editable: true,
+    clickable: true,
+    choices: [],
+    choiceValue: "value",
+    choiceDisplay: "display",
+    formatterParserConfig: {},
+    formatterParser: FormatterParser,
+    editRenderer: TextEditRenderer,
+    viewConfig: {},
+    viewRenderer: CellTextView,
+    filterConfig: {},
+    filters: []
+  };
+
   id: number;
   isKey: boolean = false;
   field: string;
