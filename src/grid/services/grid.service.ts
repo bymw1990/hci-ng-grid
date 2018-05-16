@@ -18,7 +18,16 @@ import {ExternalInfo} from "../utils/external-info";
 export class GridService {
 
   static defaultConfig: any = {
-    theme: "excel"
+    theme: "excel",
+    columnHeaders: true,
+    rowSelect: false,
+    keyNavigation: false,
+    groupByCollapsed: false,
+    externalFiltering: false,
+    externalSorting: false,
+    externalPaging: false,
+    pageSizes: [10, 25, 50],
+    nVisibleRows: -1
   }
 
   config: any = {};
@@ -26,18 +35,18 @@ export class GridService {
 
   columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
 
-  columnHeaders: boolean = true;
-  rowSelect: boolean = false;
-  keyNavigation: boolean = false;
+  columnHeaders: boolean;
+  rowSelect: boolean;
+  keyNavigation: boolean;
   columnDefinitions: Column[];
   fixedColumns: string[];
-  groupBy: string[] = null;
-  groupByCollapsed: boolean = false;
-  externalFiltering: boolean = false;
-  externalSorting: boolean = false;
-  externalPaging: boolean = false;
-  pageSizes: number[] = [10, 25, 50];
-  nVisibleRows: number = -1;
+  groupBy: string[];
+  groupByCollapsed: boolean;
+  externalFiltering: boolean;
+  externalSorting: boolean;
+  externalPaging: boolean;
+  pageSizes: number[];
+  nVisibleRows: number;
 
   originalData: Object[];
   preparedData: Array<Row>;
@@ -80,7 +89,7 @@ export class GridService {
       console.debug("updateConfig: " + JSON.stringify(config));
     }
     if (!this.configured) {
-      this.config = Object.assign({}, GridService.defaultConfig, this.config, config);
+      this.config = Object.assign({}, GridService.defaultConfig, config);
       this.configured = true;
     } else {
       Object.assign(this.config, config);
@@ -226,7 +235,7 @@ export class GridService {
 
     this.nUtilityColumns = 0;
     let nGroupBy: number = 0;
-    if (this.groupBy !== null) {
+    if (this.groupBy) {
       nGroupBy = this.groupBy.length;
     }
 
@@ -243,12 +252,12 @@ export class GridService {
     }
 
     this.nVisibleColumns = 0;
-    this.columnHeaders = false;
+    //this.columnHeaders = false;
 
     for (var j = 0; j < this.columnDefinitions.length; j++) {
-      if (this.columnDefinitions[j].name !== null) {
+      /*if (this.columnDefinitions[j].name !== null) {
         this.columnHeaders = true;
-      }
+      }*/
 
       if (this.fixedColumns) {
         for (var k = 0; k < this.fixedColumns.length; k++) {
@@ -755,7 +764,7 @@ export class GridService {
     this.pageInfoObserved.next(this.pageInfo);
 
     this.viewData = new Array<Row>();
-    if (this.groupBy !== null) {
+    if (this.groupBy) {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
       // lay next to each other
@@ -939,7 +948,7 @@ export class GridService {
   sortPreparedData() {
     let sortColumns: Array<number> = new Array<number>();
 
-    if (this.sortInfo.field === null && this.groupBy !== null) {
+    if (this.sortInfo.field === null && this.groupBy) {
       this.sortInfo.field = "GROUP_BY";
     }
 

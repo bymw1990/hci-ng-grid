@@ -54,6 +54,7 @@ export class Column {
   validator: any;
   sortable: boolean = true;
   sortOrder: number = 0;
+  preferredSortOrder: number;
   width: number = 0;
   widthPercent: number = 0;
   minWidth: number = 135;

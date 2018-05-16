@@ -165,7 +165,10 @@ import {InjectableFactory} from "./utils/injectable.factory";
       
       <!-- Footer -->
       <div *ngIf="pageInfo.pageSize > 0"
-           id="gridFooter">
+           id="gridFooter"
+           (mouseup)="$event.stopPropagation()"
+           (mousedown)="$event.stopPropagation()"
+           (click)="$event.stopPropagation()">
         <div>
           <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
             Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
@@ -176,7 +179,7 @@ import {InjectableFactory} from "./utils/injectable.factory";
             <select [ngModel]="pageInfo.pageSize"
                     (ngModelChange)="doPageSize($event)"
                     style="padding-left: 15px; padding-right: 15px;">
-              <option *ngFor="let o of pageSizes" [ngValue]="o">{{o}}</option>
+              <option *ngFor="let o of config.pageSizes" [ngValue]="o">{{o}}</option>
             </select>
             <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-forward"></span></span>
             <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-forward"></span></span>
@@ -372,7 +375,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() externalSorting: boolean;
   @Input() externalPaging: boolean;
   @Input() pageSize: number;
-  @Input() pageSizes: number[];
+  @Input("pageSizes") inputPageSizes: number[];
   @Input("nVisibleRows") inputNVisibleRows: number = -1;
   @Input() eventListeners: Array<EventListenerArg> = [
     { type: RangeSelectListener },
@@ -1170,8 +1173,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.pageSize !== undefined) {
       this.inputConfig.pageSize = this.pageSize;
     }
-    if (this.pageSizes !== undefined) {
-      this.inputConfig.pageSizes = this.pageSizes;
+    if (this.inputPageSizes !== undefined) {
+      this.inputConfig.pageSizes = this.inputPageSizes;
     }
     if (this.inputNVisibleRows !== undefined) {
       this.inputConfig.nVisibleRows = this.inputNVisibleRows;
@@ -1595,7 +1598,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     this.pageInfo = this.gridService.pageInfo;
-    this.pageSizes = this.gridService.pageSizes;
     //this.updateGridContainerHeight();
     //this.updateGridContainerAndColumnSizes();
 
