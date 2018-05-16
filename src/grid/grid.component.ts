@@ -394,8 +394,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   columnHeaders: boolean = false;
   gridContainerHeight: number = 0;
 
-  configSubject: Subject<any> = new Subject<any>();
-
   /* Timers and data to determine the difference between single and double clicks. */
   clickTimer: any;
   singleClickCancel: boolean = false;
@@ -442,7 +440,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.warning.emit(message);
     });
 
-    this.configSubject.subscribe((config: any) => {
+    this.gridService.getConfigSubject().subscribe((config: any) => {
       this.config = config;
       this.onConfigChange.emit(this.config);
     });
@@ -454,8 +452,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngAfterContentInit() {
     this.findBaseRowCell();
 
-    this.buildConfig();
-    this.config = this.gridService.setConfig(this.config);
+    this.buildConfigFromInput();
+    this.config = this.gridService.updateConfig(this.config);
 
     this.initGridConfiguration();
     this.updateGridContainerHeight();
@@ -606,10 +604,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (changes["boundData"]) {
       this.boundDataSubject.next(this.boundData);
     } else if (changes["config"]) {
-      this.gridService.setConfig(this.config);
+      this.gridService.updateConfig(this.config);
     } else {
-      this.buildConfig();
-      this.config = this.gridService.setConfig(this.config);
+      this.buildConfigFromInput();
+      this.config = this.gridService.updateConfig(this.config);
       this.changeDetectorRef.markForCheck();
       console.debug(this.config);
     }
@@ -623,55 +621,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.doRenderSubscription) {
       this.doRenderSubscription.unsubscribe();
-    }
-  }
-
-  /**
-   * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
-   * combination of config and @Input settings.
-   */
-  public buildConfig() {
-    if (this.rowSelect !== undefined) {
-      this.config.rowSelect = this.rowSelect;
-    }
-    if (this.keyNavigation !== undefined) {
-      this.config.keyNavigation = this.keyNavigation;
-    }
-    if (this.nUtilityColumns !== undefined) {
-      this.config.nUtilityColumns = this.nUtilityColumns;
-    }
-    if (this.columnDefinitions !== undefined) {
-      this.config.columnDefinitions = this.columnDefinitions;
-    }
-    if (this.fixedColumns !== undefined) {
-      this.config.fixedColumns = this.fixedColumns;
-    }
-    if (this.groupBy !== undefined) {
-      this.config.groupBy = this.groupBy;
-    }
-    if (this.groupByCollapsed !== undefined) {
-      this.config.groupByCollapsed = this.groupByCollapsed;
-    }
-    if (this.externalFiltering !== undefined) {
-      this.config.externalFiltering = this.externalFiltering;
-    }
-    if (this.externalSorting !== undefined) {
-      this.config.externalSorting = this.externalSorting;
-    }
-    if (this.externalPaging !== undefined) {
-      this.config.externalPaging = this.externalPaging;
-    }
-    if (this.pageSize !== undefined) {
-      this.config.pageSize = this.pageSize;
-    }
-    if (this.pageSizes !== undefined) {
-      this.config.pageSizes = this.pageSizes;
-    }
-    if (this.inputNVisibleRows !== undefined) {
-      this.config.nVisibleRows = this.inputNVisibleRows;
-    }
-    if (this.inputTheme !== undefined) {
-      this.config.theme = this.inputTheme;
     }
   }
 
@@ -1166,6 +1115,55 @@ export class GridComponent implements OnChanges, AfterViewInit {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
+   * combination of config and @Input settings.
+   */
+  private buildConfigFromInput() {
+    if (this.rowSelect !== undefined) {
+      this.config.rowSelect = this.rowSelect;
+    }
+    if (this.keyNavigation !== undefined) {
+      this.config.keyNavigation = this.keyNavigation;
+    }
+    if (this.nUtilityColumns !== undefined) {
+      this.config.nUtilityColumns = this.nUtilityColumns;
+    }
+    if (this.columnDefinitions !== undefined) {
+      this.config.columnDefinitions = this.columnDefinitions;
+    }
+    if (this.fixedColumns !== undefined) {
+      this.config.fixedColumns = this.fixedColumns;
+    }
+    if (this.groupBy !== undefined) {
+      this.config.groupBy = this.groupBy;
+    }
+    if (this.groupByCollapsed !== undefined) {
+      this.config.groupByCollapsed = this.groupByCollapsed;
+    }
+    if (this.externalFiltering !== undefined) {
+      this.config.externalFiltering = this.externalFiltering;
+    }
+    if (this.externalSorting !== undefined) {
+      this.config.externalSorting = this.externalSorting;
+    }
+    if (this.externalPaging !== undefined) {
+      this.config.externalPaging = this.externalPaging;
+    }
+    if (this.pageSize !== undefined) {
+      this.config.pageSize = this.pageSize;
+    }
+    if (this.pageSizes !== undefined) {
+      this.config.pageSizes = this.pageSizes;
+    }
+    if (this.inputNVisibleRows !== undefined) {
+      this.config.nVisibleRows = this.inputNVisibleRows;
+    }
+    if (this.inputTheme !== undefined) {
+      this.config.theme = this.inputTheme;
     }
   }
 

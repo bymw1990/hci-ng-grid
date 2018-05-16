@@ -22,6 +22,7 @@ export class GridService {
   }
 
   config: any = {};
+  configSubject: BehaviorSubject<any> = new BehaviorSubject<any>(GridService.defaultConfig);
 
   columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
 
@@ -77,7 +78,7 @@ export class GridService {
    *
    * @param config
    */
-  setConfig(config: any): any {
+  updateConfig(config: any) {
     if (isDevMode()) {
       console.debug("setConfig: " + JSON.stringify(config));
     }
@@ -156,7 +157,7 @@ export class GridService {
       this.columnsChangedSubject.next(true);
     }
 
-    return this.config;
+    this.configSubject.next(this.config);
   }
 
   setNVisibleRows() {
@@ -201,6 +202,10 @@ export class GridService {
     if (!keyDefined && this.columnDefinitions.length > 0) {
       this.columnDefinitions[0].isKey = true;
     }
+  }
+
+  getConfigSubject(): BehaviorSubject<any> {
+    return this.configSubject;
   }
 
   formatData(k: number, value: any): any {
