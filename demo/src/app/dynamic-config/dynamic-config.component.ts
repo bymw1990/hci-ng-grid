@@ -24,7 +24,9 @@ import {CheckRowSelectView, Column} from "hci-ng-grid";
           <hci-grid [data]="data1"
                     [configurable]="true"
                     [columnDefinitions]="columns1"
-                    (onConfigChange)="configChange($event)">
+                    (onConfigChange)="configChange($event)"
+                    [pageSize]="5"
+                    [pageSizes]="[5, 10, 25]">
           </hci-grid>
         </p>
       </div>

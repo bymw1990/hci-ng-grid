@@ -29,8 +29,8 @@ export class GridService {
   columnHeaders: boolean = true;
   rowSelect: boolean = false;
   keyNavigation: boolean = false;
-  columnDefinitions: Column[] = null;
-  fixedColumns: string[] = null;
+  columnDefinitions: Column[];
+  fixedColumns: string[];
   groupBy: string[] = null;
   groupByCollapsed: boolean = false;
   externalFiltering: boolean = false;
@@ -59,6 +59,7 @@ export class GridService {
 
   gridElement: HTMLElement;
 
+  private configured: boolean = false;
   private nUtilityColumns: number = 0;
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
@@ -76,9 +77,14 @@ export class GridService {
    */
   updateConfig(config: any) {
     if (isDevMode()) {
-      console.debug("setConfig: " + JSON.stringify(config));
+      console.debug("updateConfig: " + JSON.stringify(config));
     }
-    this.config = Object.assign({}, GridService.defaultConfig, this.config, config);
+    if (!this.configured) {
+      this.config = Object.assign({}, GridService.defaultConfig, this.config, config);
+      this.configured = true;
+    } else {
+      Object.assign(this.config, config);
+    }
 
     let columnsChanged: boolean = false;
 
@@ -107,11 +113,19 @@ export class GridService {
       }
       this.columnHeaders = config.columnHeaders;
     }
-    if (config.fixedColumns !== undefined) {
-      if (this.fixedColumns !== config.fixedColumns) {
+    if (config.fixedColumns) {
+      if (!this.fixedColumns) {
         columnsChanged = true;
+      } else if (this.fixedColumns.length !== config.fixedColumns.length) {
+        columnsChanged = true;
+      } else {
+        for (var i = 0; i < this.fixedColumns.length; i++) {
+          if (this.fixedColumns[i] !== config.fixedColumns[i]) {
+            columnsChanged = true;
+          }
+        }
       }
-      this.fixedColumns = config.fixedColumns;
+      this.fixedColumns = Object.assign([], config.fixedColumns);
     }
     if (config.groupBy !== undefined) {
       if (this.groupBy !== config.groupBy) {
@@ -172,7 +186,7 @@ export class GridService {
       console.debug("GridService.initColumnDefinitions()");
     }
 
-    if (this.columnDefinitions === null) {
+    if (!this.columnDefinitions) {
       return;
     }
     this.initColumnProperties();
@@ -238,9 +252,9 @@ export class GridService {
 
       if (this.fixedColumns) {
         for (var k = 0; k < this.fixedColumns.length; k++) {
+          this.columnDefinitions[k].isFixed = false;
           if (this.columnDefinitions[j].field === this.fixedColumns[k]) {
             this.columnDefinitions[j].isFixed = true;
-            break;
           }
         }
       }
@@ -830,7 +844,7 @@ export class GridService {
       this.pageInfo.setPageSize(10);
     }
 
-    if (this.columnDefinitions === null && this.originalData.length > 0) {
+    if (!this.columnDefinitions && this.originalData.length > 0) {
       this.columnDefinitions = new Array<Column>();
       let keys: Array<string> = Object.keys(this.originalData[0]);
       for (var i = 0; i < keys.length; i++) {

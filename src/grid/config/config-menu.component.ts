@@ -1,14 +1,14 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, isDevMode, OnDestroy, OnInit} from "@angular/core";
 
 import {Subscription} from "rxjs/Subscription";
 
-import {GridService} from "../services/grid.service";
 import {GridComponent} from "../grid.component";
+import {GridGlobalService} from "../services/grid-global.service";
 
 @Component({
   selector: "hci-grid-config-menu",
   providers: [
-    GridService
+    GridGlobalService
   ],
   template: `
     <div class="window" (click)="stop($event)" (mouseup)="stop($event)" (mousedown)="stop($event)">
@@ -31,21 +31,40 @@ import {GridComponent} from "../grid.component";
         <div class="panel">
           <div class="cfg-row">
             <div class="label">Theme</div>
-            <div class="input">
-              <input type="text" [ngModel]="config.theme" (ngModelChange)="update('theme', $event)">
+            <div class="input" ngbDropdown #themeDropdown="ngbDropdown">
+              <a id="themeDropdown" class="dropdown-toggle" ngbDropdownToggle>
+                {{config.theme}}
+              </a>
+              <ul ngbDropdownMenu aria-labelledby="themeDropdown" class="dropdown-menu pad">
+                <ng-container *ngFor="let theme of themeChoices">
+                  <li (click)="update('theme', theme); themeDropdown.close();">
+                    {{theme}}
+                  </li>
+                </ng-container>
+              </ul>
             </div>
           </div>
           <div class="cfg-row">
             <div class="label">Column Headers</div>
-            <div class="input"></div>
+            <div class="input">
+              <input type="checkbox" [checked]="config.columnHeaders" (change)="update('columnHeaders', $event.target.checked)">
+            </div>
           </div>
           <div class="cfg-row">
             <div class="label">Fixed Columns</div>
-            <div class="input"></div>
+            <div class="input">
+              <hci-grid-multi-choice [model]="config.fixedColumns"
+                                     [value]="'field'"
+                                     [display]="'name'"
+                                     [choices]="config.columnDefinitions"
+                                     (modelChange)="updateArray('fixedColumns', $event)"></hci-grid-multi-choice>
+            </div>
           </div>
           <div class="cfg-row">
             <div class="label">Page Sizes</div>
-            <div class="input"></div>
+            <div class="input">
+              <hci-grid-multi-choice [model]="config.pageSizes" (modelChange)="updateArray('pageSizes', $event)" [sort]="number"></hci-grid-multi-choice>
+            </div>
           </div>
           <div class="cfg-row d-flex flex-nowrap">
             <div class="label">Visible Rows</div>
@@ -161,9 +180,13 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
 
   configSubscription: Subscription;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+  themeChoices: string[];
+
+  constructor(private gridGlobalService: GridGlobalService, private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.themeChoices = this.gridGlobalService.themeChoices;
+
     this.grid.getGridService().getConfigSubject().subscribe((config: any) => {
       this.config = config;
     });
@@ -180,7 +203,24 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
     this.selectedColumn = this.config.columnDefinitions[0];
   }
 
+  updateArray(key: string, value: any[]) {
+    if (isDevMode()) {
+      console.debug("ConfigMenuComponent.updateArray: " + key);
+      console.debug(value);
+    }
+
+    let config = {};
+    config[key] = value;
+    this.grid.getGridService().updateConfig(config);
+    this.grid.doRender();
+  }
+
   update(key: string, value: any) {
+    if (isDevMode()) {
+      console.debug("ConfigMenuComponent.update: " + key);
+      console.debug(value);
+    }
+
     let config = {};
     config[key] = value;
     this.grid.getGridService().updateConfig(config);

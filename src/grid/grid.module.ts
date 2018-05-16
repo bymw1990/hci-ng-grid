@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import {NgModule} from "@angular/core";
+import {ModuleWithProviders, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
@@ -23,6 +23,8 @@ import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-rende
 import {BigTextPopup} from "./cell/viewPopupRenderer/bigtext-popup.component";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {ConfigMenuComponent} from "./config/config-menu.component";
+import {GridGlobalService} from "./services/grid-global.service";
+import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component";
 
 @NgModule({
   imports: [
@@ -45,7 +47,8 @@ import {ConfigMenuComponent} from "./config/config-menu.component";
     SelectFilterRenderer,
     CompareFilterRenderer,
     BigTextPopup,
-    ConfigMenuComponent
+    ConfigMenuComponent,
+    ConfigMultiChoiceComponent
   ],
   entryComponents: [
     TextEditRenderer,
@@ -60,4 +63,14 @@ import {ConfigMenuComponent} from "./config/config-menu.component";
     GridComponent
   ]
 })
-export class GridModule {}
+export class GridModule {
+  static forRoot(globalConfig: any): ModuleWithProviders {
+    return {
+      providers: [
+        GridGlobalService,
+        {provide: "globalConfig", useValue: globalConfig}
+      ],
+      ngModule: GridModule
+    };
+  }
+}

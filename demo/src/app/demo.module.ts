@@ -73,7 +73,7 @@ import {LabPopup} from "./components/lab.component";
     EventModule,
     PopupModule,
     ResizeDemoModule,
-    GridModule
+    GridModule.forRoot({})
   ],
   declarations: [
     DemoComponent,
