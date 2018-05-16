@@ -29,7 +29,7 @@ describe("DashboardComponent Tests", () => {
     expect(grid.getGridService().getOriginalDataSize()).toBe(0);
   });
 
-  it ("Grid should have 5 rows.", (done) => {
+  /*it ("Grid should have 5 rows.", (done) => {
     let fixture = TestBed.createComponent(GridComponent);
     let grid = fixture.componentInstance;
 
@@ -43,6 +43,6 @@ describe("DashboardComponent Tests", () => {
       expect(data[4].key).toBe("E");
       done();
     });
-  });
+  });*/
 
 });

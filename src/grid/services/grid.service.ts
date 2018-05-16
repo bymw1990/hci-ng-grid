@@ -69,10 +69,6 @@ export class GridService {
 
   constructor(private http: HttpClient) {}
 
-  getConfig(): any {
-    return this.config;
-  }
-
   /**
    * Expects an object with the above configuration options as fields.
    *
@@ -154,6 +150,7 @@ export class GridService {
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
+      this.initColumnDefinitions();
       this.columnsChangedSubject.next(true);
     }
 
@@ -170,15 +167,15 @@ export class GridService {
    * Based upon the nature of the columns, sorts them.  For example, utility columns as a negative, then fixed columns
    * starting at zero then others.
    */
-  init() {
+  initColumnDefinitions() {
     if (isDevMode()) {
-      console.debug("GridService.init()");
+      console.debug("GridService.initColumnDefinitions()");
     }
 
     if (this.columnDefinitions === null) {
       return;
     }
-    this.initColumnDefinitions();
+    this.initColumnProperties();
     this.sortColumnDefinitions();
 
     this.nFixedColumns = 0;
@@ -204,67 +201,7 @@ export class GridService {
     }
   }
 
-  getConfigSubject(): BehaviorSubject<any> {
-    return this.configSubject;
-  }
-
-  formatData(k: number, value: any): any {
-    let column: Column = this.columnDefinitions[k];
-    if (column.dataType === "string") {
-      return value;
-    } else if (column.dataType === "date") {
-      return column.formatValue(value);
-    } else {
-      return value;
-    }
-  }
-
-  parseData(k: number, value: any): any {
-    let column: Column = this.columnDefinitions[k];
-    if (column.dataType === "string") {
-      return value;
-    } else if (column.dataType === "date") {
-      return column.parseValue(value);
-    } else {
-      return value;
-    }
-  }
-
-  getColumnHeaders(): boolean {
-    return this.columnHeaders;
-  }
-
-  getNVisibleRows(): number {
-    return this.nVisibleRows;
-  }
-
-  getNFixedColumns(): number {
-    return this.nFixedColumns;
-  }
-
-  getNNonFixedColumns(): number {
-    return this.nNonFixedColumns;
-  }
-
-  getColumnDefinitions() {
-    return this.columnDefinitions;
-  }
-
-  getViewDataSubject(): BehaviorSubject<Array<Row>> {
-    return this.viewDataSubject;
-  }
-
-  getKeyColumns(): Array<number> {
-    let keys: Array<number> = new Array<number>();
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].isKey) {
-        keys.push(i);
-      }
-    }
-    return keys;
-  }
-
-  initColumnDefinitions() {
+  initColumnProperties() {
     for (var j = 0; j < this.columnDefinitions.length; j++) {
       if (this.columnDefinitions[j].choiceUrl) {
         this.http.get(this.columnDefinitions[j].choiceUrl).subscribe((choices: any) => {
@@ -342,18 +279,6 @@ export class GridService {
     }
   }
 
-  getColumn(j: number): Column {
-    return this.columnDefinitions[j];
-  }
-
-  isColumnSelectable(j: number): boolean {
-    return this.columnDefinitions[j].selectable;
-  }
-
-  getNVisibleColumns(): number {
-    return this.nVisibleColumns;
-  }
-
   sortColumnDefinitions() {
     this.columnDefinitions = this.columnDefinitions.sort((a: Column, b: Column) => {
       if (a.sortOrder < b.sortOrder) {
@@ -377,6 +302,78 @@ export class GridService {
             + this.columnDefinitions[j].visible + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
       }
     }
+  }
+
+  getConfigSubject(): BehaviorSubject<any> {
+    return this.configSubject;
+  }
+
+  formatData(k: number, value: any): any {
+    let column: Column = this.columnDefinitions[k];
+    if (column.dataType === "string") {
+      return value;
+    } else if (column.dataType === "date") {
+      return column.formatValue(value);
+    } else {
+      return value;
+    }
+  }
+
+  parseData(k: number, value: any): any {
+    let column: Column = this.columnDefinitions[k];
+    if (column.dataType === "string") {
+      return value;
+    } else if (column.dataType === "date") {
+      return column.parseValue(value);
+    } else {
+      return value;
+    }
+  }
+
+  getColumnHeaders(): boolean {
+    return this.columnHeaders;
+  }
+
+  getNVisibleRows(): number {
+    return this.nVisibleRows;
+  }
+
+  getNFixedColumns(): number {
+    return this.nFixedColumns;
+  }
+
+  getNNonFixedColumns(): number {
+    return this.nNonFixedColumns;
+  }
+
+  getColumnDefinitions() {
+    return this.columnDefinitions;
+  }
+
+  getViewDataSubject(): BehaviorSubject<Array<Row>> {
+    return this.viewDataSubject;
+  }
+
+  getKeyColumns(): Array<number> {
+    let keys: Array<number> = new Array<number>();
+    for (var i = 0; i < this.columnDefinitions.length; i++) {
+      if (this.columnDefinitions[i].isKey) {
+        keys.push(i);
+      }
+    }
+    return keys;
+  }
+
+  getColumn(j: number): Column {
+    return this.columnDefinitions[j];
+  }
+
+  isColumnSelectable(j: number): boolean {
+    return this.columnDefinitions[j].selectable;
+  }
+
+  getNVisibleColumns(): number {
+    return this.nVisibleColumns;
   }
 
   getColumnsChangedSubject(): Subject<boolean> {

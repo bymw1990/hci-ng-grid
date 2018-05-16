@@ -353,7 +353,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("data") boundData: Object[] = null;
   @Input("dataCall") onExternalDataCall: Function;
 
-  @Input() config: any = {};
+  @Input("config") inputConfig: any = {};
 
   // The following inputs are useful shortcuts for what can be provided via the config input.
   @Input() configurable: boolean = false;
@@ -364,7 +364,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() rangeSelect: boolean;
   @Input() keyNavigation: boolean;
   @Input() nUtilityColumns: number;
-  @Input() columnDefinitions: Column[] = [];
+  @Input("columnDefinitions") inputColumnDefinitions: Column[] = [];
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
   @Input() groupByCollapsed: boolean;
@@ -388,6 +388,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
+  config: any = {};
+  columnDefinitions: Column[] = [];
   gridData: Array<Row> = new Array<Row>();
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
@@ -439,11 +441,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridMessageService.messageObservable.subscribe((message: string) => {
       this.warning.emit(message);
     });
-
-    this.gridService.getConfigSubject().subscribe((config: any) => {
-      this.config = config;
-      this.onConfigChange.emit(this.config);
-    });
   }
 
   /**
@@ -452,11 +449,34 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngAfterContentInit() {
     this.findBaseRowCell();
 
-    this.buildConfigFromInput();
-    this.config = this.gridService.updateConfig(this.config);
+    this.columnsChangedSubscription = this.gridService.getColumnsChangedSubject().subscribe((changed: boolean) => {
+      if (isDevMode()) {
+        console.debug("getColumnsChangedSubject().subscribe: " + changed);
+      }
 
-    this.initGridConfiguration();
-    this.updateGridContainerHeight();
+      if (changed) {
+        //this.initGridConfiguration();
+        this.columnDefinitions = this.gridService.columnDefinitions;
+        this.columnHeaders = this.gridService.getColumnHeaders();
+        this.gridService.initData();
+        this.doRender();
+      }
+    });
+
+    this.gridService.getConfigSubject().subscribe((config: any) => {
+      if (isDevMode()) {
+        console.debug("getConfigSubect().subscribe: " + JSON.stringify(config));
+      }
+
+      this.config = config;
+
+      this.gridService.pageInfo = this.gridService.pageInfo;
+      /*this.columnDefinitions = this.gridService.columnDefinitions;
+      this.columnHeaders = this.gridService.getColumnHeaders();
+      this.doRender();*/
+
+      this.onConfigChange.emit(this.config);
+    });
 
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
     this.gridService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
@@ -511,13 +531,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.postInit();
     }
 
-    this.columnsChangedSubscription = this.gridService.getColumnsChangedSubject().subscribe((changed: boolean) => {
-      if (changed) {
-        this.initGridConfiguration();
-        this.gridService.initData();
-        this.postInit();
-      }
-    });
+    this.buildConfigFromInput();
+    this.gridService.updateConfig(this.inputConfig);
   }
 
   /**
@@ -532,7 +547,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.findBaseRowCell();
 
-    this.updateGridContainerAndColumnSizes();
+    //this.updateGridContainerAndColumnSizes();
 
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
 
@@ -604,15 +619,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (changes["boundData"]) {
       this.boundDataSubject.next(this.boundData);
     } else if (changes["config"]) {
-      this.gridService.updateConfig(this.config);
+      this.gridService.updateConfig(this.inputConfig);
     } else {
       this.buildConfigFromInput();
-      this.config = this.gridService.updateConfig(this.config);
-      this.changeDetectorRef.markForCheck();
-      console.debug(this.config);
+      this.gridService.updateConfig(this.inputConfig);
+      //this.changeDetectorRef.markForCheck();
+      //console.debug(this.config);
     }
 
-    this.updateGridContainerHeight();
+    //this.updateGridContainerHeight();
   }
 
   ngOnDestroy() {
@@ -783,7 +798,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
     this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
-    this.updateGridContainerAndColumnSizes();
     this.renderCellsAndData();
   }
 
@@ -1124,46 +1138,46 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private buildConfigFromInput() {
     if (this.rowSelect !== undefined) {
-      this.config.rowSelect = this.rowSelect;
+      this.inputConfig.rowSelect = this.rowSelect;
     }
     if (this.keyNavigation !== undefined) {
-      this.config.keyNavigation = this.keyNavigation;
+      this.inputConfig.keyNavigation = this.keyNavigation;
     }
     if (this.nUtilityColumns !== undefined) {
-      this.config.nUtilityColumns = this.nUtilityColumns;
+      this.inputConfig.nUtilityColumns = this.nUtilityColumns;
     }
-    if (this.columnDefinitions !== undefined) {
-      this.config.columnDefinitions = this.columnDefinitions;
+    if (this.inputColumnDefinitions !== undefined) {
+      this.inputConfig.columnDefinitions = this.inputColumnDefinitions;
     }
     if (this.fixedColumns !== undefined) {
-      this.config.fixedColumns = this.fixedColumns;
+      this.inputConfig.fixedColumns = this.fixedColumns;
     }
     if (this.groupBy !== undefined) {
-      this.config.groupBy = this.groupBy;
+      this.inputConfig.groupBy = this.groupBy;
     }
     if (this.groupByCollapsed !== undefined) {
-      this.config.groupByCollapsed = this.groupByCollapsed;
+      this.inputConfig.groupByCollapsed = this.groupByCollapsed;
     }
     if (this.externalFiltering !== undefined) {
-      this.config.externalFiltering = this.externalFiltering;
+      this.inputConfig.externalFiltering = this.externalFiltering;
     }
     if (this.externalSorting !== undefined) {
-      this.config.externalSorting = this.externalSorting;
+      this.inputConfig.externalSorting = this.externalSorting;
     }
     if (this.externalPaging !== undefined) {
-      this.config.externalPaging = this.externalPaging;
+      this.inputConfig.externalPaging = this.externalPaging;
     }
     if (this.pageSize !== undefined) {
-      this.config.pageSize = this.pageSize;
+      this.inputConfig.pageSize = this.pageSize;
     }
     if (this.pageSizes !== undefined) {
-      this.config.pageSizes = this.pageSizes;
+      this.inputConfig.pageSizes = this.pageSizes;
     }
     if (this.inputNVisibleRows !== undefined) {
-      this.config.nVisibleRows = this.inputNVisibleRows;
+      this.inputConfig.nVisibleRows = this.inputNVisibleRows;
     }
     if (this.inputTheme !== undefined) {
-      this.config.theme = this.inputTheme;
+      this.inputConfig.theme = this.inputTheme;
     }
   }
 
@@ -1325,7 +1339,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private renderCellsAndData() {
     if (isDevMode()) {
-      console.debug("renderData");
+      console.debug("renderCellsAndData");
     }
     this.changeDetectorRef.detectChanges();
     this.updateGridContainerHeight();
@@ -1558,6 +1572,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   /**
    * Calls the initialization of the gridService, then pull in the configured column definitions.
+   *
+   * @deprecated
    */
   private initGridConfiguration() {
     if (isDevMode()) {
@@ -1565,7 +1581,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     this.gridService.pageInfo = this.gridService.pageInfo;
-    this.gridService.init();
+    //this.gridService.initColumnDefinitions();
     this.columnDefinitions = this.gridService.columnDefinitions;
     this.columnHeaders = this.gridService.getColumnHeaders();
   }
@@ -1580,12 +1596,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.pageInfo = this.gridService.pageInfo;
     this.pageSizes = this.gridService.pageSizes;
-    this.updateGridContainerHeight();
-    this.updateGridContainerAndColumnSizes();
+    //this.updateGridContainerHeight();
+    //this.updateGridContainerAndColumnSizes();
 
     this.gridEventService.setSelectedLocation(null, null);
-    this.busySubject.next(false);
-    this.changeDetectorRef.markForCheck();
+    //this.busySubject.next(false);
+    //this.changeDetectorRef.markForCheck();
   }
 
   /**

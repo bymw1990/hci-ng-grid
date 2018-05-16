@@ -1,4 +1,6 @@
-import {ChangeDetectorRef, Component, Input} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
+
+import {Subscription} from "rxjs/Subscription";
 
 import {GridService} from "../services/grid.service";
 import {GridComponent} from "../grid.component";
@@ -148,7 +150,7 @@ import {GridComponent} from "../grid.component";
       }
   `]
 })
-export class ConfigMenuComponent {
+export class ConfigMenuComponent implements OnInit, OnDestroy {
 
   @Input() grid: GridComponent;
 
@@ -157,19 +159,31 @@ export class ConfigMenuComponent {
   config: any;
   selectedColumn: any;
 
+  configSubscription: Subscription;
+
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.grid.getGridService().getConfigSubject().subscribe((config: any) => {
+      this.config = config;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.configSubscription) {
+      this.configSubscription.unsubscribe();
+    }
+  }
 
   setState(state: number) {
     this.state = state;
-    this.config = this.grid.getGridService().getConfig();
     this.selectedColumn = this.config.columnDefinitions[0];
   }
 
   update(key: string, value: any) {
     let config = {};
     config[key] = value;
-    this.grid.getGridService().setConfig(config);
-    this.config = this.grid.getGridService().getConfig();
+    this.grid.getGridService().updateConfig(config);
     this.grid.doRender();
   }
 
@@ -186,8 +200,7 @@ export class ConfigMenuComponent {
       }
     }
 
-    this.grid.getGridService().setConfig(this.config);
-    this.config = this.grid.getGridService().getConfig();
+    this.grid.getGridService().updateConfig(this.config);
     this.grid.doRender();
   }
 
