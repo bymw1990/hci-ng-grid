@@ -102,7 +102,9 @@ export class Column {
     let columns: Column[] = [];
     for (var i = 0; i < list.length; i++) {
       let column: Column = Column.deserialize(list[i]);
-      column.sortOrder = i;
+      if (!column.sortOrder) {
+        column.sortOrder = i;
+      }
       columns.push(column);
     }
     return columns;

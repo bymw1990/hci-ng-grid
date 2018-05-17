@@ -13,22 +13,11 @@ import {Dictionary} from "../model/dictionary.interface";
   ],
   template: `
     <div class="window" (click)="stop($event)" (mouseup)="stop($event)" (mousedown)="stop($event)">
-      <ng-container *ngIf="state === 0">
-        <div class="panel">
-          <div class="pad" (click)="setState(1)">
-            <button class="btn btn-primary">General</button>
-          </div>
-          <div class="pad" (click)="setState(2)">
-            <button class="btn btn-primary">Columns</button>
-          </div>
-        </div>
-      </ng-container>
+      <div class="header">
+        <button class="btn btn-primary" (click)="setState(1)" [class.selected]="state === 1">General</button>
+        <button class="btn btn-primary" (click)="setState(2)" [class.selected]="state === 2">Columns</button>
+      </div>
       <ng-container *ngIf="state === 1">
-        <div class="header">
-          <span (click)="setState(0)">
-            <i class="fas fa-chevron-circle-left fa-lg"></i>
-          </span>
-        </div>
         <div class="panel">
           <div class="cfg-row">
             <div class="label">Theme</div>
@@ -47,8 +36,9 @@ import {Dictionary} from "../model/dictionary.interface";
           </div>
           <div class="cfg-row">
             <div class="label">Column Headers</div>
-            <div class="input">
-              <input type="checkbox" [checked]="config.columnHeaders" (change)="update('columnHeaders', $event.target.checked)">
+            <div class="input checkbox" [class.checked]="config.columnHeaders" (click)="update('columnHeaders', !config.columnHeaders)">
+              <span *ngIf="config.columnHeaders"><i class="fas fa-check-circle fa-lg"></i></span>
+              <span *ngIf="!config.columnHeaders"><i class="fas fa-times-circle fa-lg"></i></span>
             </div>
           </div>
           <div class="cfg-row">
@@ -76,11 +66,6 @@ import {Dictionary} from "../model/dictionary.interface";
         </div>
       </ng-container>
       <ng-container *ngIf="state === 2">
-        <div class="header">
-          <span (click)="setState(0)">
-            <i class="fas fa-chevron-circle-left fa-lg"></i>
-          </span>
-        </div>
         <div class="sub-header">
           <div *ngFor="let column of config.columnDefinitions; let i = index"
                class="column"
@@ -102,8 +87,9 @@ import {Dictionary} from "../model/dictionary.interface";
           </div>
           <div class="cfg-row">
             <div class="label">Visible</div>
-            <div class="input">
-              <input type="checkbox" [checked]="selectedColumn.visible" (change)="updateColumn('visible', $event.target.checked)">
+            <div class="input checkbox" [class.checked]="selectedColumn.visible" (click)="updateColumn('visible', !selectedColumn.visible)">
+              <span *ngIf="selectedColumn.visible"><i class="fas fa-check-circle fa-lg"></i></span>
+              <span *ngIf="!selectedColumn.visible"><i class="fas fa-times-circle fa-lg"></i></span>
             </div>
           </div>
           <div class="cfg-row">
@@ -147,7 +133,7 @@ import {Dictionary} from "../model/dictionary.interface";
       
       .panel {
         margin-top: 5px;
-        margin-bottom: 5px;
+        margin-bottom: 15px;
       }
       
       .header {
@@ -157,6 +143,15 @@ import {Dictionary} from "../model/dictionary.interface";
         padding: 5px;
       }
 
+      .header .btn {
+        margin-right: 10px;
+      }
+      
+      .header .btn.selected {
+        background-color: green;
+        border-color: darkgreen;
+      }
+      
       .sub-header {
         border-bottom: black 1px solid;
         display: inline-flex;
@@ -204,6 +199,14 @@ import {Dictionary} from "../model/dictionary.interface";
         background: #f0f0f0;
       }
       
+      .input.checkbox {
+        color: red;
+      }
+      
+      .input.checkbox.checked {
+        color: green;
+      }
+      
       .pad {
         padding: 0.5rem 0.5rem;
       }
@@ -213,7 +216,7 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
 
   @Input() grid: GridComponent;
 
-  state: number = 0;
+  state: number = 1;
 
   config: any;
   selectedColumn: any;
@@ -277,7 +280,6 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
     let config = {};
     config[key] = value;
     this.grid.getGridService().updateConfig(config);
-    //this.grid.doRender();
   }
 
   setSelectedColumn(column: any) {
@@ -294,7 +296,6 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
     }
 
     this.grid.getGridService().updateConfig(this.config, true);
-    //this.grid.doRender();
   }
 
   stop(event: Event) {

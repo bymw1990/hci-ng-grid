@@ -237,9 +237,6 @@ export class GridService {
       return;
     }
     this.initColumnProperties();
-    this.sortColumnDefinitions();
-
-    this.config.columnDefinitions = this.columnDefinitions;
 
     this.nFixedColumns = 0;
     this.nNonFixedColumns = 0;
@@ -262,9 +259,15 @@ export class GridService {
     if (!keyDefined && this.columnDefinitions.length > 0) {
       this.columnDefinitions[0].isKey = true;
     }
+
+    this.config.columnDefinitions = this.columnDefinitions;
   }
 
   initColumnProperties() {
+    if (isDevMode()) {
+      console.debug("initColumnProperties");
+    }
+
     this.columnDefinitions.sort((a: Column, b: Column) => {
       if (a.sortOrder && b.sortOrder) {
         if (a.sortOrder < b.sortOrder) {
@@ -338,13 +341,13 @@ export class GridService {
       }
 
       if (this.columnDefinitions[j].isUtility) {
-        this.columnDefinitions[j].renderOrder = 1000 + j;
+        this.columnDefinitions[j].renderOrder = 1000 + this.columnDefinitions[j].sortOrder;
       } else if (this.columnDefinitions[j].isFixed) {
-        this.columnDefinitions[j].renderOrder = 2000 + j;
+        this.columnDefinitions[j].renderOrder = 2000 + this.columnDefinitions[j].sortOrder;
       } else if (this.columnDefinitions[j].visible) {
-        this.columnDefinitions[j].renderOrder = 3000 + j;
+        this.columnDefinitions[j].renderOrder = 3000 + this.columnDefinitions[j].sortOrder;
       } else {
-        this.columnDefinitions[j].renderOrder = 4000 + j;
+        this.columnDefinitions[j].renderOrder = 4000 + this.columnDefinitions[j].sortOrder;
       }
     }
 
@@ -353,9 +356,8 @@ export class GridService {
       this.columnDefinitions.push(column);
       this.nVisibleColumns = this.nVisibleColumns + 1;
     }
-  }
 
-  sortColumnDefinitions() {
+    // Re-sort columns based on render order.
     this.columnDefinitions.sort((a: Column, b: Column) => {
       if (a.renderOrder < b.renderOrder) {
         return -1;
@@ -373,11 +375,15 @@ export class GridService {
         lastSet = true;
       }
       this.columnDefinitions[j].id = j;
-      if (isDevMode()) {
-        console.info("Column: " + this.columnDefinitions[j].name + " " + this.columnDefinitions[j].renderOrder + " "
-            + this.columnDefinitions[j].visible + " " + this.columnDefinitions[j].selectable + " " + this.columnDefinitions[j].isFixed);
+    }
+
+    if (isDevMode()) {
+      for (var j = 0; j < this.columnDefinitions.length; j++) {
+        console.debug("field: " + this.columnDefinitions[j].field + ", sortOrder: " + this.columnDefinitions[j].sortOrder + ", renderOrder: " + this.columnDefinitions[j].renderOrder
+            + ", visible: " + this.columnDefinitions[j].visible + ", selectable: " + this.columnDefinitions[j].selectable + ", isFixed: " + this.columnDefinitions[j].isFixed);
       }
     }
+
   }
 
   getConfigSubject(): BehaviorSubject<any> {
