@@ -4,6 +4,7 @@ import {Subscription} from "rxjs/Subscription";
 
 import {GridComponent} from "../grid.component";
 import {GridGlobalService} from "../services/grid-global.service";
+import {Dictionary} from "../model/dictionary.interface";
 
 @Component({
   selector: "hci-grid-config-menu",
@@ -33,12 +34,12 @@ import {GridGlobalService} from "../services/grid-global.service";
             <div class="label">Theme</div>
             <div class="input" ngbDropdown #themeDropdown="ngbDropdown">
               <a id="themeDropdown" class="dropdown-toggle" ngbDropdownToggle>
-                {{config.theme}}
+                {{getDisplay(themeChoices, config.theme)}}
               </a>
               <ul ngbDropdownMenu aria-labelledby="themeDropdown" class="dropdown-menu pad">
                 <ng-container *ngFor="let theme of themeChoices">
-                  <li (click)="update('theme', theme); themeDropdown.close();">
-                    {{theme}}
+                  <li (click)="update('theme', theme.value); themeDropdown.close();">
+                    {{theme.display}}
                   </li>
                 </ng-container>
               </ul>
@@ -79,7 +80,7 @@ import {GridGlobalService} from "../services/grid-global.service";
           <span (click)="setState(0)">
             <i class="fas fa-chevron-circle-left fa-lg"></i>
           </span>
-          <div class="right" ngbDropdown placement="bottom-right" #columnDropDown="ngbDropdown">
+          <!--<div class="right" ngbDropdown placement="bottom-right" #columnDropDown="ngbDropdown">
             <a id="groupDropdown" class="dropdown-toggle" ngbDropdownToggle>
               {{selectedColumn.name}}
             </a>
@@ -91,6 +92,14 @@ import {GridGlobalService} from "../services/grid-global.service";
                 </li>
               </ng-container>
             </ul>
+          </div>-->
+        </div>
+        <div class="sub-header">
+          <div *ngFor="let column of config.columnDefinitions; let i = index"
+               class="column"
+               [style.backgroundColor]="(column.name === selectedColumn.name) ? 'green' : (column.visible ? 'lightblue' : 'red')"
+               (click)="setSelectedColumn(column)">
+            {{column.name}}
           </div>
         </div>
         <div class="panel">
@@ -130,7 +139,9 @@ import {GridGlobalService} from "../services/grid-global.service";
   `,
   styles: [`
     
-      .window {}
+      .window {
+        min-width: 410px;
+      }
       
       .panel {
         padding: 5px;
@@ -141,6 +152,19 @@ import {GridGlobalService} from "../services/grid-global.service";
         display: inline-flex;
         width: 100%;
         padding: 5px;
+      }
+
+      .sub-header {
+        border-bottom: black 1px solid;
+        display: inline-flex;
+        width: 100%;
+        padding: 5px;
+      }
+
+      .sub-header .column {
+        margin-right: 10px;
+        background-color: lightblue;
+        border: gray 1px solid;
       }
       
       .right {
@@ -180,7 +204,7 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
 
   configSubscription: Subscription;
 
-  themeChoices: string[];
+  themeChoices: Dictionary[];
 
   constructor(private gridGlobalService: GridGlobalService, private changeDetectorRef: ChangeDetectorRef) {}
 
@@ -196,6 +220,15 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
     if (this.configSubscription) {
       this.configSubscription.unsubscribe();
     }
+  }
+
+  getDisplay(choices: Dictionary[], value: string) {
+    for (let choice of choices) {
+      if (choice.value === value) {
+        return choice.display;
+      }
+    }
+    return "N/A";
   }
 
   setState(state: number) {
@@ -224,7 +257,7 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
     let config = {};
     config[key] = value;
     this.grid.getGridService().updateConfig(config);
-    this.grid.doRender();
+    //this.grid.doRender();
   }
 
   setSelectedColumn(column: any) {
@@ -240,8 +273,8 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.grid.getGridService().updateConfig(this.config);
-    this.grid.doRender();
+    this.grid.getGridService().updateConfig(this.config, true);
+    //this.grid.doRender();
   }
 
   stop(event: Event) {

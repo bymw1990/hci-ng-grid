@@ -98,7 +98,7 @@ import {InjectableFactory} from "./utils/injectable.factory";
         <!-- Container for the header.  Split in to a left view (for fixed columns) and right view. -->
         <div #headerContent
              id="headerContent"
-             [class.hide]="!columnHeaders"
+             [class.hide]="!config.columnHeaders"
              [style.height.px]="rowHeight">
           <div #leftHeaderView
                id="leftHeaderView"
@@ -171,12 +171,13 @@ import {InjectableFactory} from "./utils/injectable.factory";
            (click)="$event.stopPropagation()">
         <div>
           <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
-            Showing page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
+            Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
           <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
             <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
             <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
-            <select [ngModel]="pageInfo.pageSize"
+            <select id="pageSelect"
+                    [ngModel]="pageInfo.pageSize"
                     (ngModelChange)="doPageSize($event)"
                     style="padding-left: 15px; padding-right: 15px;">
               <option *ngFor="let o of config.pageSizes" [ngValue]="o">{{o}}</option>
@@ -289,6 +290,10 @@ import {InjectableFactory} from "./utils/injectable.factory";
       padding: 3px;
     }
     
+    #pageSize {
+      border: none;
+    }
+    
     .hci-grid-busy {
       z-index: 9999;
       width: 100%;
@@ -396,7 +401,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   gridData: Array<Row> = new Array<Row>();
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
-  columnHeaders: boolean = false;
   gridContainerHeight: number = 0;
 
   /* Timers and data to determine the difference between single and double clicks. */
@@ -458,9 +462,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       if (changed) {
-        //this.initGridConfiguration();
         this.columnDefinitions = this.gridService.columnDefinitions;
-        this.columnHeaders = this.gridService.getColumnHeaders();
         this.gridService.initData();
         this.doRender();
       }
@@ -474,9 +476,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.config = config;
 
       this.gridService.pageInfo = this.gridService.pageInfo;
-      /*this.columnDefinitions = this.gridService.columnDefinitions;
-      this.columnHeaders = this.gridService.getColumnHeaders();
-      this.doRender();*/
 
       this.onConfigChange.emit(this.config);
     });
@@ -521,13 +520,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
         this.gridService.pageInfo = externalData.getExternalInfo().getPage();
         if (this.gridService.setOriginalData(externalData.getData())) {
-          this.initGridConfiguration();
+          this.gridService.pageInfo = this.gridService.pageInfo;
         }
         this.postInit();
       });
     } else if (this.boundData) {
       if (this.gridService.setOriginalData(this.boundData)) {
-        this.initGridConfiguration();
+        this.gridService.pageInfo = this.gridService.pageInfo;
       }
       this.postInit();
     } else {
@@ -1571,22 +1570,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       }
     }
-  }
-
-  /**
-   * Calls the initialization of the gridService, then pull in the configured column definitions.
-   *
-   * @deprecated
-   */
-  private initGridConfiguration() {
-    if (isDevMode()) {
-      console.debug("this.initGridConfiguration()");
-    }
-
-    this.gridService.pageInfo = this.gridService.pageInfo;
-    //this.gridService.initColumnDefinitions();
-    this.columnDefinitions = this.gridService.columnDefinitions;
-    this.columnHeaders = this.gridService.getColumnHeaders();
   }
 
   /**

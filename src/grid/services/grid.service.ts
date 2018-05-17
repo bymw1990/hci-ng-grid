@@ -84,7 +84,7 @@ export class GridService {
    *
    * @param config
    */
-  updateConfig(config: any) {
+  updateConfig(config: any, forceColumnsChanged?: boolean) {
     if (isDevMode()) {
       console.debug("updateConfig: " + JSON.stringify(config));
     }
@@ -96,6 +96,9 @@ export class GridService {
     }
 
     let columnsChanged: boolean = false;
+    if (forceColumnsChanged !== undefined && forceColumnsChanged) {
+      columnsChanged = forceColumnsChanged;
+    }
 
     // Selection Related Configuration
     if (config.rowSelect !== undefined) {
@@ -225,6 +228,24 @@ export class GridService {
   }
 
   initColumnProperties() {
+    this.columnDefinitions.sort((a: Column, b: Column) => {
+      if (a.preferredSortOrder && b.preferredSortOrder) {
+        if (a.preferredSortOrder < b.preferredSortOrder) {
+          return -1;
+        } else if (a.preferredSortOrder > b.preferredSortOrder) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else if (a.preferredSortOrder) {
+        return -1;
+      } else if (b.preferredSortOrder) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
     for (var j = 0; j < this.columnDefinitions.length; j++) {
       if (this.columnDefinitions[j].choiceUrl) {
         this.http.get(this.columnDefinitions[j].choiceUrl).subscribe((choices: any) => {
