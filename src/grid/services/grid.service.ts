@@ -181,7 +181,7 @@ export class GridService {
   }
 
   setNVisibleRows() {
-    if (this.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
+    if (this.config.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
       this.nVisibleRows = this.pageInfo.pageSize;
     }
   }
