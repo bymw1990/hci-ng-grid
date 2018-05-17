@@ -69,10 +69,10 @@ import {InjectableFactory} from "./utils/injectable.factory";
       <div *ngIf="title !== null || configurable" id="titleBar">
         <div>{{title}}</div>
         <div *ngIf="configurable" class="right" ngbDropdown placement="bottom-right">
-          <a id="groupDropdown" class="dropdown-toggle no-arrow" ngbDropdownToggle>
+          <a id="congigDropdownToggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
             <i class="fas fa-cog fa-lg"></i>
           </a>
-          <ul ngbDropdownMenu aria-labelledby="groupDropdown" class="dropdown-menu">
+          <ul ngbDropdownMenu id="congigDropdownMenu" aria-labelledby="congigDropdownToggle" class="dropdown-menu">
             <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
           </ul>
         </div>
@@ -211,6 +211,13 @@ import {InjectableFactory} from "./utils/injectable.factory";
 
     #titleBar .dropdown-toggle.no-arrow::after {
       display: none;
+    }
+
+    #congigDropdownMenu.dropdown-menu {
+      padding: 0;
+      margin: 0;
+      border: none;
+      background-color: transparent;
     }
     
     #mainContent {

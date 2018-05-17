@@ -20,7 +20,6 @@ export class Column {
     isKey: false,
     name: null,
     format: null,
-    sortOrder: 0,
     width: 0,
     widthPercent:  0,
     minWidth: 135,
@@ -53,8 +52,8 @@ export class Column {
   format: string = null;
   validator: any;
   sortable: boolean = true;
-  sortOrder: number = 0;
-  preferredSortOrder: number;
+  renderOrder: number = 0;
+  sortOrder: number;
   width: number = 0;
   widthPercent: number = 0;
   minWidth: number = 135;
@@ -102,7 +101,9 @@ export class Column {
   static deserializeArray(list: Object[]): Column[] {
     let columns: Column[] = [];
     for (var i = 0; i < list.length; i++) {
-      columns.push(Column.deserialize(list[i]));
+      let column: Column = Column.deserialize(list[i]);
+      column.sortOrder = i;
+      columns.push(column);
     }
     return columns;
   }

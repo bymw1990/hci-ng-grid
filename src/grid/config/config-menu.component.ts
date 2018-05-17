@@ -80,29 +80,26 @@ import {Dictionary} from "../model/dictionary.interface";
           <span (click)="setState(0)">
             <i class="fas fa-chevron-circle-left fa-lg"></i>
           </span>
-          <!--<div class="right" ngbDropdown placement="bottom-right" #columnDropDown="ngbDropdown">
-            <a id="groupDropdown" class="dropdown-toggle" ngbDropdownToggle>
-              {{selectedColumn.name}}
-            </a>
-            <ul ngbDropdownMenu aria-labelledby="groupDropdown" class="dropdown-menu pad">
-              <ng-container *ngFor="let column of config.columnDefinitions">
-                <li (click)="setSelectedColumn(column); columnDropDown.close();"
-                    [style.color]="column.visible ? 'green' : 'red'">
-                  {{column.name}}
-                </li>
-              </ng-container>
-            </ul>
-          </div>-->
         </div>
         <div class="sub-header">
           <div *ngFor="let column of config.columnDefinitions; let i = index"
                class="column"
-               [style.backgroundColor]="(column.name === selectedColumn.name) ? 'green' : (column.visible ? 'lightblue' : 'red')"
+               [class.selected]="column.name === selectedColumn.name"
+               [style.backgroundColor]="column.visible ? 'lightgreen' : 'lightcoral'"
                (click)="setSelectedColumn(column)">
             {{column.name}}
           </div>
         </div>
         <div class="panel">
+          <div class="cfg-row">
+            <div class="label">Position</div>
+            <div class="input">
+              <span (click)="updateSortOrder(selectedColumn.field, -2)" class="pad-right"><i class="fas fa-fast-backward"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, -1)" class="pad-right"><i class="fas fa-play" data-fa-transform="rotate-180"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, 1)" class="pad-right"><i class="fas fa-play"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, 2)" class="pad-right"><i class="fas fa-fast-forward"></i></span>
+            </div>
+          </div>
           <div class="cfg-row">
             <div class="label">Visible</div>
             <div class="input">
@@ -140,11 +137,17 @@ import {Dictionary} from "../model/dictionary.interface";
   styles: [`
     
       .window {
-        min-width: 410px;
+        min-width: 33vw;
+        max-width: 33vw;
+        background-color: white;
+        border: black 1px solid;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
       }
       
       .panel {
-        padding: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
       }
       
       .header {
@@ -165,27 +168,40 @@ import {Dictionary} from "../model/dictionary.interface";
         margin-right: 10px;
         background-color: lightblue;
         border: gray 1px solid;
+        padding: 3px 6px;
+        border-radius: 10px;
+        white-space: nowrap;
       }
-      
+
+      .sub-header .column.selected {
+        border: red 2px solid;
+      }
+
       .right {
         margin-left: auto;
         margin-right: 0px;
       }
       
+      .pad-right {
+        margin-right: 10px;
+      }
+      
       .cfg-row {
-        display: inline-flex;
-        padding-left: 0px;
-        padding-bottom: 5px;
+        display: flex;
+        padding: 5px;
+        align-items: center;
       }
 
       .cfg-row .label {
-        flex: 0 1 50%;
-        min-width: 200px;
+        flex: 1 1 50%;
       }
 
       .cfg-row .input {
-        flex: 0 1 50%;
-        min-width: 200px;
+        flex: 1 1 50%;
+      }
+
+      .cfg-row:nth-child(even) {
+        background: #f0f0f0;
       }
       
       .pad {
@@ -234,6 +250,10 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
   setState(state: number) {
     this.state = state;
     this.selectedColumn = this.config.columnDefinitions[0];
+  }
+
+  updateSortOrder(field: string, position: number) {
+    this.grid.getGridService().updateSortOrder(field, position);
   }
 
   updateArray(key: string, value: any[]) {
