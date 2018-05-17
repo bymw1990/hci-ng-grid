@@ -14,8 +14,8 @@ import {Dictionary} from "../model/dictionary.interface";
   template: `
     <div class="window" (click)="stop($event)" (mouseup)="stop($event)" (mousedown)="stop($event)">
       <div class="header">
-        <button class="btn btn-primary" (click)="setState(1)" [class.selected]="state === 1">General</button>
-        <button class="btn btn-primary" (click)="setState(2)" [class.selected]="state === 2">Columns</button>
+        <div class="bubble" (click)="setState(1)" [class.selected]="state === 1">General</div>
+        <div class="bubble" (click)="setState(2)" [class.selected]="state === 2">Columns</div>
       </div>
       <ng-container *ngIf="state === 1">
         <div class="panel">
@@ -68,7 +68,7 @@ import {Dictionary} from "../model/dictionary.interface";
       <ng-container *ngIf="state === 2">
         <div class="sub-header">
           <div *ngFor="let column of config.columnDefinitions; let i = index"
-               class="column"
+               class="bubble"
                [class.selected]="column.name === selectedColumn.name"
                [style.backgroundColor]="column.visible ? 'lightgreen' : 'lightcoral'"
                (click)="setSelectedColumn(column)">
@@ -143,23 +143,14 @@ import {Dictionary} from "../model/dictionary.interface";
         padding: 5px;
       }
 
-      .header .btn {
-        margin-right: 10px;
-      }
-      
-      .header .btn.selected {
-        background-color: green;
-        border-color: darkgreen;
-      }
-      
       .sub-header {
         border-bottom: black 1px solid;
-        display: inline-flex;
-        width: 100%;
+        display: flex;
         padding: 5px;
+        overflow-x: auto;
       }
 
-      .sub-header .column {
+      .header .bubble, .sub-header .bubble {
         margin-right: 10px;
         background-color: lightblue;
         border: gray 1px solid;
@@ -168,7 +159,7 @@ import {Dictionary} from "../model/dictionary.interface";
         white-space: nowrap;
       }
 
-      .sub-header .column.selected {
+      .header .bubble.selected, .sub-header .bubble.selected {
         border: red 2px solid;
       }
 

@@ -316,8 +316,8 @@ export class GridService {
 
     for (var j = 0; j < this.columnDefinitions.length; j++) {
       if (this.fixedColumns) {
+        this.columnDefinitions[j].isFixed = false;
         for (var k = 0; k < this.fixedColumns.length; k++) {
-          this.columnDefinitions[k].isFixed = false;
           if (this.columnDefinitions[j].field === this.fixedColumns[k]) {
             this.columnDefinitions[j].isFixed = true;
           }
