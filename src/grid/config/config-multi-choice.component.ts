@@ -9,7 +9,7 @@ import {Component, EventEmitter, Input, isDevMode, Output} from "@angular/core";
          (keyup)="$event.stopPropagation()">
       <div *ngFor="let o of model" class="bubble">
         <span *ngIf="!display">{{o}}</span>
-        <span *ngIf="display">{{o[display]}}</span>
+        <span *ngIf="display">{{getDisplay(o)}}</span>
         <span (click)="remove($event, o)" style="margin-left: 5px;">
           <i class="fas fa-times"></i>
         </span>
@@ -81,6 +81,15 @@ export class ConfigMultiChoiceComponent {
     if (isDevMode()) {
       console.debug("ConfigMultiChoiceComponent.ngOnInit: value: " + this.value + ", display: " + this.display);
     }
+  }
+
+  getDisplay(value: any) {
+    for (let choice of this.choices) {
+      if (value === choice[this.value]) {
+        return choice[this.display];
+      }
+    }
+    return "N/A";
   }
 
   addInput(event: KeyboardEvent) {

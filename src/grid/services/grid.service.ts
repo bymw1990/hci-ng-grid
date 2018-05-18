@@ -287,6 +287,9 @@ export class GridService {
     });
 
     for (var j = 0; j < this.columnDefinitions.length; j++) {
+      // Reset isLast
+      this.columnDefinitions[j].isLast = false;
+
       if (this.columnDefinitions[j].choiceUrl) {
         this.http.get(this.columnDefinitions[j].choiceUrl).subscribe((choices: any) => {
           this.columnDefinitions[j].choices = choices;
@@ -316,7 +319,9 @@ export class GridService {
 
     for (var j = 0; j < this.columnDefinitions.length; j++) {
       if (this.fixedColumns) {
+        // Reset isFixed to false
         this.columnDefinitions[j].isFixed = false;
+
         for (var k = 0; k < this.fixedColumns.length; k++) {
           if (this.columnDefinitions[j].field === this.fixedColumns[k]) {
             this.columnDefinitions[j].isFixed = true;

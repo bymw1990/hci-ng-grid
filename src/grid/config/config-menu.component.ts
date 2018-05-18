@@ -123,8 +123,8 @@ import {Dictionary} from "../model/dictionary.interface";
   styles: [`
     
       .window {
-        min-width: 33vw;
-        max-width: 33vw;
+        min-width: 40vw;
+        max-width: 40vw;
         background-color: white;
         border: black 1px solid;
         border-bottom-left-radius: 15px;
