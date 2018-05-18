@@ -67,8 +67,8 @@ import {GridGlobalService} from "./services/grid-global.service";
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="title !== null || configurable" id="titleBar">
-        <div>{{title}}</div>
+      <div *ngIf="config.title !== null || configurable" id="titleBar">
+        <div>{{config.title}}</div>
         <div *ngIf="configurable" class="right" ngbDropdown placement="bottom-right">
           <a id="congigDropdownToggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
             <i class="fas fa-cog fa-lg"></i>
@@ -371,11 +371,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   @Input() id: string;
   @Input("config") inputConfig: any = {};
-  @Input("linkedGroups") inputLinkedGroups: string[] = [];
+  @Input("linkedGroups") inputLinkedGroups: string[];
 
   // The following inputs are useful shortcuts for what can be provided via the config input.
   @Input() configurable: boolean = false;
-  @Input() title: string = null;
+  @Input("title") inputTitle: string;
   @Input("theme") inputTheme: string;
   @Input() rowSelect: boolean;
   @Input() cellSelect: boolean;
@@ -488,7 +488,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       this.gridService.pageInfo = this.gridService.pageInfo;
 
-      this.onConfigChange.emit(this.config);
+      // If the config update came externally, don't re-broadcast it.
+      if (this.config.external !== undefined && this.config.external) {
+        this.config.external = false;
+      } else {
+        this.onConfigChange.emit(this.config);
+      }
     });
 
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
@@ -632,15 +637,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (changes["boundData"]) {
       this.boundDataSubject.next(this.boundData);
     } else if (changes["config"]) {
+      // Flag this config as originating externally.  Don't re-broadcast.
+      this.inputConfig.external = true;
       this.gridService.updateConfig(this.inputConfig);
     } else {
+      // Flag this config as originating externally.  Don't re-broadcast.
+      this.inputConfig.external = true;
       this.buildConfigFromInput();
       this.gridService.updateConfig(this.inputConfig);
-      //this.changeDetectorRef.markForCheck();
-      //console.debug(this.config);
     }
-
-    //this.updateGridContainerHeight();
   }
 
   ngOnDestroy() {
@@ -1152,6 +1157,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private buildConfigFromInput() {
     if (this.id !== undefined) {
       this.inputConfig.id = this.id;
+    }
+    if (this.inputTitle !== undefined) {
+      this.inputConfig.title = this.inputTitle;
     }
     if (this.inputLinkedGroups !== undefined) {
       this.inputConfig.linkedGroups = this.inputLinkedGroups;

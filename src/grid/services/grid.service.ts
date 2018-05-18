@@ -36,7 +36,7 @@ export class GridService {
 
   columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
 
-  linkedGroups: string[] = [];
+  linkedGroups: string[];
 
   id: string;
   columnHeaders: boolean;
@@ -1090,8 +1090,10 @@ export class GridService {
   }
 
   globalClearPushFilter(name: string, filterInfo: FilterInfo) {
-    for (let linkedGroup of this.linkedGroups) {
-      this.gridGlobalService.clearPushFilter(linkedGroup, this.id, name, filterInfo);
+    if (this.linkedGroups) {
+      for (let linkedGroup of this.linkedGroups) {
+        this.gridGlobalService.clearPushFilter(linkedGroup, this.id, name, filterInfo);
+      }
     }
   }
 }

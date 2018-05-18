@@ -18,9 +18,11 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config0>
             <pre>
               &lt;hci-grid
+                #grid1
                 [data]="data1"
                 [configurable]="true"
                 [columnDefinitions]="columns1"
+                [userProfile]="grid1"
                 (onConfigChange)="configChange($event)"
                 [pageSize]="5"
                 [pageSizes]="[5, 10, 25]"&gt;
@@ -29,9 +31,11 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </ng-template>
         </div>
         <p>
-          <hci-grid [data]="data1"
+          <hci-grid #grid1
+                    [data]="data1"
                     [configurable]="true"
                     [columnDefinitions]="columns1"
+                    [userProfile]="grid1"
                     (onConfigChange)="configChange($event)"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">

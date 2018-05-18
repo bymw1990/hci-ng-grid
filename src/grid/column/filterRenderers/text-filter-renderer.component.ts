@@ -12,17 +12,27 @@ import {FilterInfo} from "../../utils/filter-info";
          (mouseup)="stop($event)"
          (click)="stop($event)"
          [style.width.px]="width"
-         style="align-items: center; padding: 0.5rem 0; background-color: white; border: black 1px solid; position: absolute;">
+         style="align-items: center; padding: 5px; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
              [ngModel]="filterInfo.value"
              (ngModelChange)="valueChange($event)"
              (click)="inputClick($event)"
              style="width: 100%; margin: 0 0.5rem;" />
-      <div (click)="valueClear()" style="padding-left: 5px; padding-right: 5px; color: red;">
-        <i class="fas fa-times"></i>
+      <div (click)="valueClear()"
+           placement="top"
+           container="body"
+           ngbTooltip="Clear Filter"
+           style="padding-left: 5px; padding-right: 5px; color: red;">
+        <i class="fas fa-times fa-lg"></i>
       </div>
-      <div (click)="shared = !shared" [style.color]="shared ? 'green' : 'red'">
-        <i class="fas fa-share-alt-square"></i>
+      <div *ngIf="gridService.linkedGroups"
+           (click)="shared = !shared"
+           placement="top"
+           container="body"
+           ngbTooltip="Share Filter with other Grids"
+           [style.color]="shared ? 'green' : 'red'"
+           style="padding-left: 5px; padding-right: 5px;">
+        <i class="fas fa-share-alt-square fa-lg"></i>
       </div>
     </div>
   `
@@ -48,6 +58,10 @@ export class TextFilterRenderer extends FilterRenderer {
 
   reset() {
     this.filterInfo = new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE");
+
+    if (this.shared) {
+      this.gridService.globalClearPushFilter(this.column.name, this.filterInfo);
+    }
   }
 
   valueChange(value: string) {

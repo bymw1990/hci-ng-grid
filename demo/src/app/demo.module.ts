@@ -52,6 +52,7 @@ import {LinkedDemoModule} from "./linked/linked.module";
 
 import {GridModule} from "hci-ng-grid/index";
 import {LabPopup} from "./components/lab.component";
+import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
 
 @NgModule({
   imports: [
@@ -99,7 +100,8 @@ import {LabPopup} from "./components/lab.component";
     EmptyGridComponent,
     ResizeDemoComponent,
     LinkedDemoComponent,
-    LabPopup
+    LabPopup,
+    UserProfileDirective
   ],
   providers: [
     DataGeneratorService
