@@ -13,6 +13,7 @@ import {PageInfo} from "../utils/page-info";
 import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
+import {GridGlobalService} from "./grid-global.service";
 
 @Injectable()
 export class GridService {
@@ -35,6 +36,9 @@ export class GridService {
 
   columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
 
+  linkedGroups: string[] = [];
+
+  id: string;
   columnHeaders: boolean;
   rowSelect: boolean;
   keyNavigation: boolean;
@@ -77,7 +81,7 @@ export class GridService {
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {}
 
   /**
    * Expects an object with the above configuration options as fields.
@@ -98,6 +102,16 @@ export class GridService {
     let columnsChanged: boolean = false;
     if (forceColumnsChanged !== undefined && forceColumnsChanged) {
       columnsChanged = forceColumnsChanged;
+    }
+
+    if (config.id) {
+      this.id = config.id;
+    }
+    if (config.linkedGroups) {
+      this.linkedGroups = config.linkedGroups;
+      for (let linkedGroup of this.linkedGroups) {
+        this.gridGlobalService.register(linkedGroup, this);
+      }
     }
 
     // Selection Related Configuration
@@ -1067,4 +1081,17 @@ export class GridService {
     return this.valueSubject;
   }
 
+  getColumnByName(name: string): Column {
+    for (let column of this.columnDefinitions) {
+      if (column.name === name) {
+        return column;
+      }
+    }
+  }
+
+  globalClearPushFilter(name: string, filterInfo: FilterInfo) {
+    for (let linkedGroup of this.linkedGroups) {
+      this.gridGlobalService.clearPushFilter(linkedGroup, this.id, name, filterInfo);
+    }
+  }
 }

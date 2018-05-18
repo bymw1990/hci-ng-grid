@@ -30,6 +30,7 @@ import {ClickRowSelectListener} from "./event/click-row-select.listener";
 import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
+import {GridGlobalService} from "./services/grid-global.service";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -368,7 +369,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("data") boundData: Object[] = null;
   @Input("dataCall") onExternalDataCall: Function;
 
+  @Input() id: string;
   @Input("config") inputConfig: any = {};
+  @Input("linkedGroups") inputLinkedGroups: string[] = [];
 
   // The following inputs are useful shortcuts for what can be provided via the config input.
   @Input() configurable: boolean = false;
@@ -447,7 +450,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
               private injector: Injector,
               private gridService: GridService,
               private gridEventService: GridEventService,
-              private gridMessageService: GridMessageService) {}
+              private gridMessageService: GridMessageService,
+              private gridGlobalService: GridGlobalService) {}
 
   ngOnInit() {
     this.registerEventListeners();
@@ -1146,6 +1150,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * combination of config and @Input settings.
    */
   private buildConfigFromInput() {
+    if (this.id !== undefined) {
+      this.inputConfig.id = this.id;
+    }
+    if (this.inputLinkedGroups !== undefined) {
+      this.inputConfig.linkedGroups = this.inputLinkedGroups;
+    }
     if (this.rowSelect !== undefined) {
       this.inputConfig.rowSelect = this.rowSelect;
     }

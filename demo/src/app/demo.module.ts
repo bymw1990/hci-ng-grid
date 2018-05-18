@@ -28,6 +28,8 @@ import {EmptyGridComponent} from "./empty/empty-grid.component";
 import {EventComponent} from "./event/event.component";
 import {PopupComponent} from "./popup/popup.component";
 import {ResizeDemoComponent} from "./resize/resize.component";
+import {LinkedDemoComponent} from "./linked/linked.component";
+
 
 import {SimpleGridModule} from "./simple/simple-grid.module";
 import {SelectGridModule} from "./select/select-grid.module";
@@ -46,6 +48,7 @@ import {EmptyGridModule} from "./empty/empty-grid.module";
 import {EventModule} from "./event/event.module";
 import {PopupModule} from "./popup/popup.module";
 import {ResizeDemoModule} from "./resize/resize.module";
+import {LinkedDemoModule} from "./linked/linked.module";
 
 import {GridModule} from "hci-ng-grid/index";
 import {LabPopup} from "./components/lab.component";
@@ -73,6 +76,7 @@ import {LabPopup} from "./components/lab.component";
     EventModule,
     PopupModule,
     ResizeDemoModule,
+    LinkedDemoModule,
     GridModule.forRoot({})
   ],
   declarations: [
@@ -94,6 +98,7 @@ import {LabPopup} from "./components/lab.component";
     PopupComponent,
     EmptyGridComponent,
     ResizeDemoComponent,
+    LinkedDemoComponent,
     LabPopup
   ],
   providers: [

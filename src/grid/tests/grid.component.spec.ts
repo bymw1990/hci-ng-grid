@@ -17,7 +17,7 @@ describe("DashboardComponent Tests", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        GridModule
+        GridModule.forRoot({})
       ]
     });
   });

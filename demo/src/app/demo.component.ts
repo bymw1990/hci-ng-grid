@@ -21,7 +21,7 @@ declare const VERSION: string;
         <span style="color: gray; margin-left: 0; margin-right: auto;">v{{version}}</span>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
-          <div ngbDropdownMenu aria-labelledby="routeList">
+          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/popup">Cell Popup</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
@@ -33,6 +33,7 @@ declare const VERSION: string;
             <a class="dropdown-item" routerLink="/edit">Inline Edit and Key Nav</a>
             <a class="dropdown-item" routerLink="/filter">Filtering</a>
             <a class="dropdown-item" routerLink="/fixed">Fixed Columns</a>
+            <a class="dropdown-item" routerLink="/linked">Linked Grids</a>
             <a class="dropdown-item" routerLink="/paging">Paging</a>
             <a class="dropdown-item" routerLink="/resize">Resize</a>
             <a class="dropdown-item" routerLink="/row-group">Row Grouping</a>

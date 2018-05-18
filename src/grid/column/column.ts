@@ -129,7 +129,9 @@ export class Column {
   }
 
   addFilter(filterInfo: FilterInfo) {
-    this.filters.push(filterInfo);
+    if (filterInfo.value.length > 0) {
+      this.filters.push(filterInfo);
+    }
   }
 
   removeFilter(filterInfo: FilterInfo) {

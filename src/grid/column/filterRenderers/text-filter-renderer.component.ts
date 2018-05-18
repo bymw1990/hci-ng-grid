@@ -19,7 +19,10 @@ import {FilterInfo} from "../../utils/filter-info";
              (click)="inputClick($event)"
              style="width: 100%; margin: 0 0.5rem;" />
       <div (click)="valueClear()" style="padding-left: 5px; padding-right: 5px; color: red;">
-        <span class="fas fa-times"></span>
+        <i class="fas fa-times"></i>
+      </div>
+      <div (click)="shared = !shared" [style.color]="shared ? 'green' : 'red'">
+        <i class="fas fa-share-alt-square"></i>
       </div>
     </div>
   `
@@ -30,6 +33,7 @@ export class TextFilterRenderer extends FilterRenderer {
 
   @Input() column: Column;
 
+  shared = false;
   width: number = 200;
   filterInfo: FilterInfo;
 
@@ -52,11 +56,14 @@ export class TextFilterRenderer extends FilterRenderer {
     }
 
     this.column.clearFilters();
-    if (value.length > 0) {
-      this.filterInfo.value = value;
-      this.column.addFilter(this.filterInfo);
-    }
+    this.filterInfo.value = value;
+    this.column.addFilter(this.filterInfo);
+
     this.gridService.filter();
+
+    if (this.shared) {
+      this.gridService.globalClearPushFilter(this.column.name, this.filterInfo);
+    }
   }
 
   valueClear() {
