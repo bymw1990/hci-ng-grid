@@ -3,7 +3,6 @@ import {Inject, Injectable, isDevMode} from "@angular/core";
 import {Dictionary} from "../model/dictionary.interface";
 import {GridService} from "./grid.service";
 import {FilterInfo} from "../utils/filter-info";
-import {Column} from "../column/column";
 
 @Injectable()
 export class GridGlobalService {
@@ -48,12 +47,10 @@ export class GridGlobalService {
     }
   }
 
-  clearPushFilter(group: string, id: string, name: string, filterInfo: FilterInfo) {
+  clearPushFilter(group: string, id: string, field: string, filters: FilterInfo[]) {
     for (let grid of this.groupMap.get(group)) {
       if (grid.id !== id) {
-        let column: Column = grid.getColumnByName(name);
-        column.clearFilters();
-        column.addFilter(filterInfo);
+        grid.addFilters(field, filters);
         grid.filter();
       }
     }

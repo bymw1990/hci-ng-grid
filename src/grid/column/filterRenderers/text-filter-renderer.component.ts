@@ -14,7 +14,7 @@ import {FilterInfo} from "../../utils/filter-info";
          [style.width.px]="width"
          style="align-items: center; padding: 5px; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
-             [ngModel]="filterInfo.value"
+             [ngModel]="filters[0].value"
              (ngModelChange)="valueChange($event)"
              (click)="inputClick($event)"
              style="width: 100%; margin: 0 0.5rem;" />
@@ -43,9 +43,7 @@ export class TextFilterRenderer extends FilterRenderer {
 
   @Input() column: Column;
 
-  shared = false;
   width: number = 200;
-  filterInfo: FilterInfo;
 
   ngAfterViewInit() {
     this.input.nativeElement.focus();
@@ -57,26 +55,26 @@ export class TextFilterRenderer extends FilterRenderer {
   }
 
   reset() {
-    this.filterInfo = new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE");
+    super.reset();
+    this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE");
 
     if (this.shared) {
-      this.gridService.globalClearPushFilter(this.column.name, this.filterInfo);
+      this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
   }
 
   valueChange(value: string) {
-    if (!this.filterInfo) {
+    if (!this.filters) {
       this.setConfig({});
     }
 
-    this.column.clearFilters();
-    this.filterInfo.value = value;
-    this.column.addFilter(this.filterInfo);
+    this.filters[0].value = value;
 
+    this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
 
     if (this.shared) {
-      this.gridService.globalClearPushFilter(this.column.name, this.filterInfo);
+      this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
   }
 
@@ -84,7 +82,7 @@ export class TextFilterRenderer extends FilterRenderer {
     super.valueClear();
 
     this.reset();
-    this.column.clearFilters();
+    this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
   }
 

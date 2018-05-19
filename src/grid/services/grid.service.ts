@@ -29,7 +29,7 @@ export class GridService {
     externalPaging: false,
     pageSizes: [10, 25, 50],
     nVisibleRows: -1
-  }
+  };
 
   config: any = {};
   configSubject: BehaviorSubject<any> = new BehaviorSubject<any>(GridService.defaultConfig);
@@ -72,6 +72,8 @@ export class GridService {
 
   gridElement: HTMLElement;
 
+  private filterMap: Map<string, FilterInfo[]> = new Map<string, FilterInfo[]>();
+  private filterMapSubject: BehaviorSubject<Map<string, FilterInfo[]>> = new BehaviorSubject<Map<string, FilterInfo[]>>(this.filterMap);
   private configured: boolean = false;
   private nUtilityColumns: number = 0;
   private nFixedColumns: number = 0;
@@ -610,11 +612,9 @@ export class GridService {
   filter() {
     if (this.externalFiltering) {
       this.filterInfo = new Array<FilterInfo>();
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        for (var k = 0; k < this.columnDefinitions[j].filters.length; k++) {
-          this.filterInfo.push(this.columnDefinitions[j].filters[k]);
-        }
-      }
+      this.filterMap.forEach((filters: FilterInfo[]) => {
+        this.filterInfo = this.filterInfo.concat(filters);
+      });
       if (isDevMode()) {
         console.debug("GridService.filter: externalFiltering: n: " + this.filterInfo.length);
       }
@@ -628,23 +628,38 @@ export class GridService {
     }
   }
 
+  getColumnIndexByField(field: string) {
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      if (this.columnDefinitions[j].field === field) {
+        return j;
+      }
+    }
+    return -1;
+  }
+
   filterPreparedData() {
     let filteredData: Array<Row> = new Array<Row>();
 
     for (var i = 0; i < this.preparedData.length; i++) {
       let inc: boolean = true;
+
       for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].filters.length > 0 && this.preparedData[i].get(j).value === null) {
+        let filters: FilterInfo[] = this.filterMap.get(this.columnDefinitions[j].field);
+        if (!filters) {
+          continue;
+        }
+
+        if (filters.length > 0 && this.preparedData[i].get(j).value === null) {
           inc = false;
           break;
         }
 
         if (this.columnDefinitions[j].dataType === "choice") {
-          if (this.columnDefinitions[j].filters.length === 0) {
+          if (filters.length === 0) {
             inc = true;
           } else {
             let colInc: boolean = false;
-            for (let filterInfo of this.columnDefinitions[j].filters) {
+            for (let filterInfo of filters) {
               if (this.preparedData[i].get(j).value === filterInfo.value) {
                 colInc = true;
                 break;
@@ -658,7 +673,7 @@ export class GridService {
           }
         } else {
           let colInc: boolean = true;
-          for (let filterInfo of this.columnDefinitions[j].filters) {
+          for (let filterInfo of filters) {
             if (filterInfo.dataType === "number") {
               colInc = false;
               if (filterInfo.operator === "E") {
@@ -1089,11 +1104,32 @@ export class GridService {
     }
   }
 
-  globalClearPushFilter(name: string, filterInfo: FilterInfo) {
-    if (this.linkedGroups) {
-      for (let linkedGroup of this.linkedGroups) {
-        this.gridGlobalService.clearPushFilter(linkedGroup, this.id, name, filterInfo);
-      }
+  getFilterMapSubject(): BehaviorSubject<Map<string, FilterInfo[]>> {
+    return this.filterMapSubject;
+  }
+
+  addFilter(field: string, filterInfo: FilterInfo) {
+    /*if (!this.filterMap.has(field)) {
+      this.filterMap.set(field, []);
     }
+    this.filterMap.get(field).push(filterInfo);
+
+    this.filterMapSubject.next(this.filterMap);*/
+  }
+
+  addFilters(field: string, filters: FilterInfo[]) {
+    /*if (!this.filterMap.has(field)) {
+      this.filterMap.set(field, []);
+    }
+    this.filterMap.set(field, filters);
+    this.filterMapSubject.next(this.filterMap);*/
+  }
+
+  globalClearPushFilter(field: string, filters: FilterInfo[]) {
+    /*if (this.linkedGroups) {
+      for (let linkedGroup of this.linkedGroups) {
+        this.gridGlobalService.clearPushFilter(linkedGroup, this.id, field, filters);
+      }
+    }*/
   }
 }

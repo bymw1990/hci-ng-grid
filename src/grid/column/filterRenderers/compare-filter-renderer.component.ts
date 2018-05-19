@@ -1,11 +1,10 @@
-import {Component, ElementRef, Input, isDevMode} from "@angular/core";
+import {Component, Input} from "@angular/core";
 
 import * as moment from "moment";
 
 import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
-import {GridService} from "../../services/grid.service";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -61,11 +60,11 @@ import {GridService} from "../../services/grid.service";
           </div>
         </ng-container>
         <ng-container *ngIf="column.dataType !== 'date'">
-          <input [ngModel]="filterInfo.value"
+          <input [ngModel]="filters[0].value"
                  (ngModelChange)="valueChange($event)"
                  class="value inputs" />
           <input *ngIf="operator === 'B' || operator === 'O'"
-                 [ngModel]="filterInfo.highValue"
+                 [ngModel]="filters[0].highValue"
                  (ngModelChange)="highValueChange($event)"
                  class="value inputs" />
         </ng-container>
@@ -77,6 +76,15 @@ import {GridService} from "../../services/grid.service";
         <span (click)="valueClear()" style="color: red;">
           <span class="fas fa-times"></span>
         </span>
+        <div *ngIf="gridService.linkedGroups"
+             (click)="shared = !shared"
+             placement="top"
+             container="body"
+             ngbTooltip="Share Filter with other Grids"
+             [style.color]="shared ? 'green' : 'red'"
+             style="padding-left: 5px; padding-right: 5px;">
+          <i class="fas fa-share-alt-square fa-lg"></i>
+        </div>
       </div>
     </div>
   `,
@@ -137,7 +145,6 @@ export class CompareFilterRenderer extends FilterRenderer {
   width: number = 300;
   changed: boolean = false;
   valid: boolean = false;
-  filterInfo: FilterInfo;
 
   lowValue: any;
   highValue: any;
@@ -155,10 +162,13 @@ export class CompareFilterRenderer extends FilterRenderer {
   ];
 
   filter() {
-    this.column.clearFilters();
-    this.column.addFilter(this.filterInfo);
+    this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
     this.changed = false;
+
+    if (this.shared) {
+      this.gridService.globalClearPushFilter(this.column.field, this.filters);
+    }
   }
 
   setConfig(config: any) {
@@ -168,21 +178,23 @@ export class CompareFilterRenderer extends FilterRenderer {
 
   operatorChange(operator: string) {
     this.operator = operator;
-    this.filterInfo.operator = operator;
+    this.filters[0].operator = operator;
     this.changed = true;
   }
 
   reset() {
+    super.reset();
+
     if (this.column.dataType === "number") {
-      this.filterInfo = new FilterInfo(this.column.field, this.column.dataType, "0", "0", "E");
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E");
     } else if (this.column.dataType === "date") {
-      this.filterInfo = new FilterInfo(this.column.field, this.column.dataType, moment().toISOString(), moment().toISOString(), "E");
-    }  else {
-      this.filterInfo = new FilterInfo(this.column.field, this.column.dataType, "", "", "E");
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E");
+    } else {
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E");
     }
 
-    this.lowValue = this.format(this.filterInfo.value);
-    this.highValue = this.format(this.filterInfo.highValue);
+    this.lowValue = this.format(this.filters[0].value);
+    this.highValue = this.format(this.filters[0].highValue);
   }
 
   format(value: any): any {
@@ -205,20 +217,20 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   valueChange(value: any) {
-    if (!this.filterInfo) {
+    if (!this.filters) {
       this.setConfig({});
     }
 
-    this.filterInfo.value = this.parse(value);
+    this.filters[0].value = this.parse(value);
     this.changed = true;
   }
 
   highValueChange(value: any) {
-    if (!this.filterInfo) {
+    if (!this.filters) {
       this.setConfig({});
     }
 
-    this.filterInfo.highValue = this.parse(value);
+    this.filters[0].highValue = this.parse(value);
     this.changed = true;
   }
 
@@ -226,8 +238,12 @@ export class CompareFilterRenderer extends FilterRenderer {
     super.valueClear();
 
     this.reset();
-    this.column.clearFilters();
+    this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
+
+    if (this.shared) {
+      this.gridService.globalClearPushFilter(this.column.field, this.filters);
+    }
   }
 
 }

@@ -1,41 +1,31 @@
-import {
-  Component, Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, isDevMode,
-  ViewContainerRef
-} from "@angular/core";
+import {Component, Directive, EventEmitter, Input, isDevMode} from "@angular/core";
 
 @Directive({
   selector: "[userProfile]"
 })
 export class UserProfileDirective {
 
-  @Input("userProfile")
-  host: Component;
+  @Input("userProfile") host: Component;
+  @Input("config") config: string = "config";
+  @Input("configChanged") configChanged: string = "onConfigChanged";
 
   ngOnInit() {
-    if (isDevMode()) {
-      console.debug("ngAfterViewInit");
-      console.debug(this.host.template);
-    }
-
-    if (this.host && this.host["onConfigChange"]) {
-      (<EventEmitter<any>>this.host["onConfigChange"]).subscribe((config: any) => {
-        console.debug("UserProfileDirective.onConfigChange");
-        console.debug(config);
-        this.host["inputConfig"] = Object.assign(config, {title: "Test"});
+    if (this.host && this.host[this.configChanged]) {
+      (<EventEmitter<any>>this.host[this.configChanged]).subscribe((config: any) => {
+        if (isDevMode()) {
+          console.debug("UserProfileDirective.onConfigChange");
+          console.debug(config);
+        }
+        //this.host["inputConfig"] = Object.assign(config, {title: "Test"});
       });
     }
   }
-/*
 
-  @HostListener("onConfigChange")
-  onConfigChange(config: any) {
-    console.debug("UserProfileDirective.onConfigChange");
-    if (!config) {
-      console.debug("Config is null");
-    } else {
-      console.debug("Config: " + JSON.stringify(config));
-    }
-    console.debug(config);
-    console.debug("UserProfileDirective.onConfigChange Done");
-  }*/
+  getUserProfile() {
+    /*
+    this.http.get("/api/user-profile/lookup).subscribe((configs: any[]) => {
+      // this.host[this.config] = config;
+    });
+    */
+  }
 }

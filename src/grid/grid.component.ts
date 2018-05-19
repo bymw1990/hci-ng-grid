@@ -91,7 +91,7 @@ import {GridGlobalService} from "./services/grid-global.service";
         </div>
         
         <!-- Overlay messages for loading content or re-rendering. -->
-        <div #emptyContent [style.display]="gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
+        <div #emptyContent [style.display]="!gridData || gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
           <div [style.display]="!busy ? 'flex' : 'none'" class="empty-content-text">No Data</div>
           <div [style.display]="busy ? 'flex' : 'none'" class="empty-content-text">Loading Data...</div>
         </div>
@@ -105,7 +105,7 @@ import {GridGlobalService} from "./services/grid-global.service";
                id="leftHeaderView"
                class="header-view"
                [style.height.px]="rowHeight">
-            <div id="leftHeaderContainer" *ngIf="columnDefinitions.length > 0">
+            <div id="leftHeaderContainer" *ngIf="columnDefinitions && columnDefinitions.length > 0">
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
@@ -124,7 +124,7 @@ import {GridGlobalService} from "./services/grid-global.service";
                id="rightHeaderView"
                class="header-view"
                [style.height.px]="rowHeight">
-            <div id="rightHeaderContainer" *ngIf="columnDefinitions.length > 0">
+            <div id="rightHeaderContainer" *ngIf="columnDefinitions && columnDefinitions.length > 0">
               <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
                                  [id]="'header-' + column.id"
                                  [column]="column"
@@ -1366,7 +1366,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private renderCellsAndData() {
     if (isDevMode()) {
-      console.debug("renderCellsAndData");
+      console.debug("renderCellsAndData: columnDefinitions.length: " + this.columnDefinitions.length + " gridData.length: " + this.gridData.length);
     }
     this.changeDetectorRef.detectChanges();
     this.updateGridContainerHeight();

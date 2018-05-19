@@ -2,12 +2,15 @@ import {ElementRef, EventEmitter, Output} from "@angular/core";
 
 import {Column} from "../../column/column";
 import {GridService} from "../../services/grid.service";
+import {FilterInfo} from "../../utils/filter-info";
 
 export class FilterRenderer {
 
   @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  filters: FilterInfo[];
   config: any = {};
+  shared = false;
   column: Column;
   width: number = 250;
   gridService: GridService;
@@ -18,6 +21,23 @@ export class FilterRenderer {
     this.elementRef = elementRef;
   }
 
+  ngOnInit() {
+    this.filtersSubscribe();
+  }
+
+  filtersSubscribe() {
+    this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, FilterInfo[]>) => {
+      if (this.column) {
+        if (filterMap.has(this.column.field)) {
+          this.filters = filterMap.get(this.column.field);
+        } else {
+          this.reset();
+          this.gridService.addFilters(this.column.field, this.filters);
+        }
+      }
+    });
+  }
+
   getConfig(): any {
     return this.config;
   }
@@ -25,6 +45,12 @@ export class FilterRenderer {
   setConfig(config: any) {
     if (config) {
       this.config = config;
+    }
+  }
+
+  reset() {
+    if (!this.filters) {
+      this.filters = [];
     }
   }
 

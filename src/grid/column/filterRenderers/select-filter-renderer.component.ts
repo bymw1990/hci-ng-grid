@@ -38,6 +38,15 @@ import {FilterInfo} from "../../utils/filter-info";
         <span (click)="valueClear()" style="color: red;">
           <span class="fas fa-times-circle"></span>
         </span>
+        <div *ngIf="gridService.linkedGroups"
+             (click)="shared = !shared"
+             placement="top"
+             container="body"
+             ngbTooltip="Share Filter with other Grids"
+             [style.color]="shared ? 'green' : 'red'"
+             style="padding-left: 5px; padding-right: 5px;">
+          <i class="fas fa-share-alt-square fa-lg"></i>
+        </div>
       </div>
     </div>
   `,
@@ -106,13 +115,14 @@ export class SelectFilterRenderer extends FilterRenderer {
   changed: boolean = false;
 
   filter() {
-    this.column.clearFilters();
+    this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.column.addFilter(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E"));
+        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E"));
       }
     }
 
+    this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
     this.changed = false;
   }
@@ -153,7 +163,7 @@ export class SelectFilterRenderer extends FilterRenderer {
 
     this.changed = false;
     this.deselectAll();
-    this.column.clearFilters();
+    this.gridService.addFilters(this.column.field, []);
     this.gridService.filter();
   }
 

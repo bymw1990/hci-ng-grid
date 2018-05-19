@@ -41,8 +41,7 @@ export class Column {
     editRenderer: TextEditRenderer,
     viewConfig: {},
     viewRenderer: CellTextView,
-    filterConfig: {},
-    filters: []
+    filterConfig: {}
   };
 
   id: number;
@@ -89,7 +88,6 @@ export class Column {
 
   filterConfig: any = {};
   filterRenderer: Type<FilterRenderer>;
-  filters: Array<FilterInfo> = [];
 
   renderLeft: number = 0;
   renderWidth: number = 0;
@@ -126,20 +124,6 @@ export class Column {
     }
 
     return this.viewRendererInstance;
-  }
-
-  addFilter(filterInfo: FilterInfo) {
-    if (filterInfo.value.length > 0) {
-      this.filters.push(filterInfo);
-    }
-  }
-
-  removeFilter(filterInfo: FilterInfo) {
-    this.filters = [];
-  }
-
-  clearFilters() {
-    this.filters = [];
   }
 
   formatValue(value: any): string {
