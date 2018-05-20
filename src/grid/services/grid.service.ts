@@ -714,6 +714,11 @@ export class GridService {
               }
             } else if (filterInfo.dataType === "date") {
               colInc = false;
+              if (!filterInfo.value || !filterInfo.highValue) {
+                colInc = true;
+                break;
+              }
+
               let v: any = this.preparedData[i].get(j).value.substr(0, 10);
               let f1: any = filterInfo.value.substr(0, 10);
               let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
@@ -755,7 +760,10 @@ export class GridService {
                 }
               }
             } else {
-              if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
+              if (this.preparedData[i].get(j).value) {
+                colInc = false;
+                break;
+              } else if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
                 colInc = false;
                 break;
               }

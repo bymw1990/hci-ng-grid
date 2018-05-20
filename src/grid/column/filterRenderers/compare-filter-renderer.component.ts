@@ -198,7 +198,7 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   format(value: any): any {
-    if (value === null) {
+    if (!value) {
       return value;
     } else if (this.column.dataType === "date") {
       let d: string[] = value.split("-");
