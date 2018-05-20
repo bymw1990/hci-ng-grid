@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, ElementRef, HostListener, Renderer2} from "@angular/core";
+import {ChangeDetectorRef, ElementRef, HostListener, isDevMode, Renderer2} from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
 
@@ -101,7 +101,11 @@ export class CellEditRenderer {
   }
 
   setFormat(format: string) {
-    if (format === null) {
+    if (isDevMode()) {
+      console.debug("CellEditRenderer.setFormat: " + format);
+    }
+
+    if (!format) {
       return;
     }
 

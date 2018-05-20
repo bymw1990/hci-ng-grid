@@ -824,7 +824,7 @@ export class GridService {
    * @param originalData
    */
   initDataWithOptions(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
-    if (this.originalData === null) {
+    if (!this.originalData) {
       return;
     }
 
@@ -908,6 +908,12 @@ export class GridService {
   }
 
   prepareData() {
+    if (!this.columnDefinitions) {
+      if (isDevMode()) {
+        console.info("prepareData: No Columns, returning.");
+      }
+      return;
+    }
     if (isDevMode()) {
       console.info("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columnDefinitions.length);
     }
@@ -1109,27 +1115,27 @@ export class GridService {
   }
 
   addFilter(field: string, filterInfo: FilterInfo) {
-    /*if (!this.filterMap.has(field)) {
+    if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
     }
     this.filterMap.get(field).push(filterInfo);
 
-    this.filterMapSubject.next(this.filterMap);*/
+    this.filterMapSubject.next(this.filterMap);
   }
 
   addFilters(field: string, filters: FilterInfo[]) {
-    /*if (!this.filterMap.has(field)) {
+    if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
     }
     this.filterMap.set(field, filters);
-    this.filterMapSubject.next(this.filterMap);*/
+    this.filterMapSubject.next(this.filterMap);
   }
 
   globalClearPushFilter(field: string, filters: FilterInfo[]) {
-    /*if (this.linkedGroups) {
+    if (this.linkedGroups) {
       for (let linkedGroup of this.linkedGroups) {
         this.gridGlobalService.clearPushFilter(linkedGroup, this.id, field, filters);
       }
-    }*/
+    }
   }
 }

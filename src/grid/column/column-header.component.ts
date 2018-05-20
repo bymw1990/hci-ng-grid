@@ -22,8 +22,8 @@ import {Observable} from "rxjs/Observable";
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
           <a id="filterDropdownToggle"
              (click)="showFilter()"
-             class="dropdown-toggle"
-             [style.color]="column.filters.length > 0 ? '#00aa00' : 'inherit'">
+             class="dropdown-toggle">
+             <!--[style.color]="column.filters.length > 0 ? '#00aa00' : 'inherit'">-->
             <i class="fas fa-filter"></i>
           </a>
         </div>
