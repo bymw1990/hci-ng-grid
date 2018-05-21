@@ -1,5 +1,8 @@
 import {Component} from "@angular/core";
-import {CheckRowSelectView, Column} from "hci-ng-grid";
+import {
+  CheckRowSelectView, ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer,
+  SelectFilterRenderer, TextFilterRenderer
+} from "hci-ng-grid";
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -142,9 +145,9 @@ export class DynamicConfigGridComponent {
     { field: "idPatient", name: "ID", visible: false },
     { field: "lastName", name: "Last Name", widthPercent: 50 },
     { field: "middleName", name: "Middle Name", widthPercent: 10 },
-    { field: "firstName", name: "First Name" },
-    { field: "dob", name: "Date of Birth", dataType: "date" },
-    { field: "gender", name: "Gender" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];
 

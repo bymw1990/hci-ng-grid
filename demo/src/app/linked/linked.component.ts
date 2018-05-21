@@ -1,7 +1,10 @@
 import {Component} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
-import {TextFilterRenderer} from "hci-ng-grid";
+import {
+  ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer,
+  TextFilterRenderer
+} from "hci-ng-grid";
 
 @Component({
   selector: "linked-grid",
@@ -49,22 +52,22 @@ export class LinkedDemoComponent {
   data1: any[];
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
+    { field: "lastName", name: "Last Name" },
     { field: "middleName", name: "Middle Name" },
-    { field: "firstName", name: "First Name" },
-    { field: "dob", name: "Date of Birth", dataType: "date" },
-    { field: "gender", name: "Gender" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];
 
   data2: any[];
   columns2: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
+    { field: "lastName", name: "Last Name" },
     { field: "middleName", name: "Middle Name" },
-    { field: "firstName", name: "First Name" },
-    { field: "dob", name: "Date of Birth", dataType: "date" },
-    { field: "gender", name: "Gender" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];
 

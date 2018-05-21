@@ -77,7 +77,7 @@ export class TextFilterRenderer extends FilterRenderer {
     }
     this.filters[0].value = value;
 
-    this.filters[0].active = (!value || value === "") ? false : true;
+    this.filters[0].valid = (!value || value === "") ? false : true;
 
     this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();

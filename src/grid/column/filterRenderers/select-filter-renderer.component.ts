@@ -19,9 +19,25 @@ import {FilterInfo} from "../../utils/filter-info";
          [style.width.px]="width"
          style="padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <div class="parent">
-        <div class="form-group" style="margin-bottom: 8px;">
+        <div class="d-flex flex-nowrap" style="margin-bottom: 8px; align-items: center; width: 100%;">
           <button class="btn btn-primary" (click)="selectAll()">Select All</button>
-          <button class="btn btn-secondary" (click)="deselectAll()">Deselect All</button>
+          <button class="btn btn-secondary l-gap" (click)="deselectAll()">Deselect All</button>
+          <div class="d-flex justify-content-end" style="align-items: center; margin-left: auto; margin-right: 10px;">
+            <div *ngIf="changed" (click)="filter()" class="fade-in-out" style="color: green;">
+              <i class="fas fa-check-circle fa-lg l-gap"></i>
+            </div>
+            <div (click)="valueClear()" style="color: red;">
+              <i class="fas fa-times-circle fa-lg l-gap"></i>
+            </div>
+            <div *ngIf="gridService.linkedGroups"
+                 (click)="shared = !shared"
+                 placement="top"
+                 container="body"
+                 ngbTooltip="Share Filter with other Grids"
+                 [style.color]="shared ? 'green' : 'red'">
+              <i class="fas fa-share-alt-square fa-lg l-gap"></i>
+            </div>
+          </div>
         </div>
         
         <div class="form-group choice-list">
@@ -29,23 +45,6 @@ import {FilterInfo} from "../../utils/filter-info";
             <input type="checkbox" id="choiceCheckbox" [ngModel]="choice.selected" class="form-control" />
             <label class="form-check-label" for="choiceCheckbox">{{choice[column.choiceDisplay]}}</label>
           </div>
-        </div>
-      </div>
-      <div class="close flex-nowrap">
-        <span *ngIf="changed" (click)="filter()" class="fade-in-out" style="color: green;">
-          <span class="fas fa-check-circle"></span>
-        </span>
-        <span (click)="valueClear()" style="color: red;">
-          <span class="fas fa-times-circle"></span>
-        </span>
-        <div *ngIf="gridService.linkedGroups"
-             (click)="shared = !shared"
-             placement="top"
-             container="body"
-             ngbTooltip="Share Filter with other Grids"
-             [style.color]="shared ? 'green' : 'red'"
-             style="padding-left: 5px; padding-right: 5px;">
-          <i class="fas fa-share-alt-square fa-lg"></i>
         </div>
       </div>
     </div>
@@ -81,20 +80,17 @@ import {FilterInfo} from "../../utils/filter-info";
     }
     
     .parent {
-      flex: 1 1 80%;
+      flex: 1 1 100%;
       align-items: center;
       padding-left: 5px;
       flex-wrap: wrap;
       display: flex;
     }
-      
-    .close {
-      flex: 0 0 20%;
-      padding-left: 5px;
-      padding-right: 5px;
-      text-align: right;
-    }
     
+    .l-gap {
+      margin-left: 5px;
+    }
+
     .fade-in-out {
       opacity: 1.0;
       animation: fade 2.0s linear infinite;
@@ -118,13 +114,17 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E", false));
+        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E", true));
       }
     }
 
     this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
     this.changed = false;
+
+    if (this.shared) {
+      this.gridService.globalClearPushFilter(this.column.field, this.filters);
+    }
   }
 
   deselectAll() {
@@ -165,6 +165,10 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.deselectAll();
     this.gridService.addFilters(this.column.field, []);
     this.gridService.filter();
+
+    if (this.shared) {
+      this.gridService.globalClearPushFilter(this.column.field, this.filters);
+    }
   }
 
 }

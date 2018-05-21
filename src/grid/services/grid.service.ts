@@ -652,6 +652,9 @@ export class GridService {
         if (!filters) {
           continue;
         }
+        filters = filters.filter((filter: FilterInfo) => {
+          return filter.valid;
+        });
 
         if (filters.length > 0 && this.preparedData[i].get(j).value === null) {
           inc = false;
@@ -678,7 +681,7 @@ export class GridService {
         } else {
           let colInc: boolean = true;
           for (let filterInfo of filters) {
-            if (!filterInfo.active) {
+            if (!filterInfo.valid) {
               continue;
             } else if (filterInfo.dataType === "number") {
               colInc = false;

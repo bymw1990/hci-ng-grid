@@ -22,11 +22,29 @@ import {FilterInfo} from "../../utils/filter-info";
          [style.width.px]="width"
          [style.background-color]="valid ? 'inherit' : '#ffccaa;'">
       <div class="parent">
-        <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" class="operator inputs">
-          <option *ngFor="let o of options" [ngValue]="o.value" [selected]="o.value === operator.value">
-            {{ o.display }}
-          </option>
-        </select>
+        <div class="d-flex flex-nowrap" style="margin-bottom: 10px; align-items: center; width: 100%;">
+          <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" class="operator">
+            <option *ngFor="let o of options" [ngValue]="o.value" [selected]="o.value === operator.value">
+              {{ o.display }}
+            </option>
+          </select>
+          <div class="d-flex justify-content-end" style="align-items: center; margin-left: auto; margin-right: 10px;">
+            <div *ngIf="changed" (click)="filter()" class="fade-in-out" style="color: green;">
+              <i class="fas fa-check-circle fa-lg l-gap"></i>
+            </div>
+            <div (click)="valueClear()" style="color: red;">
+              <i class="fas fa-times-circle fa-lg l-gap"></i>
+            </div>
+            <div *ngIf="gridService.linkedGroups"
+                 (click)="shared = !shared"
+                 placement="top"
+                 container="body"
+                 ngbTooltip="Share Filter with other Grids"
+                 [style.color]="shared ? 'green' : 'red'">
+              <i class="fas fa-share-alt-square fa-lg l-gap"></i>
+            </div>
+          </div>
+        </div>
         
         <ng-container *ngIf="column.dataType === 'date'">
           <div class="form-group">
@@ -69,23 +87,6 @@ import {FilterInfo} from "../../utils/filter-info";
                  class="value inputs" />
         </ng-container>
       </div>
-      <div class="close flex-nowrap">
-        <span *ngIf="changed" (click)="filter()" class="fade-in-out" style="color: green;">
-          <span class="fas fa-check"></span>
-        </span>
-        <span (click)="valueClear()" style="color: red;">
-          <span class="fas fa-times"></span>
-        </span>
-        <div *ngIf="gridService.linkedGroups"
-             (click)="shared = !shared"
-             placement="top"
-             container="body"
-             ngbTooltip="Share Filter with other Grids"
-             [style.color]="shared ? 'green' : 'red'"
-             style="padding-left: 5px; padding-right: 5px;">
-          <i class="fas fa-share-alt-square fa-lg"></i>
-        </div>
-      </div>
     </div>
   `,
   styles: [`
@@ -105,19 +106,15 @@ import {FilterInfo} from "../../utils/filter-info";
       flex-wrap: wrap;
       display: flex;
     }
-      
-    .close {
-      flex: 0 0 20%;
-      padding-left: 5px;
-      padding-right: 5px;
-      text-align: right;
+
+    .l-gap {
+      margin-left: 5px;
     }
-    
+
     .operator {
       background-color: #007bff;
       color: white;
       border-radius: 5px;
-      width: 100%;
       font-weight: 500;
     }
       
@@ -162,7 +159,7 @@ export class CompareFilterRenderer extends FilterRenderer {
   ];
 
   filter() {
-    this.filters[0].active = true;
+    this.filters[0].valid = true;
     this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
     this.changed = false;
@@ -226,7 +223,7 @@ export class CompareFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
-    this.filters[0].active = (!value || value === "") ? false : true;
+    this.filters[0].valid = (!value || value === "") ? false : true;
     this.filters[0].value = this.parse(value);
     this.changed = true;
   }
@@ -236,7 +233,7 @@ export class CompareFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
-    this.filters[0].active = (!value || value === "") ? false : true;
+    this.filters[0].valid = (!value || value === "") ? false : true;
     this.filters[0].highValue = this.parse(value);
     this.changed = true;
   }
