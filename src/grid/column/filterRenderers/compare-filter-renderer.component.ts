@@ -162,6 +162,7 @@ export class CompareFilterRenderer extends FilterRenderer {
   ];
 
   filter() {
+    this.filters[0].active = true;
     this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
     this.changed = false;
@@ -186,11 +187,11 @@ export class CompareFilterRenderer extends FilterRenderer {
     super.reset();
 
     if (this.column.dataType === "number") {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E");
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     } else if (this.column.dataType === "date") {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E");
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     } else {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E");
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     }
 
     this.lowValue = this.format(this.filters[0].value);
@@ -198,7 +199,7 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   format(value: any): any {
-    if (!value) {
+    if (!value || value === null) {
       return value;
     } else if (this.column.dataType === "date") {
       let d: string[] = value.split("-");
@@ -210,7 +211,11 @@ export class CompareFilterRenderer extends FilterRenderer {
 
   parse(value: any): any {
     if (this.column.dataType === "date") {
-      return value.year + "-" + ((value.month < 10) ? "0" : "") + value.month + "-" + ((value.day < 10) ? "0" : "") + value.day + "T12:00-06:00";
+      if (value && value !== null) {
+        return value.year + "-" + ((value.month < 10) ? "0" : "") + value.month + "-" + ((value.day < 10) ? "0" : "") + value.day + "T12:00-06:00";
+      } else {
+        return null;
+      }
     } else {
       return value;
     }
@@ -221,6 +226,7 @@ export class CompareFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
+    this.filters[0].active = (!value || value === "") ? false : true;
     this.filters[0].value = this.parse(value);
     this.changed = true;
   }
@@ -230,6 +236,7 @@ export class CompareFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
+    this.filters[0].active = (!value || value === "") ? false : true;
     this.filters[0].highValue = this.parse(value);
     this.changed = true;
   }

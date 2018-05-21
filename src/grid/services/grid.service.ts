@@ -638,6 +638,10 @@ export class GridService {
   }
 
   filterPreparedData() {
+    if (isDevMode()) {
+      console.debug("filterPreparedData");
+    }
+
     let filteredData: Array<Row> = new Array<Row>();
 
     for (var i = 0; i < this.preparedData.length; i++) {
@@ -674,7 +678,9 @@ export class GridService {
         } else {
           let colInc: boolean = true;
           for (let filterInfo of filters) {
-            if (filterInfo.dataType === "number") {
+            if (!filterInfo.active) {
+              continue;
+            } else if (filterInfo.dataType === "number") {
               colInc = false;
               if (filterInfo.operator === "E") {
                 if (+this.preparedData[i].get(j).value === +filterInfo.value) {
@@ -714,10 +720,6 @@ export class GridService {
               }
             } else if (filterInfo.dataType === "date") {
               colInc = false;
-              if (!filterInfo.value || !filterInfo.highValue) {
-                colInc = true;
-                break;
-              }
 
               let v: any = this.preparedData[i].get(j).value.substr(0, 10);
               let f1: any = filterInfo.value.substr(0, 10);
@@ -760,10 +762,9 @@ export class GridService {
                 }
               }
             } else {
-              if (this.preparedData[i].get(j).value) {
-                colInc = false;
-                break;
-              } else if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
+              console.debug("Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
+
+              if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
                 colInc = false;
                 break;
               }

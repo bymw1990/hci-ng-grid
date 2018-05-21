@@ -56,7 +56,11 @@ export class TextFilterRenderer extends FilterRenderer {
 
   reset() {
     super.reset();
-    this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE");
+    if (this.filters.length === 0) {
+      this.filters.push(new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE", false));
+    } else {
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE", false);
+    }
 
     if (this.shared) {
       this.gridService.globalClearPushFilter(this.column.field, this.filters);
@@ -68,7 +72,12 @@ export class TextFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
+    if (this.filters.length === 0) {
+      this.reset();
+    }
     this.filters[0].value = value;
+
+    this.filters[0].active = (!value || value === "") ? false : true;
 
     this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();

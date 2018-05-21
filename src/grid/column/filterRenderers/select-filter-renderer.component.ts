@@ -118,7 +118,7 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E"));
+        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E", false));
       }
     }
 
