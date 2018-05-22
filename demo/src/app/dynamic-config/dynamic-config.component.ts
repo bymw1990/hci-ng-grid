@@ -147,7 +147,7 @@ export class DynamicConfigGridComponent {
   data1: any[];
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name", widthPercent: 50 },
+    { field: "lastName", name: "Last Name", widthPercent: 40 },
     { field: "middleName", name: "Middle Name", widthPercent: 10 },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },

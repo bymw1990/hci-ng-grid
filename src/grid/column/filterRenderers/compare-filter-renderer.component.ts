@@ -36,7 +36,7 @@ import {FilterInfo} from "../../utils/filter-info";
               <i class="fas fa-times-circle fa-lg l-gap"></i>
             </div>
             <div *ngIf="gridService.linkedGroups"
-                 (click)="shared = !shared"
+                 (click)="toggleShared()"
                  placement="top"
                  container="body"
                  ngbTooltip="Share Filter with other Grids"

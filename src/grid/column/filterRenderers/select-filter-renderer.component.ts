@@ -30,7 +30,7 @@ import {FilterInfo} from "../../utils/filter-info";
               <i class="fas fa-times-circle fa-lg l-gap"></i>
             </div>
             <div *ngIf="gridService.linkedGroups"
-                 (click)="shared = !shared"
+                 (click)="toggleShared()"
                  placement="top"
                  container="body"
                  ngbTooltip="Share Filter with other Grids"
@@ -131,12 +131,14 @@ export class SelectFilterRenderer extends FilterRenderer {
     for (let choice of this.column.choices) {
       choice.selected = false;
     }
+    this.changed = true;
   }
 
   selectAll() {
     for (let choice of this.column.choices) {
       choice.selected = true;
     }
+    this.changed = true;
   }
 
   /**

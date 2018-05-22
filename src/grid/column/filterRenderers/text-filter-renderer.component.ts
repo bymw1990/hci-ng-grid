@@ -23,10 +23,10 @@ import {FilterInfo} from "../../utils/filter-info";
            container="body"
            ngbTooltip="Clear Filter"
            style="padding-left: 5px; padding-right: 5px; color: red;">
-        <i class="fas fa-times fa-lg"></i>
+        <i class="fas fa-times-circle fa-lg"></i>
       </div>
       <div *ngIf="gridService.linkedGroups"
-           (click)="shared = !shared"
+           (click)="toggleShared()"
            placement="top"
            container="body"
            ngbTooltip="Share Filter with other Grids"

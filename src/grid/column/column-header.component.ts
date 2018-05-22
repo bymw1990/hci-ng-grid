@@ -8,6 +8,7 @@ import {GridService} from "../services/grid.service";
 import {SortInfo} from "../utils/sort-info";
 import {FilterRenderer} from "./filterRenderers/filter-renderer";
 import {Observable} from "rxjs/Observable";
+import {FilterInfo} from "../utils/filter-info";
 
 /**
  * fa-sort fa-sort-asc fa-sort-desc
@@ -22,8 +23,8 @@ import {Observable} from "rxjs/Observable";
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
           <a id="filterDropdownToggle"
              (click)="showFilter()"
-             class="dropdown-toggle">
-             <!--[style.color]="column.filters.length > 0 ? '#00aa00' : 'inherit'">-->
+             class="dropdown-toggle"
+             [style.color]="hasFilters > 0 ? '#00aa00' : 'inherit'">
             <i class="fas fa-filter"></i>
           </a>
         </div>
@@ -55,12 +56,23 @@ export class ColumnHeaderComponent {
   @Input("container") headerContainer: ViewContainerRef;
 
   asc: number = 0;
+  hasFilters: boolean = false;
 
   private filterComponent: FilterRenderer;
 
   constructor(private gridService: GridService, private resolver: ComponentFactoryResolver, private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
+    this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, FilterInfo[]>) => {
+      if (this.column) {
+        if (filterMap.has(this.column.field)) {
+          this.hasFilters = filterMap.get(this.column.field).filter((filterInfo: FilterInfo) => {
+            return filterInfo.valid;
+          }).length === 0 ? false : true;
+        }
+      }
+    });
+
     this.gridService.sortInfoObserved.subscribe((sortInfo: SortInfo) => {
       if (this.column.field === sortInfo.field) {
         if (sortInfo.asc) {

@@ -38,6 +38,10 @@ export class FilterRenderer {
     });
   }
 
+  filter() {
+    // To Override
+  }
+
   getConfig(): any {
     return this.config;
   }
@@ -56,6 +60,11 @@ export class FilterRenderer {
 
   stop(event: MouseEvent) {
     event.stopPropagation();
+  }
+
+  toggleShared() {
+    this.shared = !this.shared;
+    this.filter();
   }
 
   valueClear() {
