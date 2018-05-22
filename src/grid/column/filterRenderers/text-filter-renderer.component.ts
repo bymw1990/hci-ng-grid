@@ -43,6 +43,7 @@ export class TextFilterRenderer extends FilterRenderer {
 
   @Input() column: Column;
 
+  value: any;
   width: number = 200;
 
   ngAfterViewInit() {
@@ -72,12 +73,17 @@ export class TextFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
+    this.value = value;
+    this.filter();
+  }
+
+  filter () {
     if (this.filters.length === 0) {
       this.reset();
     }
-    this.filters[0].value = value;
+    this.filters[0].value = this.value;
 
-    this.filters[0].valid = (!value || value === "") ? false : true;
+    this.filters[0].valid = (!this.value || this.value === "") ? false : true;
 
     this.gridService.addFilters(this.column.field, this.filters);
     this.gridService.filter();
