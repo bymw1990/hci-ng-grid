@@ -19,6 +19,12 @@ import {Dictionary} from "../model/dictionary.interface";
       </div>
       <ng-container *ngIf="state === 1">
         <div class="panel">
+          <div class="cfg-row d-flex flex-nowrap">
+            <div class="label">Title</div>
+            <div class="input">
+              <input type="text" [ngModel]="config.title" (ngModelChange)="update('title', $event)">
+            </div>
+          </div>
           <div class="cfg-row">
             <div class="label">Theme</div>
             <div class="input" ngbDropdown #themeDropdown="ngbDropdown">
@@ -49,6 +55,12 @@ import {Dictionary} from "../model/dictionary.interface";
                                      [display]="'name'"
                                      [choices]="config.columnDefinitions"
                                      (modelChange)="updateArray('fixedColumns', $event)"></hci-grid-multi-choice>
+            </div>
+          </div>
+          <div class="cfg-row d-flex flex-nowrap">
+            <div class="label">Page Size</div>
+            <div class="input">
+              <input type="number" [ngModel]="config.pageSize" (ngModelChange)="update('pageSize', $event)" pattern="[0-9]+">
             </div>
           </div>
           <div class="cfg-row">

@@ -17,6 +17,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Sets configurable to true.  Click the cog to pull up the config dropdown and modify values.
         </div>
         <div class="card-text">
+          Also, a user profile directive has been added to listen to config change output.  See the console to see the
+          config output.
+        </div>
+        <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config0" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config0>
             <pre>

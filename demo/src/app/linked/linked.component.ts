@@ -15,13 +15,27 @@ import {
       </div>
       <div class="card-body">
         <div class="card-text">
-          TODO
+          Both grids belong to the same group.  Open the Last Name filter and click the share icon.  When the icon is green,
+          when you filter, the filter is applied to both grids.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config0" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config0>
             <pre>
-              
+              &lt;hci-grid [data]="data1"
+                        [configurable]="true"
+                        [columnDefinitions]="columns1"
+                        [linkedGroups]="['groupA']"
+                        [pageSize]="5"
+                        [pageSizes]="[5, 10, 25]"&gt;
+              &lt;/hci-grid&gt;
+              &lt;hci-grid [data]="data2"
+                        [configurable]="true"
+                        [columnDefinitions]="columns2"
+                        [linkedGroups]="['groupA']"
+                        [pageSize]="5"
+                        [pageSizes]="[5, 10, 25]"&gt;
+              &lt;/hci-grid&gt;
             </pre>
           </ng-template>
         </div>
@@ -52,7 +66,7 @@ export class LinkedDemoComponent {
   data1: any[];
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name" },
+    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
@@ -63,7 +77,7 @@ export class LinkedDemoComponent {
   data2: any[];
   columns2: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name" },
+    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },

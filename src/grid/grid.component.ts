@@ -487,6 +487,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.config = config;
 
       this.gridService.pageInfo = this.gridService.pageInfo;
+      this.gridService.initData();
+      this.doRender();
 
       // If the config update came externally, don't re-broadcast it.
       if (this.config.external !== undefined && this.config.external) {
