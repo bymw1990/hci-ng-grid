@@ -20,6 +20,7 @@ import {Component} from "@angular/core";
            (mouseenter)="demo.hover = true;"
            (mouseleave)="demo.hover = false;"
            [style.backgroundColor]="demo.hover ? '#ffddbb' : 'inherit'"
+           [style.cursor]="demo.hover ? 'pointer' : 'inherit'"
            routerLink="/{{demo.route}}">
         <div class="card-header">
           {{demo.header}}
@@ -68,7 +69,7 @@ export class HomeComponent {
     {header: "Event", route: "event", body: "Use event listeners to handle row selects and output information."},
     {header: "Excel Like Editing", route: "edit", body: "Inline editing with arrow keys, and tabbing."},
     {header: "External Control", route: "external-ctrl", body: "Control the grid through some external buttons."},
-    //{header: "External Data", route: "external-data", body: "Mock an external data call to simulate a REST endpoint."},
+    {header: "External Data", route: "external-data", body: "Mock an external data call to simulate a REST endpoint."},
     {header: "Filtering", route: "filter", body: "Show different types of filter, for text, selects and ranges."},
     {header: "Fixed", route: "fixed", body: "With many columns, fix one or more to the left and leave the rest scrollable."},
     {header: "Linked Grids", route: "linked", body: "Two grids that are linked such as they share filters."},

@@ -135,9 +135,9 @@ export class Column {
   }
 
   setConfig(object: any) {
-    if (object.id !== undefined) {
+    /*if (object.id !== undefined) {
       this.id = object.id;
-    }
+    }*/
     if (object.isKey !== undefined) {
       this.isKey = object.isKey;
     }

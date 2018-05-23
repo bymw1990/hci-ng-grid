@@ -34,8 +34,6 @@ export class GridService {
   config: any = {};
   configSubject: BehaviorSubject<any> = new BehaviorSubject<any>(GridService.defaultConfig);
 
-  columnsChangedSubject: Subject<boolean> = new Subject<boolean>();
-
   linkedGroups: string[];
 
   id: string;
@@ -72,6 +70,7 @@ export class GridService {
 
   gridElement: HTMLElement;
 
+  private columnMapSubject: BehaviorSubject<Map<string, Column[]>> = new BehaviorSubject<Map<string, Column[]>>(undefined);
   private filterMap: Map<string, FilterInfo[]> = new Map<string, FilterInfo[]>();
   private filterMapSubject: BehaviorSubject<Map<string, FilterInfo[]>> = new BehaviorSubject<Map<string, FilterInfo[]>>(this.filterMap);
   private configured: boolean = false;
@@ -193,7 +192,6 @@ export class GridService {
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
       this.initColumnDefinitions();
-      this.columnsChangedSubject.next(true);
     }
 
     this.configSubject.next(this.config);
@@ -251,10 +249,13 @@ export class GridService {
       console.debug("GridService.initColumnDefinitions()");
     }
 
+    let columnMap: Map<string, Column[]> = this.createColumnMap();
+
     if (!this.columnDefinitions) {
+      this.columnMapSubject.next(columnMap);
       return;
     }
-    this.initColumnProperties();
+    this.initColumnProperties(columnMap);
 
     this.nFixedColumns = 0;
     this.nNonFixedColumns = 0;
@@ -279,9 +280,18 @@ export class GridService {
     }
 
     this.config.columnDefinitions = this.columnDefinitions;
+
+    this.columnMapSubject.next(columnMap);
   }
 
-  initColumnProperties() {
+  /**
+   * Usually called when config changes, re-init the columns.  We re-sort based upon the preferred sort order then
+   * calculate things like visible columns and group by, then re-sort based on the rendering order.
+   *
+   * TODO: Rather than create a single array of columns split apart by a large number, 1000, 2000, 3000, 4000, for
+   * the different types, why not create a map?
+   */
+  initColumnProperties(columnMap: Map<string, Column[]>) {
     if (isDevMode()) {
       console.debug("initColumnProperties");
     }
@@ -364,13 +374,13 @@ export class GridService {
       }
 
       if (this.columnDefinitions[j].isUtility) {
-        this.columnDefinitions[j].renderOrder = 1000 + this.columnDefinitions[j].sortOrder;
+        this.columnDefinitions[j].renderOrder = this.columnDefinitions[j].sortOrder;
       } else if (this.columnDefinitions[j].isFixed) {
-        this.columnDefinitions[j].renderOrder = 2000 + this.columnDefinitions[j].sortOrder;
+        this.columnDefinitions[j].renderOrder = 10000 + this.columnDefinitions[j].sortOrder;
       } else if (this.columnDefinitions[j].visible) {
-        this.columnDefinitions[j].renderOrder = 3000 + this.columnDefinitions[j].sortOrder;
+        this.columnDefinitions[j].renderOrder = 20000 + this.columnDefinitions[j].sortOrder;
       } else {
-        this.columnDefinitions[j].renderOrder = 4000 + this.columnDefinitions[j].sortOrder;
+        this.columnDefinitions[j].renderOrder = 30000 + this.columnDefinitions[j].sortOrder;
       }
     }
 
@@ -391,13 +401,24 @@ export class GridService {
       }
     });
 
-    let lastSet: boolean = false;
-    for (var j = this.columnDefinitions.length - 1; j >= 0; j--) {
-      if (this.columnDefinitions[j].visible && !lastSet) {
-        this.columnDefinitions[j].isLast = true;
-        lastSet = true;
+    for (var j = 0; j < this.columnDefinitions.length; j++) {
+      columnMap.get("ALL").push(this.columnDefinitions[j]);
+
+      if (this.columnDefinitions[j].visible) {
+        this.columnDefinitions[j].id = j;
+        columnMap.get("VISIBLE").push(this.columnDefinitions[j]);
+
+        if (this.columnDefinitions[j].isUtility) {
+          columnMap.get("UTILITY").push(this.columnDefinitions[j]);
+        }
+        if (this.columnDefinitions[j].isUtility || this.columnDefinitions[j].isFixed) {
+          columnMap.get("LEFT_VISIBLE").push(this.columnDefinitions[j]);
+        } else {
+          columnMap.get("MAIN_VISIBLE").push(this.columnDefinitions[j]);
+        }
+      } else {
+        columnMap.get("NON_VISIBLE").push(this.columnDefinitions[j]);
       }
-      this.columnDefinitions[j].id = j;
     }
 
     if (isDevMode()) {
@@ -406,7 +427,17 @@ export class GridService {
             + ", visible: " + this.columnDefinitions[j].visible + ", selectable: " + this.columnDefinitions[j].selectable + ", isFixed: " + this.columnDefinitions[j].isFixed);
       }
     }
+  }
 
+  createColumnMap(): Map<string, Column[]> {
+    let columnMap: Map<string, Column[]> = new Map<string, Column[]>();
+    columnMap.set("ALL", []);
+    columnMap.set("UTILITY", []);
+    columnMap.set("VISIBLE", []);
+    columnMap.set("LEFT_VISIBLE", []);
+    columnMap.set("MAIN_VISIBLE", []);
+    columnMap.set("NON_VISIBLE", []);
+    return columnMap;
   }
 
   getConfigSubject(): BehaviorSubject<any> {
@@ -481,8 +512,8 @@ export class GridService {
     return this.nVisibleColumns;
   }
 
-  getColumnsChangedSubject(): Subject<boolean> {
-    return this.columnsChangedSubject;
+  getColumnMapSubject(): Subject<Map<string, Column[]>> {
+    return this.columnMapSubject;
   }
 
   setGridElement(gridElement: HTMLElement) {
@@ -973,7 +1004,7 @@ export class GridService {
         this.columnDefinitions.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
         this.columnDefinitions = this.columnDefinitions;
       }
-      this.columnsChangedSubject.next(true);
+      this.initColumnDefinitions();
       return true;
     } else {
       this.initData();

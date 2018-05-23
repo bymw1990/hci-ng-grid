@@ -105,8 +105,8 @@ import {GridGlobalService} from "./services/grid-global.service";
                id="leftHeaderView"
                class="header-view"
                [style.height.px]="rowHeight">
-            <div id="leftHeaderContainer" *ngIf="columnDefinitions && columnDefinitions.length > 0">
-              <hci-column-header *ngFor="let column of columnDefinitions | isFixed: true | isVisible"
+            <div id="leftHeaderContainer" *ngIf="columnMap && columnMap.get('LEFT_VISIBLE').length > 0">
+              <hci-column-header *ngFor="let column of columnMap.get('LEFT_VISIBLE')"
                                  [id]="'header-' + column.id"
                                  [column]="column"
                                  [container]="headerContainer"
@@ -124,8 +124,8 @@ import {GridGlobalService} from "./services/grid-global.service";
                id="rightHeaderView"
                class="header-view"
                [style.height.px]="rowHeight">
-            <div id="rightHeaderContainer" *ngIf="columnDefinitions && columnDefinitions.length > 0">
-              <hci-column-header *ngFor="let column of columnDefinitions | isFixed: false | isVisible"
+            <div id="rightHeaderContainer" *ngIf="columnMap && columnMap.get('MAIN_VISIBLE').length > 0">
+              <hci-column-header *ngFor="let column of columnMap.get('MAIN_VISIBLE')"
                                  [id]="'header-' + column.id"
                                  [column]="column"
                                  [container]="headerContainer"
@@ -407,7 +407,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
   config: any = {};
-  columnDefinitions: Column[] = [];
+  columnMap: Map<string, Column[]>;
   gridData: Array<Row> = new Array<Row>();
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
@@ -467,16 +467,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngAfterContentInit() {
     this.findBaseRowCell();
 
-    this.columnsChangedSubscription = this.gridService.getColumnsChangedSubject().subscribe((changed: boolean) => {
+    this.columnsChangedSubscription = this.gridService.getColumnMapSubject().subscribe((columnMap: Map<string, Column[]>) => {
       if (isDevMode()) {
-        console.debug("getColumnsChangedSubject().subscribe: " + changed);
+        console.debug("getColumnsChangedSubject().subscribe");
       }
 
-      if (changed) {
-        this.columnDefinitions = this.gridService.columnDefinitions;
-        this.gridService.initData();
-        this.doRender();
-      }
+      this.columnMap = columnMap;
+      this.gridService.initData();
+      this.doRender();
     });
 
     this.gridService.getConfigSubject().subscribe((config: any) => {
@@ -1093,7 +1091,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("createPopup at " + location.toString());
     }
 
-    let column: Column = this.columnDefinitions[location.j];
+    let column: Column = this.columnMap.get("ALL")[location.j];
     if (!column.popupRenderer) {
       return;
     }
@@ -1252,75 +1250,81 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let availableWidth: number = insideGridWidth;
 
     if (isDevMode()) {
-      console.debug("availableWidth: " + availableWidth);
-    }
-
-    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-      this.columnDefinitions[j].renderWidth = 0;
-      if (this.columnDefinitions[j].width > 0) {
-        this.columnDefinitions[j].renderWidth = Math.max(this.columnDefinitions[j].width, this.columnDefinitions[j].minWidth);
-        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
-      }
-    }
-
-    let percentWidth: number = availableWidth;
-    if (isDevMode()) {
-      console.debug("percentWidth: " + percentWidth);
-    }
-
-    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-      if (this.columnDefinitions[j].widthPercent > 0) {
-        this.columnDefinitions[j].renderWidth = Math.max(percentWidth * (this.columnDefinitions[j].widthPercent / 100), this.columnDefinitions[j].minWidth);
-        availableWidth = availableWidth - this.columnDefinitions[j].renderWidth;
-      } else if (this.columnDefinitions[j].width === 0) {
-        nAutoWidth = nAutoWidth + 1;
-      }
-    }
-
-    if (nAutoWidth > 0) {
-      if (isDevMode()) {
-        console.debug("nAutoWidth: " + nAutoWidth);
-      }
-
-      for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-        if (this.columnDefinitions[j].renderWidth === 0) {
-          this.columnDefinitions[j].renderWidth = Math.max(availableWidth / nAutoWidth, this.columnDefinitions[j].minWidth);
-        }
-      }
-    }
-
-    for (var j = 0; j < this.gridService.getNVisibleColumns(); j++) {
-      if (isDevMode()) {
-        console.debug("Column: " + this.columnDefinitions[j].field);
-      }
-
-      exactWidth = this.columnDefinitions[j].renderWidth;
-      if (exactWidth !== Math.floor(exactWidth)) {
-        remainder = remainder + exactWidth - Math.floor(exactWidth);
-      }
-      e = this.gridContainer.nativeElement.querySelector("#header-" + j);
-      w = Math.floor(exactWidth);
-
-      if (isDevMode()) {
-        console.debug("exactWidth: " + exactWidth + " " + w + " " + remainder);
-      }
-
-      if (this.columnDefinitions.length - 1 === j) {
-        w = w + remainder;
-      }
-      if (e) {
-        this.columnDefinitions[j].renderWidth = w;
-        this.renderer.setStyle(e, "width", w + "px");
-        if (this.columnDefinitions[j].isLast) {
-          this.renderer.addClass(e, "last");
-        }
-      }
-      if (this.columnDefinitions[j].isFixed) {
-        this.columnDefinitions[j].renderLeft = Math.max(fixedWidth, fixedMinWidth);
-        fixedWidth = fixedWidth + w;
+      if (!this.columnMap) {
+        console.debug("columnMap is undefined");
       } else {
-        this.columnDefinitions[j].renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
-        nonFixedWidth = nonFixedWidth + w;
+        console.debug("visible columnMap: " + this.columnMap.get("VISIBLE").length);
+      }
+    }
+
+    if (this.columnMap) {
+      for (let column of this.columnMap.get("VISIBLE")) {
+        column.renderWidth = 0;
+        if (column.width > 0) {
+          column.renderWidth = Math.max(column.width, column.minWidth);
+          availableWidth = availableWidth - column.renderWidth;
+        }
+      }
+
+      let percentWidth: number = availableWidth;
+      if (isDevMode()) {
+        console.debug("percentWidth: " + percentWidth);
+      }
+
+      for (let column of this.columnMap.get("VISIBLE")) {
+        if (column.widthPercent > 0) {
+          column.renderWidth = Math.max(percentWidth * (column.widthPercent / 100), column.minWidth);
+          availableWidth = availableWidth - column.renderWidth;
+        } else if (column.width === 0) {
+          nAutoWidth = nAutoWidth + 1;
+        }
+      }
+
+      if (nAutoWidth > 0) {
+        if (isDevMode()) {
+          console.debug("nAutoWidth: " + nAutoWidth);
+        }
+
+        for (let column of this.columnMap.get("VISIBLE")) {
+          if (column.renderWidth === 0) {
+            column.renderWidth = Math.max(availableWidth / nAutoWidth, column.minWidth);
+          }
+        }
+      }
+
+      for (let column of this.columnMap.get("VISIBLE")) {
+        if (isDevMode()) {
+          console.debug("Column: " + column.field);
+        }
+
+        exactWidth = column.renderWidth;
+        if (exactWidth !== Math.floor(exactWidth)) {
+          remainder = remainder + exactWidth - Math.floor(exactWidth);
+        }
+        e = this.gridContainer.nativeElement.querySelector("#header-" + column.id);
+        w = Math.floor(exactWidth);
+
+        if (isDevMode()) {
+          console.debug("exactWidth: " + exactWidth + " " + w + " " + remainder);
+        }
+
+        if (this.columnMap.get("VISIBLE")[this.columnMap.get("VISIBLE").length - 1].field === column.field) {
+          w = w + remainder;
+        }
+        if (e) {
+          column.renderWidth = w;
+          this.renderer.setStyle(e, "width", w + "px");
+          if (column.isLast) {
+            this.renderer.addClass(e, "last");
+          }
+        }
+        if (column.isFixed) {
+          column.renderLeft = Math.max(fixedWidth, fixedMinWidth);
+          fixedWidth = fixedWidth + w;
+        } else {
+          column.renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
+          nonFixedWidth = nonFixedWidth + w;
+        }
       }
     }
 
@@ -1368,7 +1372,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private renderCellsAndData() {
     if (isDevMode()) {
-      console.debug("renderCellsAndData: columnDefinitions.length: " + this.columnDefinitions.length + " gridData.length: " + this.gridData.length);
+      if (this.columnMap) {
+        console.debug("renderCellsAndData: columnMap.length: " + this.columnMap.get("ALL").length + " gridData.length: " + this.gridData.length);
+      } else {
+        console.debug("renderCellsAndData: columnMap is undefined: gridData.length: " + this.gridData.length);
+      }
     }
     this.changeDetectorRef.detectChanges();
     this.updateGridContainerHeight();
@@ -1416,33 +1424,33 @@ export class GridComponent implements OnChanges, AfterViewInit {
       rRow = this.createRow(rightContainer, "right", i);
       this.renderedRows.push(i);
 
-      for (var j = 0; j < this.gridService.getNFixedColumns(); j++) {
-        cell = this.gridData[i].get(j);
-        if (this.columnDefinitions[j].isUtility) {
-          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
-        } else if (this.columnDefinitions[j].field === "GROUPBY") {
+      for (let column of this.columnMap.get("LEFT_VISIBLE")) {
+        cell = this.gridData[i].get(column.id);
+        if (column.isUtility) {
+          this.createCell(lRow, column, cell, i, column.id, "");
+        } else if (column.field === "GROUPBY") {
           if (row.hasHeader()) {
-            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, row.header);
+            this.createCell(lRow, column, cell, i, column.id, row.header);
           } else {
-            this.createCell(lRow, this.columnDefinitions[j], cell, i, j, "");
+            this.createCell(lRow, column, cell, i, column.id, "");
           }
         } else {
-          this.createCell(lRow, this.columnDefinitions[j], cell, i, j, cell.value);
+          this.createCell(lRow, column, cell, i, column.id, cell.value);
         }
       }
 
-      for (var j = this.gridService.getNFixedColumns(); j < this.gridService.getNVisibleColumns(); j++) {
-        cell = this.gridData[i].get(j);
-        if (this.columnDefinitions[j].isUtility) {
-          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
-        } else if (this.columnDefinitions[j].field === "GROUPBY") {
+      for (let column of this.columnMap.get("MAIN_VISIBLE")) {
+        cell = this.gridData[i].get(column.id);
+        if (column.isUtility) {
+          this.createCell(rRow, column, cell, i, column.id, "");
+        } else if (column.field === "GROUPBY") {
           if (row.hasHeader()) {
-            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, row.header);
+            this.createCell(rRow, column, cell, i, column.id, row.header);
           } else {
-            this.createCell(rRow, this.columnDefinitions[j], cell, i, j, "");
+            this.createCell(rRow, column, cell, i, column.id, "");
           }
         } else {
-          this.createCell(rRow, this.columnDefinitions[j], cell, i, j, cell.value);
+          this.createCell(rRow, column, cell, i, column.id, cell.value);
         }
       }
 
@@ -1550,7 +1558,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
       }
 
-      let column: Column = this.columnDefinitions[j];
+      let column: Column = this.columnMap.get("VISIBLE")[j];
 
       if (!column.visible && this.gridEventService.getLastDx() === 1) {
         this.gridEventService.repeatLastEvent();
