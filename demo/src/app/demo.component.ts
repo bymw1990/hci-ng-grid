@@ -17,11 +17,12 @@ declare const VERSION: string;
   template: `
     <div class="navbar navbar-dark bg-dark box-shadow">
       <div class="container d-flex justify-content-between">
-        <a class="navbar-brand d-flex align-items-center" routerLink="/simple">hci-ng-grid Demo</a>
+        <a class="navbar-brand d-flex align-items-center" routerLink="/">hci-ng-grid Demo</a>
         <span style="color: gray; margin-left: 0; margin-right: auto;">v{{version}}</span>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="routeList">
+            <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/popup">Cell Popup</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>

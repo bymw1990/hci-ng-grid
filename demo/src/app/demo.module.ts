@@ -5,12 +5,16 @@ import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import {RouterModule} from "@angular/router";
 
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+
+import {GridModule} from "hci-ng-grid/index";
 
 import {DemoComponent} from "./demo.component";
 import {DataGeneratorService} from "./services/data-generator.service";
 
+import {HomeComponent} from "./home.component";
 import {SimpleGridComponent} from "./simple/simple-grid.component";
 import {SelectGridComponent} from "./select/select-grid.component";
 import {EditGridComponent} from "./edit/edit-grid.component";
@@ -30,27 +34,6 @@ import {PopupComponent} from "./popup/popup.component";
 import {ResizeDemoComponent} from "./resize/resize.component";
 import {LinkedDemoComponent} from "./linked/linked.component";
 
-
-import {SimpleGridModule} from "./simple/simple-grid.module";
-import {SelectGridModule} from "./select/select-grid.module";
-import {EditGridModule} from "./edit/edit-grid.module";
-import {RowGroupGridModule} from "./row-group/row-group-grid.module";
-import {FixedGridModule} from "./fixed/fixed-grid.module";
-import {FilterGridModule} from "./filter/filter-grid.module";
-import {ExternalControlModule} from "./external-ctrl/external-ctrl.module";
-import {ExternalDataModule} from "./external-data/external-data.module";
-import {CopyPasteGridModule} from "./copypaste/copypaste-grid.module";
-import {AlertsGridModule} from "./alerts/alerts-grid.module";
-import {PagingGridModule} from "./paging/paging-grid.module";
-import {ThemingModule} from "./theming/theming.module";
-import {DynamicConfigGridModule} from "./dynamic-config/dynamic-config.module";
-import {EmptyGridModule} from "./empty/empty-grid.module";
-import {EventModule} from "./event/event.module";
-import {PopupModule} from "./popup/popup.module";
-import {ResizeDemoModule} from "./resize/resize.module";
-import {LinkedDemoModule} from "./linked/linked.module";
-
-import {GridModule} from "hci-ng-grid/index";
 import {LabPopup} from "./components/lab.component";
 import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
 
@@ -59,29 +42,34 @@ import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
     BrowserModule,
     CommonModule,
     FormsModule,
+    RouterModule.forRoot([
+      { path: "", redirectTo: "/home", pathMatch: "full" },
+      { path: "alerts", component: AlertsGridComponent },
+      { path: "popup", component: PopupComponent },
+      { path: "copypaste", component: CopyPasteGridComponent },
+      { path: "dynamic-config", component: DynamicConfigGridComponent },
+      { path: "empty", component: EmptyGridComponent },
+      { path: "event", component: EventComponent },
+      { path: "external-ctrl", component: ExternalControlComponent },
+      { path: "external-data", component: ExternalDataComponent },
+      { path: "edit", component: EditGridComponent },
+      { path: "filter", component: FilterGridComponent },
+      { path: "fixed", component: FixedGridComponent },
+      { path: "home", component: HomeComponent },
+      { path: "linked", component: LinkedDemoComponent },
+      { path: "paging", component: PagingGridComponent },
+      { path: "resize", component: ResizeDemoComponent },
+      { path: "row-group", component: RowGroupGridComponent },
+      { path: "row-select", component: SelectGridComponent },
+      { path: "simple", component: SimpleGridComponent },
+      { path: "theming", component: ThemingComponent },
+    ]),
     NgbModule.forRoot(),
-    SimpleGridModule,
-    SelectGridModule,
-    EditGridModule,
-    RowGroupGridModule,
-    FixedGridModule,
-    FilterGridModule,
-    ExternalControlModule,
-    ExternalDataModule,
-    CopyPasteGridModule,
-    AlertsGridModule,
-    PagingGridModule,
-    ThemingModule,
-    DynamicConfigGridModule,
-    EmptyGridModule,
-    EventModule,
-    PopupModule,
-    ResizeDemoModule,
-    LinkedDemoModule,
     GridModule.forRoot({})
   ],
   declarations: [
     DemoComponent,
+    HomeComponent,
     SimpleGridComponent,
     SelectGridComponent,
     EditGridComponent,

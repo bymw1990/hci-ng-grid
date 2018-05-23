@@ -1,5 +1,6 @@
-import {CellViewRenderer} from "./cell-view-renderer.interface";
 import {Renderer2} from "@angular/core";
+
+import {CellViewRenderer} from "./cell-view-renderer.interface";
 import {Column} from "../../column/column";
 
 export class CellTextView implements CellViewRenderer {

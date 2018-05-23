@@ -11,6 +11,7 @@ import { Column } from "hci-ng-grid/index";
       </div>
       <div class="card-body">
         <div class="card-text">
+          Click on a cell<br />
           &lt;tab&gt; through cells<br />
           click on cells<br />
           up/down/left/right on selected cell<br />

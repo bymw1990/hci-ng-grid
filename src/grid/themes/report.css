@@ -57,6 +57,6 @@
   border-bottom: #ffee00 2px solid;
 }
 
-.hci-grid-cell.selected {
+#gridContainer.report .hci-grid-cell.selected {
   background-color: rgba(255, 255, 200, 0.4);
 }
