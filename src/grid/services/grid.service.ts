@@ -677,32 +677,134 @@ export class GridService {
 
     let filteredData: Array<Row> = new Array<Row>();
 
-    for (var i = 0; i < this.preparedData.length; i++) {
-      let inc: boolean = true;
+    if (this.preparedData) {
+      for (var i = 0; i < this.preparedData.length; i++) {
+        let inc: boolean = true;
 
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        let filters: FilterInfo[] = this.filterMap.get(this.columnDefinitions[j].field);
-        if (!filters) {
-          continue;
-        }
-        filters = filters.filter((filter: FilterInfo) => {
-          return filter.valid;
-        });
+        for (var j = 0; j < this.columnDefinitions.length; j++) {
+          let filters: FilterInfo[] = this.filterMap.get(this.columnDefinitions[j].field);
+          if (!filters) {
+            continue;
+          }
+          filters = filters.filter((filter: FilterInfo) => {
+            return filter.valid;
+          });
 
-        if (filters.length > 0 && this.preparedData[i].get(j).value === null) {
-          inc = false;
-          break;
-        }
+          if (filters.length > 0 && this.preparedData[i].get(j).value === null) {
+            inc = false;
+            break;
+          }
 
-        if (this.columnDefinitions[j].dataType === "choice") {
-          if (filters.length === 0) {
-            inc = true;
-          } else {
-            let colInc: boolean = false;
-            for (let filterInfo of filters) {
-              if (this.preparedData[i].get(j).value === filterInfo.value) {
-                colInc = true;
+          if (this.columnDefinitions[j].dataType === "choice") {
+            if (filters.length === 0) {
+              inc = true;
+            } else {
+              let colInc: boolean = false;
+              for (let filterInfo of filters) {
+                if (this.preparedData[i].get(j).value === filterInfo.value) {
+                  colInc = true;
+                  break;
+                }
+              }
+
+              if (!colInc) {
+                inc = false;
                 break;
+              }
+            }
+          } else {
+            let colInc: boolean = true;
+            for (let filterInfo of filters) {
+              if (!filterInfo.valid) {
+                continue;
+              } else if (filterInfo.dataType === "number") {
+                colInc = false;
+                if (filterInfo.operator === "E") {
+                  if (+this.preparedData[i].get(j).value === +filterInfo.value) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "LE") {
+                  if (+this.preparedData[i].get(j).value <= +filterInfo.value) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "LT") {
+                  if (+this.preparedData[i].get(j).value < +filterInfo.value) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "GE") {
+                  if (+this.preparedData[i].get(j).value >= +filterInfo.value) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "GT") {
+                  if (+this.preparedData[i].get(j).value > +filterInfo.value) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "B") {
+                  if (+filterInfo.value <= +this.preparedData[i].get(j).value && +this.preparedData[i].get(j).value <= +filterInfo.highValue) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "O") {
+                  if (+this.preparedData[i].get(j).value < +filterInfo.value || +filterInfo.highValue < +this.preparedData[i].get(j).value) {
+                    colInc = true;
+                    break;
+                  }
+                }
+              } else if (filterInfo.dataType === "date") {
+                colInc = false;
+
+                let v: any = this.preparedData[i].get(j).value.substr(0, 10);
+                let f1: any = filterInfo.value.substr(0, 10);
+                let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
+
+                if (filterInfo.operator === "E") {
+                  if (v === f1) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "LE") {
+                  if (v <= f1) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "LT") {
+                  if (v < f1) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "GE") {
+                  if (v >= f1) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "GT") {
+                  if (v > f1) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "B") {
+                  if (f1 <= v && v <= f2) {
+                    colInc = true;
+                    break;
+                  }
+                } else if (filterInfo.operator === "O") {
+                  if (v < f1 || f2 < v) {
+                    colInc = true;
+                    break;
+                  }
+                }
+              } else {
+                console.debug("Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
+
+                if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
+                  colInc = false;
+                  break;
+                }
               }
             }
 
@@ -711,110 +813,10 @@ export class GridService {
               break;
             }
           }
-        } else {
-          let colInc: boolean = true;
-          for (let filterInfo of filters) {
-            if (!filterInfo.valid) {
-              continue;
-            } else if (filterInfo.dataType === "number") {
-              colInc = false;
-              if (filterInfo.operator === "E") {
-                if (+this.preparedData[i].get(j).value === +filterInfo.value) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "LE") {
-                if (+this.preparedData[i].get(j).value <= +filterInfo.value) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "LT") {
-                if (+this.preparedData[i].get(j).value < +filterInfo.value) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "GE") {
-                if (+this.preparedData[i].get(j).value >= +filterInfo.value) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "GT") {
-                if (+this.preparedData[i].get(j).value > +filterInfo.value) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "B") {
-                if (+filterInfo.value <= +this.preparedData[i].get(j).value && +this.preparedData[i].get(j).value <= +filterInfo.highValue) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "O") {
-                if (+this.preparedData[i].get(j).value < +filterInfo.value || +filterInfo.highValue < +this.preparedData[i].get(j).value) {
-                  colInc = true;
-                  break;
-                }
-              }
-            } else if (filterInfo.dataType === "date") {
-              colInc = false;
-
-              let v: any = this.preparedData[i].get(j).value.substr(0, 10);
-              let f1: any = filterInfo.value.substr(0, 10);
-              let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
-
-              if (filterInfo.operator === "E") {
-                if (v === f1) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "LE") {
-                if (v <= f1) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "LT") {
-                if (v < f1) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "GE") {
-                if (v >= f1) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "GT") {
-                if (v > f1) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "B") {
-                if (f1 <= v && v <= f2) {
-                  colInc = true;
-                  break;
-                }
-              } else if (filterInfo.operator === "O") {
-                if (v < f1 || f2 < v) {
-                  colInc = true;
-                  break;
-                }
-              }
-            } else {
-              console.debug("Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
-
-              if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
-                colInc = false;
-                break;
-              }
-            }
-          }
-
-          if (!colInc) {
-            inc = false;
-            break;
-          }
         }
-      }
-      if (inc) {
-        filteredData.push(this.preparedData[i]);
+        if (inc) {
+          filteredData.push(this.preparedData[i]);
+        }
       }
     }
     this.preparedData = filteredData;
@@ -1096,51 +1098,55 @@ export class GridService {
       this.sortInfo.field = "GROUP_BY";
     }
 
-    if (this.sortInfo.field === "GROUP_BY") {
-      for (var i = 0; i < this.columnDefinitions.length; i++) {
-        if (this.columnDefinitions[i].isGroup) {
-          sortColumns.push(i);
+    if (this.columnDefinitions) {
+      if (this.sortInfo.field === "GROUP_BY") {
+        for (var i = 0; i < this.columnDefinitions.length; i++) {
+          if (this.columnDefinitions[i].isGroup) {
+            sortColumns.push(i);
+          }
         }
-      }
-    } else {
-      for (var i = 0; i < this.columnDefinitions.length; i++) {
-        if (this.columnDefinitions[i].field === this.sortInfo.field) {
-          sortColumns.push(i);
-          break;
+      } else {
+        for (var i = 0; i < this.columnDefinitions.length; i++) {
+          if (this.columnDefinitions[i].field === this.sortInfo.field) {
+            sortColumns.push(i);
+            break;
+          }
         }
       }
     }
 
-    this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
-      let v: number = 0;
-      for (var i = 0; i < sortColumns.length; i++) {
-        if (typeof o1.get(sortColumns[i]).value === "number") {
-          if (this.sortInfo.asc) {
-            v = o1.get(sortColumns[i]).value - o2.get(sortColumns[i]).value;
-          } else {
-            v = o2.get(sortColumns[i]).value - o1.get(sortColumns[i]).value;
+    if (this.preparedData) {
+      this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
+        let v: number = 0;
+        for (var i = 0; i < sortColumns.length; i++) {
+          if (typeof o1.get(sortColumns[i]).value === "number") {
+            if (this.sortInfo.asc) {
+              v = o1.get(sortColumns[i]).value - o2.get(sortColumns[i]).value;
+            } else {
+              v = o2.get(sortColumns[i]).value - o1.get(sortColumns[i]).value;
+            }
+          } else if (typeof o1.get(sortColumns[i]).value === "string") {
+            if (this.sortInfo.asc) {
+              if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
+                v = -1;
+              } else if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
+                v = 1;
+              }
+            } else {
+              if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
+                v = -1;
+              } else if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
+                v = 1;
+              }
+            }
           }
-        } else if (typeof o1.get(sortColumns[i]).value === "string") {
-          if (this.sortInfo.asc) {
-            if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
-              v = -1;
-            } else if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
-              v = 1;
-            }
-          } else {
-            if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
-              v = -1;
-            } else if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
-              v = 1;
-            }
+          if (v !== 0) {
+            return v;
           }
         }
-        if (v !== 0) {
-          return v;
-        }
-      }
-      return v;
-    });
+        return v;
+      });
+    }
   }
 
   getValueSubject(): Subject<Point> {

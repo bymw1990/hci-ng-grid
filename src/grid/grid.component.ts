@@ -31,6 +31,7 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -67,7 +68,7 @@ import {GridGlobalService} from "./services/grid-global.service";
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="config.title !== null || configurable" id="titleBar">
+      <div *ngIf="config.title || configurable" id="titleBar">
         <div>{{config.title}}</div>
         <div *ngIf="configurable" class="right" ngbDropdown placement="bottom-right">
           <a id="congigDropdownToggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
@@ -78,22 +79,22 @@ import {GridGlobalService} from "./services/grid-global.service";
           </ul>
         </div>
       </div>
-      
+
       <div #mainContent id="mainContent">
         <div #mainContentHeaderContainer></div>
         <div #mainContentPopupContainer></div>
 
         <!-- Busy spinner for loading data. -->
-        <div #busyOverlay class="hci-grid-busy" [style.display]="busy ? 'flex' : 'none'">
+        <div #busyOverlay class="hci-grid-busy">
           <div class="hci-grid-busy-div">
             <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
           </div>
         </div>
-        
+
         <!-- Overlay messages for loading content or re-rendering. -->
-        <div #emptyContent [style.display]="!gridData || gridData.length === 0 ? 'flex' : 'none'" class="empty-content">
-          <div [style.display]="!busy ? 'flex' : 'none'" class="empty-content-text">No Data</div>
-          <div [style.display]="busy ? 'flex' : 'none'" class="empty-content-text">Loading Data...</div>
+        <div #emptyContent class="empty-content">
+          <!--<div [style.display]="!busy ? 'flex' : 'none'" class="empty-content-text">No Data</div>
+          <div [style.display]="busy ? 'flex' : 'none'" class="empty-content-text">Loading Data...</div>-->
         </div>
         
         <!-- Container for the header.  Split in to a left view (for fixed columns) and right view. -->
@@ -308,6 +309,11 @@ import {GridGlobalService} from "./services/grid-global.service";
       background-color: rgba(0, 0, 0, 0.2);
       position: absolute;
       height: 0px;
+      display: none;
+    }
+
+    .hci-grid-busy.show {
+      display: flex;
     }
     
     .hci-grid-busy-div {
@@ -463,8 +469,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   /**
    * Setup listeners and pass inputs to services (particularly the config service).
+   * Everything here now knows that the DOM has been created.
    */
-  ngAfterContentInit() {
+  ngAfterViewInit() {
     this.findBaseRowCell();
 
     this.columnsChangedSubscription = this.gridService.getColumnMapSubject().subscribe((columnMap: Map<string, Column[]>) => {
@@ -504,6 +511,33 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.pageInfo = pageInfo;
     });
 
+    /* When the bound data updates, pass it off to the grid service for processing. */
+    this.boundDataSubject.subscribe((boundData: Object[]) => {
+      if (isDevMode()) {
+        console.debug("boundDataSubject.subscribe: " + boundData.length);
+      }
+      this.busySubject.next(true);
+      this.gridService.setOriginalData(this.boundData);
+      this.gridService.initData();
+      this.busySubject.next(false);
+    });
+
+    /* Subscribe to busy change.  Update the busy boolean. */
+    this.busySubject.subscribe((busy: boolean) => {
+      if (isDevMode()) {
+        console.debug("busySubject.subscribe: " + busy);
+      }
+      this.busy = busy;
+      if (this.busyOverlay && this.busyOverlay.nativeElement) {
+        if (busy) {
+          this.renderer.addClass(this.busyOverlay.nativeElement, "show");
+        } else {
+          this.renderer.removeClass(this.busyOverlay.nativeElement, "show");
+        }
+        this.renderer.setStyle(this.emptyContent.nativeElement, "display", !busy && (!this.gridData || this.gridData.length === 0) ? "flex" : "none");
+      }
+    });
+
     /* Listen to changes in Sort/Filter/Page.
      If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
@@ -519,6 +553,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           this.gridService.setOriginalData(externalData.data);
 
           this.pageInfo = this.gridService.pageInfo;
+          this.busySubject.next(false);
         });
       });
     }
@@ -532,31 +567,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
-      this.busySubject.next(true);
-      this.onExternalDataCall(new ExternalInfo(null, null, this.pageInfo)).then((externalData: ExternalData) => {
-        this.gridService.pageInfo = externalData.getExternalInfo().getPage();
-        if (this.gridService.setOriginalData(externalData.getData())) {
-          this.gridService.pageInfo = this.gridService.pageInfo;
-        }
-        this.postInit();
-      });
+      this.gridService.externalInfoObserved.next(new ExternalInfo(null, null, this.pageInfo));
     } else if (this.boundData) {
-      if (this.gridService.setOriginalData(this.boundData)) {
-        this.gridService.pageInfo = this.gridService.pageInfo;
-      }
-      this.postInit();
-    } else {
-      this.postInit();
+      this.gridService.setOriginalData(this.boundData);
     }
+
+    this.pageInfo = this.gridService.pageInfo;
+    this.gridEventService.setSelectedLocation(null, null);
 
     this.buildConfigFromInput();
     this.gridService.updateConfig(this.inputConfig);
-  }
 
-  /**
-   * Everything here now knows that the DOM has been created.
-   */
-  ngAfterViewInit() {
     this.gridService.setGridElement(this.gridContainer.nativeElement);
 
     (<HTMLIFrameElement>this.iframeSensor.nativeElement).contentWindow.addEventListener("resize", () => {
@@ -565,20 +586,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.findBaseRowCell();
 
-    //this.updateGridContainerAndColumnSizes();
-
     this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
-
-    /* When the bound data updates, pass it off to the grid service for processing. */
-    this.boundDataSubject.subscribe((boundData: Object[]) => {
-      if (isDevMode()) {
-        console.debug("boundDataSubject.subscribe: " + boundData.length);
-      }
-      this.busySubject.next(true);
-      this.gridService.setOriginalData(this.boundData);
-      this.gridService.initData();
-      this.busySubject.next(false);
-    });
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.getViewDataSubject().subscribe((data: Array<Row>) => {
@@ -586,15 +594,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("data.subscribe: " + data.length);
       }
       this.setGridData(data);
-    });
-
-    /* Subscribe to busy change.  Update the busy boolean. */
-    this.busySubject.subscribe((busy: boolean) => {
-      this.busy = busy;
-      if (this.busyOverlay && this.busyOverlay.nativeElement) {
-        this.renderer.setStyle(this.busyOverlay.nativeElement, "display", busy ? "flex" : "none");
-        this.renderer.setStyle(this.emptyContent.nativeElement, "display", busy ? "flex" : "none");
-      }
     });
 
     /* Update the pageInfo from the proper one in the gridService. */
@@ -843,11 +842,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   mouseOver(event: MouseEvent) {
     if (!event || !event.target) {
       return;
-    }
-
-    if (isDevMode()) {
-      //Suppress until Trace added.
-      //console.debug("mouseOver " + (<HTMLElement>event.target).id);
     }
 
     for (let mouseOverListener of this.mouseOverListeners) {
@@ -1238,6 +1232,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       insideGridWidth = gridWidth - 17;
     }
 
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "width", gridWidth + "px");
+
     let fixedWidth: number = 0;
     let fixedMinWidth: number = 0;
     let nonFixedWidth: number = 0;
@@ -1361,10 +1357,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug(gridData);
     }
 
-    this.changeDetectorRef.markForCheck();
     this.gridData = gridData;
     this.renderCellsAndData();
-    this.busySubject.next(false);
   }
 
   /**
@@ -1458,9 +1452,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         break;
       }
     }
-
-    this.changeDetectorRef.detectChanges();
-    this.changeDetectorRef.markForCheck();
   }
 
   /**
@@ -1605,23 +1596,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       }
     }
-  }
-
-  /**
-   * A post initialization method called after configuration.
-   */
-  private postInit() {
-    if (isDevMode()) {
-      console.debug("postInit");
-    }
-
-    this.pageInfo = this.gridService.pageInfo;
-    //this.updateGridContainerHeight();
-    //this.updateGridContainerAndColumnSizes();
-
-    this.gridEventService.setSelectedLocation(null, null);
-    //this.busySubject.next(false);
-    //this.changeDetectorRef.markForCheck();
   }
 
   /**
