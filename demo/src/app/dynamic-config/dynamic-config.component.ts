@@ -1,6 +1,6 @@
-import {Component} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {
-  CheckRowSelectView, ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer,
+  CheckRowSelectView, ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, GridComponent,
   SelectFilterRenderer, TextFilterRenderer
 } from "hci-ng-grid";
 import {DataGeneratorService} from "../services/data-generator.service";
@@ -64,57 +64,13 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
-          <ng-template #config1>
-            <pre>
-              &lt;hci-grid
-                [title]="'Dynamic Columns'"
-                [data]="data"
-                [columnDefinitions]="columnsA"&gt;
-              &lt;/hci-grid&gt;
-              
-              Columns1:
-              field: "idPatient", name: "ID", visible: false
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              
-              Columns2:
-              field: "idPatient", name: "ID", visible: false
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              field: "middleName", name: "Middle Name"
-            </pre>
-          </ng-template>
-        </div>
-        <p>
-          <hci-grid [title]="'Dynamic Columns'"
-                    [data]="data"
-                    [columnDefinitions]="columnsA">
-          </hci-grid>
-        </p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h4>Dynamic Grid Row Select</h4>
-      </div>
-      <div class="card-body">
-        <div class="card-text">
-          The grid starts with two columns.  Clicking the buttons toggles between two sets of column definitions.  The
-          second one adds a third column.  When the columns change, the grid refreshes.
-        </div>
-        <div class="card-text">
-          <button class="btn btn-primary" (click)="setColumnsB1()">Columns 1</button>
-          <button class="btn btn-primary" (click)="setColumnsB2()">Columns 2</button>
-        </div>
-        <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config2>
             <pre>
               &lt;hci-grid
                 [title]="'Dynamic Columns Row Select'"
                 [data]="data"
-                [columnDefinitions]="columnsB"&gt;
+                [columnDefinitions]="columnsA"&gt;
               &lt;/hci-grid&gt;
               
               Columns1:
@@ -135,7 +91,44 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Dynamic Columns Row Select'"
                     [data]="data"
-                    [columnDefinitions]="columnsB">
+                    [columnDefinitions]="columnsA">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h4>Set Config</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Click the button to push the following key value pair.  For example, you can try "title" and "Test".
+        </div>
+        <div class="card-text">
+          <button class="btn btn-primary" (click)="pushConfig3()">Push:</button>
+          <input [(ngModel)]="key" placeholder="key" />
+          <input [(ngModel)]="value" placeholder="value" />
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                [data]="data"
+                [config]="config3"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID"
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid #grid3
+                    [data]="data"
+                    [config]="config3">
           </hci-grid>
         </p>
       </div>
@@ -167,25 +160,12 @@ export class DynamicConfigGridComponent {
 
   columnsA1: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name" },
-    { field: "firstName", name: "First Name" }
-  ];
-
-  columnsA2: any[] = [
-    { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name" },
-    { field: "firstName", name: "First Name" },
-    { field: "middleName", name: "Middle Name" }
-  ];
-
-  columnsB1: any[] = [
-    { field: "idPatient", name: "ID", visible: false },
     { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
     { field: "lastName", name: "Last Name" },
     { field: "firstName", name: "First Name" }
   ];
 
-  columnsB2: any[] = [
+  columnsA2: any[] = [
     { field: "idPatient", name: "ID", visible: false },
     { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
     { field: "lastName", name: "Last Name" },
@@ -194,7 +174,20 @@ export class DynamicConfigGridComponent {
   ];
 
   columnsA: any = this.columnsA1;
-  columnsB: any = this.columnsB1;
+
+  key: string = "title";
+  value: any = "Test";
+
+  config3 = {
+    title: "Config",
+    columnDefinitions: [
+      {field: "idPatient", name: "ID"},
+      {field: "lastName", name: "Last Name"},
+      {field: "firstName", name: "First Name"}
+    ]
+  };
+
+  @ViewChild("grid3") grid3: GridComponent;
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
@@ -210,16 +203,14 @@ export class DynamicConfigGridComponent {
     this.columnsA = this.columnsA2;
   }
 
-  setColumnsB1() {
-    this.columnsB = this.columnsB1;
-  }
-
-  setColumnsB2() {
-    this.columnsB = this.columnsB2;
-  }
-
   configChange(config: any) {
     console.debug("configChange");
     console.debug(config);
+  }
+
+  pushConfig3() {
+    let o = {};
+    o[this.key] = this.value;
+    this.grid3.config = Object.assign({}, this.grid3.config, o);
   }
 }

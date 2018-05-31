@@ -388,7 +388,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() rangeSelect: boolean;
   @Input() keyNavigation: boolean;
   @Input() nUtilityColumns: number;
-  @Input("columnDefinitions") inputColumnDefinitions: Column[] = [];
+  @Input("columnDefinitions") inputColumnDefinitions: Column[];
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
   @Input() groupByCollapsed: boolean;
