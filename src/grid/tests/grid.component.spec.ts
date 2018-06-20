@@ -17,6 +17,7 @@ describe("DashboardComponent Tests", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        HttpClientModule,
         GridModule.forRoot({})
       ]
     });

@@ -4,6 +4,7 @@
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {CommonModule} from "@angular/common";
+import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 
@@ -42,6 +43,7 @@ import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
     BrowserModule,
     CommonModule,
     FormsModule,
+    HttpClientModule,
     RouterModule.forRoot([
       { path: "", redirectTo: "/home", pathMatch: "full" },
       { path: "alerts", component: AlertsGridComponent },
