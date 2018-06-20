@@ -3,7 +3,6 @@
  */
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
@@ -21,13 +20,11 @@ import {ChoiceEditRenderer} from "./cell/editRenderers/choice-edit-renderer.comp
 import {DateEditRenderer} from "./cell/editRenderers/date-edit-renderer.component";
 import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-renderer.component";
 import {BigTextPopup} from "./cell/viewPopupRenderer/bigtext-popup.component";
-import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     NgbModule.forRoot()
   ],
   declarations: [
