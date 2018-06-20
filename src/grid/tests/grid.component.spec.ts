@@ -2,6 +2,7 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {async, inject, TestBed} from "@angular/core/testing";
+import {HttpClientModule} from "@angular/common/http";
 
 import {} from "jasmine";
 
@@ -17,6 +18,7 @@ describe("DashboardComponent Tests", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        HttpClientModule,
         GridModule
       ]
     });
