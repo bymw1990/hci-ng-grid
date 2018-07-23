@@ -1,0 +1,82 @@
+#gridContainer.coredefault #titleBar {
+  padding: 10px;
+  font-weight: 500;
+  font-size: x-large;
+  border-bottom: black 2px solid;
+}
+
+#gridContainer.coredefault #headerContent {
+  font-weight: bold;
+  border-bottom: black 1px solid;
+}
+
+#gridContainer.coredefault .hci-grid-header:nth-child(odd) {
+  background-color: #3d7a99;
+}
+
+#gridContainer.coredefault .hci-grid-header:nth-child(even) {
+  background-color: #005480;
+}
+
+#gridContainer.coredefault .hci-grid-row {
+  width: 100%;
+  height: 45px;
+  background-color: #ffffff;
+}
+
+#gridContainer.coredefault .hci-grid-row.odd {
+  background-color: #e6f0f5;
+}
+
+#gridContainer.coredefault .hci-grid-row .hci-grid-cell:nth-child(2n) {
+   background-color: #e6f0f5;
+}
+
+#gridContainer.coredefault .hci-grid-cell {
+  display: flex;
+  align-items: center;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.top.left {
+  border-top-left-radius: 10px;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.top.right {
+  border-top-right-radius: 10px;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.bottom.left {
+  border-bottom-left-radius: 10px;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.bottom.right {
+  border-bottom-right-radius: 10px;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.left {
+  border-left: #ffee00 2px solid;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.right {
+  border-right: #ffee00 2px solid;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.top {
+  border-top: #ffee00 2px solid;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected.bottom {
+  border-bottom: #ffee00 2px solid;
+}
+
+#gridContainer.coredefault .hci-grid-cell.selected {
+  background-color: rgba(102, 255, 255, 0.4);
+}
+
+#gridContainer.coredefault .hci-grid-row.selected:nth-child(2n) {
+  background-color: rgba(102, 255, 255, 0.4);
+}
+
+#gridContainer.coredefault #gridFooter {
+  background-color: rgba(112, 152, 173, 0.4);
+}

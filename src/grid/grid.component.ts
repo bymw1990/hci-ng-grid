@@ -194,6 +194,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
   styles: [
     require("./themes/excel.css"),
     require("./themes/report.css"),
+    require("./themes/coredefault.css"),
     `
 
     #gridContainer {
