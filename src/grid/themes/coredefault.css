@@ -76,13 +76,22 @@
   border-bottom: #ffee00 2px solid;
 }
 
-#gridContainer.coredefault .hci-grid-cell.selected {
-  background-color: rgba(102, 255, 255, 0.4);
+#gridContainer.coredefault .hci-grid-row.selected .hci-grid-cell:nth-child(even) {
+  background-color: #61f0f2;
 }
 
-#gridContainer.coredefault .hci-grid-row.selected:nth-child(2n) {
-  background-color: rgba(102, 255, 255, 0.4);
+#gridContainer.coredefault .hci-grid-row.selected .hci-grid-cell:nth-child(odd) {
+  background-color: #66ffff;
 }
+
+#gridContainer.coredefault .hci-grid-row.odd.selected .hci-grid-cell:nth-child(even) {
+  background-color: #68e1eb;
+}
+
+#gridContainer.coredefault .hci-grid-row.odd.selected .hci-grid-cell:nth-child(odd) {
+  background-color: #61f0f2;
+}
+
 
 #gridContainer.coredefault #gridFooter {
   background-color: rgba(112, 152, 173, 0.4);
