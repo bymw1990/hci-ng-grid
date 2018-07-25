@@ -56,7 +56,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                         [columnDefinitions]="columns1"
                         [eventListeners]="listeners1"
                         (rowClick)="rowClick($event)"
-                        [theme]="'coredefault'"
+                        [theme]="'core-default'"
                         [pageSize]="10"
                         [pageSizes]="[5, 10, 25]"&gt;
               &lt;/hci-grid&gt;
@@ -77,7 +77,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                     [columnDefinitions]="columns1"
                     [eventListeners]="listeners1"   
                     (rowClick)="rowClick($event)"                 
-                    [theme]="'coredefault'"
+                    [theme]="'core-default'"
                     [pageSize]="10"
                     [pageSizes]="[5, 10, 25]">
           </hci-grid>
@@ -275,11 +275,11 @@ import {DataGeneratorService} from "../services/data-generator.service";
 export class ThemingComponent {
 
   selectedRowID: number;
-    
+
   listeners1: Array<any> = [
     { type: ClickViewListener }
   ];
-    
+
   data1: Array<Object> = [];
   data2: Array<Object> = [];
   data3: Array<Object> = [];
@@ -294,7 +294,7 @@ export class ThemingComponent {
     new Column({ field: "address", name: "Address" }),
     new Column({ field: "nLabs", name: "# Labs" })
   ];
-    
+
   columns1: Column[] = [
     new Column({ field: "idPatient", name: "ID" }),
     new Column({ field: "lastName", name: "Last Name" }),
