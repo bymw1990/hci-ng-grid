@@ -21,15 +21,22 @@
 #gridContainer.coredefault .hci-grid-row {
   width: 100%;
   height: 45px;
+}
+
+#gridContainer.coredefault .hci-grid-row .hci-grid-cell:nth-child(odd){
   background-color: #ffffff;
 }
 
-#gridContainer.coredefault .hci-grid-row.odd {
+#gridContainer.coredefault .hci-grid-row .hci-grid-cell:nth-child(even){
   background-color: #e6f0f5;
 }
 
-#gridContainer.coredefault .hci-grid-row .hci-grid-cell:nth-child(2n) {
-   background-color: #e6f0f5;
+#gridContainer.coredefault .hci-grid-row.odd .hci-grid-cell:nth-child(odd){
+  background-color: #e6f0f5;
+}
+
+#gridContainer.coredefault .hci-grid-row.odd .hci-grid-cell:nth-child(even) {
+   background-color: #d1e2eb;
 }
 
 #gridContainer.coredefault .hci-grid-cell {
