@@ -1,14 +1,13 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import {async, inject, TestBed} from "@angular/core/testing";
+import {HttpClientModule} from "@angular/common/http";
+import {TestBed} from "@angular/core/testing";
 
 import {} from "jasmine";
 
 import {GridModule} from "../grid.module";
 import {GridComponent} from "../grid.component";
-import {Row} from "../row/row";
-import {Column} from "../column/column";
 
 /**
  * @since 1.0.0

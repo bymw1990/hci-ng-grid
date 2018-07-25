@@ -633,17 +633,28 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {{[p: string]: SimpleChange}} changes
    */
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+    if (isDevMode()) {
+      console.debug("ngOnChanges");
+      console.debug(changes);
+    }
+
+    if (changes["config"]) {
+      // Flag this config as originating externally.  Don't re-broadcast.
+      this.inputConfig.external = true;
+      this.gridService.updateConfig(this.inputConfig);
+    }
     if (changes["boundData"]) {
       this.boundDataSubject.next(this.boundData);
-    } else if (changes["config"]) {
-      // Flag this config as originating externally.  Don't re-broadcast.
-      this.inputConfig.external = true;
-      this.gridService.updateConfig(this.inputConfig);
-    } else {
-      // Flag this config as originating externally.  Don't re-broadcast.
-      this.inputConfig.external = true;
-      this.buildConfigFromInput();
-      this.gridService.updateConfig(this.inputConfig);
+    }
+
+    for (let change in changes) {
+      if (change !== "config" && change !== "boundData") {
+        // Flag this config as originating externally.  Don't re-broadcast.
+        this.inputConfig.external = true;
+        this.buildConfigFromInput();
+        this.gridService.updateConfig(this.inputConfig);
+        break;
+      }
     }
   }
 
@@ -1149,6 +1160,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * combination of config and @Input settings.
    */
   private buildConfigFromInput() {
+    if (isDevMode()) {
+      console.debug("buildConfigFromInput");
+    }
+
     if (this.id !== undefined) {
       this.inputConfig.id = this.id;
     }
@@ -1379,7 +1394,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
     for (let i of this.renderedRows) {
       try {
-        this.renderer.removeChild(leftContainer, leftContainer.querySelector("#row-left-" + i));
+        for (let row of leftContainer.querySelectorAll("#row-left-" + i)) {
+          this.renderer.removeChild(leftContainer, row);
+        }
       } catch (e) {
         // Ignore
       }
@@ -1387,7 +1404,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightContainer");
     for (let i of this.renderedRows) {
       try {
-        this.renderer.removeChild(rightContainer, rightContainer.querySelector("#row-right-" + i));
+        for (let row of rightContainer.querySelectorAll("#row-right-" + i)) {
+          this.renderer.removeChild(rightContainer, row);
+        }
       } catch (e) {
         // Ignore
       }
