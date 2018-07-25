@@ -31,7 +31,6 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -194,7 +193,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
   styles: [
     require("./themes/excel.css"),
     require("./themes/report.css"),
-    require("./themes/coredefault.css"),
+    require("./themes/core-default.css"),
     `
 
     #gridContainer {
