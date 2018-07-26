@@ -63,7 +63,8 @@ import {GridGlobalService} from "./services/grid-global.service";
          (mousemove)="mouseDrag($event)"
          (dblclick)="dblClick($event)"
          (keydown)="keyDown($event)">
-      <input #focuser1 id="focuser1" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
+      
+      <input #focuser1 id="focuser1" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
@@ -162,7 +163,7 @@ import {GridGlobalService} from "./services/grid-global.service";
         
       </div>
 
-      <input #focuser2 id="focuser2" style="position: absolute; left: -1000px;" (focus)="onFocus($event)" />
+      <input #focuser2 id="focuser2" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
       
       <!-- Footer -->
       <div *ngIf="pageInfo.pageSize > 0"

@@ -88,6 +88,44 @@ import {DataGeneratorService} from "../services/data-generator.service";
 
     <div class="card">
       <div class="card-header">
+        <h4>Core Default Theme</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          The default core theme.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1b" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1b>
+            <pre>
+              &lt;hci-grid [data]="data1"
+                       [columnDefinitions]="columns"
+                       [theme]="'core-default'"
+                       [pageSize]="10"
+                       [pageSizes]="[5, 10, 25]"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs"
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [data]="data1"
+                    [columnDefinitions]="columns"
+                    [theme]="'core-default'"
+                    [pageSize]="10"
+                    [pageSizes]="[5, 10, 25]">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
         <h4>No Theme (override the default)</h4>
       </div>
       <div class="card-body">

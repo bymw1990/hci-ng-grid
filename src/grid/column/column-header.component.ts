@@ -18,7 +18,13 @@ import {FilterInfo} from "../utils/filter-info";
   template: `
     <div class="d-flex flex-nowrap"
          style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
-      <span (click)="doSort()">{{ column.name }}</span>
+      <span (click)="doSort()"
+            class="hci-grid-tooltip">
+        {{ column.name }}
+        <span class="hci-grid-tooltip-text">
+          {{ column.name }}
+        </span>
+      </span>
       <div class="d-flex flex-nowrap sort-icon">
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
           <a id="filterDropdownToggle"
@@ -47,6 +53,27 @@ import {FilterInfo} from "../utils/filter-info";
     
     .dropdown-menu {
       padding: 0;
+    }
+    
+    .hci-grid-tooltip {
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+    }
+
+    .hci-grid-tooltip .hci-grid-tooltip-text {
+      display: none;
+      position: absolute;
+      background-color: black;
+      color: #fff;
+      padding: 2px 4px;
+      border-radius: 6px;
+      top: -4px;
+      left: 105%;
+      z-index: 100;
+    }
+
+    .hci-grid-tooltip:hover .hci-grid-tooltip-text {
+      display: inherit;
     }
   `],
 })
