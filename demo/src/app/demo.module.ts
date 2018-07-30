@@ -65,7 +65,7 @@ import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
       { path: "theming", component: ThemingComponent },
     ]),
     NgbModule.forRoot(),
-    GridModule.forRoot({})
+    GridModule.forRoot()
   ],
   declarations: [
     DemoComponent,

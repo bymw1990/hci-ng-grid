@@ -64,11 +64,11 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
   ]
 })
 export class GridModule {
-  static forRoot(globalConfig: any): ModuleWithProviders {
+  static forRoot(globalConfig?: any): ModuleWithProviders {
     return {
       providers: [
         GridGlobalService,
-        {provide: "globalConfig", useValue: globalConfig}
+        {provide: "globalConfig", useValue: (globalConfig) ? globalConfig : {}}
       ],
       ngModule: GridModule
     };
