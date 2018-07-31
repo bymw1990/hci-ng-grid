@@ -30,7 +30,6 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     NgbModule.forRoot()
   ],
   declarations: [
