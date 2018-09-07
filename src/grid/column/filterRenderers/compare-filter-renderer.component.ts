@@ -49,16 +49,17 @@ import {FilterInfo} from "../../utils/filter-info";
         <ng-container *ngIf="column.dataType === 'date'">
           <div class="form-group">
             <div class="input-group flex-nowrap" (click)="stop($event)">
-              <input ngbDatepicker #d1="ngbDatepicker"
+              <!--<input ngbDatepicker #d1="ngbDatepicker"-->
+              <input 
                      [ngModel]="lowValue"
                      (ngModelChange)="valueChange($event)"
-                     [minDate]="{year: 1900, month: 1, day: 1}"
                      placeholder="yyyy-mm-dd"
+                     [pattern]="datePattern"
                      class="form-control value inputs" />
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+                <!--<button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
                   <i class="fas fa-calendar-alt"></i>
-                </button>
+                </button>-->
               </div>
             </div>
             <div *ngIf="operator === 'B' || operator === 'O'"
@@ -68,6 +69,7 @@ import {FilterInfo} from "../../utils/filter-info";
                      (ngModelChange)="highValueChange($event)"
                      [minDate]="{year: 1900, month: 1, day: 1}"
                      placeholder="yyyy-mm-dd"
+                     pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                      class="form-control value inputs" />
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
@@ -157,6 +159,8 @@ export class CompareFilterRenderer extends FilterRenderer {
     { value: "B", display: "Between" },
     { value: "O", display: "Outside" }
   ];
+
+  datePattern: string = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
 
   filter() {
     this.filters[0].valid = true;

@@ -31,7 +31,6 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -64,7 +63,8 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
          (mousemove)="mouseDrag($event)"
          (dblclick)="dblClick($event)"
          (keydown)="keyDown($event)">
-      <input #focuser1 id="focuser1" style="position: absolute; left: -10000px; top: -10000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
+      
+      <input #focuser1 id="focuser1" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
@@ -163,7 +163,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
         
       </div>
 
-      <input #focuser2 id="focuser2" style="position: absolute; left: -10000px; top: -9900px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
+      <input #focuser2 id="focuser2" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
       
       <!-- Footer -->
       <div *ngIf="pageInfo.pageSize > 0"
@@ -194,6 +194,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
   styles: [
     require("./themes/excel.css"),
     require("./themes/report.css"),
+    require("./themes/core-default.css"),
     `
 
     #gridContainer {

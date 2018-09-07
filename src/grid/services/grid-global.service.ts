@@ -11,14 +11,19 @@ export class GridGlobalService {
   groupMap: Map<string, GridService[]> = new Map<string, GridService[]>();
 
   themeChoices: Dictionary[] = [
+    {value: "core-default", display: "Core Default"},
     {value: "excel", display: "Excel"},
     {value: "report", display: "Report"}
   ];
 
-  constructor(@Inject("globalConfig") private globalConfig) {
+  constructor(@Inject("globalConfig") private globalConfig: any) {
     if (globalConfig.themeChoices) {
       this.themeChoices = globalConfig.themeChoices;
     }
+  }
+
+  getGlobalConfig(): any {
+    return this.globalConfig;
   }
 
   register(group: string, grid: GridService) {

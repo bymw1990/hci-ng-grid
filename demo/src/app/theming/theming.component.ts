@@ -1,6 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-
-import {Column, CellNumberRangeView} from "hci-ng-grid/index";
+import {Column, CellNumberRangeView, ClickView, ClickViewListener, EventListenerArg} from "hci-ng-grid/index";
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -35,6 +34,89 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columnDefinitions]="columns"
+                    [pageSize]="10"
+                    [pageSizes]="[5, 10, 25]">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
+
+<div class="card">
+      <div class="card-header">
+        <h4>Core Default Theme</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          A variation of the Excel theme.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config3>
+            <pre>
+              &lt;hci-grid [title]="'Core Default styled'"
+                        [data]="data1"
+                        [columnDefinitions]="columns1"
+                        [eventListeners]="listeners1"
+                        (rowClick)="rowClick($event)"
+                        [theme]="'core-default'"
+                        [pageSize]="10"
+                        [pageSizes]="[5, 10, 25]"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {{"{"}}low: 15, high: 85, showIcon: true{{"}"}}
+            </pre>
+          </ng-template>
+        </div>
+        <div class="card-text">
+          <hci-grid [title]="'Demographics Report'"
+                    [data]="data1"
+                    [columnDefinitions]="columns1"
+                    [eventListeners]="listeners1"   
+                    (rowClick)="rowClick($event)"                 
+                    [theme]="'core-default'"
+                    [pageSize]="10"
+                    [pageSizes]="[5, 10, 25]">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Core Default Theme</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          The default core theme.<br />
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1b" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1b>
+            <pre>
+              &lt;hci-grid [data]="data1"
+                       [columnDefinitions]="columns"
+                       [theme]="'core-default'"
+                       [pageSize]="10"
+                       [pageSizes]="[5, 10, 25]"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "lastName", name: "Last"
+              field: "firstName", name: "First"
+              field: "dob", name: "Birth Date", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+              field: "nLabs", name: "# Labs"
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [data]="data1"
+                    [columnDefinitions]="columns"
+                    [theme]="'core-default'"
                     [pageSize]="10"
                     [pageSizes]="[5, 10, 25]">
           </hci-grid>
@@ -230,6 +312,12 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class ThemingComponent {
 
+  selectedRowID: number;
+
+  listeners1: Array<any> = [
+    { type: ClickViewListener }
+  ];
+
   data1: Array<Object> = [];
   data2: Array<Object> = [];
   data3: Array<Object> = [];
@@ -243,6 +331,17 @@ export class ThemingComponent {
     new Column({ field: "gender", name: "Gender" }),
     new Column({ field: "address", name: "Address" }),
     new Column({ field: "nLabs", name: "# Labs" })
+  ];
+
+  columns1: Column[] = [
+    new Column({ field: "idPatient", name: "ID" }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "middleName", name: "Middle Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
+    new Column({ field: "gender", name: "Gender" }),
+    new Column({ field: "nLabs", name: "# Labs", dataType: "number" }),
+    new Column({ viewRenderer: ClickView, minWidth: 30, width: 30, maxWidth: 30 })
   ];
 
   columns3: Column[] = [
@@ -264,4 +363,7 @@ export class ThemingComponent {
     this.data5 = this.dataGeneratorService.getData(5);
   }
 
+  rowClick(event: any) {
+    this.selectedRowID = +event;
+  }
 }

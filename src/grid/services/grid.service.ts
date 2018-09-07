@@ -94,7 +94,7 @@ export class GridService {
       console.debug("updateConfig: " + JSON.stringify(config));
     }
     if (!this.configured) {
-      this.config = Object.assign({}, GridService.defaultConfig, config);
+      this.config = Object.assign({}, GridService.defaultConfig, this.gridGlobalService.getGlobalConfig(), config);
       this.configured = true;
     } else {
       Object.assign(this.config, config);
