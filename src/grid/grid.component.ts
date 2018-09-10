@@ -70,14 +70,16 @@ import {GridGlobalService} from "./services/grid-global.service";
       <!-- Title Bar -->
       <div *ngIf="config.title || configurable" id="titleBar">
         <div>{{config.title}}</div>
-        <div *ngIf="configurable" class="right" ngbDropdown placement="bottom-right">
-          <a id="congigDropdownToggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
-            <i class="fas fa-cog fa-lg"></i>
-          </a>
-          <ul ngbDropdownMenu id="congigDropdownMenu" aria-labelledby="congigDropdownToggle" class="dropdown-menu">
-            <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
-          </ul>
-        </div>
+        <ng-container *ngIf="configurable">
+          <div class="right" ngbDropdown placement="bottom-right">
+            <a id="configDropdownToggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
+              <i class="fas fa-cog fa-lg"></i>
+            </a>
+            <ul ngbDropdownMenu id="configDropdownMenu" aria-labelledby="configDropdownToggle" class="dropdown-menu">
+              <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
+            </ul>
+          </div>
+        </ng-container>
       </div>
 
       <div #mainContent id="mainContent">

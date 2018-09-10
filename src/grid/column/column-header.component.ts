@@ -22,7 +22,7 @@ import {FilterInfo} from "../utils/filter-info";
         </span>
       </span>
       <div class="d-flex flex-nowrap sort-icon">
-        <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer" ngbDropdown [placement]="column.isLast ? 'bottom-right' : 'bottom-left'">
+        <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer">
           <a id="filterDropdownToggle"
              (click)="showFilter()"
              class="dropdown-toggle"
