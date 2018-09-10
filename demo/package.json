@@ -16,20 +16,20 @@
     "webpack": "webpack"
   },
   "optionalDependencies": {
-    "hci-ng-grid": "2.0.0-beta.10"
+    "hci-ng-grid": ">=2.0.0-beta.13"
   },
   "dependencies": {
-    "@angular/common": "^5.2.0",
-    "@angular/compiler": "^5.2.0",
-    "@angular/compiler-cli": "^5.2.0",
-    "@angular/core": "^5.2.0",
-    "@angular/forms": "^5.2.0",
-    "@angular/platform-browser": "^5.2.0",
-    "@angular/router": "^5.2.0",
+    "@angular/common": "5.2.x",
+    "@angular/compiler": "5.2.x",
+    "@angular/compiler-cli": "5.2.x",
+    "@angular/core": "5.2.x",
+    "@angular/forms": "5.2.x",
+    "@angular/platform-browser": "5.2.x",
+    "@angular/router": "5.2.x",
     "@fortawesome/fontawesome": "^1.1.2",
     "@fortawesome/fontawesome-free-regular": "^5.0.13",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
-    "@ng-bootstrap/ng-bootstrap": "1.0.4",
+    "@ng-bootstrap/ng-bootstrap": "1.1.x",
     "bootstrap": "^4.0.0",
     "moment": "2.15.1",
     "moment-random": "^1.0.3",

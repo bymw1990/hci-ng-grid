@@ -194,7 +194,6 @@ import {GridGlobalService} from "./services/grid-global.service";
   styles: [
     require("./themes/excel.css"),
     require("./themes/report.css"),
-    require("./themes/core-default.css"),
     `
 
     #gridContainer {

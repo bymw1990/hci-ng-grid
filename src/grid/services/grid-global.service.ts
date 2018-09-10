@@ -11,7 +11,6 @@ export class GridGlobalService {
   groupMap: Map<string, GridService[]> = new Map<string, GridService[]>();
 
   themeChoices: Dictionary[] = [
-    {value: "core-default", display: "Core Default"},
     {value: "excel", display: "Excel"},
     {value: "report", display: "Report"}
   ];
