@@ -4,11 +4,15 @@ import {Dictionary} from "../model/dictionary.interface";
 import {GridService} from "./grid.service";
 import {FilterInfo} from "../utils/filter-info";
 
+/**
+ * A singleton service that allows default configuration for all grids, grouping grids together, and referencing a grid
+ * from another grid.
+ */
 @Injectable()
 export class GridGlobalService {
 
   tempId: number = 0;
-  groupMap: Map<string, GridService[]> = new Map<string, GridService[]>();
+  groupServiceMap: Map<string, GridService[]> = new Map<string, GridService[]>();
 
   themeChoices: Dictionary[] = [
     {value: "excel", display: "Excel"},
@@ -25,26 +29,32 @@ export class GridGlobalService {
     return this.globalConfig;
   }
 
-  register(group: string, grid: GridService) {
-    if (!grid.id) {
-      grid.id = "hci-grid-" + this.tempId++;
+  /**
+   * When a grid is created, register itself with this service.
+   *
+   * @param {string} group
+   * @param {GridService} gridService
+   */
+  register(group: string, gridService: GridService) {
+    if (!gridService.id) {
+      gridService.id = "hci-grid-" + this.tempId++;
     }
 
     if (isDevMode()) {
-      console.debug("GridGlobalService.register: group: " + group + ", grid: " + grid.id);
+      console.debug("GridGlobalService.register: group: " + group + ", grid: " + gridService.id);
     }
 
-    if (this.groupMap.has(group)) {
-      this.groupMap.get(group).push(grid);
+    if (this.groupServiceMap.has(group)) {
+      this.groupServiceMap.get(group).push(gridService);
     } else {
       let gridArray: GridService[] = [];
-      gridArray.push(grid);
-      this.groupMap.set(group, gridArray);
+      gridArray.push(gridService);
+      this.groupServiceMap.set(group, gridArray);
     }
   }
 
   pushConfigEvent(group: string, id: string, config: any) {
-    for (let grid of this.groupMap.get(group)) {
+    for (let grid of this.groupServiceMap.get(group)) {
       if (grid.id !== id) {
         grid.updateConfig(config);
       }
@@ -52,7 +62,7 @@ export class GridGlobalService {
   }
 
   clearPushFilter(group: string, id: string, field: string, filters: FilterInfo[]) {
-    for (let grid of this.groupMap.get(group)) {
+    for (let grid of this.groupServiceMap.get(group)) {
       if (grid.id !== id) {
         grid.addFilters(field, filters);
         grid.filter();

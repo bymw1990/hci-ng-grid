@@ -15,6 +15,9 @@ import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
 import {GridGlobalService} from "./grid-global.service";
 
+/**
+ * The service for handling configuration and data binding/parsing.
+ */
 @Injectable()
 export class GridService {
 
@@ -85,7 +88,8 @@ export class GridService {
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {}
 
   /**
-   * Expects an object with the above configuration options as fields.
+   * Expects an object with the above configuration options as fields.  This is built on top of the default values,
+   * then the global config options, then these passed in specific configuration options.
    *
    * @param config
    */
@@ -197,6 +201,11 @@ export class GridService {
     this.configSubject.next(this.config);
   }
 
+  /**
+   * Modifies the number of visible rows based upon other factors.  For example, if nVisibleRows is -1 and there is no
+   * paging, it will stay -1, so all data will appear at once.  If nVisibleRows is -1 and there is paging, then the
+   * nVisibleRows will be set to the page size.
+   */
   setNVisibleRows() {
     if (this.config.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
       this.nVisibleRows = this.pageInfo.pageSize;
@@ -205,6 +214,12 @@ export class GridService {
     }
   }
 
+  /**
+   * If the column configuration changes, e.g. by user editing the config, then re-sort the columns.
+   *
+   * @param {string} field
+   * @param {number} position
+   */
   updateSortOrder(field: string, position: number) {
     let n: number = -1;
     for (let i = 0; i < this.columnDefinitions.length; i++) {
@@ -287,9 +302,6 @@ export class GridService {
   /**
    * Usually called when config changes, re-init the columns.  We re-sort based upon the preferred sort order then
    * calculate things like visible columns and group by, then re-sort based on the rendering order.
-   *
-   * TODO: Rather than create a single array of columns split apart by a large number, 1000, 2000, 3000, 4000, for
-   * the different types, why not create a map?
    */
   initColumnProperties(columnMap: Map<string, Column[]>) {
     if (isDevMode()) {
@@ -373,6 +385,7 @@ export class GridService {
         this.columnDefinitions[j].selectable = false;
       }
 
+      // Set the order of columns based on how they should appear.  Non visible columns are at the back.
       if (this.columnDefinitions[j].isUtility) {
         this.columnDefinitions[j].renderOrder = this.columnDefinitions[j].sortOrder;
       } else if (this.columnDefinitions[j].isFixed) {
@@ -429,6 +442,12 @@ export class GridService {
     }
   }
 
+  /**
+   * Rather than store columns in a single array based on a number for rendering, create maps so different types of columns
+   * can be easily referenced.
+   *
+   * @returns {Map<string, Column[]>}
+   */
   createColumnMap(): Map<string, Column[]> {
     let columnMap: Map<string, Column[]> = new Map<string, Column[]>();
     columnMap.set("ALL", []);
@@ -444,6 +463,15 @@ export class GridService {
     return this.configSubject;
   }
 
+  /**
+   * @Deprecated
+   *
+   * Have a formatter/parser attached to each column and make calls through that.  This allows customization.
+   *
+   * @param {number} k
+   * @param value
+   * @returns {any}
+   */
   formatData(k: number, value: any): any {
     let column: Column = this.columnDefinitions[k];
     if (column.dataType === "string") {
@@ -455,6 +483,15 @@ export class GridService {
     }
   }
 
+  /**
+   * @Deprecated
+   *
+   * Have a formatter/parser attached to each column and make calls through that.  This allows customization.
+   *
+   * @param {number} k
+   * @param value
+   * @returns {any}
+   */
   parseData(k: number, value: any): any {
     let column: Column = this.columnDefinitions[k];
     if (column.dataType === "string") {
@@ -490,6 +527,11 @@ export class GridService {
     return this.viewDataSubject;
   }
 
+  /**
+   * Assemble an array of column indexes which are labeled as forming a key for a row of data.
+   *
+   * @returns {Array<number>}
+   */
   getKeyColumns(): Array<number> {
     let keys: Array<number> = new Array<number>();
     for (var i = 0; i < this.columnDefinitions.length; i++) {
@@ -518,14 +560,6 @@ export class GridService {
 
   setGridElement(gridElement: HTMLElement) {
     this.gridElement = gridElement;
-  }
-
-  getOriginalDataSize(): number {
-    if (this.originalData === undefined) {
-      return 0;
-    } else {
-      return this.originalData.length;
-    }
   }
 
   /**
@@ -1174,6 +1208,12 @@ export class GridService {
     this.filterMapSubject.next(this.filterMap);
   }
 
+  /**
+   * Way for external grid or user to add filters to a field.
+   *
+   * @param {string} field
+   * @param {FilterInfo[]} filters
+   */
   addFilters(field: string, filters: FilterInfo[]) {
     if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
@@ -1182,11 +1222,25 @@ export class GridService {
     this.filterMapSubject.next(this.filterMap);
   }
 
+  /**
+   * If this grid is linked to other grids, prompt the syncing of this grid's filters through the global service.
+   *
+   * @param {string} field
+   * @param {FilterInfo[]} filters
+   */
   globalClearPushFilter(field: string, filters: FilterInfo[]) {
     if (this.linkedGroups) {
       for (let linkedGroup of this.linkedGroups) {
         this.gridGlobalService.clearPushFilter(linkedGroup, this.id, field, filters);
       }
     }
+  }
+
+  getOriginalData(): Object[] {
+    return this.originalData;
+  }
+
+  getPreparedData(): Array<Row> {
+    return this.preparedData;
   }
 }

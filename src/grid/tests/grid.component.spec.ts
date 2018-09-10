@@ -8,6 +8,8 @@ import {} from "jasmine";
 
 import {GridModule} from "../grid.module";
 import {GridComponent} from "../grid.component";
+import {Column} from "../column/column";
+import {Row} from "../row/row";
 
 /**
  * @since 1.0.0
@@ -25,15 +27,20 @@ describe("DashboardComponent Tests", () => {
   it ("Grid should be empty.", () => {
     let fixture = TestBed.createComponent(GridComponent);
     let grid = fixture.componentInstance;
+    grid.boundData = [];
+    fixture.detectChanges();
 
-    expect(grid.getGridService().getOriginalDataSize()).toBe(0);
+    expect(grid.getGridService().getOriginalData().length).toBe(0);
   });
 
-  /*it ("Grid should have 5 rows.", (done) => {
+  it ("Grid should have 5 rows.", (done) => {
     let fixture = TestBed.createComponent(GridComponent);
     let grid = fixture.componentInstance;
 
-    grid.columnDefinitions = [ new Column({ field: "a", name: "a" }) ]
+    let config = {
+      columnDefinitions: [ new Column({ field: "a", name: "a" }) ]
+    };
+
     grid.boundData = [
       {a: "A"}, {a: "B"}, {a: "C"}, {a: "D"}, {a: "E"}
     ];
@@ -43,6 +50,6 @@ describe("DashboardComponent Tests", () => {
       expect(data[4].key).toBe("E");
       done();
     });
-  });*/
+  });
 
 });
