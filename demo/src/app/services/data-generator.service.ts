@@ -190,6 +190,10 @@ export class DataGeneratorService {
       filtered = this.externalData1;
     } else {
       for (var i = 0; i < this.externalData1.length; i++) {
+        filters = filters.filter((f: FilterInfo) => {
+          return f.value !== undefined && f.value !== "";
+        });
+
         filters = filters.sort((a: FilterInfo, b: FilterInfo) => {
           return a.field.localeCompare(b.field);
         });
