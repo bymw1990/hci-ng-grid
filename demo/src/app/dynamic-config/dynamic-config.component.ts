@@ -1,4 +1,4 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component, SimpleChange, SimpleChanges, ViewChild} from "@angular/core";
 import {
   CheckRowSelectView, ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, GridComponent,
   SelectFilterRenderer, TextFilterRenderer
@@ -211,6 +211,6 @@ export class DynamicConfigGridComponent {
   pushConfig3() {
     let o = {};
     o[this.key] = this.value;
-    this.grid3.config = Object.assign({}, this.grid3.config, o);
+    this.grid3.getGridService().updateConfig(o);
   }
 }
