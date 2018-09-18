@@ -30,7 +30,7 @@
     "@fortawesome/fontawesome-free-regular": "^5.0.13",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@ng-bootstrap/ng-bootstrap": "1.1.x",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "4.1.x",
     "moment": "2.15.1",
     "moment-random": "^1.0.3",
     "reflect-metadata": "^0.1.10",
