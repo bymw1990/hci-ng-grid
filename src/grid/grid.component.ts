@@ -3,7 +3,7 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewEncapsulation, ViewContainerRef, Injector
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector
 } from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
@@ -51,7 +51,8 @@ import {GridGlobalService} from "./services/grid-global.service";
     GridMessageService
   ],
   template: `
-    <iframe #iframeSensor style="width:100%; height: 0px; display: block; z-index: -1; position: relative; border: none; background-color: transparent;"
+    <iframe #iframeSensor
+            class="hci-grid-iframe"
             allowtransparency="true"></iframe>
     <div #gridContainer
          id="gridContainer"
@@ -198,6 +199,22 @@ import {GridGlobalService} from "./services/grid-global.service";
     require("./themes/report.css"),
     `
 
+    :host {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+    
+    .hci-grid-iframe {
+      height: 0px;
+      display: flex;
+      flex: 1 1 grow;
+      z-index: -1;
+      position: relative;
+      border: none;
+      background-color: transparent;
+    }
+    
     #gridContainer {
       display: inline-block;
       width: 100%;
@@ -356,8 +373,7 @@ import {GridGlobalService} from "./services/grid-global.service";
       color: lightgrey;
     }
 
-    `],
-  encapsulation: ViewEncapsulation.None
+    `]
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 

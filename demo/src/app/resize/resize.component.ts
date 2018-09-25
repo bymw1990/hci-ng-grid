@@ -127,6 +127,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div style="width: 100%;">
           <hci-grid [data]="data"
                     [columnDefinitions]="columns"
+                    [nVisibleRows]="5"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">
           </hci-grid>
