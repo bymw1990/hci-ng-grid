@@ -55,6 +55,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
         </p>
       </div>
     </div>
+    
     <div class="card">
       <div class="card-header">
         <h4>Partially External Grid</h4>
@@ -100,6 +101,50 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
         </p>
       </div>
     </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h4>External Grid Returns Empty Array</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          With a delay of 1s, an empty array is returned.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config1>
+            <pre>
+              &lt;hci-grid
+                [columnDefinitions]="columns"
+                [dataCall]="onExternalDataCall3"
+                [externalFiltering]="true"
+                [externalSorting]="true"
+                [externalPaging]="true"
+                [pageSize]="10"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID"
+              field: "lastName", name: "Last Name"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [columnDefinitions]="columns"
+                    [dataCall]="onExternalDataCall3"
+                    [externalFiltering]="true"
+                    [externalSorting]="true"
+                    [externalPaging]="true"
+                    [pageSize]="10">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
     `
 })
 export class ExternalDataComponent implements OnInit {
@@ -108,6 +153,7 @@ export class ExternalDataComponent implements OnInit {
 
   public onExternalDataCall1: Function;
   public onExternalDataCall2: Function;
+  public onExternalDataCall3: Function;
 
   columns: Column[] = [
     new Column({ field: "idPatient", name: "ID" }),
@@ -127,6 +173,7 @@ export class ExternalDataComponent implements OnInit {
 
     this.onExternalDataCall1 = this.handleExternalDataCall1.bind(this);
     this.onExternalDataCall2 = this.handleExternalDataCall2.bind(this);
+    this.onExternalDataCall3 = this.handleExternalDataCall3.bind(this);
   }
 
   public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
@@ -147,6 +194,14 @@ export class ExternalDataComponent implements OnInit {
       this.dataGeneratorService.getExternalData2(externalInfo).subscribe((externalData: ExternalData) => {
         resolve(externalData);
       });
+    });
+  }
+
+  public handleExternalDataCall3(externalInfo: ExternalInfo): Promise<ExternalData> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() =>
+        resolve(new ExternalData([], externalInfo)), 1000
+      );
     });
   }
 }
