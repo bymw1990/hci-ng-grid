@@ -201,14 +201,15 @@ import {GridGlobalService} from "./services/grid-global.service";
 
     :host {
       display: flex;
-      flex-direction: column;
-      flex: 1 1 auto;
+      flex-direction: row;
+      flex: 1 1 100%;
+      flex-wrap: wrap;
     }
     
     .hci-grid-iframe {
       height: 0px;
       display: flex;
-      flex: 1 1 grow;
+      flex: 1 1 100%;
       z-index: -1;
       position: relative;
       border: none;
@@ -216,7 +217,8 @@ import {GridGlobalService} from "./services/grid-global.service";
     }
     
     #gridContainer {
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
       width: 100%;
     }
     
@@ -467,6 +469,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private mouseUpListeners: Array<EventListener> = [];
   private mouseOverListeners: Array<EventListener> = [];
 
+  private iFrameWidth: number[] = [0, 0];
+
   constructor(private el: ElementRef,
               private renderer: Renderer2,
               private resolver: ComponentFactoryResolver,
@@ -599,7 +603,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.setGridElement(this.gridContainer.nativeElement);
 
     (<HTMLIFrameElement>this.iframeSensor.nativeElement).contentWindow.addEventListener("resize", () => {
-      this.doRender();
+      let iw: number = this.iframeSensor.nativeElement.offsetWidth;
+
+      if (isDevMode()) {
+        console.debug("iFrame Resize: " + this.iFrameWidth + ", " + iw);
+      }
+
+      if (iw !== this.iFrameWidth[0]) {
+        this.doRender();
+      }
+      if (iw !== this.iFrameWidth[1]) {
+        this.iFrameWidth[0] = this.iFrameWidth[1];
+        this.iFrameWidth[1] = iw;
+      }
     });
 
     this.findBaseRowCell();

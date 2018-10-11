@@ -5,72 +5,74 @@ import { Column } from "hci-ng-grid/index";
 @Component({
   selector: "edit-grid",
   template: `
-    <div class="card">
-      <div class="card-header">
-        <h4>Edit Grid</h4>
-      </div>
-      <div class="card-body">
-        <div class="card-text">
-          Click on a cell<br />
-          &lt;tab&gt; through cells<br />
-          click on cells<br />
-          up/down/left/right on selected cell<br />
-          modify input cell values and check bound data changes<br />
+    <div class="card-group">
+      <div class="card">
+        <div class="card-header">
+          <h4>Edit Grid</h4>
         </div>
-        <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
-          <ng-template #config1>
-            <pre>
-              &lt;hci-grid
-                [title]="'Spreadsheet Grid'"
-                [data]="editData"
-                [columnDefinitions]="editColumns"
-                [cellSelect]="true"
-                [pageSize]="25"
-                [nVisibleRows]="10"&gt;
-              &lt;/hci-grid&gt;
-              
-              Columns:
-              field: "idPatient", name: "ID", visible: true
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date"
-              field: "nLabs", name: "# Labs"
-              field: "nLabPath", name: "# Lab Path"
-            </pre>
-          </ng-template>
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
-          <ng-template #data1>
-            <div class="d-flex flex-nowrap" style="font-weight: bold;">
-              <span style="width: 100px;">idPatient</span>
-              <span style="width: 100px;">firstName</span>
-              <span style="width: 100px;">lastName</span>
-              <span style="width: 200px;">dob</span>
-              <span style="width: 100px;">nLabs</span>
-              <span style="width: 200px;">nPathLabs</span>
-            </div>
-            <div *ngFor="let row of editData" class="d-flex flex-nowrap">
-              <span style="width: 100px;">{{row.idPatient}}</span>
-              <span style="width: 100px;">{{row.firstName}}</span>
-              <span style="width: 100px;">{{row.lastName}}</span>
-              <span style="width: 200px;">{{row.dob}}</span>
-              <span style="width: 100px;">{{row.nLabs}}</span>
-              <span style="width: 200px;">{{row.nPathLabs}}</span>
-            </div>
-          </ng-template>
+        <div class="card-body">
+          <div class="card-text">
+            Click on a cell<br />
+            &lt;tab&gt; through cells<br />
+            click on cells<br />
+            up/down/left/right on selected cell<br />
+            modify input cell values and check bound data changes<br />
+          </div>
+          <div class="card-text">
+            <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+            <ng-template #config1>
+              <pre>
+                &lt;hci-grid
+                  [title]="'Spreadsheet Grid'"
+                  [data]="editData"
+                  [columnDefinitions]="editColumns"
+                  [cellSelect]="true"
+                  [pageSize]="25"
+                  [nVisibleRows]="10"&gt;
+                &lt;/hci-grid&gt;
+                
+                Columns:
+                field: "idPatient", name: "ID", visible: true
+                field: "lastName", name: "Last Name"
+                field: "firstName", name: "First Name"
+                field: "dob", name: "Date of Birth", dataType: "date"
+                field: "nLabs", name: "# Labs"
+                field: "nLabPath", name: "# Lab Path"
+              </pre>
+            </ng-template>
+            <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
+            <ng-template #data1>
+              <div class="d-flex flex-nowrap" style="font-weight: bold;">
+                <span style="width: 100px;">idPatient</span>
+                <span style="width: 100px;">firstName</span>
+                <span style="width: 100px;">lastName</span>
+                <span style="width: 200px;">dob</span>
+                <span style="width: 100px;">nLabs</span>
+                <span style="width: 200px;">nPathLabs</span>
+              </div>
+              <div *ngFor="let row of editData" class="d-flex flex-nowrap">
+                <span style="width: 100px;">{{row.idPatient}}</span>
+                <span style="width: 100px;">{{row.firstName}}</span>
+                <span style="width: 100px;">{{row.lastName}}</span>
+                <span style="width: 200px;">{{row.dob}}</span>
+                <span style="width: 100px;">{{row.nLabs}}</span>
+                <span style="width: 200px;">{{row.nPathLabs}}</span>
+              </div>
+            </ng-template>
+          </div>
+          <div>
+            <hci-grid [title]="'Spreadsheet Grid'"
+                      [data]="editData"
+                      [columnDefinitions]="editColumns"
+                      [cellSelect]="true"
+                      [pageSize]="25"
+                      [nVisibleRows]="10">
+            </hci-grid>
+          </div>
         </div>
-        <p>
-          <hci-grid [title]="'Spreadsheet Grid'"
-                    [data]="editData"
-                    [columnDefinitions]="editColumns"
-                    [cellSelect]="true"
-                    [pageSize]="25"
-                    [nVisibleRows]="10">
-          </hci-grid>
-        </p>
       </div>
     </div>
-    `
+  `, host: {class: "outlet"}
 })
 export class EditGridComponent {
 

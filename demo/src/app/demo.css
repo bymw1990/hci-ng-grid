@@ -1,18 +1,39 @@
 
-.navbar .container {
-  margin-left: 0px;
-  margin-right: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
-  max-width: 100%;
+body {
+  display: flex;
+  flex-grow: 0;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
 }
 
-.container-fluid {
-  margin-bottom: 40px;
+div {
+  display: flex;
+}
+
+demo {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  height: 3rem;
+  flex-shrink: 0;
+}
+
+.outlet {
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 100%;
 }
 
 .card {
   margin-top: 15px;
+}
+
+.card-body {
+  flex-direction: column;
+  flex: 0 0 100%;
 }
 
 div .card-text {

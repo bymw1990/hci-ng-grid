@@ -77,7 +77,7 @@ export class CellEditRenderer {
 
   setData(data: Cell) {
     this.data = data;
-    this.value = this.gridService.formatData(this.j, this.data.value);
+    this.value = this.column.formatValue(this.data.value);
   }
 
   setPosition(i: number, j: number) {

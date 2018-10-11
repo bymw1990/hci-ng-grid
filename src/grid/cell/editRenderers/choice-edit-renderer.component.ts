@@ -50,7 +50,7 @@ export class ChoiceEditRenderer extends CellEditRenderer {
     }
 
     if (this.value !== this.data.value) {
-      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.data.value = this.column.parseValue(this.value);
       this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     }
     event.stopPropagation();
@@ -61,12 +61,12 @@ export class ChoiceEditRenderer extends CellEditRenderer {
     console.log("ChoiceEditRenderer.onKeyDown " + event.keyCode);
 
     if (event.keyCode === 37 || event.keyCode === 39) {
-      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.data.value = this.column.parseValue(this.value);
       this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 38 || event.keyCode === 40) {
       // Do Nothing
     } else if (event.keyCode === 9) {
-      this.data.value = this.gridService.parseData(this.j, this.value);
+      this.data.value = this.column.parseValue(this.value);
       this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
     } else if (event.keyCode === 27) {
       event.stopPropagation();
@@ -75,7 +75,7 @@ export class ChoiceEditRenderer extends CellEditRenderer {
       if (this.data.value !== this.value) {
         event.stopPropagation();
         this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-        this.data.value = this.gridService.parseData(this.j, this.value);
+        this.data.value = this.column.parseValue(this.value);
         this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
       }
     } else {

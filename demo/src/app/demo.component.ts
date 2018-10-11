@@ -45,7 +45,7 @@ declare const VERSION: string;
         </div>
       </div>
     </div>
-    <div class="container-fluid" style="padding-bottom: 50px;">
+    <div class="mb-5">
       <router-outlet></router-outlet>
     </div>
     `,

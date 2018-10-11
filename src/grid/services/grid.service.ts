@@ -472,7 +472,7 @@ export class GridService {
    * @param value
    * @returns {any}
    */
-  formatData(k: number, value: any): any {
+  /*formatData(k: number, value: any): any {
     let column: Column = this.columnDefinitions[k];
     if (column.dataType === "string") {
       return value;
@@ -481,7 +481,7 @@ export class GridService {
     } else {
       return value;
     }
-  }
+  }*/
 
   /**
    * @Deprecated
@@ -492,7 +492,7 @@ export class GridService {
    * @param value
    * @returns {any}
    */
-  parseData(k: number, value: any): any {
+  /*parseData(k: number, value: any): any {
     let column: Column = this.columnDefinitions[k];
     if (column.dataType === "string") {
       return value;
@@ -501,7 +501,7 @@ export class GridService {
     } else {
       return value;
     }
-  }
+  }*/
 
   getColumnHeaders(): boolean {
     return this.columnHeaders;
