@@ -208,10 +208,9 @@ import {GridGlobalService} from "./services/grid-global.service";
     
     .hci-grid-iframe {
       height: 0px;
-      display: flex;
-      flex: 1 1 100%;
-      z-index: -1;
+      width: 100%;
       position: relative;
+      z-index: -1;
       border: none;
       background-color: transparent;
     }
@@ -221,7 +220,7 @@ import {GridGlobalService} from "./services/grid-global.service";
       flex-direction: column;
       width: 100%;
     }
-    
+
     #titleBar {
       display: inline-flex;
       width: 100%;
@@ -338,6 +337,7 @@ import {GridGlobalService} from "./services/grid-global.service";
     }
     
     .hci-grid-busy-div {
+      display: block;
       margin-top: auto;
       margin-bottom: auto;
       margin-left: auto;
@@ -609,7 +609,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("iFrame Resize: " + this.iFrameWidth + ", " + iw);
       }
 
-      if (iw !== this.iFrameWidth[0]) {
+      if (iw !== this.iFrameWidth[0] || Math.abs(this.iFrameWidth[1] - iw) > 2) {
         this.doRender();
       }
       if (iw !== this.iFrameWidth[1]) {
@@ -1268,7 +1268,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     let e = this.gridContainer.nativeElement;
-    let gridWidth: number = e.offsetWidth;
+    //let gridWidth: number = e.offsetWidth;
+    let gridWidth: number =  this.el.nativeElement.parentElement.offsetWidth;
+
+    console.debug("parent: ");
+    console.debug(this.el.nativeElement.parentElement);
+    console.debug(gridWidth);
+
+    this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
     let insideGridWidth: number = gridWidth;
     let w: number = 0;
 
@@ -1709,4 +1716,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.gridEventService.clearSelectedLocation();
     }
   }
+
+  /*@HostListener("window:resize", ["$event"])
+  private resize(event) {
+    this.doRender();
+  }*/
 }

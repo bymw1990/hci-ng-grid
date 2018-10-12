@@ -16,9 +16,9 @@ declare const VERSION: string;
   selector: "demo",
   template: `
     <div class="navbar navbar-dark bg-dark box-shadow">
-      <div class="container d-flex justify-content-between">
+      <div class="d-flex flex-grow-1 justify-content-between">
         <a class="navbar-brand d-flex align-items-center" routerLink="/">hci-ng-grid Demo</a>
-        <span style="color: gray; margin-left: 0; margin-right: auto;">v{{version}}</span>
+        <span class="d-flex" style="color: gray; margin-left: 0; margin-right: auto; align-items: center;">v{{version}}</span>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="routeList">
@@ -45,7 +45,7 @@ declare const VERSION: string;
         </div>
       </div>
     </div>
-    <div class="mb-5">
+    <div class="d-flex flex-column">
       <router-outlet></router-outlet>
     </div>
     `,

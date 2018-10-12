@@ -1,12 +1,12 @@
-import { Component } from "@angular/core";
+import {Component} from "@angular/core";
 
-import { Column } from "hci-ng-grid/index";
+import {Column} from "hci-ng-grid/index";
 
 @Component({
   selector: "edit-grid",
   template: `
-    <div class="card-group">
-      <div class="card">
+    <div class="card-group flex-column">
+      <div class="card m-3">
         <div class="card-header">
           <h4>Edit Grid</h4>
         </div>
