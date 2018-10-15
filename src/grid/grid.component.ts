@@ -646,6 +646,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     });
 
+    this.gridEventService.getUnselectSubject().subscribe((p: Point) => {
+      if (isDevMode()) {
+        console.debug("GridComponent.unselectSubjectSubscription");
+      }
+      this.popupContainer.clear();
+      this.leftCellEditContainer.clear();
+      this.rightCellEditContainer.clear();
+      this.componentRef = null;
+      this.focuser1.nativeElement.focus();
+    });
+
     this.gridEventService.getSelectedRange().subscribe((range: Range) => {
       this.updateSelectedCells(range);
     });
@@ -1003,7 +1014,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("Copy Event");
       }
 
-      let range: Range = this.gridEventService.currentRange;
+      let range: Range = this.gridEventService.getCurrentRange();
       if (range != null && !range.min.equals(range.max)) {
         let copy: string = "";
 
@@ -1034,25 +1045,33 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("Paste Event: " + paste);
       }
 
-      let range: Range = this.gridEventService.currentRange;
+      let range: Range = this.gridEventService.getCurrentRange();
+      let p: Point = this.gridEventService.getSelectedLocation();
       if (range === null) {
-        this.gridMessageService.warn("No cell selected to paste");
-        return;
+        if (!p) {
+          this.gridMessageService.warn("No selected cell or range to paste");
+          return;
+        }
       } else if (paste === null || paste === "") {
         this.gridMessageService.warn("No data to paste");
         return;
       }
 
-      let i = range.min.i;
-      let j = range.min.j;
-      let cols: string[] = null;
-
       if (paste.endsWith("\n")) {
         paste = paste.substr(0, paste.length - 1);
       }
 
-      let allowPaste: boolean = true;
+      let cols: string[] = null;
       let rows: string[] = paste.split("\n");
+
+      if (range == null) {
+        range = new Range(p, new Point(p.i + rows.length - 1, p.j + rows[0].split("\t").length - 1));
+      }
+
+      let i = range.min.i;
+      let j = range.min.j;
+
+      let allowPaste: boolean = true;
       for (var ii = 0; ii < rows.length; ii++) {
         cols = rows[ii].split("\t");
         for (var jj = 0; jj < cols.length; jj++) {

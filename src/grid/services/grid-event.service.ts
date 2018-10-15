@@ -20,7 +20,9 @@ export class GridEventService {
   private selectedLocation: Point = new Point(-1, -1);
   private selectedLocationSubject = new Subject<Point>();
 
-  private _currentRange: Range = null;
+  private unselectSubject = new Subject<Point>();
+
+  private currentRange: Range = null;
   private selectedRange = new Subject<Range>();
 
   private lastDx: number = 0;
@@ -29,8 +31,12 @@ export class GridEventService {
 
   constructor(private gridService: GridService) {}
 
-  get currentRange(): Range {
-    return this._currentRange;
+  getCurrentRange(): Range {
+    return this.currentRange;
+  }
+
+  getSelectedLocation(): Point {
+    return this.selectedLocation;
   }
 
   setNColumns(nColumns: number) {
@@ -48,8 +54,8 @@ export class GridEventService {
 
   clearSelectedLocation() {
     this.setSelectedLocation(new Point(-1, -1), null);
-    this._currentRange = null;
-    this.selectedRange.next(this._currentRange);
+    this.currentRange = null;
+    this.selectedRange.next(this.currentRange);
   }
 
   setMouseDragSelected(location: Point) {
@@ -61,12 +67,12 @@ export class GridEventService {
       return;
     }
 
-    if (this._currentRange === null) {
-      this._currentRange = new Range(location, location);
+    if (this.currentRange === null) {
+      this.currentRange = new Range(location, location);
     } else {
-      this._currentRange.update(location);
+      this.currentRange.update(location);
     }
-    this.selectedRange.next(this._currentRange);
+    this.selectedRange.next(this.currentRange);
   }
 
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
@@ -88,15 +94,15 @@ export class GridEventService {
   setSelectedRange(location: Point, eventMeta: EventMeta) {
     this.selectedLocation = location;
 
-    if (this._currentRange == null) {
-      this._currentRange = new Range(location, location);
-      this.selectedRange.next(this._currentRange);
+    if (this.currentRange == null) {
+      this.currentRange = new Range(location, location);
+      this.selectedRange.next(this.currentRange);
     } else if (eventMeta == null || eventMeta.isNull()) {
-      this._currentRange.setInitial(location);
-      this.selectedRange.next(this._currentRange);
+      this.currentRange.setInitial(location);
+      this.selectedRange.next(this.currentRange);
     } else if (eventMeta.ctrl) {
-      this._currentRange.update(location);
-      this.selectedRange.next(this._currentRange);
+      this.currentRange.update(location);
+      this.selectedRange.next(this.currentRange);
     }
   }
 
@@ -196,6 +202,10 @@ export class GridEventService {
 
   getLastDy(): number {
     return this.lastDy;
+  }
+
+  getUnselectSubject(): Subject<Point> {
+    return this.unselectSubject;
   }
 
   getSelectedLocationSubject(): Subject<Point> {

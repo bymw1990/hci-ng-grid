@@ -11,10 +11,6 @@ import {Column} from "hci-ng-grid/index";
       </div>
       <div class="card-body">
         <p class="card-text">
-          TODO: Update due to refactor.
-        </p>
-        <!--
-        <p class="card-text">
           Try copying a range of cells and pasting in the bottom right corner.  There will be a toast warning indicating
           that the paste is not valid.  This type of logging of errors and warnings is how I see the messaging service being
           used.<br />
@@ -23,9 +19,10 @@ import {Column} from "hci-ng-grid/index";
         <p>
           <hci-grid [data]="data1"
                     [columnDefinitions]="columns1"
-                    [cellSelect]="true">
+                    [cellSelect]="true"
+                    (warning)="showWarning($event)">
           </hci-grid>
-        </p>-->
+        </p>
       </div>
     </div>
     `
@@ -50,4 +47,7 @@ export class AlertsGridComponent {
     new Column({ field: "address", name: "Address", template: "LabelCell" })
   ];
 
+  showWarning(warning: string) {
+    console.warn(warning);
+  }
 }
