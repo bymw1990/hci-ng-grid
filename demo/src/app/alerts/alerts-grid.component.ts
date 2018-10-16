@@ -11,8 +11,8 @@ import {Column} from "hci-ng-grid/index";
       </div>
       <div class="card-body">
         <p class="card-text">
-          Try copying a range of cells and pasting in the bottom right corner.  There will be a toast warning indicating
-          that the paste is not valid.  This type of logging of errors and warnings is how I see the messaging service being
+          Try copying a 2x2 range of cells with ctrl-c.  Then select the bottom row, first column.  Hit escape to stop edit mode.
+          Then ctrl-v to paste.  In the console, see the warning that was captured.
           used.<br />
           Here we use a basic toast with a four second hide delay to post errors and warnings.
         </p>

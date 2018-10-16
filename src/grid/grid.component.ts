@@ -1067,7 +1067,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (range == null) {
         range = new Range(p, new Point(p.i + rows.length - 1, p.j + rows[0].split("\t").length - 1));
       }
-
       let i = range.min.i;
       let j = range.min.j;
 
@@ -1075,10 +1074,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (var ii = 0; ii < rows.length; ii++) {
         cols = rows[ii].split("\t");
         for (var jj = 0; jj < cols.length; jj++) {
-          if (this.gridService.getRow(i) == null) {
+          if (!this.gridService.getRow(i)) {
             allowPaste = false;
             break;
-          } else if (this.gridService.getRow(i).get(j) == null) {
+          } else if (!this.gridService.getRow(i).get(j)) {
             allowPaste = false;
             break;
           }
@@ -1086,17 +1085,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         }
         if (!allowPaste) {
           break;
-        } else if (this.gridService.getRow(i).get(j + 1) != null) {
-          j = j + 1;
-        } else {
-          i = i + 1;
-          j = 0;
         }
+
+        i = i + 1;
         j = range.min.j;
-        if (this.gridService.getRow(i) == null && ii !== rows.length - 1) {
-          allowPaste = false;
-          break;
-        }
       }
 
       i = range.min.i;
