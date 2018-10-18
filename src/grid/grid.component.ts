@@ -55,7 +55,7 @@ import {GridGlobalService} from "./services/grid-global.service";
             class="hci-grid-iframe"
             allowtransparency="true"></iframe>
     <div #gridContainer
-         id="gridContainer"
+         id="grid-container"
          [ngClass]="config.theme"
          (click)="click($event)"
          (mouseover)="mouseOver($event)"
@@ -215,7 +215,8 @@ import {GridGlobalService} from "./services/grid-global.service";
       background-color: transparent;
     }
     
-    #gridContainer {
+    #grid-container {
+      position: relative;
       display: flex;
       flex-direction: column;
       width: 100%;
