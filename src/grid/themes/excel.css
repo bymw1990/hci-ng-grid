@@ -1,5 +1,5 @@
 
-#grid-container.excel #titleBar {
+#grid-container.excel #title-bar {
   padding: 10px;
   font-weight: bold;
   font-size: large;
@@ -10,33 +10,33 @@
   border-top-right-radius: 0px;
 }
 
-#grid-container.excel #headerContent {
+#grid-container.excel #header-content {
   font-weight: bold;
 }
 
-#grid-container.excel #mainContent {
+#grid-container.excel #main-content {
   border-left: black 1px solid;
   border-right: black 1px solid;
   border-bottom: black 1px solid;
 }
 
-#grid-container.excel #gridFooter {
+#grid-container.excel #grid-footer {
   border: black 1px solid;
 }
 
-#grid-container.excel #leftView {
+#grid-container.excel #left-view {
   border-top: black 1px solid;
 }
 
-#grid-container.excel #rightView {
+#grid-container.excel #right-view {
   border-top: black 1px solid;
 }
 
-#grid-container.excel #leftHeaderView{
+#grid-container.excel #left-header-view{
   border-top: black 1px solid;
 }
 
-#grid-container.excel #rightHeaderView{
+#grid-container.excel #right-header-view{
   border-top: black 1px solid;
 }
 

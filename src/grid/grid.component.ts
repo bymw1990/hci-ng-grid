@@ -31,6 +31,7 @@ import {EventListenerArg} from "./config/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
+import {EventMeta} from "./utils/event-meta";
 
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
@@ -69,21 +70,21 @@ import {GridGlobalService} from "./services/grid-global.service";
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="config.title || configurable" id="titleBar">
+      <div *ngIf="config.title || configurable" id="title-bar">
         <div>{{config.title}}</div>
         <ng-container *ngIf="configurable">
           <div class="right" ngbDropdown placement="bottom-right">
-            <a id="configDropdownToggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
+            <a id="config-dropdown-toggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
               <i class="fas fa-cog fa-lg"></i>
             </a>
-            <ul ngbDropdownMenu id="configDropdownMenu" aria-labelledby="configDropdownToggle" class="dropdown-menu">
+            <ul ngbDropdownMenu id="config-dropdown-menu" aria-labelledby="config-dropdown-toggle" class="dropdown-menu">
               <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
             </ul>
           </div>
         </ng-container>
       </div>
 
-      <div #mainContent id="mainContent">
+      <div #mainContent id="main-content">
         <div #mainContentHeaderContainer></div>
         <div #mainContentPopupContainer></div>
 
@@ -102,14 +103,14 @@ import {GridGlobalService} from "./services/grid-global.service";
         
         <!-- Container for the header.  Split in to a left view (for fixed columns) and right view. -->
         <div #headerContent
-             id="headerContent"
+             id="header-content"
              [class.hide]="!config.columnHeaders"
              [style.height.px]="rowHeight">
           <div #leftHeaderView
-               id="leftHeaderView"
+               id="left-header-view"
                class="header-view"
                [style.height.px]="rowHeight">
-            <div id="leftHeaderContainer" *ngIf="columnMap && columnMap.get('LEFT_VISIBLE').length > 0">
+            <div id="left-header-container" *ngIf="columnMap && columnMap.get('LEFT_VISIBLE').length > 0">
               <hci-column-header *ngFor="let column of columnMap.get('LEFT_VISIBLE')"
                                  [id]="'header-' + column.id"
                                  [column]="column"
@@ -125,10 +126,10 @@ import {GridGlobalService} from "./services/grid-global.service";
             </div>
           </div>
           <div #rightHeaderView
-               id="rightHeaderView"
+               id="right-header-view"
                class="header-view"
                [style.height.px]="rowHeight">
-            <div id="rightHeaderContainer" *ngIf="columnMap && columnMap.get('MAIN_VISIBLE').length > 0">
+            <div id="right-header-container" *ngIf="columnMap && columnMap.get('MAIN_VISIBLE').length > 0">
               <hci-column-header *ngFor="let column of columnMap.get('MAIN_VISIBLE')"
                                  [id]="'header-' + column.id"
                                  [column]="column"
@@ -146,16 +147,16 @@ import {GridGlobalService} from "./services/grid-global.service";
         </div>
 
         <!-- Content -->
-        <div #gridContent id="gridContent">
-          <div #leftView id="leftView" class="cell-view">
-            <div #leftContainer id="leftContainer" class="hci-grid-left-row-container">
+        <div #gridContent id="grid-content">
+          <div #leftView id="left-view" class="cell-view">
+            <div #leftContainer id="left-container" class="hci-grid-left-row-container">
               <div #leftCellEditContainer></div>
             </div>
           </div>
 
           <!-- Right (Main) Content -->
-          <div #rightView id="rightView" class="cell-view">
-            <div #rightRowContainer id="rightContainer">
+          <div #rightView id="right-view" class="cell-view">
+            <div #rightRowContainer id="right-container">
               <div #rightCellEditContainer></div>
               <div id="base-row" class="hci-grid-row" style="position: absolute; left: 0px; top: 0px;">
                 <div id="base-cell" class="hci-grid-cell" style="position: absolute; left: 0px; top: 0px;"></div>
@@ -170,7 +171,7 @@ import {GridGlobalService} from "./services/grid-global.service";
       
       <!-- Footer -->
       <div *ngIf="pageInfo.pageSize > 0"
-           id="gridFooter"
+           id="grid-footer"
            (mouseup)="$event.stopPropagation()"
            (mousedown)="$event.stopPropagation()"
            (click)="$event.stopPropagation()">
@@ -200,10 +201,8 @@ import {GridGlobalService} from "./services/grid-global.service";
     `
 
     :host {
-      display: flex;
-      flex-direction: row;
-      flex: 1 1 100%;
-      flex-wrap: wrap;
+      display: block;
+      width: 100%;
     }
     
     .hci-grid-iframe {
@@ -216,23 +215,22 @@ import {GridGlobalService} from "./services/grid-global.service";
     }
     
     #grid-container {
-      position: relative;
       display: flex;
       flex-direction: column;
       width: 100%;
     }
 
-    #titleBar {
+    #title-bar {
       display: inline-flex;
       width: 100%;
     }
 
-    #titleBar .right {
+    #title-bar .right {
       margin-left: auto;
       margin-right: 0px;
     }
 
-    #titleBar .dropdown-toggle.no-arrow::after {
+    #title-bar .dropdown-toggle.no-arrow::after {
       display: none;
     }
 
@@ -243,33 +241,34 @@ import {GridGlobalService} from "./services/grid-global.service";
       background-color: transparent;
     }
     
-    #mainContent {
+    #main-content {
+      position: relative;
       width: 100%;
       height: 0px;
     }
     
-    #headerContent {
+    #header-content {
       position: relative;
     }
     
-    #headerContent.hide {
+    #header-content.hide {
       display: none;
       height: 0px;
     }
     
-    #leftHeaderView {
+    #left-header-view {
       position: absolute;
       display: inline-block;
       white-space: nowrap;
       overflow: visible;
     }
     
-    #leftHeaderContainer {
+    #left-header-container {
       float: left;
       top: 0px;
     }
     
-    #rightHeaderView {
+    #right-header-view {
       display: inline-block;
       white-space: nowrap;
       margin-left: 0px;
@@ -278,30 +277,30 @@ import {GridGlobalService} from "./services/grid-global.service";
       width: 0px;
     }      
     
-    #rightHeaderContainer {
+    #right-header-container {
       display: inline;
       position: relative;
     }
     
-    #gridContent {
+    #grid-content {
       display: inline-block;
       position: absolute;
       margin-top: 0px;
     }
     
-    #leftView {
+    #left-view {
       float: left;
       overflow: hidden;
       height: 250px;
     }
     
-    #leftContainer {
+    #left-container {
       white-space: nowrap;
       top: 0px;
       position: relative;
     }
     
-    #rightView {
+    #right-view {
       position: absolute;
       margin-left: 0px;
       width: 0px;
@@ -310,11 +309,11 @@ import {GridGlobalService} from "./services/grid-global.service";
       height: 250px;
     }
     
-    #rightContainer {
+    #right-container {
       white-space: nowrap;
     }
     
-    #gridFooter {
+    #grid-footer {
       width: 100%;
       border-top: none;
       padding: 3px;
@@ -621,7 +620,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.findBaseRowCell();
 
-    this.gridContainer.nativeElement.querySelector("#rightView").addEventListener("scroll", this.onScroll.bind(this), true);
+    this.gridContainer.nativeElement.querySelector("#right-view").addEventListener("scroll", this.onScroll.bind(this), true);
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.getViewDataSubject().subscribe((data: Array<Row>) => {
@@ -642,8 +641,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
       this.componentRef = null;
+
       if (p.isNotNegative()) {
         this.selectComponent(p.i, p.j);
+      } else {
+        this.clearSelectedComponents();
       }
     });
 
@@ -666,7 +668,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.renderCellsAndData();
     });
 
-    let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
+    let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
     rightView.addEventListener("scroll", this.onScrollRightView.bind(this), true);
 
     this.initialized = true;
@@ -867,9 +869,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (isDevMode()) {
       console.debug("onScrollRightView");
     }
-    let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightView");
-    let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightHeaderContainer");
-    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
+    let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-header-container");
+    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
     this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
     this.renderCellsAndData();
@@ -1129,6 +1131,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     } else if (event.keyCode === 40) {
       event.stopPropagation();
       this.gridEventService.arrowFrom(null, 0, 1, null);
+    } else if (event.keyCode === 27) {
+      event.stopPropagation();
+      this.gridEventService.setSelectedLocation(new Point(-1, -1), new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
     }
   }
 
@@ -1392,24 +1397,24 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     }
 
-    e = this.gridContainer.nativeElement.querySelector("#leftView");
+    e = this.gridContainer.nativeElement.querySelector("#left-view");
     this.renderer.setStyle(e, "width", fixedWidth + "px");
 
-    e = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    e = this.gridContainer.nativeElement.querySelector("#left-container");
     this.renderer.setStyle(e, "width", fixedWidth + "px");
     this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
 
-    e = this.gridContainer.nativeElement.querySelector("#rightContainer");
+    e = this.gridContainer.nativeElement.querySelector("#right-container");
     this.renderer.setStyle(e, "width", nonFixedWidth + "px");
     this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
 
-    e = this.gridContainer.nativeElement.querySelector("#headerContent");
+    e = this.gridContainer.nativeElement.querySelector("#header-content");
     this.renderer.setStyle(e, "width", gridWidth);
-    e = this.gridContainer.nativeElement.querySelector("#rightHeaderView");
+    e = this.gridContainer.nativeElement.querySelector("#right-header-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
 
-    e = this.gridContainer.nativeElement.querySelector("#rightView");
+    e = this.gridContainer.nativeElement.querySelector("#right-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
     this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
     if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
@@ -1444,7 +1449,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.updateGridContainerHeight();
     this.updateGridContainerAndColumnSizes();
 
-    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#leftContainer");
+    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
     for (let i of this.renderedRows) {
       try {
         for (let row of leftContainer.querySelectorAll("#row-left-" + i)) {
@@ -1454,7 +1459,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         // Ignore
       }
     }
-    let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#rightContainer");
+    let rightContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-container");
     for (let i of this.renderedRows) {
       try {
         for (let row of rightContainer.querySelectorAll("#row-right-" + i)) {
@@ -1466,7 +1471,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     this.renderedRows = [];
 
-    let start: number = Math.floor(this.gridContainer.nativeElement.querySelector("#rightView").scrollTop / this.rowHeight);
+    let start: number = Math.floor(this.gridContainer.nativeElement.querySelector("#right-view").scrollTop / this.rowHeight);
     let end: number = this.gridService.getNVisibleRows();
     if (end < 0) {
       end = this.gridData.length;
@@ -1593,7 +1598,20 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.log("GridComponent.selectComponent: " + i + " " + j);
     }
     let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
+
+    this.clearSelectedComponents();
+    this.renderer.addClass(e, "selected");
     this.createCellComponent(e);
+  }
+
+  /**
+   * Remove the selected class from all selected cells.
+   */
+  private clearSelectedComponents() {
+    let els: HTMLElement[] = this.gridContainer.nativeElement.querySelector("#grid-content").querySelectorAll(".selected");
+    for (let el of els) {
+      this.renderer.removeClass(el, "selected");
+    }
   }
 
   /**
@@ -1651,19 +1669,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
       }
 
-      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#headerContent").offsetHeight;
+      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
       if (this.gridService.getNVisibleRows() <= 0) {
         let height: number = Math.max(100, this.gridData.length * this.rowHeight);
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       } else {
         let height: number = Math.max(100, this.gridService.getNVisibleRows() * this.rowHeight);
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#mainContent"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#leftView"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#rightView"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       }
@@ -1729,8 +1747,4 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  /*@HostListener("window:resize", ["$event"])
-  private resize(event) {
-    this.doRender();
-  }*/
 }

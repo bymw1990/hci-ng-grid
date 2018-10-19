@@ -1,12 +1,12 @@
 
-#grid-container.report #titleBar {
+#grid-container.report #title-bar {
   padding: 10px;
   font-weight: 500;
   font-size: x-large;
   border-bottom: black 2px solid;
 }
 
-#grid-container.report #headerContent {
+#grid-container.report #header-content {
   font-weight: bold;
   border-bottom: black 1px solid;
 }
