@@ -73,6 +73,7 @@ export class GridService {
 
   gridElement: HTMLElement;
 
+  private selectedRowColumn: number = 0;
   private columnMapSubject: BehaviorSubject<Map<string, Column[]>> = new BehaviorSubject<Map<string, Column[]>>(undefined);
   private filterMap: Map<string, FilterInfo[]> = new Map<string, FilterInfo[]>();
   private filterMapSubject: BehaviorSubject<Map<string, FilterInfo[]>> = new BehaviorSubject<Map<string, FilterInfo[]>>(this.filterMap);
@@ -85,7 +86,9 @@ export class GridService {
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
 
-  constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {}
+  constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
+    this.gridGlobalService.register(this);
+  }
 
   /**
    * Expects an object with the above configuration options as fields.  This is built on top of the default values,
@@ -115,7 +118,7 @@ export class GridService {
     if (config.linkedGroups) {
       this.linkedGroups = config.linkedGroups;
       for (let linkedGroup of this.linkedGroups) {
-        this.gridGlobalService.register(linkedGroup, this);
+        this.gridGlobalService.registerGroup(linkedGroup, this);
       }
     }
 
@@ -587,6 +590,14 @@ export class GridService {
   }
 
   clearSelectedRows() {
+    for (let row of this.selectedRows) {
+      try {
+        this.getRowByKey(row).get(this.selectedRowColumn).value = false;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     this.selectedRows = [];
     this.selectedRowsSubject.next(this.selectedRows);
   }
@@ -599,10 +610,9 @@ export class GridService {
    * @param {number} j The column.
    * @returns {boolean} Returns the negated value.
    */
-  negateSelectedRow(i: number, j: number): boolean {
-    if (isDevMode()) {
-      console.debug("negateSelectedRow: " + i + " " + j);
-    }
+  negateSelectedRow(i: number, j: number, multiSelect: boolean): boolean {
+    this.selectedRowColumn = j;
+
     let key: any = this.getKey(i, j);
     // If the value doesn't exist, assume it would have been previously false, so set to true.
     let value: boolean = true;
@@ -612,12 +622,21 @@ export class GridService {
 
     this.getRow(i).get(j).value = value;
 
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": negateSelectedRow: " + i + " " + j + " " + value);
+    }
+
     if (value) {
-      if (this.selectedRows.indexOf(key) === -1) {
+      if (!multiSelect) {
+        this.clearSelectedRows();
+        this.selectedRows.push(key);
+      } else if (this.selectedRows.indexOf(key) === -1) {
         this.selectedRows.push(key);
       }
     } else {
-      if (this.selectedRows.indexOf(key) !== -1) {
+      if (!multiSelect) {
+        this.clearSelectedRows();
+      } else if (this.selectedRows.indexOf(key) !== -1) {
         this.selectedRows.splice(this.selectedRows.indexOf(key), 1);
       }
     }
@@ -660,6 +679,16 @@ export class GridService {
 
   getKey(i: number, j: number): any {
     return this.viewData[i].key;
+  }
+
+  getRowByKey(key: any): Row {
+    for (let row of this.viewData) {
+      if (row.key === key) {
+        return row;
+      }
+    }
+
+    return undefined;
   }
 
   /**
@@ -887,6 +916,16 @@ export class GridService {
     } else {
       return this.viewData[i];
     }
+  }
+
+  getRowFromKey(key: any): Row {
+    for (let row of this.viewData) {
+      if (row.key === key) {
+        return row;
+      }
+    }
+
+    return undefined;
   }
 
   handleValueChange(i: number, j: number, key: number, value: any) {

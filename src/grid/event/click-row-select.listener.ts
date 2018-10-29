@@ -8,9 +8,11 @@ import {Range} from "../utils/range";
 
 export class ClickRowSelectListener extends EventListener implements ClickListener {
 
+  multiSelect: boolean = false;
+
   click(event: MouseEvent): boolean {
     if (isDevMode()) {
-      console.debug("ClickRowSelectListener.click");
+      console.debug("hci-grid: " + this.grid.id + ": ClickRowSelectListener.click");
     }
 
     let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.target);
@@ -18,12 +20,21 @@ export class ClickRowSelectListener extends EventListener implements ClickListen
       event.stopPropagation();
 
       let location: Point = HtmlUtil.getLocation(idElement);
-      let value: boolean = this.gridService.negateSelectedRow(location.i, location.j);
-      this.grid.updateSelectedRows(new Range(location, location), false, value);
+
+      let value: boolean = this.gridService.negateSelectedRow(location.i, location.j, this.multiSelect);
+      //this.grid.updateSelectedRows(new Range(location, location), !this.multiSelect, value);
+
       return true;
     } else {
       return false;
     }
   }
 
+  setConfig(config: any) {
+    super.setConfig(config);
+
+    if (config.multiSelect !== undefined && config.multiSelect) {
+      this.multiSelect = config.multiSelect;
+    }
+  }
 }

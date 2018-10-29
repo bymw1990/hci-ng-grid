@@ -1,4 +1,4 @@
-import {Injector} from "@angular/core";
+import {Injector, isDevMode} from "@angular/core";
 
 import {GridComponent} from "../grid.component";
 import {GridService} from "../services/grid.service";
@@ -17,6 +17,10 @@ export class EventListener {
   constructor(injector: Injector) {
     this.gridService = injector.get(GridService);
     this.gridEventService = injector.get(GridEventService);
+
+    if (isDevMode()) {
+      console.debug("EventListener: constructor: " + this.gridService.id);
+    }
   }
 
   setConfig(config: any) {

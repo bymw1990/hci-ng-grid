@@ -20,6 +20,10 @@ export class GridGlobalService {
   ];
 
   constructor(@Inject("globalConfig") private globalConfig: any) {
+    if (isDevMode()) {
+      console.debug("GridGlobalService: " + JSON.stringify(globalConfig));
+    }
+
     if (globalConfig.themeChoices) {
       this.themeChoices = globalConfig.themeChoices;
     }
@@ -29,19 +33,29 @@ export class GridGlobalService {
     return this.globalConfig;
   }
 
+  register(gridService: GridService) {
+    if (!gridService.id) {
+      gridService.id = "hci-grid-" + this.tempId++;
+    }
+
+    if (isDevMode()) {
+      console.debug("GridGlobalService.register: " + gridService.id);
+    }
+  }
+
   /**
    * When a grid is created, register itself with this service.
    *
    * @param {string} group
    * @param {GridService} gridService
    */
-  register(group: string, gridService: GridService) {
-    if (!gridService.id) {
-      gridService.id = "hci-grid-" + this.tempId++;
+  registerGroup(group: string, gridService: GridService) {
+    if (!group) {
+      return;
     }
 
     if (isDevMode()) {
-      console.debug("GridGlobalService.register: group: " + group + ", grid: " + gridService.id);
+      console.debug("GridGlobalService.registerGroup: group: " + group + ", grid: " + gridService.id);
     }
 
     if (this.groupServiceMap.has(group)) {

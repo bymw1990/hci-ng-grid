@@ -16,6 +16,7 @@ export const ARROW = 2;
  */
 @Injectable()
 export class GridEventService {
+
   private nColumns: number = 0;
   private selectedLocation: Point = new Point(-1, -1);
   private selectedLocationSubject = new Subject<Point>();
@@ -29,7 +30,11 @@ export class GridEventService {
   private lastDy: number = 0;
   private lastEvent: number = null;
 
-  constructor(private gridService: GridService) {}
+  constructor(private gridService: GridService) {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.gridService.id + ": GridEventService constructor");
+    }
+  }
 
   getCurrentRange(): Range {
     return this.currentRange;
@@ -45,7 +50,7 @@ export class GridEventService {
 
   setCurrentLocation(location: Point) {
     if (isDevMode()) {
-      console.debug("GridEvent.setCurrentLocation: " + (location === null ? "null" : location.toString()));
+      console.debug("hci-grid: " + this.gridService.id + ": GridEvent.setCurrentLocation: " + (location === null ? "null" : location.toString()));
     }
 
     this.selectedLocation = location;
@@ -60,7 +65,7 @@ export class GridEventService {
 
   setMouseDragSelected(location: Point) {
     if (isDevMode()) {
-      console.debug("setMouseOnDownSelected: " + ((location !== null) ? location.toString() : "null"));
+      console.debug("hci-grid: " + this.gridService.id + ": setMouseOnDownSelected: " + ((location !== null) ? location.toString() : "null"));
     }
 
     if (location === null) {
@@ -77,7 +82,7 @@ export class GridEventService {
 
   setSelectedLocation(location: Point, eventMeta: EventMeta) {
     if (isDevMode()) {
-      console.debug("GridEvent.setSelectedLocation");
+      console.debug("hci-grid: " + this.gridService.id + ": GridEvent.setSelectedLocation");
     }
 
     if (location === null) {
@@ -164,7 +169,7 @@ export class GridEventService {
     }
 
     if (isDevMode()) {
-      console.debug("arrowFrom: to: " + this.selectedLocation.toString());
+      console.debug("hci-grid: " + this.gridService.id + ": arrowFrom: to: " + this.selectedLocation.toString());
     }
 
     this.selectedLocationSubject.next(this.selectedLocation);
