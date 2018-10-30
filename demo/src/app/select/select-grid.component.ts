@@ -213,7 +213,8 @@ import {ClickRowSelectListener} from "hci-ng-grid";
           <hci-grid #grid4
                     [data]="data3"
                     [columnDefinitions]="columns4"
-                    [eventListeners]="listeners3">
+                    [eventListeners]="listeners3"
+                    [nVisibleRows]="5">
           </hci-grid>
         </div>
       </div>

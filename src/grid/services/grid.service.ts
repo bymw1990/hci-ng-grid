@@ -466,46 +466,6 @@ export class GridService {
     return this.configSubject;
   }
 
-  /**
-   * @Deprecated
-   *
-   * Have a formatter/parser attached to each column and make calls through that.  This allows customization.
-   *
-   * @param {number} k
-   * @param value
-   * @returns {any}
-   */
-  /*formatData(k: number, value: any): any {
-    let column: Column = this.columnDefinitions[k];
-    if (column.dataType === "string") {
-      return value;
-    } else if (column.dataType === "date") {
-      return column.formatValue(value);
-    } else {
-      return value;
-    }
-  }*/
-
-  /**
-   * @Deprecated
-   *
-   * Have a formatter/parser attached to each column and make calls through that.  This allows customization.
-   *
-   * @param {number} k
-   * @param value
-   * @returns {any}
-   */
-  /*parseData(k: number, value: any): any {
-    let column: Column = this.columnDefinitions[k];
-    if (column.dataType === "string") {
-      return value;
-    } else if (column.dataType === "date") {
-      return column.parseValue(value);
-    } else {
-      return value;
-    }
-  }*/
-
   getColumnHeaders(): boolean {
     return this.columnHeaders;
   }
@@ -665,7 +625,11 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
-  getSelectedRowsSubject() {
+  getSelectedRows(): any[] {
+    return this.selectedRows;
+  }
+
+  getSelectedRowsSubject(): Subject<any[]> {
     return this.selectedRowsSubject;
   }
 
