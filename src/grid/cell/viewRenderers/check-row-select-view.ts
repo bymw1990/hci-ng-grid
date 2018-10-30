@@ -52,11 +52,11 @@ export class CheckRowSelectView implements CellViewRenderer {
     renderer.appendChild(span, unselectedSpan);
 
     let unselectedSvg = renderer.createElement("span");
-    renderer.addClass(selectedSvg, "fa-lg");
+    renderer.addClass(unselectedSvg, "fa-lg");
     renderer.appendChild(unselectedSpan, unselectedSvg);
     classes = this.uncheckedIcon.split(" ");
     for (let iconClass of classes) {
-      renderer.addClass(selectedSvg, iconClass);
+      renderer.addClass(unselectedSvg, iconClass);
     }
 
 

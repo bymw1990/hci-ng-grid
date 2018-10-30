@@ -213,7 +213,8 @@ import {ClickRowSelectListener} from "hci-ng-grid";
           <hci-grid #grid4
                     [data]="data3"
                     [columnDefinitions]="columns4"
-                    [eventListeners]="listeners3">
+                    [eventListeners]="listeners3"
+                    [nVisibleRows]="5">
           </hci-grid>
         </div>
       </div>
@@ -302,7 +303,7 @@ export class SelectGridComponent {
   ];
 
   columns4: Column[] = [
-    new Column({ field: "select", viewRenderer: CheckRowSelectView, viewConfig: {checkedIcon: "fa-check-circle", uncheckedIcon: "fas fa-arrow-alt-circle-down"}, width: 30, minWidth: 30, maxWidth: 30 }),
+    new Column({ field: "select", viewRenderer: CheckRowSelectView, viewConfig: {checkedIcon: "fas fa-check-circle", uncheckedIcon: "fas fa-arrow-alt-circle-down"}, width: 30, minWidth: 30, maxWidth: 30 }),
     new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
     new Column({ field: "lastName", name: "Last Name" }),
     new Column({ field: "firstName", name: "First Name" }),

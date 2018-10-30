@@ -33,6 +33,10 @@ import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
 import {EventMeta} from "./utils/event-meta";
 
+const NO_EVENT: number = -1;
+const RESIZE: number = 0;
+const SCROLL: number = 1;
+
 /**
  * A robust grid for angular.  The grid is highly configurable to meet a variety of needs.  It may be for
  * purely viewing with many styling options but also can handle many types of event listeners and editing possibilities.
@@ -348,24 +352,22 @@ import {EventMeta} from "./utils/event-meta";
       color: rgba(255, 0, 0, 0.5);
     }
 
-    .row-select > row-selected-icon {
+    .row-select > .row-selected-icon {
       display: none;
-    }
-
-    .hci-grid-row.selected .row-select .row-selected-icon {
-      display: inherit;
-    }
-    
-    .hci-grid-row.selected .row-select .row-unselected-icon {
-      display: none;
-    }
-
-    .row-select .row-selected-icon {
       color: green;
     }
 
-    .row-select .row-unselected-icon {
+    .hci-grid-row.selected .row-select .row-selected-icon {
+      display: flex;
+    }
+
+    .row-select > .row-unselected-icon {
+      display: flex;
       color: rgba(255, 0, 0, 0.2);
+    }
+
+    .hci-grid-row.selected .row-select .row-unselected-icon {
+      display: none;
     }
 
     .empty-content {
@@ -465,6 +467,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   columnsChangedSubscription: Subscription;
   doRenderSubscription: Subscription;
 
+  private event: number = NO_EVENT;
   private popupRef: CellPopupRenderer = null;
   private componentRef: CellEditRenderer = null;
   private selectedLocationSubscription: Subscription;
@@ -613,6 +616,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.setGridElement(this.gridContainer.nativeElement);
 
     (<HTMLIFrameElement>this.iframeSensor.nativeElement).contentWindow.addEventListener("resize", () => {
+      this.event = RESIZE;
+
       let iw: number = this.iframeSensor.nativeElement.offsetWidth;
 
       if (isDevMode()) {
@@ -881,6 +886,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   onScrollRightView(event: Event) {
+    this.event = SCROLL;
+
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": onScrollRightView");
     }
@@ -890,6 +897,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
     this.renderCellsAndData();
+
+    this.event = NO_EVENT;
   }
 
   /**
@@ -1478,12 +1487,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Removed currently rendered rows.  Then render cells and inject html from the view renderers in to each cell.
    */
-  private renderCellsAndData() {
+  private renderCellsAndData(scroll?: boolean) {
     if (isDevMode()) {
       if (this.columnMap) {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: columnMap.length: " + this.columnMap.get("ALL").length + " gridData.length: " + this.gridData.length);
       } else {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: columnMap is undefined: gridData.length: " + this.gridData.length);
+      }
+      if (scroll) {
+        console.debug("hci-grid: " + this.id + ": renderCellsAndData: scroll: " + scroll);
       }
     }
     this.changeDetectorRef.detectChanges();
@@ -1527,7 +1539,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     for (var i = start; this.gridData.length; i++) {
       row = this.gridData[i];
       if (!row) {
-        return;
+        break;
       }
       row.rowNum = i;
 
@@ -1571,6 +1583,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         break;
       }
     }
+
+    if (this.event === RESIZE || this.event === SCROLL) {
+      this.updateSelectedRows(this.gridService.getSelectedRows());
+    }
   }
 
   /**
@@ -1594,7 +1610,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(row, "display", "inline-block");
     this.renderer.setStyle(row, "top", (i * this.rowHeight) + "px");
     this.renderer.setStyle(row, "height", this.rowHeight + "px");
-    this.renderer.setStyle(row, "width", "calc(100% - 2px)");
+    this.renderer.setStyle(row, "width", (container.clientWidth - 2) + "px");
     this.renderer.appendChild(container, row);
     return row;
   }
