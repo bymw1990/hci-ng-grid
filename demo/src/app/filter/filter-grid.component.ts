@@ -3,6 +3,7 @@ import {Component} from "@angular/core";
 import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid/index";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {DictionaryFilterRenderer} from "./dictionary-filter.component";
 
 @Component({
   selector: "filter-grid",
@@ -56,6 +57,45 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </p>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Custom Filters</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          TODO
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                [data]="filteredData"
+                [columnDefinitions]="filteredColumns2"
+                [pageSizes]="[10, 25, 100]"
+                [cellSelect]="true"
+                [keyNavigation]="true"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
+              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
+              field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {{"{"}}value: "Female", display: "Female"{{"}"}}, {{"{"}}value: "Male", display: "Male"{{"}"}} ], filterRenderer: SelectFilterRenderer
+              field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [data]="filteredData"
+                    [columnDefinitions]="filteredColumns2">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
     `
 })
 export class FilterGridComponent {
@@ -71,6 +111,16 @@ export class FilterGridComponent {
     new Column({ field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
     new Column({ field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer }),
     new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
+  ];
+
+  filteredColumns2: Column[] = [
+    new Column({ field: "idPatient", name: "ID", visible: false }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "middleName", name: "Middle Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth" }),
+    new Column({ field: "gender", name: "Gender", filterRenderer: DictionaryFilterRenderer, filterConfig: {url: "/dictionary/gender"} }),
+    new Column({ field: "nLabs", name: "# Labs", dataType: "number" })
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

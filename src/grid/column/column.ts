@@ -3,7 +3,6 @@ import {Type} from "@angular/core";
 import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
 import {CellTextView} from "../cell/viewRenderers/cell-text-view";
 import {FilterRenderer} from "./filterRenderers/filter-renderer";
-import {FilterInfo} from "../utils/filter-info";
 import {CellEditRenderer} from "../cell/editRenderers/cell-edit-renderer";
 import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.component";
 import {CellPopupRenderer} from "../cell/viewPopupRenderer/cell-popup-renderer";

@@ -37,6 +37,7 @@ import {LinkedDemoComponent} from "./linked/linked.component";
 
 import {LabPopup} from "./components/lab.component";
 import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
+import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
 
 @NgModule({
   imports: [
@@ -91,7 +92,8 @@ import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
     ResizeDemoComponent,
     LinkedDemoComponent,
     LabPopup,
-    UserProfileDirective
+    UserProfileDirective,
+    DictionaryFilterRenderer
   ],
   providers: [
     DataGeneratorService

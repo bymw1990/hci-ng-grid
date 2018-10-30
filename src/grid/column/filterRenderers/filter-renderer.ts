@@ -1,6 +1,6 @@
 import {ElementRef, EventEmitter, Output} from "@angular/core";
 
-import {Column} from "../../column/column";
+import {Column} from "../column";
 import {GridService} from "../../services/grid.service";
 import {FilterInfo} from "../../utils/filter-info";
 
