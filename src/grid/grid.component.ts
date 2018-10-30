@@ -348,16 +348,24 @@ import {EventMeta} from "./utils/event-meta";
       color: rgba(255, 0, 0, 0.5);
     }
 
-    .row-select > span.selected-span {
+    .row-select > row-selected-icon {
       display: none;
     }
 
-    .hci-grid-row.selected .row-select span.selected-span {
+    .hci-grid-row.selected .row-select .row-selected-icon {
       display: inherit;
     }
     
-    .hci-grid-row.selected .row-select span.unselected-span {
+    .hci-grid-row.selected .row-select .row-unselected-icon {
       display: none;
+    }
+
+    .row-select .row-selected-icon {
+      color: green;
+    }
+
+    .row-select .row-unselected-icon {
+      color: rgba(255, 0, 0, 0.2);
     }
 
     .empty-content {

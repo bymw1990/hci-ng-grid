@@ -182,6 +182,42 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         </div>
       </div>
     </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h4>Custom Row Select Icons</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config3>
+            <pre>
+              &lt;hci-grid
+                #grid4
+                [data]="data3"
+                [columnDefinitions]="columns3"
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
+              isKey: true, field: "idPatient", name: "ID", visible: true
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "pcg.nLabs", name: "# Labs"
+              field: "pcg.nested.nLabPath", name: "# Lab Path"
+            </pre>
+          </ng-template>
+        </div>
+        <div>
+          <hci-grid #grid4
+                    [data]="data3"
+                    [columnDefinitions]="columns4"
+                    [eventListeners]="listeners3">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
   `
 })
 export class SelectGridComponent {
@@ -263,6 +299,16 @@ export class SelectGridComponent {
 
   listeners3: Array<any> = [
     { type: ClickRowSelectListener, config: {multiSelect: true} }
+  ];
+
+  columns4: Column[] = [
+    new Column({ field: "select", viewRenderer: CheckRowSelectView, viewConfig: {checkedIcon: "fa-check-circle", uncheckedIcon: "fas fa-arrow-alt-circle-down"}, width: 30, minWidth: 30, maxWidth: 30 }),
+    new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
+    new Column({ field: "lastName", name: "Last Name" }),
+    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
+    new Column({ field: "pcg.nLabs", name: "# Labs" }),
+    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
   ];
 
   rowDblClick(event: any) {
