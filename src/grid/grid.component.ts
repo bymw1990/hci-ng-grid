@@ -482,6 +482,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   private iFrameWidth: number[] = [0, 0];
 
+  private updateSelectedRowsTimeout: any;
+
   constructor(private el: ElementRef,
               private renderer: Renderer2,
               private resolver: ComponentFactoryResolver,
@@ -797,7 +799,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   public clearSelectedRows() {
-    console.debug("hci-grid: " + this.id + ": clearSelectedRows");
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": clearSelectedRows");
+    }
 
     let rows: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-row");
 
@@ -806,12 +810,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.removeClass(row, "selected");
       }
     }
-
-    /*rows = this.gridContainer.nativeElement.querySelectorAll(".row-select");
-    for (let row of rows) {
-      let location: Point = HtmlUtil.getLocation(row);
-      this.gridService.getRow(location.i).get(location.j).value = false;
-    }*/
   }
 
   public deleteSelectedRows() {
@@ -1190,70 +1188,43 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.popupRef.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
   }
 
+  /**
+   * Removes old selectors and re-adds classes based on the selected rows.
+   *
+   * It appears that the renderer is asynchronous, so clearing the selected rows by fetching .hci-grid-row takes
+   * longer than getting the row to be selected with #row-right-0.  So the rows were being cleared of selected after
+   * they were being selected.
+   * Solution: Use a timeout with a little delay.
+   * TODO: More processing, but don't clear out the rows that you know are to be selected.  This is better than timeout delay.
+   *
+   * @param {any[]} selectedRows
+   */
   updateSelectedRows(selectedRows: any[]) {
     if (isDevMode()) {
-      console.info("updateSelectedRows");
+      console.info("hci-grid: " + this.id + ": updateSelectedRows: " + JSON.stringify(selectedRows));
     }
 
     this.clearSelectedRows();
 
-    for (let key of selectedRows) {
-      let row: Row = this.gridService.getRowFromKey(key);
-
-      let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + row.rowNum);
-      if (e) {
-        this.renderer.addClass(e, "selected");
-      }
-      e = this.gridContainer.nativeElement.querySelector("#row-right-" + row.rowNum);
-      if (e) {
-        this.renderer.addClass(e, "selected");
-      }
+    if (this.updateSelectedRowsTimeout) {
+      clearTimeout(this.updateSelectedRowsTimeout);
     }
+
+    this.updateSelectedRowsTimeout = setTimeout(() => {
+      for (let key of selectedRows) {
+        let row: Row = this.gridService.getRowFromKey(key);
+
+        let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + row.rowNum);
+        if (e) {
+          this.renderer.addClass(e, "selected");
+        }
+        e = this.gridContainer.nativeElement.querySelector("#row-right-" + row.rowNum);
+        if (e) {
+          this.renderer.addClass(e, "selected");
+        }
+      }
+    }, 10);
   }
-
-  /**
-   * Removes old selectors and adds new ones based on the passed in range.
-   *
-   * @param {Range} range The min and max row location that represents the selection.  The j of the range is disregarded.
-   */
-  /*updateSelectedRows(range: Range, clear?: boolean, value?: boolean) {
-    if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": updateSelectedRows: " + ((range) ? range.toString() : "null"));
-    }
-
-    if (clear !== undefined && clear) {
-      this.clearSelectedRows();
-    }
-
-    if (range !== null) {
-      for (var i = range.min.i; i <= range.max.i; i++) {
-        let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + i);
-        if (e) {
-          if (value !== undefined) {
-            if (value) {
-              this.renderer.addClass(e, "selected");
-            } else {
-              this.renderer.removeClass(e, "selected");
-            }
-          } else {
-            this.renderer.addClass(e, "selected");
-          }
-        }
-        e = this.gridContainer.nativeElement.querySelector("#row-right-" + i);
-        if (e) {
-          if (value !== undefined) {
-            if (value) {
-              this.renderer.addClass(e, "selected");
-            } else {
-              this.renderer.removeClass(e, "selected");
-            }
-          } else {
-            this.renderer.addClass(e, "selected");
-          }
-        }
-      }
-    }
-  }*/
 
   /**
    * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
