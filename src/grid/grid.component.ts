@@ -1191,11 +1191,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   updateSelectedRows(selectedRows: any[]) {
+    if (isDevMode()) {
+      console.info("updateSelectedRows");
+    }
+
     this.clearSelectedRows();
 
     for (let key of selectedRows) {
       let row: Row = this.gridService.getRowFromKey(key);
-      console.debug(row.rowNum);
+
       let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + row.rowNum);
       if (e) {
         this.renderer.addClass(e, "selected");
@@ -1412,20 +1416,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       for (let column of this.columnMap.get("VISIBLE")) {
-        if (isDevMode()) {
-          console.debug("hci-grid: " + this.id + ": Column: " + column.field);
-        }
-
         exactWidth = column.renderWidth;
         if (exactWidth !== Math.floor(exactWidth)) {
           remainder = remainder + exactWidth - Math.floor(exactWidth);
         }
         e = this.gridContainer.nativeElement.querySelector("#header-" + column.id);
         w = Math.floor(exactWidth);
-
-        if (isDevMode()) {
-          console.debug("hci-grid: " + this.id + ": exactWidth: " + exactWidth + " " + w + " " + remainder);
-        }
 
         if (this.columnMap.get("VISIBLE")[this.columnMap.get("VISIBLE").length - 1].field === column.field) {
           w = w + remainder;
