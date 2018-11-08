@@ -139,7 +139,7 @@ import {FilterInfo} from "../../utils/filter-info";
 })
 export class CompareFilterRenderer extends FilterRenderer {
 
-  @Input() column: Column;
+  //@Input() column: Column;
 
   width: number = 300;
   changed: boolean = false;

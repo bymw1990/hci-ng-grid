@@ -90,7 +90,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           </ng-template>
         </div>
         <p>
-          <hci-grid [data]="filteredData"
+          <hci-grid [data]="filteredData2"
                     [columnDefinitions]="filteredColumns2">
           </hci-grid>
         </p>
@@ -113,6 +113,8 @@ export class FilterGridComponent {
     new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
   ];
 
+  filteredData2: Array<Object>;
+
   filteredColumns2: Column[] = [
     new Column({ field: "idPatient", name: "ID", visible: false }),
     new Column({ field: "lastName", name: "Last Name" }),
@@ -131,5 +133,6 @@ export class FilterGridComponent {
 
   initData() {
     this.filteredData = this.dataGeneratorService.getData(this.dataSize);
+    this.filteredData2 = this.dataGeneratorService.getData(this.dataSize);
   }
 }

@@ -104,7 +104,7 @@ import {FilterInfo} from "../../utils/filter-info";
 })
 export class SelectFilterRenderer extends FilterRenderer {
 
-  @Input() column: Column;
+  //@Input() column: Column;
 
   width: number = 300;
   init: boolean = false;

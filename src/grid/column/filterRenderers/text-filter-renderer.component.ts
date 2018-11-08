@@ -41,7 +41,7 @@ export class TextFilterRenderer extends FilterRenderer {
 
   @ViewChild("input") input: ElementRef;
 
-  @Input() column: Column;
+  //@Input() column: Column;
 
   value: any;
   width: number = 200;

@@ -127,7 +127,7 @@ export class ColumnHeaderComponent {
   showFilter() {
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "inherit");
     let wHost: number = this.filterComponent.width;
-    let mainContent: number = (<HTMLElement>this.el.nativeElement.closest("#mainContent")).offsetWidth;
+    let mainContent: number = (<HTMLElement>this.el.nativeElement.closest("#main-content")).offsetWidth;
     let xView: number = (<HTMLElement>this.el.nativeElement.closest(".header-view")).offsetLeft;
     let x: number = xView + this.el.nativeElement.offsetLeft + this.el.nativeElement.offsetWidth - 30;
     if (x + wHost > mainContent) {

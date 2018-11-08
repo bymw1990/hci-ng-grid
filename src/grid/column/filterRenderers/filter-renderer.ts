@@ -1,4 +1,4 @@
-import {ElementRef, EventEmitter, Output} from "@angular/core";
+import {ElementRef, EventEmitter, Input, Output} from "@angular/core";
 
 import {Column} from "../column";
 import {GridService} from "../../services/grid.service";
@@ -6,12 +6,12 @@ import {FilterInfo} from "../../utils/filter-info";
 
 export class FilterRenderer {
 
+  @Input() column: Column;
   @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   filters: FilterInfo[];
   config: any = {};
   shared = false;
-  column: Column;
   width: number = 250;
   gridService: GridService;
   elementRef: ElementRef;

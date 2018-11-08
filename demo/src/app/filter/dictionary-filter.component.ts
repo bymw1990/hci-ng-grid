@@ -4,7 +4,9 @@ import {Component} from "@angular/core";
 @Component({
   selector: "dictionary-filter",
   template: `
-    <div class="d-flex flex-nowrap">
+    <div class="d-flex flex-nowrap"
+         style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
+      TODO
     </div>
   `
 })

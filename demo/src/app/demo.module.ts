@@ -102,6 +102,7 @@ import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
     DemoComponent
   ],
   entryComponents: [
+    DictionaryFilterRenderer,
     LabPopup
   ]
 })
