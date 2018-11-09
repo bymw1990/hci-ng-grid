@@ -121,7 +121,7 @@ export class FilterGridComponent {
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name" }),
     new Column({ field: "dob", name: "Date of Birth" }),
-    new Column({ field: "gender", name: "Gender", filterRenderer: DictionaryFilterRenderer, filterConfig: {url: "/dictionary/gender"} }),
+    new Column({ field: "genderDict", name: "Gender", filterRenderer: DictionaryFilterRenderer, filterConfig: {url: "http://localhost/dictionary/gender"} }),
     new Column({ field: "nLabs", name: "# Labs", dataType: "number" })
   ];
 

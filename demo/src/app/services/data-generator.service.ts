@@ -39,6 +39,7 @@ export class DataGeneratorService {
     for (var i = 0; i < size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let genderDict: number = j % 2;
       let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
@@ -54,7 +55,7 @@ export class DataGeneratorService {
         value: Math.floor(Math.random() * 200)
       };
 
-      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab });
+      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab });
     }
     return data;
   }

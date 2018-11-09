@@ -2,6 +2,8 @@ import {RangeSelectListener} from "./src/grid/event/range-select.listener";
 
 export {GridModule} from "./src/grid/grid.module";
 export {GridComponent} from "./src/grid/grid.component";
+export {GridService} from "./src/grid/services/grid.service";
+
 export {Column} from "./src/grid/column/column";
 export {ExternalData} from "./src/grid/utils/external-data";
 export {ExternalInfo} from "./src/grid/utils/external-info";

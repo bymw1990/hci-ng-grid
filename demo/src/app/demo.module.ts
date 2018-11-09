@@ -4,7 +4,7 @@
 import {NgModule} from "@angular/core";
 import {BrowserModule} from "@angular/platform-browser";
 import {CommonModule} from "@angular/common";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 
@@ -38,6 +38,7 @@ import {LinkedDemoComponent} from "./linked/linked.component";
 import {LabPopup} from "./components/lab.component";
 import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
 import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
+import {DemoInterceptor} from "./services/demo.interceptor";
 
 @NgModule({
   imports: [
@@ -96,7 +97,12 @@ import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
     DictionaryFilterRenderer
   ],
   providers: [
-    DataGeneratorService
+    DataGeneratorService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: DemoInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [
     DemoComponent
