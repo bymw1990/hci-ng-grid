@@ -883,6 +883,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * The bound scroll listener for the #right-view container.
+   */
   onScroll() {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": onScroll");
@@ -930,6 +933,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Handled for mouseOver event.
+   *
+   * @param {MouseEvent} event
+   */
   mouseOver(event: MouseEvent) {
     if (!event || !event.target) {
       return;
@@ -1030,6 +1038,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  /**
+   * Called when either the first or second focus listener is called.  The second focus listener is after all other
+   * grid inputs, so if that is focused, it focuses the first focus listener.  The idea being that when you are focused
+   * on this grid, you stay focused until you register an event outside.  This is key to enabling key navigation across
+   * cells.
+   *
+   * @param {Event} event
+   */
   onFocus(event: Event) {
     event.stopPropagation();
     let id: string = (<HTMLElement>event.target).id;
@@ -1236,6 +1252,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }, 10);
   }
 
+  /**
+   * Clears the cell at the i and j position of its ng-dirty selector.  This is intended to be called after the onCellSave
+   * output.  Once an external post is made, this function can be called to confirm that the data is saved and is no
+   * longer dirty.
+   *
+   * @param {number} i
+   * @param {number} j
+   */
   clearDirtyCell(i: number, j: number) {
     let el: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
     if (el) {
@@ -1564,11 +1588,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     }
 
+    // This method wipes out all cells and re-draws.  That means that the following cell meta data must be re-processed.
     if (this.event === RESIZE || this.event === SCROLL) {
       this.updateSelectedRows(this.gridService.getSelectedRows());
     }
+
+    this.renderDirtyCells(this.gridService.getDirtyCells());
   }
 
+  /**
+   * Clear all ng-dirty selectors and re-populate based on known dirty cells.
+   *
+   * @param {Point[]} dirtyCells
+   */
   private renderDirtyCells(dirtyCells: Point[]) {
     let els: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".ng-dirty");
     for (let el of els) {
