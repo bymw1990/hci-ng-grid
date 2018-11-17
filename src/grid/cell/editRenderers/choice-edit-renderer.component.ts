@@ -49,34 +49,26 @@ export class ChoiceEditRenderer extends CellEditRenderer {
       console.debug("ChoiceEditRenderer.onClick");
     }
 
-    if (this.value !== this.data.value) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
-    }
+    this.saveData();
+
     event.stopPropagation();
     event.preventDefault();
   }
 
   onKeyDown(event: KeyboardEvent) {
-    console.log("ChoiceEditRenderer.onKeyDown " + event.keyCode);
-
     if (event.keyCode === 37 || event.keyCode === 39) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
+      this.saveData();
     } else if (event.keyCode === 38 || event.keyCode === 40) {
       // Do Nothing
     } else if (event.keyCode === 9) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
+      this.saveData();
     } else if (event.keyCode === 27) {
       event.stopPropagation();
       this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
     } else if (event.keyCode === 13) {
-      if (this.data.value !== this.value) {
+      if (this.saveData()) {
         event.stopPropagation();
         this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-        this.data.value = this.column.parseValue(this.value);
-        this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
       }
     } else {
       event.stopPropagation();

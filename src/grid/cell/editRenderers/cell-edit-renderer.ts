@@ -75,6 +75,24 @@ export class CellEditRenderer {
     this.updateLocation();
   }
 
+  saveData(value?: any): boolean {
+    if (!value) {
+      value = this.value;
+    }
+
+    let newValue: any = this.column.parseValue(value);
+
+    if (this.data.value !== newValue) {
+      let oldValue: any = this.data.value;
+      this.data.value = newValue;
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, newValue, oldValue);
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   setData(data: Cell) {
     this.data = data;
     this.value = this.column.formatValue(this.data.value);

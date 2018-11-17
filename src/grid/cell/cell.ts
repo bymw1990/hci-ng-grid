@@ -1,6 +1,6 @@
 export class Cell {
-  private _value: any = null;
-  private _key: number = null;
+  private _value: any;
+  private _key: number;
 
   constructor(o: Object) {
     Object.assign(this, o);

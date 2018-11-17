@@ -434,6 +434,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     { type: ClickCellEditListener }
   ];
 
+  @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
+  @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onConfigChange") onConfigChange: EventEmitter<any> = new EventEmitter<any>();
   @Output("cellClick") outputCellClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
@@ -683,6 +685,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getValueSubject().subscribe((location: Point) => {
       this.renderCellsAndData();
+    });
+
+    this.gridService.getDataChangeSubject().subscribe((dataChange: any) => {
+      this.onCellSave.emit(dataChange);
+    });
+
+    this.gridService.getDirtyCellsSubject().subscribe((dirtyCells: Point[]) => {
+      this.renderDirtyCells(dirtyCells);
     });
 
     let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
@@ -1226,6 +1236,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }, 10);
   }
 
+  clearDirtyCell(i: number, j: number) {
+    let el: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
+    if (el) {
+      this.renderer.removeClass(el, "ng-dirty");
+    }
+  }
+
   /**
    * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
    * combination of config and @Input settings.
@@ -1312,10 +1329,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let e = this.gridContainer.nativeElement;
     //let gridWidth: number = e.offsetWidth;
     let gridWidth: number =  this.el.nativeElement.parentElement.offsetWidth;
-
-    console.debug("hci-grid: " + this.id + ": parent: ");
-    console.debug(this.el.nativeElement.parentElement);
-    console.debug(gridWidth);
 
     this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
     let insideGridWidth: number = gridWidth;
@@ -1553,6 +1566,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     if (this.event === RESIZE || this.event === SCROLL) {
       this.updateSelectedRows(this.gridService.getSelectedRows());
+    }
+  }
+
+  private renderDirtyCells(dirtyCells: Point[]) {
+    let els: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".ng-dirty");
+    for (let el of els) {
+      this.renderer.removeClass(el, "ng-dirty");
+    }
+
+    for (let cell of dirtyCells) {
+      let el: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + cell.i + "-" + cell.j);
+      this.renderer.addClass(el, "ng-dirty");
     }
   }
 

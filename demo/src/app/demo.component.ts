@@ -39,6 +39,7 @@ declare const VERSION: string;
             <a class="dropdown-item" routerLink="/resize">Resize</a>
             <a class="dropdown-item" routerLink="/row-group">Row Grouping</a>
             <a class="dropdown-item" routerLink="/row-select">Row Select</a>
+            <a class="dropdown-item" routerLink="/saving">Saving Data</a>
             <a class="dropdown-item" routerLink="/simple">Simple</a>
             <a class="dropdown-item" routerLink="/theming">Themes</a>
           </div>

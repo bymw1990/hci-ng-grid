@@ -39,6 +39,7 @@ import {LabPopup} from "./components/lab.component";
 import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
 import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
 import {DemoInterceptor} from "./services/demo.interceptor";
+import {SavingDemoComponent} from "./saving/saving.component";
 
 @NgModule({
   imports: [
@@ -64,7 +65,7 @@ import {DemoInterceptor} from "./services/demo.interceptor";
       { path: "paging", component: PagingGridComponent },
       { path: "resize", component: ResizeDemoComponent },
       { path: "row-group", component: RowGroupGridComponent },
-      { path: "row-select", component: SelectGridComponent },
+      { path: "saving", component: SavingDemoComponent },
       { path: "simple", component: SimpleGridComponent },
       { path: "theming", component: ThemingComponent },
     ]),
@@ -72,29 +73,30 @@ import {DemoInterceptor} from "./services/demo.interceptor";
     GridModule.forRoot()
   ],
   declarations: [
+    AlertsGridComponent,
+    CopyPasteGridComponent,
     DemoComponent,
-    HomeComponent,
-    SimpleGridComponent,
-    SelectGridComponent,
+    DictionaryFilterRenderer,
+    DynamicConfigGridComponent,
     EditGridComponent,
+    EmptyGridComponent,
+    EventComponent,
+    ExternalControlComponent,
+    ExternalDataComponent,
     RowGroupGridComponent,
     FixedGridComponent,
     FilterGridComponent,
-    ExternalControlComponent,
-    ExternalDataComponent,
-    CopyPasteGridComponent,
-    AlertsGridComponent,
-    PagingGridComponent,
-    ThemingComponent,
-    DynamicConfigGridComponent,
-    EventComponent,
-    PopupComponent,
-    EmptyGridComponent,
-    ResizeDemoComponent,
-    LinkedDemoComponent,
+    HomeComponent,
     LabPopup,
-    UserProfileDirective,
-    DictionaryFilterRenderer
+    LinkedDemoComponent,
+    PagingGridComponent,
+    PopupComponent,
+    ResizeDemoComponent,
+    SavingDemoComponent,
+    SelectGridComponent,
+    SimpleGridComponent,
+    ThemingComponent,
+    UserProfileDirective
   ],
   providers: [
     DataGeneratorService,

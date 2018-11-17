@@ -82,7 +82,13 @@ export class GridService {
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
+
+  private dataChangeSubject: Subject<any> = new Subject<any>();
   private valueSubject: Subject<Point> = new Subject<Point>();
+
+  private dirtyCells: Point[] = [];
+  private dirtyCellsSubject: Subject<Point[]> = new Subject<Point[]>();
+
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
 
@@ -892,14 +898,27 @@ export class GridService {
     return undefined;
   }
 
-  handleValueChange(i: number, j: number, key: number, value: any) {
+  handleValueChange(i: number, j: number, key: number, newValue: any, oldValue: any) {
     if (isDevMode()) {
-      console.log("handleValueChange: " + i + " " + j + " " + value);
+      console.log("handleValueChange: " + i + " " + j + " " + newValue + " " + oldValue);
     }
 
-    this.setInputDataValue(key, this.columnDefinitions[j].field, value);
+    this.setInputDataValue(key, this.columnDefinitions[j].field, newValue);
 
+    // Still used?
     this.valueSubject.next(new Point(i, j));
+
+    this.dirtyCells.push(new Point(i, j));
+    this.dirtyCellsSubject.next(this.dirtyCells);
+
+    this.dataChangeSubject.next({
+      key: this.getRow(i).key,
+      i: i,
+      j: j,
+      field: this.columnDefinitions[j].field,
+      oldValue: oldValue,
+      newValue: newValue
+    });
   }
 
   /**
@@ -1245,5 +1264,17 @@ export class GridService {
 
   getPreparedData(): Array<Row> {
     return this.preparedData;
+  }
+
+  getDataChangeSubject(): Subject<any> {
+    return this.dataChangeSubject;
+  }
+
+  getDirtyCells(): Point[] {
+    return this.dirtyCells;
+  }
+
+  getDirtyCellsSubject(): Subject<Point[]> {
+    return this.dirtyCellsSubject;
   }
 }

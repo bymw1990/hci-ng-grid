@@ -47,29 +47,17 @@ export class TextEditRenderer extends CellEditRenderer {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    console.log("TextEditRenderer.onKeyDown " + event.keyCode);
-
-    if (event.keyCode === 37 && this.input.nativeElement.selectionStart === 0) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
-    } else if (event.keyCode === 39 && this.input.nativeElement.selectionStart === this.input.nativeElement.value.length) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
-    } else if (event.keyCode === 38 || event.keyCode === 40) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
-    } else if (event.keyCode === 9) {
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
-    } else if (event.keyCode === 27) {
-      event.stopPropagation();
-      //this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-      this.gridEventService.getUnselectSubject().next(undefined);
+    if ((event.keyCode === 37 && this.input.nativeElement.selectionStart === 0)
+        || (event.keyCode === 39 && this.input.nativeElement.selectionStart === this.input.nativeElement.value.length)
+        || event.keyCode === 38 || event.keyCode === 40 || event.keyCode === 9) {
+      this.saveData();
     } else if (event.keyCode === 13) {
       event.stopPropagation();
       this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-      this.data.value = this.column.parseValue(this.value);
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
+      this.saveData();
+    } else if (event.keyCode === 27) {
+      event.stopPropagation();
+      this.gridEventService.getUnselectSubject().next(undefined);
     } else {
       event.stopPropagation();
     }

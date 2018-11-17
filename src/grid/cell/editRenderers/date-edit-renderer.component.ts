@@ -52,21 +52,16 @@ export class DateEditRenderer extends CellEditRenderer {
       console.debug("ChoiceEditRenderer.onClick");
     }
 
-    if (this.value !== this.data.value) {
-      this.data.value = this.value;
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
-    }
+    this.saveData();
+
     event.stopPropagation();
     event.preventDefault();
   }
 
   onKeyDown(event: KeyboardEvent) {
-    console.log("TextEditRenderer.onKeyDown " + event.keyCode);
-
     if (event.keyCode === 13) {
       this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
-      this.data.value = this.value;
-      this.gridService.handleValueChange(this.i, this.j, this.data.key, this.data.value);
+      this.saveData();
     }
   }
 
