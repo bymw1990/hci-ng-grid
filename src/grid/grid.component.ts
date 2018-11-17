@@ -1788,14 +1788,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param event The window event.
    */
-  //@HostListener("document:click", ["$event"])
+  @HostListener("document:click", ["$event"])
   private documentClickEvent(event) {
     if (!this.el.nativeElement.contains(event.target)) {
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
       this.componentRef = null;
-      this.gridEventService.clearSelectedLocation();
+      //this.gridEventService.clearSelectedLocation();
     }
   }
 }

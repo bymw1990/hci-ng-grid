@@ -65,6 +65,7 @@ import {SavingDemoComponent} from "./saving/saving.component";
       { path: "paging", component: PagingGridComponent },
       { path: "resize", component: ResizeDemoComponent },
       { path: "row-group", component: RowGroupGridComponent },
+      { path: "row-select", component: SelectGridComponent },
       { path: "saving", component: SavingDemoComponent },
       { path: "simple", component: SimpleGridComponent },
       { path: "theming", component: ThemingComponent },

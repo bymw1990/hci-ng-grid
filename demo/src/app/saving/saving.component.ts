@@ -12,7 +12,10 @@ import {ClickRowSelectListener} from "hci-ng-grid";
       </div>
       <div class="card-body">
         <div class="card-text">
-          TODO
+          Edit a cell's value and hit enter.  The returned json will appear below.  The value must be different to register as a save.
+        </div>
+        <div class="card-text">
+          {{cellSaveOutput}}
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -51,6 +54,8 @@ import {ClickRowSelectListener} from "hci-ng-grid";
 })
 export class SavingDemoComponent {
 
+  cellSaveOutput: string;
+
   data1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1973-01-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
@@ -70,6 +75,6 @@ export class SavingDemoComponent {
   ];
 
   onCellSave(dataChange: any) {
-    console.debug("onCellSave: " + JSON.stringify(dataChange));
+    this.cellSaveOutput = JSON.stringify(dataChange);
   }
 }
