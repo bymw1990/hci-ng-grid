@@ -50,11 +50,55 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         </p>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Auto Row Saving</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Edit a cell's value then tab until you hit the next row.  The dirty row will be broadcast.
+        </div>
+        <div class="card-text">
+          {{rowSaveOutput}}
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config2>
+            <pre>
+              &lt;hci-grid
+                [data]="data1"
+                [columnDefinitions]="columns1"
+                [saveOnDirtyRowChange]="true"
+                (onRowSave)="onRowSave($event)"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              isKey: true, field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "pcg.nLabs", name: "# Labs"
+              field: "pcg.nested.nLabPath", name: "# Lab Path"
+              ];
+            </pre>
+          </ng-template>
+        </div>
+        <p>
+          <hci-grid [data]="data1"
+                    [columnDefinitions]="columns1"
+                    [saveOnDirtyRowChange]="true"
+                    (onRowSave)="onRowSave($event)">
+          </hci-grid>
+        </p>
+      </div>
+    </div>
   `
 })
 export class SavingDemoComponent {
 
   cellSaveOutput: string;
+  rowSaveOutput: string;
 
   data1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -76,5 +120,9 @@ export class SavingDemoComponent {
 
   onCellSave(dataChange: any) {
     this.cellSaveOutput = JSON.stringify(dataChange);
+  }
+
+  onRowSave(dataChange: any) {
+    this.rowSaveOutput = JSON.stringify(dataChange);
   }
 }

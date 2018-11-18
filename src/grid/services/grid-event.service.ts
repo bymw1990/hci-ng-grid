@@ -5,6 +5,7 @@ import {GridService} from "./grid.service";
 import {Point} from "../utils/point";
 import {Range} from "../utils/range";
 import {EventMeta} from "../utils/event-meta";
+import {RowChange} from "../utils/row-change";
 
 export const CLICK = 0;
 export const TAB = 1;
@@ -111,6 +112,13 @@ export class GridEventService {
     }
   }
 
+  /**
+   * Called when an arrow key is pressed from the cell at i and j.
+   *
+   * @param {number} i
+   * @param {number} j
+   * @param {number} keyCode
+   */
   arrowFromLocation(i: number, j: number, keyCode: number) {
     if (keyCode === 37) {
       this.arrowFrom(new Point(i, j), -1, 0, null);
@@ -143,6 +151,8 @@ export class GridEventService {
       return;
     }
 
+    let oldRowNum: number = this.selectedLocation.i;
+
     this.lastDx = dx;
     this.lastDy = dy;
 
@@ -166,6 +176,10 @@ export class GridEventService {
         || this.selectedLocation.isNegative()
         || !this.gridService.isColumnSelectable(this.selectedLocation.j)) {
       this.selectedLocation = new Point(-1, -1);
+    }
+
+    if (oldRowNum !== -1 && this.selectedLocation.i !== -1 && oldRowNum !== this.selectedLocation.i) {
+      this.gridService.getRowChangedSubject().next(new RowChange(oldRowNum, this.selectedLocation.i));
     }
 
     if (isDevMode()) {

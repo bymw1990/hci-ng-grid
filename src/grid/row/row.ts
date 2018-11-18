@@ -15,6 +15,7 @@ export class Row {
   EXPANDED: number = 2;
   state: number = this.EXPANDED;
 
+  i: number;
   private _key: any;
   private _rowNum: number;
   private _selected: boolean = false;
@@ -40,6 +41,16 @@ export class Row {
       }
     }
     return true;
+  }
+
+  isDirty(): boolean {
+    for (let cell of this.cells) {
+      if (cell.dirty) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   createHeader(headerColumns: Array<number>) {

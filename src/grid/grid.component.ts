@@ -32,6 +32,7 @@ import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
 import {EventMeta} from "./utils/event-meta";
+import {RowChange} from "./utils/row-change";
 
 const NO_EVENT: number = -1;
 const RESIZE: number = 0;
@@ -428,6 +429,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() pageSize: number;
   @Input("pageSizes") inputPageSizes: number[];
   @Input("nVisibleRows") inputNVisibleRows: number = -1;
+  @Input() saveOnDirtyRowChange: boolean = false;
   @Input() eventListeners: Array<EventListenerArg> = [
     { type: RangeSelectListener },
     { type: ClickRowSelectListener },
@@ -693,6 +695,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getDirtyCellsSubject().subscribe((dirtyCells: Point[]) => {
       this.renderDirtyCells(dirtyCells);
+    });
+
+    this.gridService.getRowChangedSubject().subscribe((rowChange: RowChange) => {
+      if (this.gridService.getRow(rowChange.oldRowNum).isDirty() && this.saveOnDirtyRowChange) {
+        this.onRowSave.emit({
+          key: this.gridService.getRow(rowChange.oldRowNum).key,
+          rowNum: rowChange.oldRowNum,
+          row: this.gridService.getOriginalRow(this.gridService.getRow(rowChange.oldRowNum).rowNum)
+        });
+      }
     });
 
     let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
@@ -1238,13 +1250,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.updateSelectedRowsTimeout = setTimeout(() => {
       for (let key of selectedRows) {
-        let row: Row = this.gridService.getRowFromKey(key);
+        let i: number = this.gridService.getRowIndexFromKey(key);
 
-        let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + row.rowNum);
+        let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#row-left-" + i);
         if (e) {
           this.renderer.addClass(e, "selected");
         }
-        e = this.gridContainer.nativeElement.querySelector("#row-right-" + row.rowNum);
+        e = this.gridContainer.nativeElement.querySelector("#row-right-" + i);
         if (e) {
           this.renderer.addClass(e, "selected");
         }
@@ -1261,10 +1273,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} j
    */
   clearDirtyCell(i: number, j: number) {
-    let el: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
-    if (el) {
-      this.renderer.removeClass(el, "ng-dirty");
-    }
+    this.gridService.clearDirtyCell(i, j);
   }
 
   /**
@@ -1593,7 +1602,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.updateSelectedRows(this.gridService.getSelectedRows());
     }
 
-    this.renderDirtyCells(this.gridService.getDirtyCells());
+    //this.renderDirtyCells(this.gridService.getDirtyCells());
   }
 
   /**
@@ -1656,6 +1665,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (column.isLast) {
       this.renderer.addClass(eCell, "last");
     }
+    if (cell.dirty) {
+      this.renderer.addClass(eCell, "ng-dirty");
+    }
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
     this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
@@ -1677,7 +1689,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private selectComponent(i: number, j: number) {
     if (isDevMode()) {
-      console.log("GridComponent.selectComponent: " + i + " " + j);
+      console.debug("hci-grid: " + this.id + ": selectComponent: " + i + " " + j);
     }
     let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
 

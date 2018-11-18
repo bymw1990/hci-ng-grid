@@ -14,6 +14,7 @@ import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
 import {GridGlobalService} from "./grid-global.service";
+import {RowChange} from "../utils/row-change";
 
 /**
  * The service for handling configuration and data binding/parsing.
@@ -82,6 +83,8 @@ export class GridService {
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
+
+  private rowChangedSubject: Subject<RowChange> = new Subject<RowChange>();
 
   private dataChangeSubject: Subject<any> = new Subject<any>();
   private valueSubject: Subject<Point> = new Subject<Point>();
@@ -832,7 +835,7 @@ export class GridService {
                   }
                 }
               } else {
-                console.debug("Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
+                console.debug("hci-grid: " + this.id + ": Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
 
                 if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
                   colInc = false;
@@ -866,7 +869,7 @@ export class GridService {
   getField(row: Object, field: String): Object {
     if (!field) {
       if (isDevMode()) {
-        console.debug("getField: field is undefined.");
+        console.debug("hci-grid: " + this.id + ": getField: field is undefined.");
       }
       return null;
     }
@@ -882,7 +885,7 @@ export class GridService {
 
   getRow(i: number): Row {
     if (i > this.viewData.length - 1) {
-      return null;
+      return undefined;
     } else {
       return this.viewData[i];
     }
@@ -898,16 +901,39 @@ export class GridService {
     return undefined;
   }
 
+  getRowIndexFromKey(key: any): number {
+    for (let i = 0; i < this.viewData.length; i++) {
+      if (this.viewData[i].key === key) {
+        return i;
+      }
+    }
+
+    return undefined;
+  }
+
+  clearDirtyCell(i: number, j: number) {
+    this.getRow(i).get(j).dirty = false;
+
+    for (let ii = 0; ii < this.dirtyCells.length; ii++) {
+      if (this.dirtyCells[ii].i === i && this.dirtyCells[ii].j === j) {
+        this.dirtyCells.splice(ii, 1);
+        break;
+      }
+    }
+    this.dirtyCellsSubject.next(this.dirtyCells);
+  }
+
   handleValueChange(i: number, j: number, key: number, newValue: any, oldValue: any) {
     if (isDevMode()) {
-      console.log("handleValueChange: " + i + " " + j + " " + newValue + " " + oldValue);
+      console.debug("hci-grid: " + this.id + ": handleValueChange: " + i + " " + j + " " + newValue + " " + oldValue);
     }
 
     this.setInputDataValue(key, this.columnDefinitions[j].field, newValue);
 
-    // Still used?
+    // TODO: Still used?
     this.valueSubject.next(new Point(i, j));
 
+    this.getRow(i).get(j).dirty = true;
     this.dirtyCells.push(new Point(i, j));
     this.dirtyCellsSubject.next(this.dirtyCells);
 
@@ -959,7 +985,7 @@ export class GridService {
     }
     this.pageInfoObserved.next(this.pageInfo);
 
-    this.viewData = new Array<Row>();
+    this.viewData = [];
     if (this.groupBy) {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
@@ -992,6 +1018,8 @@ export class GridService {
         this.viewData.push(this.preparedData[i]);
       }
     }
+
+    //for ()
 
     this.viewDataSubject.next(this.viewData);
   }
@@ -1262,6 +1290,10 @@ export class GridService {
     return this.originalData;
   }
 
+  getOriginalRow(i: number): any {
+    return this.originalData[i];
+  }
+
   getPreparedData(): Array<Row> {
     return this.preparedData;
   }
@@ -1276,5 +1308,9 @@ export class GridService {
 
   getDirtyCellsSubject(): Subject<Point[]> {
     return this.dirtyCellsSubject;
+  }
+
+  getRowChangedSubject(): Subject<RowChange> {
+    return this.rowChangedSubject;
   }
 }
