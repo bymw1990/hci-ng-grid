@@ -60,7 +60,7 @@ export class DateEditRenderer extends CellEditRenderer {
 
   onKeyDown(event: KeyboardEvent) {
     if (event.keyCode === 13) {
-      this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+      this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
       this.saveData();
     }
   }

@@ -6,18 +6,18 @@ export class FormatterParser {
   setConfig(config: any) {}
 
   format(value: any): string {
-    if (value === undefined || value === null) {
-      return "";
-    } else {
+    if (value) {
       return value;
+    } else {
+      return "";
     }
   }
 
   parse(value: string): any {
-    if (value === undefined || value === null) {
-      return "";
-    } else {
+    if (value) {
       return value;
+    } else {
+      return "";
     }
   }
 }

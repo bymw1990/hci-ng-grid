@@ -55,12 +55,12 @@ export class GridService {
   nVisibleRows: number;
 
   originalData: Object[];
-  preparedData: Array<Row>;
+  preparedData: Row[];
 
-  viewData: Array<Row> = new Array<Row>();
-  viewDataSubject: BehaviorSubject<Array<Row>> = new BehaviorSubject<Array<Row>>(new Array<Row>());
+  viewData: Row[] = [];
+  viewDataSubject: BehaviorSubject<Row[]> = new BehaviorSubject<Row[]>([]);
 
-  filterInfo: Array<FilterInfo> = new Array<FilterInfo>();
+  filterInfo: FilterInfo[] = [];
 
   sortInfo: SortInfo = new SortInfo();
   sortInfoObserved = new Subject<SortInfo>();
@@ -355,7 +355,7 @@ export class GridService {
       nGroupBy = this.groupBy.length;
     }
 
-    let groupByDisplay: string = null;
+    let groupByDisplay: string = undefined;
 
     if (this.rowSelect) {
       let rowSelectColumn: Column = Column.deserialize({ name: "", template: "InputCell", width: 30, minWidth: 30, maxWidth: 30 });
@@ -383,7 +383,7 @@ export class GridService {
       if (this.groupBy) {
         for (var k = 0; k < this.groupBy.length; k++) {
           if (this.columnDefinitions[j].field === this.groupBy[k]) {
-            groupByDisplay = (groupByDisplay === null) ? this.columnDefinitions[j].name : groupByDisplay + ", " + this.columnDefinitions[j].name;
+            groupByDisplay = (groupByDisplay) ? groupByDisplay + ", " + this.columnDefinitions[j].name : this.columnDefinitions[j].name;
             this.columnDefinitions[j].isGroup = true;
             this.columnDefinitions[j].visible = false;
             break;
@@ -495,7 +495,7 @@ export class GridService {
     return this.columnDefinitions;
   }
 
-  getViewDataSubject(): BehaviorSubject<Array<Row>> {
+  getViewDataSubject(): BehaviorSubject<Row[]> {
     return this.viewDataSubject;
   }
 
@@ -505,7 +505,7 @@ export class GridService {
    * @returns {Array<number>}
    */
   getKeyColumns(): Array<number> {
-    let keys: Array<number> = new Array<number>();
+    let keys: number[] = [];
     for (var i = 0; i < this.columnDefinitions.length; i++) {
       if (this.columnDefinitions[i].isKey) {
         keys.push(i);
@@ -680,7 +680,7 @@ export class GridService {
    */
   filter() {
     if (this.externalFiltering) {
-      this.filterInfo = new Array<FilterInfo>();
+      this.filterInfo = [];
       this.filterMap.forEach((filters: FilterInfo[]) => {
         this.filterInfo = this.filterInfo.concat(filters);
       });
@@ -711,7 +711,7 @@ export class GridService {
       console.debug("filterPreparedData");
     }
 
-    let filteredData: Array<Row> = new Array<Row>();
+    let filteredData: Row[] = [];
 
     if (this.preparedData) {
       for (var i = 0; i < this.preparedData.length; i++) {
@@ -990,7 +990,7 @@ export class GridService {
       // This is all wrong for sorting... if group by, only search for next common row.
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
       // lay next to each other
-      let groupColumns: Array<number> = new Array<number>();
+      let groupColumns: number[] = [];
       for (var i = 0; i < this.columnDefinitions.length; i++) {
         if (this.columnDefinitions[i].isGroup) {
           groupColumns.push(i);
@@ -1001,12 +1001,12 @@ export class GridService {
         this.preparedData[i].createHeader(groupColumns);
       }
 
-      let currentHeader: any = null;
+      let currentHeader: any = undefined;
       for (var i = START; i < END; i++) {
-        if (currentHeader === null) {
+        if (!currentHeader) {
           currentHeader = this.preparedData[i].header;
         } else if (this.preparedData[i].header === currentHeader) {
-          this.preparedData[i].header = null;
+          this.preparedData[i].header = undefined;
         } else {
           currentHeader = this.preparedData[i].header;
         }
@@ -1018,8 +1018,6 @@ export class GridService {
         this.viewData.push(this.preparedData[i]);
       }
     }
-
-    //for ()
 
     this.viewDataSubject.next(this.viewData);
   }
@@ -1048,7 +1046,7 @@ export class GridService {
     if (isDevMode()) {
       console.info("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columnDefinitions.length);
     }
-    this.preparedData = new Array<any>();
+    this.preparedData = [];
 
     for (var i = 0; i < this.originalData.length; i++) {
       let row: Row = new Row();
@@ -1076,7 +1074,7 @@ export class GridService {
    * @param originalData
    * @returns {boolean}
    */
-  setOriginalData(originalData: Array<Object>): boolean {
+  setOriginalData(originalData: Object[]): boolean {
     this.originalData = originalData;
 
     if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50) {
@@ -1084,8 +1082,8 @@ export class GridService {
     }
 
     if (!this.columnDefinitions && this.originalData.length > 0) {
-      this.columnDefinitions = new Array<Column>();
-      let keys: Array<string> = Object.keys(this.originalData[0]);
+      this.columnDefinitions = [];
+      let keys: string[] = Object.keys(this.originalData[0]);
       for (var i = 0; i < keys.length; i++) {
         this.columnDefinitions.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
         this.columnDefinitions = this.columnDefinitions;
@@ -1176,7 +1174,7 @@ export class GridService {
   }
 
   sortPreparedData() {
-    let sortColumns: Array<number> = new Array<number>();
+    let sortColumns: number[] = [];
 
     if (this.sortInfo.field === null && this.groupBy) {
       this.sortInfo.field = "GROUP_BY";
@@ -1294,7 +1292,7 @@ export class GridService {
     return this.originalData[i];
   }
 
-  getPreparedData(): Array<Row> {
+  getPreparedData(): Row[] {
     return this.preparedData;
   }
 

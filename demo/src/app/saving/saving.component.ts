@@ -57,7 +57,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
       </div>
       <div class="card-body">
         <div class="card-text">
-          Edit a cell's value then tab until you hit the next row.  The dirty row will be broadcast.
+          Edit a cell's value then tab until you hit the next row.  Information and the dirty row as original format will be broadcast.
         </div>
         <div class="card-text">
           {{rowSaveOutput}}

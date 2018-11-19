@@ -139,8 +139,6 @@ import {FilterInfo} from "../../utils/filter-info";
 })
 export class CompareFilterRenderer extends FilterRenderer {
 
-  //@Input() column: Column;
-
   width: number = 300;
   changed: boolean = false;
   valid: boolean = false;
@@ -200,7 +198,7 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   format(value: any): any {
-    if (!value || value === null) {
+    if (!value) {
       return value;
     } else if (this.column.dataType === "date") {
       let d: string[] = value.split("-");
@@ -210,12 +208,18 @@ export class CompareFilterRenderer extends FilterRenderer {
     }
   }
 
+  /**
+   * TODO: Fix timezone.
+   *
+   * @param value
+   * @returns {any}
+   */
   parse(value: any): any {
     if (this.column.dataType === "date") {
-      if (value && value !== null) {
+      if (value) {
         return value.year + "-" + ((value.month < 10) ? "0" : "") + value.month + "-" + ((value.day < 10) ? "0" : "") + value.day + "T12:00-06:00";
       } else {
-        return null;
+        return undefined;
       }
     } else {
       return value;

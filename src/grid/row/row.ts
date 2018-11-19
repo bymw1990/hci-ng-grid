@@ -5,9 +5,9 @@ import {Cell} from "../cell/cell";
  */
 export class Row {
 
-  cells: Array<Cell> = new Array<Cell>();
+  cells: Cell[] = [];
   data: Object = {};
-  header: any = null;
+  header: any;
   size: number = 1;
 
   HIDDEN: number = 0;
@@ -21,7 +21,7 @@ export class Row {
   private _selected: boolean = false;
   private _visible: boolean = true;
 
-  equals(row: Row, compareIndexes: Array<number>): boolean {
+  equals(row: Row, compareIndexes: number[]): boolean {
     if (this.length() !== row.length()) {
       return false;
     }
@@ -54,16 +54,16 @@ export class Row {
   }
 
   createHeader(headerColumns: Array<number>) {
-    this.header = null;
+    this.header = undefined;
     for (var i = 0; i < headerColumns.length; i++) {
-      this.header = this.header === null ? this.cells[headerColumns[i]].value : this.header + ", " + this.cells[headerColumns[i]].value;
+      this.header = this.header === undefined ? this.cells[headerColumns[i]].value : this.header + ", " + this.cells[headerColumns[i]].value;
     }
   }
 
   getConcatenatedCells() {
-    let all: string = null;
+    let all: string = undefined;
     for (let cell of this.cells) {
-      all = (all === null) ? cell.value : all + ", " + cell.value;
+      all = (all === undefined) ? cell.value : all + ", " + cell.value;
     }
     return all;
   }
@@ -77,7 +77,7 @@ export class Row {
   }
 
   hasHeader(): boolean {
-    return this.header !== null;
+    return this.header !== undefined;
   }
 
   isExpanded(): boolean {

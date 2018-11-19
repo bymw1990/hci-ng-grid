@@ -1,7 +1,6 @@
 import {Component} from "@angular/core";
 
 import {CellPopupRenderer} from "./cell-popup-renderer";
-import {Point} from "../../utils/point";
 
 @Component({
   selector: "hci-bigtext-popup",

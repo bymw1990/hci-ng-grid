@@ -1,3 +1,6 @@
+/**
+ * A holder for the cell's data and other metadata needed for rendering or data management.
+ */
 export class Cell {
   value: any;
   key: number;

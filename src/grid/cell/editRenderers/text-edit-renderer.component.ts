@@ -53,7 +53,7 @@ export class TextEditRenderer extends CellEditRenderer {
       this.saveData();
     } else if (event.keyCode === 13) {
       event.stopPropagation();
-      this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+      this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
       this.saveData();
     } else if (event.keyCode === 27) {
       event.stopPropagation();

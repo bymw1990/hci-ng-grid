@@ -41,8 +41,6 @@ export class TextFilterRenderer extends FilterRenderer {
 
   @ViewChild("input") input: ElementRef;
 
-  //@Input() column: Column;
-
   value: any;
   width: number = 200;
 
@@ -58,9 +56,9 @@ export class TextFilterRenderer extends FilterRenderer {
   reset() {
     super.reset();
     if (this.filters.length === 0) {
-      this.filters.push(new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE", false));
+      this.filters.push(new FilterInfo(this.column.field, this.column.dataType, "", undefined, "LIKE", false));
     } else {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, "", null, "LIKE", false);
+      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, "", undefined, "LIKE", false);
     }
 
     if (this.shared) {

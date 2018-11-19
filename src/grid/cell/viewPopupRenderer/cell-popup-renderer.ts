@@ -1,4 +1,5 @@
 import {ChangeDetectorRef, ElementRef, Renderer2} from "@angular/core";
+
 import {GridService} from "../../services/grid.service";
 import {Point} from "../../utils/point";
 

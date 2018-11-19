@@ -121,8 +121,8 @@ const SCROLL: number = 1;
                                  [column]="column"
                                  [container]="headerContainer"
                                  class="hci-grid-header hci-grid-row-height"
-                                 [class.hci-grid-row-height]="column.filterType === null"
-                                 [class.hci-grid-row-height-filter]="column.filterType !== null"
+                                 [class.hci-grid-row-height]="!column.filterType"
+                                 [class.hci-grid-row-height-filter]="column.filterType"
                                  style="vertical-align: top; display: inline-flex; align-items: center;"
                                  [style.height.px]="rowHeight"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
@@ -140,8 +140,8 @@ const SCROLL: number = 1;
                                  [column]="column"
                                  [container]="headerContainer"
                                  class="hci-grid-header hci-grid-row-height"
-                                 [class.hci-grid-row-height]="column.filterType === null"
-                                 [class.hci-grid-row-height-filter]="column.filterType !== null"
+                                 [class.hci-grid-row-height]="!column.filterType"
+                                 [class.hci-grid-row-height-filter]="column.filterType"
                                  style="vertical-align: top; display: inline-flex; align-items: center;"
                                  [style.height.px]="rowHeight"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
@@ -403,7 +403,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
   @ViewChild("iframeSensor") iframeSensor: ElementRef;
 
-  @Input("data") boundData: Object[] = null;
+  @Input("data") boundData: Object[];
   @Input("dataCall") onExternalDataCall: Function;
 
   @Input() id: string;
@@ -430,7 +430,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("pageSizes") inputPageSizes: number[];
   @Input("nVisibleRows") inputNVisibleRows: number = -1;
   @Input() saveOnDirtyRowChange: boolean = false;
-  @Input() eventListeners: Array<EventListenerArg> = [
+  @Input() eventListeners: EventListenerArg[] = [
     { type: RangeSelectListener },
     { type: ClickRowSelectListener },
     { type: ClickCellEditListener }
@@ -448,7 +448,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   config: any = {};
   columnMap: Map<string, Column[]>;
-  gridData: Array<Row> = new Array<Row>();
+  gridData: Row[] = [];
   pageInfo: PageInfo = new PageInfo();
   initialized: boolean = false;
   gridContainerHeight: number = 0;
@@ -466,23 +466,23 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   boundDataSubject: Subject<Object[]> = new Subject<Object[]>();
 
-  renderedRows: Array<number> = [];
+  renderedRows: number[] = [];
 
   columnsChangedSubscription: Subscription;
   doRenderSubscription: Subscription;
 
   private event: number = NO_EVENT;
-  private popupRef: CellPopupRenderer = null;
-  private componentRef: CellEditRenderer = null;
+  private popupRef: CellPopupRenderer;
+  private componentRef: CellEditRenderer;
   private selectedLocationSubscription: Subscription;
 
   /* Arrays of listeners for different types.  A single instance of a listener can exist on multiple types. */
-  private clickListeners: Array<EventListener> = [];
-  private dblClickListeners: Array<EventListener> = [];
-  private mouseDownListeners: Array<EventListener> = [];
-  private mouseDragListeners: Array<EventListener> = [];
-  private mouseUpListeners: Array<EventListener> = [];
-  private mouseOverListeners: Array<EventListener> = [];
+  private clickListeners: EventListener[] = [];
+  private dblClickListeners: EventListener[] = [];
+  private mouseDownListeners: EventListener[] = [];
+  private mouseDragListeners: EventListener[] = [];
+  private mouseUpListeners: EventListener[] = [];
+  private mouseOverListeners: EventListener[] = [];
 
   private iFrameWidth: number[] = [0, 0];
 
@@ -584,7 +584,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.updateGridContainerHeight();
         this.busySubject.next(true);
         this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
-          if (externalData.externalInfo === null) {
+          if (!externalData.externalInfo) {
             this.gridService.pageInfo.setNumPages(1);
           } else {
             this.gridService.pageInfo = externalData.externalInfo.getPage();
@@ -608,13 +608,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
-      this.gridService.externalInfoObserved.next(new ExternalInfo(null, null, this.pageInfo));
+      this.gridService.externalInfoObserved.next(new ExternalInfo(undefined, undefined, this.pageInfo));
     } else if (this.boundData) {
       this.gridService.setOriginalData(this.boundData);
     }
 
     this.pageInfo = this.gridService.pageInfo;
-    this.gridEventService.setSelectedLocation(null, null);
+    this.gridEventService.setSelectedLocation(undefined, undefined);
 
     this.buildConfigFromInput();
     this.gridService.updateConfig(this.inputConfig);
@@ -644,7 +644,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridContainer.nativeElement.querySelector("#right-view").addEventListener("scroll", this.onScroll.bind(this), true);
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
-    this.gridService.getViewDataSubject().subscribe((data: Array<Row>) => {
+    this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": data.subscribe: " + data.length);
       }
@@ -661,7 +661,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
-      this.componentRef = null;
+      this.componentRef = undefined;
 
       if (p.isNotNegative()) {
         this.selectComponent(p.i, p.j);
@@ -677,7 +677,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
-      this.componentRef = null;
+      this.componentRef = undefined;
       this.focuser1.nativeElement.focus();
     });
 
@@ -903,7 +903,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("hci-grid: " + this.id + ": onScroll");
     }
 
-    if (this.componentRef !== null) {
+    if (this.componentRef) {
       this.componentRef.updateLocation();
     }
   }
@@ -1082,7 +1082,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       let range: Range = this.gridEventService.getCurrentRange();
-      if (range != null && !range.min.equals(range.max)) {
+      if (range && !range.min.equals(range.max)) {
         let copy: string = "";
 
         for (var i = range.min.i; i <= range.max.i; i++) {
@@ -1114,12 +1114,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let range: Range = this.gridEventService.getCurrentRange();
       let p: Point = this.gridEventService.getSelectedLocation();
-      if (range === null) {
+      if (!range) {
         if (!p) {
           this.gridMessageService.warn("No selected cell or range to paste");
           return;
         }
-      } else if (paste === null || paste === "") {
+      } else if (!paste || paste === "") {
         this.gridMessageService.warn("No data to paste");
         return;
       }
@@ -1128,10 +1128,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         paste = paste.substr(0, paste.length - 1);
       }
 
-      let cols: string[] = null;
+      let cols: string[] = undefined;
       let rows: string[] = paste.split("\n");
 
-      if (range == null) {
+      if (!range) {
         range = new Range(p, new Point(p.i + rows.length - 1, p.j + rows[0].split("\t").length - 1));
       }
       let i = range.min.i;
@@ -1182,19 +1182,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     } else if (event.keyCode === 9) {
       event.stopPropagation();
-      this.gridEventService.tabFrom(null, null);
+      this.gridEventService.tabFrom(undefined, undefined);
     } else if (event.keyCode === 37) {
       event.stopPropagation();
-      this.gridEventService.arrowFrom(null, -1, 0, null);
+      this.gridEventService.arrowFrom(undefined, -1, 0, undefined);
     } else if (event.keyCode === 39) {
       event.stopPropagation();
-      this.gridEventService.arrowFrom(null, 1, 0, null);
+      this.gridEventService.arrowFrom(undefined, 1, 0, undefined);
     } else if (event.keyCode === 38) {
       event.stopPropagation();
-      this.gridEventService.arrowFrom(null, 0, -1, null);
+      this.gridEventService.arrowFrom(undefined, 0, -1, undefined);
     } else if (event.keyCode === 40) {
       event.stopPropagation();
-      this.gridEventService.arrowFrom(null, 0, 1, null);
+      this.gridEventService.arrowFrom(undefined, 0, 1, undefined);
     } else if (event.keyCode === 27) {
       event.stopPropagation();
       this.gridEventService.setSelectedLocation(new Point(-1, -1), new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
@@ -1487,7 +1487,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private setGridData(gridData: Array<Row>) {
+  private setGridData(gridData: Row[]) {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": setGridData");
       console.debug(gridData);
@@ -1545,10 +1545,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       end = start + end;
     }
 
-    let cell: Cell = null;
-    let row: Row = null;
-    let lRow: HTMLElement = null;
-    let rRow: HTMLElement = null;
+    let cell: Cell = undefined;
+    let row: Row = undefined;
+    let lRow: HTMLElement = undefined;
+    let rRow: HTMLElement = undefined;
     for (var i = start; this.gridData.length; i++) {
       row = this.gridData[i];
       if (!row) {
@@ -1730,7 +1730,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       try {
         this.gridData[i].get(j);
       } catch (e) {
-        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+        this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
       }
 
       let column: Column = this.columnMap.get("VISIBLE")[j];
@@ -1738,7 +1738,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (!column.visible && this.gridEventService.getLastDx() === 1) {
         this.gridEventService.repeatLastEvent();
       } else if (!column.visible) {
-        this.gridEventService.setSelectedLocation(new Point(-1, -1), null);
+        this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
       }
 
       let factory = this.resolver.resolveComponentFactory(column.editRenderer);
@@ -1789,7 +1789,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private updateSelectedCells(range: Range) {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": updateSelectedCells: " + ((range) ? range.toString() : "null"));
+      console.debug("hci-grid: " + this.id + ": updateSelectedCells: " + ((range) ? range.toString() : "undefined"));
     }
 
     let es: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-cell");
@@ -1802,7 +1802,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.removeClass(e, "top");
         this.renderer.removeClass(e, "bottom");
       }
-      if (range !== null) {
+      if (range) {
         for (var i = range.min.i; i <= range.max.i; i++) {
           for (var j = range.min.j; j <= range.max.j; j++) {
             let e: HTMLElement = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
@@ -1838,8 +1838,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
       this.rightCellEditContainer.clear();
-      this.componentRef = null;
-      //this.gridEventService.clearSelectedLocation();
+      this.componentRef = undefined;
     }
   }
 }

@@ -13,18 +13,18 @@ export class DateFormatter extends FormatterParser {
   }
 
   format(value: any): string {
-    if (value === undefined || value === null) {
-      return "";
-    } else {
+    if (value) {
       return moment((new Date(<string>value))).format(this.dateFormat);
+    } else {
+      return "";
     }
   }
 
   parse(value: string): any {
-    if (value === undefined || value === null) {
-      return "";
-    } else {
+    if (value) {
       return moment(<string>value, this.dateFormat).toISOString();
+    } else {
+      return "";
     }
   }
 }

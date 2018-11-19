@@ -104,8 +104,6 @@ import {FilterInfo} from "../../utils/filter-info";
 })
 export class SelectFilterRenderer extends FilterRenderer {
 
-  //@Input() column: Column;
-
   width: number = 300;
   init: boolean = false;
   changed: boolean = false;
@@ -114,7 +112,7 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E", true));
+        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, undefined, "E", true));
       }
     }
 

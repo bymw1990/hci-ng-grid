@@ -17,8 +17,8 @@ export class Column {
 
   static defaultConfig: any = {
     isKey: false,
-    name: null,
-    format: null,
+    name: undefined,
+    format: undefined,
     width: 0,
     widthPercent:  0,
     minWidth: 135,
@@ -46,8 +46,8 @@ export class Column {
   id: number;
   isKey: boolean = false;
   field: string;
-  name: string = null;
-  format: string = null;
+  name: string;
+  format: string;
   validator: any;
   sortable: boolean = true;
   renderOrder: number = 0;
@@ -134,9 +134,6 @@ export class Column {
   }
 
   setConfig(object: any) {
-    /*if (object.id !== undefined) {
-      this.id = object.id;
-    }*/
     if (object.isKey !== undefined) {
       this.isKey = object.isKey;
     }

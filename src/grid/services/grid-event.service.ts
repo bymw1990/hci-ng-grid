@@ -24,12 +24,12 @@ export class GridEventService {
 
   private unselectSubject = new Subject<Point>();
 
-  private currentRange: Range = null;
+  private currentRange: Range;
   private selectedRange = new Subject<Range>();
 
   private lastDx: number = 0;
   private lastDy: number = 0;
-  private lastEvent: number = null;
+  private lastEvent: number;
 
   constructor(private gridService: GridService) {
     if (isDevMode()) {
@@ -51,7 +51,7 @@ export class GridEventService {
 
   setCurrentLocation(location: Point) {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.gridService.id + ": GridEvent.setCurrentLocation: " + (location === null ? "null" : location.toString()));
+      console.debug("hci-grid: " + this.gridService.id + ": GridEvent.setCurrentLocation: " + (location ? location.toString() : "undefined"));
     }
 
     this.selectedLocation = location;
@@ -59,24 +59,24 @@ export class GridEventService {
   }
 
   clearSelectedLocation() {
-    this.setSelectedLocation(new Point(-1, -1), null);
-    this.currentRange = null;
+    this.setSelectedLocation(new Point(-1, -1), undefined);
+    this.currentRange = undefined;
     this.selectedRange.next(this.currentRange);
   }
 
   setMouseDragSelected(location: Point) {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.gridService.id + ": setMouseOnDownSelected: " + ((location !== null) ? location.toString() : "null"));
+      console.debug("hci-grid: " + this.gridService.id + ": setMouseOnDownSelected: " + ((location) ? location.toString() : "undefined"));
     }
 
-    if (location === null) {
+    if (!location) {
       return;
     }
 
-    if (this.currentRange === null) {
-      this.currentRange = new Range(location, location);
-    } else {
+    if (this.currentRange) {
       this.currentRange.update(location);
+    } else {
+      this.currentRange = new Range(location, location);
     }
     this.selectedRange.next(this.currentRange);
   }
@@ -86,13 +86,13 @@ export class GridEventService {
       console.debug("hci-grid: " + this.gridService.id + ": GridEvent.setSelectedLocation");
     }
 
-    if (location === null) {
+    if (!location) {
       return;
     } else if (location.isNegative()) {
       this.setCurrentLocation(location);
     } else if (!this.gridService.isColumnSelectable(location.j)) {
       return;
-    } else if (eventMeta === null) {
+    } else if (!eventMeta) {
       this.setCurrentLocation(location);
     }
   }
@@ -100,10 +100,10 @@ export class GridEventService {
   setSelectedRange(location: Point, eventMeta: EventMeta) {
     this.selectedLocation = location;
 
-    if (this.currentRange == null) {
+    if (!this.currentRange) {
       this.currentRange = new Range(location, location);
       this.selectedRange.next(this.currentRange);
-    } else if (eventMeta == null || eventMeta.isNull()) {
+    } else if (!eventMeta || eventMeta.isNull()) {
       this.currentRange.setInitial(location);
       this.selectedRange.next(this.currentRange);
     } else if (eventMeta.ctrl) {
@@ -121,13 +121,13 @@ export class GridEventService {
    */
   arrowFromLocation(i: number, j: number, keyCode: number) {
     if (keyCode === 37) {
-      this.arrowFrom(new Point(i, j), -1, 0, null);
+      this.arrowFrom(new Point(i, j), -1, 0, undefined);
     } else if (keyCode === 39) {
-      this.arrowFrom(new Point(i, j), 1, 0, null);
+      this.arrowFrom(new Point(i, j), 1, 0, undefined);
     } else if (keyCode === 38) {
-      this.arrowFrom(new Point(i, j), 0, -1, null);
+      this.arrowFrom(new Point(i, j), 0, -1, undefined);
     } else if (keyCode === 40) {
-      this.arrowFrom(new Point(i, j), 0, 1, null);
+      this.arrowFrom(new Point(i, j), 0, 1, undefined);
     }
   }
 
@@ -143,7 +143,7 @@ export class GridEventService {
   arrowFrom(location: Point, dx: number, dy: number, eventMeta: EventMeta) {
     this.lastEvent = ARROW;
 
-    if (location !== null) {
+    if (location) {
       this.selectedLocation = location;
     } else if (this.selectedLocation.isNegative()) {
       this.selectedLocation = new Point(0, 0);
@@ -172,12 +172,13 @@ export class GridEventService {
       this.selectedLocation.i = this.selectedLocation.i + dy;
     }
 
-    if (this.gridService.getRow(this.selectedLocation.i) === null
+    if (!this.gridService.getRow(this.selectedLocation.i)
         || this.selectedLocation.isNegative()
         || !this.gridService.isColumnSelectable(this.selectedLocation.j)) {
       this.selectedLocation = new Point(-1, -1);
     }
 
+    // Notify that a new row has been selected.  This is used for auto saving when the row is dirty.
     if (oldRowNum !== -1 && this.selectedLocation.i !== -1 && oldRowNum !== this.selectedLocation.i) {
       this.gridService.getRowChangedSubject().next(new RowChange(oldRowNum, this.selectedLocation.i));
     }
@@ -192,19 +193,19 @@ export class GridEventService {
   tabFrom(location: Point, eventMeta: EventMeta) {
     this.lastEvent = TAB;
 
-    if (location === null) {
-      this.arrowFrom(this.selectedLocation, 1, 0, eventMeta);
-    } else {
+    if (location) {
       this.arrowFrom(location, 1, 0, eventMeta);
+    } else {
+      this.arrowFrom(this.selectedLocation, 1, 0, eventMeta);
     }
   }
 
   repeatLastEvent() {
-    if (this.lastEvent !== null) {
+    if (this.lastEvent) {
       if (this.lastEvent === TAB) {
-        this.tabFrom(null, null);
+        this.tabFrom(undefined, undefined);
       } else if (this.lastEvent === ARROW) {
-        this.arrowFrom(null, this.lastDx, this.lastDy, null);
+        this.arrowFrom(undefined, this.lastDx, this.lastDy, undefined);
       } else {
         this.selectedLocation = new Point(-1, -1);
         this.selectedLocationSubject.next(this.selectedLocation);
@@ -236,14 +237,14 @@ export class GridEventService {
   }
 
   isLastEventArrow(): boolean {
-    return this.lastEvent !== null && this.lastEvent === ARROW;
+    return this.lastEvent && this.lastEvent === ARROW;
   }
 
   isLastEventClick(): boolean {
-    return this.lastEvent !== null && this.lastEvent === CLICK;
+    return this.lastEvent && this.lastEvent === CLICK;
   }
 
   isLastEventTab(): boolean {
-    return this.lastEvent !== null && this.lastEvent === TAB;
+    return this.lastEvent && this.lastEvent === TAB;
   }
 }
