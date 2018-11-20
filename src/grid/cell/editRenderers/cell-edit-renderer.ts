@@ -15,11 +15,11 @@ export class CellEditRenderer {
 
   column: Column;
   value: any;
-  data: Cell = new Cell({key: null, value: null});
+  data: Cell = new Cell({key: undefined, value: undefined});
   valueValid: boolean = true;
   render: boolean = true;
-  format: string = null;
-  formatType: string = null;
+  format: string;
+  formatType: string;
   activeOnRowHeader: boolean = false;
 
   // Deprecated
@@ -49,6 +49,11 @@ export class CellEditRenderer {
     this.changeDetectorRef = changeDetectorRef;
   }
 
+  /**
+   * To override.  After all data has been set.
+   */
+  init() {}
+
   setColumn(column: Column) {
     this.column = column;
   }
@@ -75,6 +80,12 @@ export class CellEditRenderer {
     this.updateLocation();
   }
 
+  /**
+   * Update the bound data based on the model value or passed in value.  Then notify the service of the value change.
+   *
+   * @param value
+   * @returns {boolean}
+   */
   saveData(value?: any): boolean {
     if (!value) {
       value = this.value;

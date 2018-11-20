@@ -37,7 +37,7 @@ export {ClickViewListener} from "./src/grid/event/click-view.listener";
 export {RangeSelectListener} from "./src/grid/event/range-select.listener";
 export {RowDblClickListener} from "./src/grid/event/row-dbl-click.listener";
 
-export {EventListenerArg} from "./src/grid/config/event-listener-arg.interface";
+export {EventListenerArg} from "./src/grid/event/event-listener-arg.interface";
 
 export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";
 export {DateFormatter} from "./src/grid/column/formatters/date.formatter";

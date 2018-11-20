@@ -29,9 +29,10 @@ export class TextEditRenderer extends CellEditRenderer {
 
   @ViewChild("input") input: ElementRef;
 
-  ngAfterViewInit() {
+  init() {
     this.input.nativeElement.focus();
-    if (this.data !== null && this.data.value !== null) {
+
+    if (this.data && this.data.value) {
       if (this.gridEventService.getLastDx() === -1) {
         this.input.nativeElement.selectionStart = (<string>this.data.value).length;
       } else {

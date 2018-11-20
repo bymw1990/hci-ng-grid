@@ -27,7 +27,7 @@ import {ClickCellEditListener} from "./event/click-cell-edit.listener";
 import {EventListener} from "./event/event-listener";
 import {RangeSelectListener} from "./event/range-select.listener";
 import {ClickRowSelectListener} from "./event/click-row-select.listener";
-import {EventListenerArg} from "./config/event-listener-arg.interface";
+import {EventListenerArg} from "./event/event-listener-arg.interface";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {GridGlobalService} from "./services/grid-global.service";
@@ -1059,6 +1059,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {Event} event
    */
   onFocus(event: Event) {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": onFocus: " + (<HTMLElement>event.target).id);
+    }
+
     event.stopPropagation();
     let id: string = (<HTMLElement>event.target).id;
     if (id === "focuser2") {
@@ -1181,6 +1185,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.gridMessageService.warn("Paste went out of range");
       }
     } else if (event.keyCode === 9) {
+      event.preventDefault();
       event.stopPropagation();
       this.gridEventService.tabFrom(undefined, undefined);
     } else if (event.keyCode === 37) {
@@ -1751,6 +1756,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.componentRef.setPosition(i, j);
       this.componentRef.setData(this.gridData[i].get(j));
       this.componentRef.setLocation(cellElement);
+      this.componentRef.init();
     }
   }
 
