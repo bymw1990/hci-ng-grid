@@ -3,7 +3,7 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector, TemplateRef
 } from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
@@ -93,10 +93,15 @@ const SCROLL: number = 1;
         <div #mainContentPopupContainer></div>
 
         <!-- Busy spinner for loading data. -->
-        <div #busyOverlay class="hci-grid-busy">
-          <div class="hci-grid-busy-div">
-            <span class="fas fa-sync fa-spin fa-5x fa-fw hci-grid-busy-icon"></span>
-          </div>
+        <div #busyOverlay id="hci-grid-busy">
+          <ng-container *ngIf="busyTemplate">
+            <ng-container *ngTemplateOutlet="busyTemplate"></ng-container>
+          </ng-container>
+          <ng-container *ngIf="!busyTemplate">
+            <div class="busy-default mx-auto my-auto">
+              <span class="fas fa-sync fa-spin fa-5x fa-fw busy-default-icon"></span>
+            </div>
+          </ng-container>
         </div>
 
         <!-- Overlay messages for loading content or re-rendering. -->
@@ -327,29 +332,24 @@ const SCROLL: number = 1;
       border: none;
     }
     
-    .hci-grid-busy {
-      z-index: 9999;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.2);
-      position: absolute;
-      height: 0px;
+    #hci-grid-busy {
       display: none;
+      position: absolute;
+      z-index: 9999;
     }
 
-    .hci-grid-busy.show {
+    #hci-grid-busy.show {
       display: flex;
     }
-    
-    .hci-grid-busy-div {
-      display: block;
-      margin-top: auto;
-      margin-bottom: auto;
-      margin-left: auto;
-      margin-right: auto;
+
+    .busy-default {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      position: absolute;
     }
-    
-    .hci-grid-busy-icon {
-      color: rgba(255, 0, 0, 0.5);
+
+    .busy-default-icon {
+      color: #666666;
     }
 
     .row-select > .row-selected-icon {
@@ -429,6 +429,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("pageSizes") inputPageSizes: number[];
   @Input("nVisibleRows") inputNVisibleRows: number = -1;
   @Input() saveOnDirtyRowChange: boolean = false;
+  @Input() busyTemplate: TemplateRef<any>;
   @Input() eventListeners: EventListenerArg[] = [
     { type: RangeSelectListener },
     { type: ClickRowSelectListener },
@@ -524,10 +525,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getConfigSubject().subscribe((config: any) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": getConfigSubect().subscribe: " + JSON.stringify(config));
+        console.debug("hci-grid: " + this.id + ": getConfigSubect().subscribe");
       }
 
       this.config = config;
+
+      this.updateConfig();
 
       this.gridService.pageInfo = this.gridService.pageInfo;
       this.gridService.initData();
@@ -795,6 +798,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  public getBusySubject(): Subject<boolean> {
+    return this.busySubject;
+  }
+
   public addClickListener(clickListener: EventListener) {
     this.clickListeners.push(clickListener);
   }
@@ -843,6 +850,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   getGridEventService(): GridEventService {
     return this.gridEventService;
+  }
+
+  public updateConfig() {
+    if (this.config.busyTemplate) {
+      this.busyTemplate = this.config.busyTemplate;
+    }
   }
 
   /**
@@ -1380,7 +1393,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       insideGridWidth = gridWidth - 17;
     }
 
-    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "width", gridWidth + "px");
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "width", gridWidth + "px");
 
     let fixedWidth: number = 0;
     let fixedMinWidth: number = 0;
@@ -1774,14 +1787,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       } else {
         let height: number = Math.max(100, this.gridService.getNVisibleRows() * this.rowHeight);
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".hci-grid-busy"), "height", (headerHeight + height) + "px");
+        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       }
     }

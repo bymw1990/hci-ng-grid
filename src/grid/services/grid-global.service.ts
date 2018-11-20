@@ -33,6 +33,10 @@ export class GridGlobalService {
     return this.globalConfig;
   }
 
+  pushGlobalConfig(key: string, value: any) {
+    this.globalConfig[key] = value;
+  }
+
   register(gridService: GridService) {
     if (!gridService.id) {
       gridService.id = "hci-grid-" + this.tempId++;

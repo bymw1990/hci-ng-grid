@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {Subject} from "rxjs/Rx";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
+import {GridGlobalService} from "./grid-global.service";
 import {Cell} from "../cell/cell";
 import {Row} from "../row/row";
 import {Column} from "../column/column";
@@ -13,7 +14,6 @@ import {PageInfo} from "../utils/page-info";
 import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
-import {GridGlobalService} from "./grid-global.service";
 import {RowChange} from "../utils/row-change";
 
 /**
@@ -32,7 +32,8 @@ export class GridService {
     externalSorting: false,
     externalPaging: false,
     pageSizes: [10, 25, 50],
-    nVisibleRows: -1
+    nVisibleRows: -1,
+    busyTemplate: undefined
   };
 
   config: any = {};
@@ -107,7 +108,7 @@ export class GridService {
    */
   updateConfig(config: any, forceColumnsChanged?: boolean) {
     if (isDevMode()) {
-      console.debug("updateConfig: " + JSON.stringify(config));
+      console.debug("hci-grid: " + this.id + ": GridService.updateConfig");
     }
     if (!this.configured) {
       this.config = Object.assign({}, GridService.defaultConfig, this.gridGlobalService.getGlobalConfig(), config);
@@ -241,11 +242,11 @@ export class GridService {
       }
     }
     if (isDevMode()) {
-      console.debug("updateSortOrder: " + field + ", " + position + ", " + n);
+      console.debug("hci-grid: " + this.id + ": GridService.updateSortOrder: " + field + ", " + position + ", " + n);
     }
 
     if (n === -1) {
-      console.warn("updateSortOrder: Column not found.");
+      console.warn("hci-grid: " + this.id + ": GridService.updateSortOrder: Column not found.");
     } else if (position === -2) {
       this.columnDefinitions[n].sortOrder = 0;
       for (let i = n - 1; i >= 0; i--) {
@@ -273,7 +274,7 @@ export class GridService {
    */
   initColumnDefinitions() {
     if (isDevMode()) {
-      console.debug("GridService.initColumnDefinitions()");
+      console.debug("hci-grid: " + this.id + ": GridService.initColumnDefinitions()");
     }
 
     let columnMap: Map<string, Column[]> = this.createColumnMap();
@@ -317,7 +318,7 @@ export class GridService {
    */
   initColumnProperties(columnMap: Map<string, Column[]>) {
     if (isDevMode()) {
-      console.debug("initColumnProperties");
+      console.debug("hci-grid: " + this.id + ": GridService.initColumnProperties");
     }
 
     this.columnDefinitions.sort((a: Column, b: Column) => {

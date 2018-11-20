@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import {Component} from "@angular/core";
+import {Component, TemplateRef, ViewChild} from "@angular/core";
+
+import {GridGlobalService} from "hci-ng-grid";
 
 declare const VERSION: string;
 
@@ -49,7 +51,15 @@ declare const VERSION: string;
     <div class="d-flex flex-column">
       <router-outlet></router-outlet>
     </div>
-    `,
+      
+    <ng-template #busyTemplate>
+      <div style="background-color: rgba(0, 0, 0, 0.1); display: flex; flex-grow: 1;">
+        <div class="mx-auto my-auto">
+          <i class="fas fa-spinner fa-5x fa-spin" style="color: #666666;"></i>
+        </div>
+      </div>
+    </ng-template>
+  `,
   styles: [ `
     a {
       color: black;
@@ -60,4 +70,12 @@ export class DemoComponent {
 
   version: string = VERSION;
 
+  @ViewChild("busyTemplate", { read: TemplateRef })
+  private busyTemplate: any;
+
+  constructor(private gridGlobalService: GridGlobalService) {}
+
+  ngAfterViewInit() {
+    this.gridGlobalService.pushGlobalConfig("busyTemplate", this.busyTemplate);
+  }
 }
