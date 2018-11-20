@@ -38,14 +38,14 @@ div .card-text {
   margin-bottom: 1rem;
 }
 
-#gridContainer.big {
+#grid-container.big {
   font-family: Arial;
   font-size: 20px;
   font-style: italic;
   font-weight: 100;
 }
 
-#gridContainer.big .hci-grid-row.even {
+#grid-container.big .hci-grid-row.even {
   color: gray;
 }
 

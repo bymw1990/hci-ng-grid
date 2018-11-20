@@ -216,11 +216,11 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `,
   styles: [`
 
-    #gridContainer.report.override #titleBar {
+    #grid-container.report.override #title-bar {
       border-bottom: red 2px solid !important;
     }
 
-    #gridContainer.report.override #headerContent {
+    #grid-container.report.override #header-content {
       border-bottom: blue 1px solid !important;;
     }
 
