@@ -176,10 +176,10 @@ export class DataGeneratorService {
     console.info("getExternalData1");
     console.info(externalInfo);
 
-    if (externalInfo === null) {
+    if (!externalInfo) {
       return Observable.create(observer => { observer.next(new ExternalData(this.externalData1, externalInfo)); });
     }
-    if (externalInfo.getPage() === null) {
+    if (!externalInfo.getPage()) {
       externalInfo.setPage(new PageInfo());
     }
     let filters: any = externalInfo.getFilter();
@@ -187,7 +187,7 @@ export class DataGeneratorService {
     let pageInfo: PageInfo = externalInfo.getPage();
 
     let filtered: Array<Object> = new Array<Object>();
-    if (filters === null) {
+    if (!filters) {
       filtered = this.externalData1;
     } else {
       for (var i = 0; i < this.externalData1.length; i++) {
@@ -229,7 +229,7 @@ export class DataGeneratorService {
       }
     }
 
-    if (sort !== null) {
+    if (sort) {
       filtered = filtered.sort((a: Object, b: Object) => {
         if (sort["asc"]) {
           if (a[sort["field"]] < b[sort["field"]]) {
@@ -251,7 +251,7 @@ export class DataGeneratorService {
       });
     }
 
-    if (pageInfo === null) {
+    if (!pageInfo) {
       return Observable.create(observer => { observer.next(new ExternalData(filtered, externalInfo)); });
     }
 
@@ -315,17 +315,17 @@ export class DataGeneratorService {
    * @returns {ExternalData}
    */
   getExternalData2(externalInfo: ExternalInfo): Observable<ExternalData> {
-    if (externalInfo === null) {
+    if (!externalInfo) {
       return new Observable<ExternalData>(observer => observer.next(new ExternalData(this.externalData2, externalInfo)));
     }
-    if (externalInfo.getPage() === null) {
+    if (!externalInfo.getPage()) {
       externalInfo.setPage(new PageInfo());
     }
     let filters: any = externalInfo["filter"];
     let sort: any = externalInfo["sort"];
 
     let filtered: Object[] = [];
-    if (filters === undefined || filters === null) {
+    if (!filters) {
       filtered = this.externalData2;
     } else {
       for (var i = 0; i < this.externalData2.length; i++) {
@@ -341,7 +341,7 @@ export class DataGeneratorService {
       }
     }
 
-    if (sort !== undefined && sort !== null) {
+    if (sort) {
       filtered = filtered.sort((a: Object, b: Object) => {
         if (sort["asc"]) {
           if (a[sort["field"]] < b[sort["field"]]) {

@@ -1,8 +1,8 @@
 export class FilterInfo {
-  public field: string = null;
+  public field: string;
   public dataType: string = "string";
-  public value: any = null;
-  public highValue: any = null;
+  public value: any;
+  public highValue: any;
   public operator: string = "LIKE";
   public valid: boolean = false;
 
