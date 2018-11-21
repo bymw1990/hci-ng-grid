@@ -176,7 +176,6 @@ const SCROLL: number = 1;
             </div>
           </div>
         </div>
-        
       </div>
 
       <input #focuser2 id="focuser2" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
@@ -192,16 +191,17 @@ const SCROLL: number = 1;
             Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
           <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
-            <span (click)="doPageFirst();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
-            <span (click)="doPagePrevious();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
+            <span (click)="doPageFirst()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
+            <span (click)="doPagePrevious()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
             <select id="pageSelect"
                     [ngModel]="pageInfo.pageSize"
                     (ngModelChange)="doPageSize($event)"
+                    [disabled]="busy"
                     style="padding-left: 15px; padding-right: 15px;">
               <option *ngFor="let o of config.pageSizes" [ngValue]="o">{{o}}</option>
             </select>
-            <span (click)="doPageNext();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-forward"></span></span>
-            <span (click)="doPageLast();" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-forward"></span></span>
+            <span (click)="doPageNext()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-forward"></span></span>
+            <span (click)="doPageLast()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-forward"></span></span>
           </div>
         </div>
       </div>
@@ -810,11 +810,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   public doPageFirst() {
-    this.gridService.setPage(-2);
+    if (!this.busy) {
+      this.gridService.setPage(-2);
+    }
   }
 
   public doPagePrevious() {
-    this.gridService.setPage(-1);
+    if (!this.busy) {
+      this.gridService.setPage(-1);
+    }
   }
 
   public doPageSize(value: number) {
@@ -822,11 +826,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   public doPageNext() {
-    this.gridService.setPage(1);
+    if (!this.busy) {
+      this.gridService.setPage(1);
+    }
   }
 
   public doPageLast() {
-    this.gridService.setPage(2);
+    if (!this.busy) {
+      this.gridService.setPage(2);
+    }
   }
 
   public clearSelectedRows() {

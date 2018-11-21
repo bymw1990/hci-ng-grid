@@ -1,6 +1,9 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 
-import {Column, CompareFilterRenderer, ExternalData, ExternalInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {
+  Column, CompareFilterRenderer, ExternalData, ExternalInfo, GridComponent, SelectFilterRenderer,
+  TextFilterRenderer
+} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -54,11 +57,19 @@ import {DataGeneratorService} from "../services/data-generator.service";
 
     <div class="card">
       <div class="card-header">
-        <h4>Custom Busy Template</h4>
+        <h4>Custom Busy Template and Manual Trigger</h4>
       </div>
       <div class="card-body">
         <div class="card-text">
           The busy template can be replaced with your own template.  In the most simple case, the icon can be changed.
+        </div>
+        <div class="card-text">
+          When an external data call is provided, the grid handles busy itself.  However, it is possible for you to handle
+          your own update of the bound data.  When the bound data changes, the grid will instantly update but it has no
+          idea about when the request was made.  So the grid allows you to get the busySubject and set it to true when
+          you are requesting data, and then set it to false when the response comes back.
+          <button (click)="setBusy(true)" class="mr-3">Set Busy</button>
+          <button (click)="setBusy(false)" class="mr-3">Remove Busy</button>
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
@@ -85,7 +96,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </ng-template>
         </div>
         <p>
-          <hci-grid [columnDefinitions]="columns"
+          <hci-grid #grid2
+                    [columnDefinitions]="columns"
                     [busyTemplate]="busyTemplate"
                     [dataCall]="onExternalDataCall1"
                     [externalFiltering]="true"
@@ -108,6 +120,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class BusyDemoComponent implements OnInit {
 
+  @ViewChild("grid2") grid2: GridComponent;
+
   dataSize: number = 250;
 
   public onExternalDataCall1: Function;
@@ -128,6 +142,10 @@ export class BusyDemoComponent implements OnInit {
     this.dataGeneratorService.generateExternalData1(this.dataSize);
 
     this.onExternalDataCall1 = this.handleExternalDataCall1.bind(this);
+  }
+
+  setBusy(busy: boolean): void {
+    this.grid2.getBusySubject().next(busy);
   }
 
   public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
