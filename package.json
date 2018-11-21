@@ -1,6 +1,6 @@
 {
   "name": "hci-ng-grid",
-  "version": "2.0.0-beta.22",
+  "version": "2.0.0-beta.23",
   "description": "Comprehensive angular grid component",
   "repository": "https://ri-source.hci.utah.edu/hcidevs/hci-ng-grid.git",
   "scripts": {
@@ -12,7 +12,7 @@
     "karma": "karma",
     "ngc": "ngc",
     "npmPack": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm pack",
-    "npmPub": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm publish",
+    "npmPublish": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm publish",
     "push": "cd dist && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json|css)\" ../demo/node_modules/hci-ng-grid && cd ..",
     "rimraf": "rimraf"
   },

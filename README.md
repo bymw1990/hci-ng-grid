@@ -5,6 +5,11 @@
     be expected to support.  By default, the grid is simple and basic, but becomes full featured through
     configuration.
 
+## Publishing
+
+    Compiled code gets moved to the dist folder with a copy of the package.json.  Custom commands are required for
+    packaging and publishing.  Use npmPack and npmPublish instead of the usual pack and publish.
+
 ## Basic Features
 
 * **Sorting:** Change sorting by clicking on column header.
@@ -15,6 +20,8 @@
 * **Custom Events:** Listeners can be added to work for specific events and custom actions can be taken.
 
 ## Usage
+
+**Note,** there are so many features to this grid that not all are currently listed here.  See the demo for full examples.
 
 The basic syntax for data provided by the implementing component.
 
