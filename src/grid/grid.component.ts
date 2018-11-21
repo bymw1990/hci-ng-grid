@@ -98,8 +98,11 @@ const SCROLL: number = 1;
             <ng-container *ngTemplateOutlet="busyTemplate"></ng-container>
           </ng-container>
           <ng-container *ngIf="!busyTemplate">
-            <div class="busy-default mx-auto my-auto">
-              <span class="fas fa-sync fa-spin fa-5x fa-fw busy-default-icon"></span>
+
+            <div class="busy-default">
+              <div class="mx-auto my-auto">
+                <span class="fas fa-sync fa-spin fa-5x fa-fw busy-default-icon"></span>
+              </div>
             </div>
           </ng-container>
         </div>
@@ -343,9 +346,9 @@ const SCROLL: number = 1;
     }
 
     .busy-default {
-      width: 100%;
       background-color: rgba(0, 0, 0, 0.1);
-      position: absolute;
+      display: flex;
+      flex-grow: 1;
     }
 
     .busy-default-icon {

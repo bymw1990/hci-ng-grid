@@ -3,7 +3,7 @@ import {Component} from "@angular/core";
 @Component({
   selector: "demo-home",
   template: `
-    <div class="card-group">
+    <div class="card-group m-3 justify-content-between">
       <div class="card full">
         <div class="card-header">
           Demo Home
@@ -39,12 +39,10 @@ import {Component} from "@angular/core";
     
     .card.full {
       flex: 0 1 100%;
-      margin-right: 1rem;
     }
   
     .card.one-third {
       flex: 0 0 32%;
-      margin-right: 1rem;
     }
     
     .card-header {
@@ -62,6 +60,7 @@ export class HomeComponent {
 
   demos = [
     //{header: "Alerts", route: "alerts", body: "Alerts"},
+    {header: "Busy", route: "busy", body: "Shows the default and custom overlay shown when data is being fetched."},
     {header: "Cell Popup", route: "popup", body: "When text in cells is large, show the entire text in a popup.  Also, custom popups for complex objects."},
     {header: "Copy and Paste", route: "copypaste", body: "Copy and paste from within the grid and to and from excel."},
     {header: "Dynamic Config", route: "dynamic-config", body: "User has the power to custom configure the grid."},
@@ -77,6 +76,7 @@ export class HomeComponent {
     {header: "Resize", route: "resize", body: "Show grid behavior when grid is resized by the window or programmatically."},
     {header: "Row Grouping", route: "row-group", body: "Group data by one or more specified columns."},
     {header: "Row Select", route: "row-select", body: "Options to select rows by double clicking or selecting multiple rows."},
+    {header: "Saving Data", route: "saving", body: "Shows available events emitted when cells and row data are updated."},
     {header: "Simple", route: "simple", body: "The most basic grids with default configuration."},
     {header: "Theming", route: "theming", body: "Show different theme options and custom themes."}
   ];

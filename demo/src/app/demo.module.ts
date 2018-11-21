@@ -40,6 +40,7 @@ import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
 import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
 import {DemoInterceptor} from "./services/demo.interceptor";
 import {SavingDemoComponent} from "./saving/saving.component";
+import {BusyDemoComponent} from "./busy/busy.component";
 
 @NgModule({
   imports: [
@@ -50,19 +51,20 @@ import {SavingDemoComponent} from "./saving/saving.component";
     RouterModule.forRoot([
       { path: "", redirectTo: "/home", pathMatch: "full" },
       { path: "alerts", component: AlertsGridComponent },
-      { path: "popup", component: PopupComponent },
+      { path: "busy", component: BusyDemoComponent },
       { path: "copypaste", component: CopyPasteGridComponent },
       { path: "dynamic-config", component: DynamicConfigGridComponent },
+      { path: "edit", component: EditGridComponent },
       { path: "empty", component: EmptyGridComponent },
       { path: "event", component: EventComponent },
       { path: "external-ctrl", component: ExternalControlComponent },
       { path: "external-data", component: ExternalDataComponent },
-      { path: "edit", component: EditGridComponent },
       { path: "filter", component: FilterGridComponent },
       { path: "fixed", component: FixedGridComponent },
       { path: "home", component: HomeComponent },
       { path: "linked", component: LinkedDemoComponent },
       { path: "paging", component: PagingGridComponent },
+      { path: "popup", component: PopupComponent },
       { path: "resize", component: ResizeDemoComponent },
       { path: "row-group", component: RowGroupGridComponent },
       { path: "row-select", component: SelectGridComponent },
@@ -75,6 +77,7 @@ import {SavingDemoComponent} from "./saving/saving.component";
   ],
   declarations: [
     AlertsGridComponent,
+    BusyDemoComponent,
     CopyPasteGridComponent,
     DemoComponent,
     DictionaryFilterRenderer,

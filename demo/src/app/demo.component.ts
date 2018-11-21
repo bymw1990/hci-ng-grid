@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import {Component, TemplateRef, ViewChild} from "@angular/core";
-
-import {GridGlobalService} from "hci-ng-grid";
+import {Component} from "@angular/core";
 
 declare const VERSION: string;
 
@@ -26,6 +24,7 @@ declare const VERSION: string;
           <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
+            <a class="dropdown-item" routerLink="/busy">Busy</a>
             <a class="dropdown-item" routerLink="/popup">Cell Popup</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
@@ -51,14 +50,6 @@ declare const VERSION: string;
     <div class="d-flex flex-column">
       <router-outlet></router-outlet>
     </div>
-      
-    <ng-template #busyTemplate>
-      <div style="background-color: rgba(0, 0, 0, 0.1); display: flex; flex-grow: 1;">
-        <div class="mx-auto my-auto">
-          <i class="fas fa-spinner fa-5x fa-spin" style="color: #666666;"></i>
-        </div>
-      </div>
-    </ng-template>
   `,
   styles: [ `
     a {
@@ -70,12 +61,4 @@ export class DemoComponent {
 
   version: string = VERSION;
 
-  @ViewChild("busyTemplate", { read: TemplateRef })
-  private busyTemplate: any;
-
-  constructor(private gridGlobalService: GridGlobalService) {}
-
-  ngAfterViewInit() {
-    this.gridGlobalService.pushGlobalConfig("busyTemplate", this.busyTemplate);
-  }
 }
