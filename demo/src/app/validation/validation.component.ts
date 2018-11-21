@@ -8,36 +8,32 @@ import {Column} from "hci-ng-grid";
     <div class="card-group flex-column">
       <div class="card m-3">
         <div class="card-header">
-          <h4>Edit Grid</h4>
+          <h4>Validation</h4>
         </div>
         <div class="card-body">
           <div class="card-text">
-            Click on a cell<br />
-            &lt;tab&gt; through cells<br />
-            click on cells<br />
-            up/down/left/right on selected cell<br />
-            modify input cell values and check bound data changes<br />
+            Open the config to see the validation options on different columns.  Then edit a few columns.  Invalid changes
+            are not saved.
           </div>
           <div class="card-text">
             <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
             <ng-template #config1>
               <pre>
                 &lt;hci-grid
-                  [title]="'Spreadsheet Grid'"
-                  [data]="editData"
-                  [columnDefinitions]="editColumns"
-                  [cellSelect]="true"
-                  [pageSize]="25"
+                  [title]="'Validation Grid'"
+                  [data]="data"
+                  [columnDefinitions]="columns"
+                  [pageSize]="10"
                   [nVisibleRows]="10"&gt;
                 &lt;/hci-grid&gt;
                 
                 Columns:
                 field: "idPatient", name: "ID", visible: true
-                field: "lastName", name: "Last Name"
-                field: "firstName", name: "First Name"
+                field: "lastName", name: "Last Name", editConfig: required: true
+                field: "firstName", name: "First Name", editConfig: maxlength: 35
                 field: "dob", name: "Date of Birth", dataType: "date"
-                field: "nLabs", name: "# Labs"
-                field: "nLabPath", name: "# Lab Path"
+                field: "nLabs", name: "# Labs", editConfig: pattern: /^[0-9]1$/
+                field: "nLabPath", name: "# Lab Path", editConfig: pattern: /^[0-9]1,2$/
               </pre>
             </ng-template>
             <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
@@ -61,7 +57,7 @@ import {Column} from "hci-ng-grid";
             </ng-template>
           </div>
           <div>
-            <hci-grid [title]="'Spreadsheet Grid'"
+            <hci-grid [title]="'Validation Grid'"
                       [data]="data"
                       [columnDefinitions]="columns"
                       [pageSize]="10"
@@ -78,28 +74,28 @@ export class ValidationComponent {
   data: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-11-21T00:00-07:00", "nLabs": 1, "nLabPath": 12 },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1960-12-11T00:00-07:00", "nLabs": 2, "nLabPath": 23 },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1940-01-03T00:00-07:00", "nLabs": 3, "nLabPath": 34 },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1950-06-06T00:00-07:00", "nLabs": 99, "nLabPath": 9 },
+    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1940-01-03T00:00-07:00", "nLabs": 3, "nLabPath": 4 },
+    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1950-06-06T00:00-07:00", "nLabs": 1, "nLabPath": 93 },
     { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "nLabs": 4, "nLabPath": 45 },
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1930-01-17T00:00-07:00", "nLabs": 5, "nLabPath": 56 },
     { "idPatient": 7, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "nLabs": 4, "nLabPath": 45 },
     { "idPatient": 8, "firstName": "Jenny", "lastName": "White", "dob": "1940-05-29T00:00-07:00", "nLabs": 9, "nLabPath": 13 },
-    { "idPatient": 9, "firstName": "Sam", "lastName": "Black", "dob": "1930-02-22T00:00-07:00", "nLabs": 2, "nLabPath": 65 },
-    { "idPatient": 10, "firstName": "Tim", "lastName": "Lewis", "dob": "1920-06-08T00:00-07:00", "nLabs": 9, "nLabPath": 111 },
+    { "idPatient": 9, "firstName": "Sam", "lastName": "Black", "dob": "1930-02-22T00:00-07:00", "nLabs": 2, "nLabPath": 5 },
+    { "idPatient": 10, "firstName": "Tim", "lastName": "Lewis", "dob": "1920-06-08T00:00-07:00", "nLabs": 9, "nLabPath": 11 },
     { "idPatient": 11, "firstName": "Ben", "lastName": "Brown", "dob": "1977-08-12T00:00-07:00", "nLabs": 3, "nLabPath": 87 },
     { "idPatient": 12, "firstName": "Leslie", "lastName": "Pink", "dob": "1980-11-03T00:00-07:00", "nLabs": 4, "nLabPath": 13 },
-    { "idPatient": 13, "firstName": "Jimmy", "lastName": "Smith", "dob": "1933-04-05T00:00-07:00", "nLabs": 7, "nLabPath": 32 },
+    { "idPatient": 13, "firstName": "Jimmy", "lastName": "Smith", "dob": "1933-04-05T00:00-07:00", "nLabs": 7, "nLabPath": 2 },
     { "idPatient": 14, "firstName": "Bob", "lastName": "White", "dob": "1944-05-13T00:00-07:00", "nLabs": 8, "nLabPath": 27 },
     { "idPatient": 15, "firstName": "Jane", "lastName": "Black", "dob": "1955-06-23T00:00-07:00", "nLabs": 6, "nLabPath": 73 }
   ];
 
   columns: Column[] = [
     new Column({ field: "idPatient", name: "ID", visible: true }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
+    new Column({ field: "lastName", name: "Last Name", editConfig: {required: true} }),
+    new Column({ field: "firstName", name: "First Name", editConfig: {maxlength: 35} }),
     new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "nLabs", name: "# Labs", editConfig: {pattern: /^[0-9]{3}$/} }),
-    new Column({ field: "nLabPath", name: "# Lab Path" })
+    new Column({ field: "nLabs", name: "# Labs", editConfig: {pattern: /^[0-9]{1}$/} }),
+    new Column({ field: "nLabPath", name: "# Lab Path", editConfig: {pattern: /^[0-9]{1,2}$/} })
   ];
 
 }
