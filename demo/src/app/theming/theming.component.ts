@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {Column, CellNumberRangeView, ClickView, ClickViewListener, EventListenerArg} from "hci-ng-grid/index";
+import {Column, CellNumberRangeView, ClickView, ClickViewListener, EventListenerArg} from "hci-ng-grid";
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({

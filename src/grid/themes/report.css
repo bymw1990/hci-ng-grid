@@ -60,3 +60,7 @@
 #grid-container.report .hci-grid-cell.selected {
   background-color: rgba(255, 255, 200, 0.4);
 }
+
+#grid-container.report .ng-invalid {
+  color: red;
+}

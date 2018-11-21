@@ -17,6 +17,11 @@ demo {
   flex-shrink: 0;
 }
 
+.navbar .btn-outline-primary.white {
+  color: white;
+  border-color: white;
+}
+
 .outlet {
   display: flex;
   flex-direction: column;

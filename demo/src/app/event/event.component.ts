@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {ClickView, ClickViewListener, Column, EventListenerArg} from "hci-ng-grid/index";
+import {ClickView, ClickViewListener, Column, EventListenerArg} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 

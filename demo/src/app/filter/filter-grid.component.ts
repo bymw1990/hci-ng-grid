@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid/index";
+import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {DictionaryFilterRenderer} from "./dictionary-filter.component";

@@ -1,6 +1,6 @@
 import {Component, ViewChild} from "@angular/core";
 
-import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid/index";
+import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid";
 import {ClickRowSelectListener} from "hci-ng-grid";
 
 @Component({

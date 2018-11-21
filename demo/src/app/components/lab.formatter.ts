@@ -1,4 +1,4 @@
-import {FormatterParser} from "hci-ng-grid/index";
+import {FormatterParser} from "hci-ng-grid";
 
 export class LabFP extends FormatterParser {
 

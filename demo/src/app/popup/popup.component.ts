@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {ClickCellEditListener, CellHoverPopupListener, BigTextPopup, Column} from "hci-ng-grid/index";
+import {ClickCellEditListener, CellHoverPopupListener, BigTextPopup, Column} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {CompareFilterRenderer} from "hci-ng-grid";

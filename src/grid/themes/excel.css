@@ -63,3 +63,7 @@
 #grid-container.excel .hci-grid-row.selected {
   background-color: #ffffaa;
 }
+
+#grid-container.excel .ng-invalid {
+  color: red;
+}

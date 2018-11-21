@@ -3,7 +3,7 @@ import {Component} from "@angular/core";
 @Component({
   selector: "demo-home",
   template: `
-    <div class="card-group m-3 justify-content-between">
+    <div class="card-group justify-content-between">
       <div class="card full">
         <div class="card-header">
           Demo Home
@@ -59,12 +59,12 @@ import {Component} from "@angular/core";
 export class HomeComponent {
 
   demos = [
-    //{header: "Alerts", route: "alerts", body: "Alerts"},
+    {header: "Alerts", route: "alerts", body: "Listen for warnings from the grid and manually deal with them."},
     {header: "Busy", route: "busy", body: "Shows the default and custom overlay shown when data is being fetched."},
     {header: "Cell Popup", route: "popup", body: "When text in cells is large, show the entire text in a popup.  Also, custom popups for complex objects."},
     {header: "Copy and Paste", route: "copypaste", body: "Copy and paste from within the grid and to and from excel."},
     {header: "Dynamic Config", route: "dynamic-config", body: "User has the power to custom configure the grid."},
-    //{header: "Empty", route: "empty", body: "What a grid looks like when bound to an empty array."},
+    {header: "Empty", route: "empty", body: "What a grid looks like when bound to an empty array."},
     {header: "Event", route: "event", body: "Use event listeners to handle row selects and output information."},
     {header: "Excel Like Editing", route: "edit", body: "Inline editing with arrow keys, and tabbing."},
     {header: "External Control", route: "external-ctrl", body: "Control the grid through some external buttons."},

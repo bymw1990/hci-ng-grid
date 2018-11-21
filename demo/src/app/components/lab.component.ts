@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {CellPopupRenderer} from "hci-ng-grid/index";
+import {CellPopupRenderer} from "hci-ng-grid";
 
 @Component({
   selector: "hci-lab-popup",

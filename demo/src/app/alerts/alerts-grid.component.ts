@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {Column} from "hci-ng-grid/index";
+import {Column} from "hci-ng-grid";
 
 @Component({
   selector: "alerts-grid",
@@ -14,7 +14,7 @@ import {Column} from "hci-ng-grid/index";
           Try copying a 2x2 range of cells with ctrl-c.  Then select the bottom row, first column.  Hit escape to stop edit mode.
           Then ctrl-v to paste.  In the console, see the warning that was captured.
           used.<br />
-          Here we use a basic toast with a four second hide delay to post errors and warnings.
+          Open the console to see the warning.
         </p>
         <p>
           <hci-grid [data]="data1"

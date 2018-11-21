@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from "@angular/core";
 
 import {Observable} from "rxjs/Observable";
 
-import {Column, GridComponent} from "hci-ng-grid/index";
+import {Column, GridComponent} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 

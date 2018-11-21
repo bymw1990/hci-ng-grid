@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid";
 
 @Component({
   selector: "copy-paste-grid",

@@ -12,7 +12,6 @@ import {CellEditRenderer} from "./cell-edit-renderer";
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
            (keydown)="onKeyDown($event)"
-           [style.color]="invalid ? 'red' : 'inherit'"
            class="hci-grid-text-edit" />
   `,
   styles: [ `

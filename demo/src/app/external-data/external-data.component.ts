@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { DataGeneratorService } from "../services/data-generator.service";
-import { Column, ExternalData, ExternalInfo } from "hci-ng-grid/index";
+import { Column, ExternalData, ExternalInfo } from "hci-ng-grid";
 import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 @Component({

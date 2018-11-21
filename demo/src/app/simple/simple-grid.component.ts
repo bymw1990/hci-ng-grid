@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Column } from "hci-ng-grid/index";
+import { Column } from "hci-ng-grid";
 
 import { DataGeneratorService } from "../services/data-generator.service";
 

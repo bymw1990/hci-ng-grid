@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Rx";
 
-import {ExternalData, ExternalInfo, FilterInfo} from "hci-ng-grid/index";
-import {PageInfo} from "hci-ng-grid/index";
+import {ExternalData, ExternalInfo, FilterInfo} from "hci-ng-grid";
+import {PageInfo} from "hci-ng-grid";
 
 const momentRandom = require("moment-random");
 

@@ -10,7 +10,7 @@ import {RouterModule} from "@angular/router";
 
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
-import {GridModule} from "hci-ng-grid/index";
+import {GridModule} from "hci-ng-grid";
 
 import {DemoComponent} from "./demo.component";
 import {DataGeneratorService} from "./services/data-generator.service";

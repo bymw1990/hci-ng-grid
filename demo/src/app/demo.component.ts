@@ -20,7 +20,7 @@ declare const VERSION: string;
         <a class="navbar-brand d-flex align-items-center" routerLink="/">hci-ng-grid Demo</a>
         <span class="d-flex" style="color: gray; margin-left: 0; margin-right: auto; align-items: center;">v{{version}}</span>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
-          <button class="btn btn-outline-primary" id="routeList" ngbDropdownToggle>Select A Demo</button>
+          <button class="btn btn-outline-primary white" id="routeList" ngbDropdownToggle>Select A Demo</button>
           <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
@@ -48,7 +48,7 @@ declare const VERSION: string;
         </div>
       </div>
     </div>
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column m-3">
       <router-outlet></router-outlet>
     </div>
   `,
