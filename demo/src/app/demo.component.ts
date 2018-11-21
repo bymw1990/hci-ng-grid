@@ -43,6 +43,7 @@ declare const VERSION: string;
             <a class="dropdown-item" routerLink="/saving">Saving Data</a>
             <a class="dropdown-item" routerLink="/simple">Simple</a>
             <a class="dropdown-item" routerLink="/theming">Themes</a>
+            <a class="dropdown-item" routerLink="/validation">Validation</a>
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ import {Column} from "../../column/column";
  */
 export class CellEditRenderer {
 
+  config: any;
   column: Column;
   value: any;
   data: Cell = new Cell({key: undefined, value: undefined});
@@ -54,8 +55,13 @@ export class CellEditRenderer {
    */
   init() {}
 
+  setConfig(config: any) {
+    this.config = config;
+  }
+
   setColumn(column: Column) {
     this.column = column;
+    this.setConfig(column.editConfig);
   }
 
   setLocation(hostElement: HTMLElement) {
@@ -118,9 +124,9 @@ export class CellEditRenderer {
    * Update the bound value.
    * TODO: Handle validation;
    *
-   * @param {Object} value
+   * @param {any} value
    */
-  onModelChange(value: Object) {
+  onModelChange(value: any) {
     this.value = value;
   }
 

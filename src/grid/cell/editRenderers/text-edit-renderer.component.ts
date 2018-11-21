@@ -7,11 +7,12 @@ import {CellEditRenderer} from "./cell-edit-renderer";
   selector: "hci-grid-text-edit",
   template: `
     <input #input
-           [ngModel]="value"
            autofocus
+           [ngModel]="value"
            (ngModelChange)="onModelChange($event)"
            (click)="onClick($event)"
            (keydown)="onKeyDown($event)"
+           [style.color]="invalid ? 'red' : 'inherit'"
            class="hci-grid-text-edit" />
   `,
   styles: [ `
@@ -29,6 +30,13 @@ export class TextEditRenderer extends CellEditRenderer {
 
   @ViewChild("input") input: ElementRef;
 
+  invalid: boolean = false;
+  type: string;
+  required: boolean;
+  minlength: number;
+  maxlength: number;
+  pattern: RegExp;
+
   init() {
     this.input.nativeElement.focus();
 
@@ -38,6 +46,54 @@ export class TextEditRenderer extends CellEditRenderer {
       } else {
         this.input.nativeElement.selectionStart = 0;
       }
+    }
+  }
+
+  setConfig(config: any) {
+    super.setConfig(config);
+
+    if (config.type) {
+      this.type = config.type;
+    }
+    if (config.required !== undefined) {
+      this.required = config.required;
+    }
+    if (config.minlength) {
+      this.minlength = config.minlength;
+    }
+    if (config.maxlength) {
+      this.maxlength = config.maxlength;
+    }
+    if (config.pattern) {
+      this.pattern = config.pattern;
+    }
+  }
+
+  onModelChange(value: any) {
+    this.renderer.removeClass(this.input.nativeElement, "ng-valid");
+    this.renderer.removeClass(this.input.nativeElement, "ng-invalid");
+
+    if (this.required !== undefined && this.required && !value) {
+      this.invalid = true;
+    } else if (this.minlength && !value) {
+      this.invalid = true;
+    } else if (this.minlength && value.length < this.minlength) {
+      this.invalid = true;
+    } else if (this.maxlength && value && value.length > this.maxlength) {
+      this.invalid = true;
+    } else if (this.pattern && !value) {
+      this.invalid = true;
+    } else if (this.pattern && value && value.match(this.pattern) === null) {
+      this.invalid = true;
+    } else {
+      this.invalid = false;
+      this.value = value;
+    }
+
+    if (this.invalid) {
+      this.renderer.addClass(this.input.nativeElement, "ng-invalid");
+    } else {
+      this.renderer.addClass(this.input.nativeElement, "ng-valid");
     }
   }
 

@@ -79,6 +79,7 @@ export class Column {
 
   popupRenderer: Type<CellPopupRenderer>;
 
+  editConfig: any = {};
   editRenderer: Type<CellEditRenderer> = TextEditRenderer;
 
   viewConfig: any = {};
@@ -202,9 +203,14 @@ export class Column {
     if (object.popupRenderer) {
       this.popupRenderer = object.popupRenderer;
     }
+
+    if (object.editConfig) {
+      this.editConfig = object.editConfig;
+    }
     if (object.editRenderer) {
       this.editRenderer = object.editRenderer;
     }
+
     if (object.viewConfig) {
       this.viewConfig = object.viewConfig;
     }

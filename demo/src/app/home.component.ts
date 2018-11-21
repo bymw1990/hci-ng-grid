@@ -78,6 +78,7 @@ export class HomeComponent {
     {header: "Row Select", route: "row-select", body: "Options to select rows by double clicking or selecting multiple rows."},
     {header: "Saving Data", route: "saving", body: "Shows available events emitted when cells and row data are updated."},
     {header: "Simple", route: "simple", body: "The most basic grids with default configuration."},
-    {header: "Theming", route: "theming", body: "Show different theme options and custom themes."}
+    {header: "Theming", route: "theming", body: "Show different theme options and custom themes."},
+    {header: "Validation", route: "validation", body: "Support input validation on editing."}
   ];
 }

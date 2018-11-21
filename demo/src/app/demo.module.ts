@@ -41,6 +41,7 @@ import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
 import {DemoInterceptor} from "./services/demo.interceptor";
 import {SavingDemoComponent} from "./saving/saving.component";
 import {BusyDemoComponent} from "./busy/busy.component";
+import {ValidationComponent} from "./validation/validation.component";
 
 @NgModule({
   imports: [
@@ -71,6 +72,7 @@ import {BusyDemoComponent} from "./busy/busy.component";
       { path: "saving", component: SavingDemoComponent },
       { path: "simple", component: SimpleGridComponent },
       { path: "theming", component: ThemingComponent },
+      { path: "validation", component: ValidationComponent },
     ]),
     NgbModule.forRoot(),
     GridModule.forRoot()
@@ -100,7 +102,8 @@ import {BusyDemoComponent} from "./busy/busy.component";
     SelectGridComponent,
     SimpleGridComponent,
     ThemingComponent,
-    UserProfileDirective
+    UserProfileDirective,
+    ValidationComponent
   ],
   providers: [
     DataGeneratorService,
