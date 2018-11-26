@@ -1,7 +1,10 @@
-import {Component, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, ElementRef, ViewChild} from "@angular/core";
 
 import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid";
 import {ClickRowSelectListener} from "hci-ng-grid";
+import {SafeHtml} from "@angular/platform-browser";
+import {BaseDemoComponent} from "../base-demo.component";
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "select-grid",
@@ -20,27 +23,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config1>
-            <pre>
-              &lt;hci-grid
-                [data]="data1"
-                [columnDefinitions]="columns1"
-                [eventListeners]="listeners1"
-                (rowDblClick)="rowDblClick($event)"&gt;
-              &lt;/hci-grid&gt;
-              
-              Columns:
-              isKey: true, field: "idPatient", name: "ID", visible: false
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date"
-              field: "pcg.nLabs", name: "# Labs"
-              field: "pcg.nested.nLabPath", name: "# Lab Path"
-              
-              Listeners:
-              listeners1: Array&lt;any&gt; = [
-                {{"{"}} type: RowDblClickListener {{"}"}}
-              ];
-            </pre>
+            <div [innerHTML]="config1Html"></div>
           </ng-template>
         </div>
         <p>
@@ -73,37 +56,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config2>
-            <pre>
-              &lt;hci-grid
-                #grid2
-                [data]="data2"
-                [columnDefinitions]="columns2"
-                (selectedRows)="setSelectedRows2($event)"
-                [pageSize]="5"
-                [pageSizes]="[5, 10]"&gt;
-              &lt;/hci-grid&gt;
-              
-              Columns:
-              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
-              isKey: true, field: "idPatient", name: "ID", visible: true
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date"
-              field: "pcg.nLabs", name: "# Labs"
-              field: "pcg.nested.nLabPath", name: "# Lab Path"
-              
-              setSelectedRows(selectedRows: any[]) {{"{"}}
-                this.selectedRows = selectedRows;
-              {{"}"}}
-            
-              clearSelectedRows() {{"{"}}
-                this.grid2.clearSelectedRows();
-              {{"}"}}
-            
-              deleteSelectedRows() {{"{"}}
-                this.grid2.deleteSelectedRows();
-              {{"}"}}
-            </pre>
+            <div [innerHTML]="config2Html"></div>
           </ng-template>
         </div>
         <div>
@@ -139,37 +92,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config3>
-            <pre>
-              &lt;hci-grid
-                #grid3
-                [data]="data3"
-                [columnDefinitions]="columns3"
-                (selectedRows)="setSelectedRows3($event)"
-                [pageSize]="5"
-                [pageSizes]="[5, 10]"&gt;
-              &lt;/hci-grid&gt;
-              
-              Columns:
-              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
-              isKey: true, field: "idPatient", name: "ID", visible: true
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date"
-              field: "pcg.nLabs", name: "# Labs"
-              field: "pcg.nested.nLabPath", name: "# Lab Path"
-              
-              setSelectedRows(selectedRows: any[]) {{"{"}}
-                this.selectedRows = selectedRows;
-              {{"}"}}
-            
-              clearSelectedRows() {{"{"}}
-                this.grid2.clearSelectedRows();
-              {{"}"}}
-            
-              deleteSelectedRows() {{"{"}}
-                this.grid2.deleteSelectedRows();
-              {{"}"}}
-            </pre>
+            <div [innerHTML]="config3Html"></div>
           </ng-template>
         </div>
         <div>
@@ -189,31 +112,16 @@ import {ClickRowSelectListener} from "hci-ng-grid";
       </div>
       <div class="card-body">
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
-          <ng-template #config3>
-            <pre>
-              &lt;hci-grid
-                #grid4
-                [data]="data3"
-                [columnDefinitions]="columns3"
-              &lt;/hci-grid&gt;
-              
-              Columns:
-              field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30
-              isKey: true, field: "idPatient", name: "ID", visible: true
-              field: "lastName", name: "Last Name"
-              field: "firstName", name: "First Name"
-              field: "dob", name: "Date of Birth", dataType: "date"
-              field: "pcg.nLabs", name: "# Labs"
-              field: "pcg.nested.nLabPath", name: "# Lab Path"
-            </pre>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config4>
+            <div [innerHTML]="config4Html"></div>
           </ng-template>
         </div>
         <div>
           <hci-grid #grid4
-                    [data]="data3"
+                    [data]="data4"
                     [columnDefinitions]="columns4"
-                    [eventListeners]="listeners3"
+                    [eventListeners]="listeners4"
                     [nVisibleRows]="5">
           </hci-grid>
         </div>
@@ -221,7 +129,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
     </div>
   `
 })
-export class SelectGridComponent {
+export class SelectGridComponent extends BaseDemoComponent {
 
   @ViewChild("grid2") grid2: GridComponent;
   @ViewChild("grid3") grid3: GridComponent;
@@ -230,87 +138,180 @@ export class SelectGridComponent {
   selectedRows2: any[] = [];
   selectedRows3: any[] = [];
 
+  data1: any[];
+  columns1: any[] = [
+    { isKey: true, field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "nLabs", name: "# Labs" },
+    { field: "path.nPath", name: "# Lab Path" }
+  ];
   listeners1: Array<any> = [
     { type: RowDblClickListener }
   ];
 
-  data1: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1973-01-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1972-01-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1976-01-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1973-01-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1977-01-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
+  config1Grid: string = `
+    <hci-grid [data]="data1"
+              [columnDefinitions]="columns1"
+              [eventListeners]="listeners1"
+              (rowDblClick)="rowDblClick($event)">
+    </hci-grid>
+  `;
+  config1Columns: string = `
+    columns1: Column[] = [
+      { isKey: true, field: "idPatient", name: "ID", visible: false }),
+      { field: "lastName", name: "Last Name" }),
+      { field: "firstName", name: "First Name" }),
+      { field: "dob", name: "Date of Birth", dataType: "date" }),
+      { field: "nLabs", name: "# Labs" }),
+      { field: "path.nPath", name: "# Lab Path" })
+    ];
+  `;
+  config1Listeners: string = `
+    listeners1: Array<any> = [
+      { type: RowDblClickListener }
+    ];
+  `;
+  config1Html: SafeHtml;
 
-  columns1: Column[] = [
-    new Column({ isKey: true, field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
+  data2: any[];
+  columns2: any[] = [
+    { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
+    { isKey: true, field: "idPatient", name: "ID" },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "nLabs", name: "# Labs" },
+    { field: "path.nPath", name: "# Lab Path" }
   ];
-
-  data2: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-04-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1971-05-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1972-06-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1973-07-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1974-08-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1975-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } },
-    { "idPatient": 7, "firstName": "Mike", "lastName": "Jones", "dob": "1971-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } },
-    { "idPatient": 8, "firstName": "Grey", "lastName": "White", "dob": "1979-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
-
-  columns2: Column[] = [
-    new Column({ field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 }),
-    new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
-  ];
-
   listeners2: Array<any> = [
     { type: ClickRowSelectListener }
   ];
 
-  data3: Array<Object> = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-04-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1971-05-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1972-06-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1973-07-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1974-08-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1975-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } },
-    { "idPatient": 7, "firstName": "Mike", "lastName": "Jones", "dob": "1971-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } },
-    { "idPatient": 8, "firstName": "Grey", "lastName": "White", "dob": "1979-09-21T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
+  config2Grid: string = `
+    <hci-grid #grid2
+              [data]="data2"
+              [columnDefinitions]="columns2"
+              [eventListeners]="listeners2"
+              (selectedRows)="setSelectedRows2($event)"
+              [pageSize]="5"
+              [pageSizes]="[5, 10]">
+    </hci-grid>
+  `;
+  config2Columns: string = `
+    columns2: Column[] = [
+      { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 }),
+      { isKey: true, field: "idPatient", name: "ID" }),
+      { field: "lastName", name: "Last Name" }),
+      { field: "firstName", name: "First Name" }),
+      { field: "dob", name: "Date of Birth", dataType: "date" }),
+      { field: "nLabs", name: "# Labs" }),
+      { field: "path.nPath", name: "# Lab Path" })
+    ];
+  `;
+  config2Listeners: string = `
+    listeners2: Array<any> = [
+      { type: ClickRowSelectListener }
+    ];
+  `;
+  config2Html: SafeHtml;
 
-  columns3: Column[] = [
-    new Column({ field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 }),
-    new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
+  data3: any[];
+  columns3: any[] = [
+    { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
+    { isKey: true, field: "idPatient", name: "ID", visible: true },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "nLabs", name: "# Labs" },
+    { field: "path.nPath", name: "# Lab Path" }
   ];
-
-  listeners3: Array<any> = [
+  listeners3: any[] = [
     { type: ClickRowSelectListener, config: {multiSelect: true} }
   ];
 
-  columns4: Column[] = [
-    new Column({ field: "select", viewRenderer: CheckRowSelectView, viewConfig: {checkedIcon: "fas fa-check-circle", uncheckedIcon: "fas fa-arrow-alt-circle-down"}, width: 30, minWidth: 30, maxWidth: 30 }),
-    new Column({ isKey: true, field: "idPatient", name: "ID", visible: true }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "pcg.nLabs", name: "# Labs" }),
-    new Column({ field: "pcg.nested.nLabPath", name: "# Lab Path" })
+  config3Grid: string = `
+    <hci-grid #grid3
+              [data]="data3"
+              [columnDefinitions]="columns3"
+              [eventListeners]="listeners3"
+              (selectedRows)="setSelectedRows3($event)">
+    </hci-grid>
+  `;
+  config3Columns: string = `
+    columns3: Column[] = [
+      { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
+      { isKey: true, field: "idPatient", name: "ID", visible: true },
+      { field: "lastName", name: "Last Name" },
+      { field: "firstName", name: "First Name" },
+      { field: "dob", name: "Date of Birth", dataType: "date" },
+      { field: "nLabs", name: "# Labs" },
+      { field: "path.nPath", name: "# Lab Path" }
+    ];
+  `;
+  config3Listeners: string = `
+    listeners3: any[] = [
+      { type: ClickRowSelectListener, config: {multiSelect: true} }
+    ];
+  `;
+  config3Html: SafeHtml;
+
+  data4: any[];
+  columns4: any[] = [
+    { field: "select", viewRenderer: CheckRowSelectView, viewConfig: {checkedIcon: "fas fa-check-circle", uncheckedIcon: "fas fa-arrow-alt-circle-down"}, width: 30, minWidth: 30, maxWidth: 30 },
+    { isKey: true, field: "idPatient", name: "ID", visible: true },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "nLabs", name: "# Labs" },
+    { field: "path.nPath", name: "# Lab Path" }
   ];
+  listeners4: any[] = [
+    { type: ClickRowSelectListener, config: {multiSelect: true} }
+  ];
+
+  config4Grid: string = `
+    <hci-grid #grid4
+              [data]="data4"
+              [columnDefinitions]="columns4"
+              [eventListeners]="listeners4"
+              [nVisibleRows]="5">
+    </hci-grid>
+  `;
+  config4Columns: string = `
+    columns4: any[] = [
+      { field: "select", viewRenderer: CheckRowSelectView, viewConfig: {checkedIcon: "fas fa-check-circle", uncheckedIcon: "fas fa-arrow-alt-circle-down"}, width: 30, minWidth: 30, maxWidth: 30 },
+      { isKey: true, field: "idPatient", name: "ID", visible: true },
+      { field: "lastName", name: "Last Name" },
+      { field: "firstName", name: "First Name" },
+      { field: "dob", name: "Date of Birth", dataType: "date" },
+      { field: "nLabs", name: "# Labs" },
+      { field: "path.nPath", name: "# Lab Path" }
+    ];
+  `;
+  config4Listeners: string = `
+    listeners4: any[] = [
+      { type: ClickRowSelectListener, config: {multiSelect: true} }
+    ];
+  `;
+  config4Html: SafeHtml;
+
+  constructor(private dataGeneratorService: DataGeneratorService) {
+    super();
+
+    this.data1 = dataGeneratorService.getData(6);
+    this.data2 = dataGeneratorService.getData(8);
+    this.data3 = dataGeneratorService.getData(9);
+    this.data4 = dataGeneratorService.getData(11);
+  }
+
+  ngOnInit() {
+    this.config1Html = this.generateConfig(this.config1Grid, this.config1Columns, this.config1Listeners);
+    this.config2Html = this.generateConfig(this.config2Grid, this.config2Columns, this.config2Listeners);
+    this.config3Html = this.generateConfig(this.config3Grid, this.config3Columns, this.config3Listeners);
+    this.config4Html = this.generateConfig(this.config4Grid, this.config4Columns, this.config4Listeners);
+  }
 
   rowDblClick(event: any) {
     this.clickedRow = +event;

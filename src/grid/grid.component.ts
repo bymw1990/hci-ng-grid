@@ -19,10 +19,8 @@ import {Column} from "./column/column";
 import {Cell} from "./cell/cell";
 import {CellEditRenderer} from "./cell/editRenderers/cell-edit-renderer";
 import {CellPopupRenderer} from "./cell/viewPopupRenderer/cell-popup-renderer";
-import {ClickCellEditListener} from "./event/click-cell-edit.listener";
 import {EventListener} from "./event/event-listener";
-import {RangeSelectListener} from "./event/range-select.listener";
-import {ClickRowSelectListener} from "./event/click-row-select.listener";
+import {ClickCellEditListener} from "./event/listeners/click-cell-edit.listener";
 import {EventListenerArg} from "./event/event-listener-arg.interface";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {EventMeta} from "./utils/event-meta";
@@ -208,7 +206,7 @@ const SCROLL: number = 1;
     </div>
   `,
   styles: [
-    require("./themes/excel.css"),
+    require("./themes/spreadsheet.css"),
     require("./themes/report.css"),
     `
 
@@ -416,11 +414,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() configurable: boolean = false;
   @Input("title") inputTitle: string;
   @Input("theme") inputTheme: string;
-  @Input() rowSelect: boolean;
-  @Input() cellSelect: boolean;
-  @Input() rangeSelect: boolean;
-  @Input() keyNavigation: boolean;
-  @Input() nUtilityColumns: number;
   @Input("columnDefinitions") inputColumnDefinitions: Column[];
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
@@ -433,11 +426,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input("nVisibleRows") inputNVisibleRows: number = -1;
   @Input() saveOnDirtyRowChange: boolean = false;
   @Input() busyTemplate: TemplateRef<any>;
-  @Input() eventListeners: EventListenerArg[] = [
-    { type: RangeSelectListener },
-    { type: ClickRowSelectListener },
-    { type: ClickCellEditListener }
-  ];
+  @Input() eventListeners: EventListenerArg[] = [];
+  @Input() mode: string;
 
   @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
@@ -503,6 +493,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   ngOnInit() {
     this.registerEventListeners();
+    this.updateMode();
 
     this.gridMessageService.messageObservable.subscribe((message: string) => {
       this.warning.emit(message);
@@ -760,12 +751,26 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   /**
+   * Clears all the currently registered listeners.
+   */
+  resetEventListeners() {
+    this.clickListeners = [];
+    this.dblClickListeners = [];
+    this.mouseDownListeners = [];
+    this.mouseDragListeners = [];
+    this.mouseUpListeners = [];
+    this.mouseOverListeners = [];
+  }
+
+  /**
    * Create instances of the event listeners and place them in the appropriate event type arrays.
    */
   public registerEventListeners() {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": registerEventListeners");
     }
+
+    this.resetEventListeners();
 
     for (let eventListener of this.eventListeners) {
       if (isDevMode()) {
@@ -866,6 +871,20 @@ export class GridComponent implements OnChanges, AfterViewInit {
   public updateConfig() {
     if (this.config.busyTemplate) {
       this.busyTemplate = this.config.busyTemplate;
+    }
+    if (this.config.mode) {
+      this.mode = this.config.mode;
+    }
+  }
+
+  updateMode() {
+    if (!this.mode) {
+      return;
+    } else if (this.mode === "spreadsheet") {
+      this.eventListeners = [
+        {type: ClickCellEditListener}
+      ];
+      this.registerEventListeners();
     }
   }
 
@@ -1164,16 +1183,25 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let i = range.min.i;
       let j = range.min.j;
 
-      let allowPaste: boolean = true;
+      let allowPaste: number = 0;
       for (var ii = 0; ii < rows.length; ii++) {
         cols = rows[ii].split("\t");
         for (var jj = 0; jj < cols.length; jj++) {
           if (!this.gridService.getRow(i)) {
-            allowPaste = false;
+            allowPaste = 1;
             break;
           } else if (!this.gridService.getRow(i).get(j)) {
-            allowPaste = false;
+            allowPaste = 1;
             break;
+          } else if (this.gridService.getRow(i).get(j).value) {
+            try {
+              let v: any = this.gridService.getColumn(j).formatValue(cols[jj]);
+              if (!v) {
+                allowPaste = 2;
+              }
+            } catch (error) {
+              allowPaste = 2;
+            }
           }
           j = j + 1;
         }
@@ -1191,7 +1219,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": allowPaste: " + allowPaste);
       }
-      if (allowPaste) {
+      if (allowPaste === 0) {
         for (var ii = 0; ii < rows.length; ii++) {
           cols = rows[ii].split("\t");
           for (var jj = 0; jj < cols.length; jj++) {
@@ -1204,8 +1232,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         }
 
         this.renderCellsAndData();
+      } else if (allowPaste === 1) {
+        this.gridMessageService.warn("Paste went out of range.");
       } else {
-        this.gridMessageService.warn("Paste went out of range");
+        this.gridMessageService.warn("Paste had invalid data for the columns.");
       }
     } else if (event.keyCode === 9) {
       event.preventDefault();
@@ -1321,15 +1351,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.inputLinkedGroups !== undefined) {
       this.inputConfig.linkedGroups = this.inputLinkedGroups;
-    }
-    if (this.rowSelect !== undefined) {
-      this.inputConfig.rowSelect = this.rowSelect;
-    }
-    if (this.keyNavigation !== undefined) {
-      this.inputConfig.keyNavigation = this.keyNavigation;
-    }
-    if (this.nUtilityColumns !== undefined) {
-      this.inputConfig.nUtilityColumns = this.nUtilityColumns;
     }
     if (this.inputColumnDefinitions !== undefined) {
       this.inputConfig.columnDefinitions = this.inputColumnDefinitions;

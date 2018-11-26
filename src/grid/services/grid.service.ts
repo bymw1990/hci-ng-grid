@@ -23,7 +23,7 @@ import {RowChange} from "../utils/row-change";
 export class GridService {
 
   static defaultConfig: any = {
-    theme: "excel",
+    theme: "spreadsheet",
     columnHeaders: true,
     rowSelect: false,
     keyNavigation: false,

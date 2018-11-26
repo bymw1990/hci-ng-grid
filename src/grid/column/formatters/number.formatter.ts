@@ -7,11 +7,11 @@ export class NumberFormatter extends FormatterParser {
 
   setConfig(config: any) {}
 
-  format(value: any): string {
+  format(value: any): any {
     if (value) {
       return value;
     } else {
-      return "";
+      return undefined;
     }
   }
 

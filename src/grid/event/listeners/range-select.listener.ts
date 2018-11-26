@@ -1,11 +1,15 @@
 import {isDevMode} from "@angular/core";
 
-import {EventListener} from "./event-listener";
-import {HtmlUtil} from "../utils/html-util";
-import {MouseDownListener} from "./mouse-down.interface";
-import {MouseDragListener} from "./mouse-drag.interface";
-import {MouseUpListener} from "./mouse-up.interface";
+import {EventListener} from "../event-listener";
+import {HtmlUtil} from "../../utils/html-util";
+import {MouseDownListener} from "../mouse-down.interface";
+import {MouseDragListener} from "../mouse-drag.interface";
+import {MouseUpListener} from "../mouse-up.interface";
 
+/**
+ * Click and drag to select a range of cells.  Therefore this listens for mouse down, mouse up and mouse drag events.
+ * Upon mouse down and while dragging, this detects the range of cells selected and updates those cells as selected.
+ */
 export class RangeSelectListener extends EventListener implements MouseDownListener, MouseDragListener, MouseUpListener {
 
   dragging: boolean = false;

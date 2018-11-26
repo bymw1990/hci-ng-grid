@@ -3,9 +3,13 @@
  */
 export class FormatterParser {
 
-  setConfig(config: any) {}
+  config: any = {};
 
-  format(value: any): string {
+  setConfig(config: any) {
+    this.config = config;
+  }
+
+  format(value: any): any {
     if (value) {
       return value;
     } else {

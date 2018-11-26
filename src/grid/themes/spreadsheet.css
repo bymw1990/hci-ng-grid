@@ -1,5 +1,5 @@
 
-#grid-container.excel #title-bar {
+#grid-container.spreadsheet #title-bar {
   padding: 10px;
   font-weight: bold;
   font-size: large;
@@ -10,60 +10,60 @@
   border-top-right-radius: 0px;
 }
 
-#grid-container.excel #header-content {
+#grid-container.spreadsheet #header-content {
   font-weight: bold;
 }
 
-#grid-container.excel #main-content {
+#grid-container.spreadsheet #main-content {
   border-left: black 1px solid;
   border-right: black 1px solid;
   border-bottom: black 1px solid;
 }
 
-#grid-container.excel #grid-footer {
+#grid-container.spreadsheet #grid-footer {
   border: black 1px solid;
 }
 
-#grid-container.excel #left-view {
+#grid-container.spreadsheet #left-view {
   border-top: black 1px solid;
 }
 
-#grid-container.excel #right-view {
+#grid-container.spreadsheet #right-view {
   border-top: black 1px solid;
 }
 
-#grid-container.excel #left-header-view{
+#grid-container.spreadsheet #left-header-view{
   border-top: black 1px solid;
 }
 
-#grid-container.excel #right-header-view{
+#grid-container.spreadsheet #right-header-view{
   border-top: black 1px solid;
 }
 
-#grid-container.excel .hci-grid-header {
+#grid-container.spreadsheet .hci-grid-header {
   border-bottom: none;
 }
 
-#grid-container.excel .hci-grid-header:not(.last) {
+#grid-container.spreadsheet .hci-grid-header:not(.last) {
   border-right: black 1px solid;
 }
 
-#grid-container.excel .hci-grid-cell {
+#grid-container.spreadsheet .hci-grid-cell {
   border-bottom: black 1px solid;
 }
 
-#grid-container.excel .hci-grid-cell:not(.last) {
+#grid-container.spreadsheet .hci-grid-cell:not(.last) {
   border-right: black 1px solid;
 }
 
-#grid-container.excel .hci-grid-cell.selected {
+#grid-container.spreadsheet .hci-grid-cell.selected {
   background-color: #ffffaa;
 }
 
-#grid-container.excel .hci-grid-row.selected {
+#grid-container.spreadsheet .hci-grid-row.selected {
   background-color: #ffffaa;
 }
 
-#grid-container.excel .ng-invalid {
+#grid-container.spreadsheet .ng-invalid {
   color: red;
 }

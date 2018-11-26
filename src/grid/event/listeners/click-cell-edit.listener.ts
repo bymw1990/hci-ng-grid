@@ -1,9 +1,9 @@
 import {isDevMode} from "@angular/core";
 
-import {ClickListener} from "./click.interface";
-import {EventListener} from "./event-listener";
-import {HtmlUtil} from "../utils/html-util";
-import {Point} from "../utils/point";
+import {ClickListener} from "../click.interface";
+import {EventListener} from "../event-listener";
+import {HtmlUtil} from "../../utils/html-util";
+import {Point} from "../../utils/point";
 
 export class ClickCellEditListener extends EventListener implements ClickListener {
 

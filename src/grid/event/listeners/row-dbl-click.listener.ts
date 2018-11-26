@@ -1,8 +1,8 @@
 import {isDevMode} from "@angular/core";
 
-import {DblClickListener} from "./dbl-click.interface";
-import {EventListener} from "./event-listener";
-import {HtmlUtil} from "../utils/html-util";
+import {DblClickListener} from "../dbl-click.interface";
+import {EventListener} from "../event-listener";
+import {HtmlUtil} from "../../utils/html-util";
 
 export class RowDblClickListener extends EventListener implements DblClickListener {
 

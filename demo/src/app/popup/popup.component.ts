@@ -62,7 +62,6 @@ import {LabPopup} from "../components/lab.component";
                     [columnDefinitions]="columns1"
                     [fixedColumns]="['firstName', 'lastName']"
                     [eventListeners]="listeners1"
-                    [cellSelect]="true"
                     [nVisibleRows]="10">
           </hci-grid>
         </p>

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { Column } from "hci-ng-grid";
+import {Column, RangeSelectListener} from "hci-ng-grid";
 
 @Component({
   selector: "copy-paste-grid",
@@ -21,7 +21,7 @@ import { Column } from "hci-ng-grid";
                 [title]="'Copy Paste Grid'"
                 [data]="copyPasteData"
                 [columnDefinitions]="copyPasteColumns"
-                [rangeSelect]="true"&gt;
+                [eventListeners]="listeners"&gt;
               &lt;/hci-grid&gt;
               
               Columns:
@@ -73,7 +73,7 @@ import { Column } from "hci-ng-grid";
           <hci-grid [title]="'Copy Paste Grid'"
                     [data]="copyPasteData"
                     [columnDefinitions]="copyPasteColumns"
-                    [rangeSelect]="true">
+                    [eventListeners]="listeners">
           </hci-grid>
         </p>
       </div>
@@ -91,13 +91,16 @@ export class CopyPasteGridComponent {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1971-06-11T00:00-07:00", "nLabs": 6, "nPathLabs": 66 },
   ];
 
-  copyPasteColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "nLabs", name: "# Labs" }),
-    new Column({ field: "nPathLabs", name: "# Lab Path" })
+  copyPasteColumns: any[] = [
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "nLabs", name: "# Labs" },
+    { field: "nPathLabs", name: "# Lab Path" }
   ];
 
+  listeners: any[] = [
+    {type: RangeSelectListener}
+  ];
 }

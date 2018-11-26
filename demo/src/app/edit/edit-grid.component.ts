@@ -26,7 +26,6 @@ import {Column} from "hci-ng-grid";
                   [title]="'Spreadsheet Grid'"
                   [data]="editData"
                   [columnDefinitions]="editColumns"
-                  [cellSelect]="true"
                   [pageSize]="25"
                   [nVisibleRows]="10"&gt;
                 &lt;/hci-grid&gt;
@@ -64,7 +63,7 @@ import {Column} from "hci-ng-grid";
             <hci-grid [title]="'Spreadsheet Grid'"
                       [data]="editData"
                       [columnDefinitions]="editColumns"
-                      [cellSelect]="true"
+                      [mode]="'spreadsheet'"
                       [pageSize]="25"
                       [nVisibleRows]="10">
             </hci-grid>

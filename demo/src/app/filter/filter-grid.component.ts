@@ -30,9 +30,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
                 [title]="'Filter Grid'"
                 [data]="filteredData"
                 [columnDefinitions]="filteredColumns"
-                [pageSizes]="[10, 25, 100]"
-                [cellSelect]="true"
-                [keyNavigation]="true"&gt;
+                [pageSizes]="[10, 25, 100]"&gt;
               &lt;/hci-grid&gt;
               
               Columns:
@@ -50,9 +48,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           <hci-grid [title]="'Filter Grid'"
                     [data]="filteredData"
                     [columnDefinitions]="filteredColumns"
-                    [pageSizes]="[10, 25, 100]"
-                    [cellSelect]="true"
-                    [keyNavigation]="true">
+                    [pageSizes]="[10, 25, 100]">
           </hci-grid>
         </p>
       </div>
@@ -73,9 +69,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
               &lt;hci-grid
                 [data]="filteredData"
                 [columnDefinitions]="filteredColumns2"
-                [pageSizes]="[10, 25, 100]"
-                [cellSelect]="true"
-                [keyNavigation]="true"&gt;
+                [pageSizes]="[10, 25, 100]"&gt;
               &lt;/hci-grid&gt;
               
               Columns:

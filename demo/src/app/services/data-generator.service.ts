@@ -36,7 +36,7 @@ export class DataGeneratorService {
 
   getData(size: number) {
     let data = new Array<Object>();
-    for (var i = 0; i < size; i++) {
+    for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
       let genderDict: number = j % 2;
@@ -54,8 +54,11 @@ export class DataGeneratorService {
         type: this._labTypes[Math.floor(Math.random() * this._labTypes.length)],
         value: Math.floor(Math.random() * 200)
       };
+      let path = {
+        nPath: Math.floor(Math.random() * 200)
+      };
 
-      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab });
+      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab, path: path });
     }
     return data;
   }

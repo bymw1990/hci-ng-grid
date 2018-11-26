@@ -15,8 +15,8 @@ export class GridGlobalService {
   groupServiceMap: Map<string, GridService[]> = new Map<string, GridService[]>();
 
   themeChoices: Dictionary[] = [
-    {value: "excel", display: "Excel"},
-    {value: "report", display: "Report"}
+    {value: "report", display: "Report"},
+    {value: "spreadsheet", display: "Spreadsheet"}
   ];
 
   constructor(@Inject("globalConfig") private globalConfig: any) {

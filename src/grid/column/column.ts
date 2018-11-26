@@ -126,7 +126,7 @@ export class Column {
     return this.viewRendererInstance;
   }
 
-  formatValue(value: any): string {
+  formatValue(value: any): any {
     return this.formatterParserInstance.format(value);
   }
 

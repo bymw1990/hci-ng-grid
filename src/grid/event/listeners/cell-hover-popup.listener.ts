@@ -1,9 +1,9 @@
 import {isDevMode} from "@angular/core";
 
-import {EventListener} from "./event-listener";
-import {HtmlUtil} from "../utils/html-util";
-import {MouseOverListener} from "./mouse-over.interface";
-import {Point} from "../utils/point";
+import {EventListener} from "../event-listener";
+import {HtmlUtil} from "../../utils/html-util";
+import {MouseOverListener} from "../mouse-over.interface";
+import {Point} from "../../utils/point";
 
 export class CellHoverPopupListener extends EventListener implements MouseOverListener {
 

@@ -19,7 +19,6 @@ import {Column} from "hci-ng-grid";
         <p>
           <hci-grid [data]="data1"
                     [columnDefinitions]="columns1"
-                    [cellSelect]="true"
                     (warning)="showWarning($event)">
           </hci-grid>
         </p>

@@ -1,10 +1,9 @@
 import {isDevMode} from "@angular/core";
 
-import {ClickListener} from "./click.interface";
-import {EventListener} from "./event-listener";
-import {HtmlUtil} from "../utils/html-util";
-import {Point} from "../utils/point";
-import {Range} from "../utils/range";
+import {ClickListener} from "../click.interface";
+import {EventListener} from "../event-listener";
+import {HtmlUtil} from "../../utils/html-util";
+import {Point} from "../../utils/point";
 
 export class ClickRowSelectListener extends EventListener implements ClickListener {
 
@@ -22,7 +21,6 @@ export class ClickRowSelectListener extends EventListener implements ClickListen
       let location: Point = HtmlUtil.getLocation(idElement);
 
       let value: boolean = this.gridService.negateSelectedRow(location.i, location.j, this.multiSelect);
-      //this.grid.updateSelectedRows(new Range(location, location), !this.multiSelect, value);
 
       return true;
     } else {
