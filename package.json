@@ -2,7 +2,7 @@
   "name": "hci-ng-grid",
   "version": "2.0.0-beta.23",
   "description": "Comprehensive angular grid component",
-  "repository": "https://ri-source.hci.utah.edu/hcidevs/hci-ng-grid.git",
+  "repository": "git+https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid.git",
   "scripts": {
     "build": "npm run clean && npm run ngc && npm run doc && npm run karma start && npm run copyfiles package.json dist/ && npm run copyfiles -- src/grid/themes/*.css dist/",
     "clean": "npm run rimraf index.js index.d.ts index.ngsummary.json index.metadata.json index.js.map src/**/*.js src/**/*.ngfactory.ts src/**/*.d.ts src/**/*.js.map src/**/*.ngsummary.json src/**/*.metadata.json code-coverage dist",
@@ -12,16 +12,13 @@
     "karma": "karma",
     "ngc": "ngc",
     "npmPack": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm pack",
-    "npmPublish": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm publish",
+    "npmPublish": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm publish --access public",
     "push": "cd dist && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json|css)\" ../demo/node_modules/hci-ng-grid && cd ..",
     "rimraf": "rimraf"
   },
   "main": "index.js",
   "module": "index.js",
   "typings": "index.d.ts",
-  "publishConfig": {
-    "registry": "https://ri-artifact.hci.utah.edu/artifactory/api/npm/hci-npm-local"
-  },
   "files": [
     "index.+(js|d.ts|js.map|metadata.json)",
     "src/**/!(*spec).+(js|d.ts|js.map|metadata.json|css)"
