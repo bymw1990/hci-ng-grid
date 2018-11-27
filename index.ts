@@ -1,3 +1,4 @@
+import {EventListener} from "./src/grid/event/event-listener";
 
 export {GridModule} from "./src/grid/grid.module";
 export {GridComponent} from "./src/grid/grid.component";
@@ -30,14 +31,15 @@ export {CompareFilterRenderer} from "./src/grid/column/filterRenderers/compare-f
 export {CellPopupRenderer} from "./src/grid/cell/viewPopupRenderer/cell-popup-renderer";
 export {BigTextPopup} from "./src/grid/cell/viewPopupRenderer/bigtext-popup.component";
 
+export {EventListener} from "./src/grid/event/event-listener";
+export {EventListenerArg} from "./src/grid/event/event-listener-arg.interface";
+
 export {ClickViewListener} from "./src/grid/event/click-view.listener";
 export {CellHoverPopupListener} from "./src/grid/event/listeners/cell-hover-popup.listener";
 export {ClickCellEditListener} from "./src/grid/event/listeners/click-cell-edit.listener";
 export {ClickRowSelectListener} from "./src/grid/event/listeners/click-row-select.listener";
 export {RangeSelectListener} from "./src/grid/event/listeners/range-select.listener";
 export {RowDblClickListener} from "./src/grid/event/listeners/row-dbl-click.listener";
-
-export {EventListenerArg} from "./src/grid/event/event-listener-arg.interface";
 
 export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";
 export {DateFormatter} from "./src/grid/column/formatters/date.formatter";

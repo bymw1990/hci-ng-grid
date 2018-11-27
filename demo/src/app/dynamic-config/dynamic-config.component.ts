@@ -1,8 +1,10 @@
-import {Component, SimpleChange, SimpleChanges, ViewChild} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
+
 import {
-  CheckRowSelectView, ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, GridComponent,
-  SelectFilterRenderer, TextFilterRenderer
+  CheckRowSelectView, ChoiceEditRenderer, ClickRowSelectListener, CompareFilterRenderer, DateEditRenderer,
+  GridComponent, SelectFilterRenderer, TextFilterRenderer
 } from "hci-ng-grid";
+
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -70,7 +72,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Dynamic Columns Row Select'"
                 [data]="data"
-                [columns]="columnsA"&gt;
+                [columns]="columnsA"
+                [eventListeners]="listeners2"&gt;
               &lt;/hci-grid&gt;
               
               Columns1:
@@ -91,7 +94,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Dynamic Columns Row Select'"
                     [data]="data"
-                    [columns]="columnsA">
+                    [columns]="columnsA"
+                    [eventListeners]="listeners2">
           </hci-grid>
         </p>
       </div>
@@ -174,6 +178,10 @@ export class DynamicConfigGridComponent {
   ];
 
   columnsA: any = this.columnsA1;
+
+  listeners2: any[] = [
+    {type: ClickRowSelectListener}
+  ];
 
   key: string = "title";
   value: any = "Test";

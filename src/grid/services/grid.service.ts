@@ -271,6 +271,18 @@ export class GridService {
       this.columnMapSubject.next(columnMap);
       return;
     }
+
+    // Prior to arranging columns in initColumnProperties, if the key is not set, use the first column.
+    let keyDefined: boolean = false;
+    for (var i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].isKey) {
+        keyDefined = true;
+      }
+    }
+    if (!keyDefined && this.columns.length > 0) {
+      this.columns[0].isKey = true;
+    }
+
     this.initColumnProperties(columnMap);
 
     this.nFixedColumns = 0;
@@ -283,16 +295,6 @@ export class GridService {
           this.nNonFixedColumns = this.nNonFixedColumns + 1;
         }
       }
-    }
-
-    let keyDefined: boolean = false;
-    for (var i = 0; i < this.columns.length; i++) {
-      if (this.columns[i].isKey) {
-        keyDefined = true;
-      }
-    }
-    if (!keyDefined && this.columns.length > 0) {
-      this.columns[0].isKey = true;
     }
 
     this.config.columns = this.columns;
