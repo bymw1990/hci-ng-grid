@@ -110,6 +110,10 @@ module.exports = function(env) {
         {
           from: "favicon.ico",
           to: "favicon.ico"
+        },
+        {
+          from: "../../docs",
+          to: "compodoc"
         }
       ]),
 

@@ -15,10 +15,11 @@ import {GridModule} from "hci-ng-grid";
 import {DemoComponent} from "./demo.component";
 import {DataGeneratorService} from "./services/data-generator.service";
 
+import {DocsComponent} from "./docs/docs.component";
+import {EditGridComponent} from "./edit/edit-grid.component";
 import {HomeComponent} from "./home.component";
 import {SimpleGridComponent} from "./simple/simple-grid.component";
 import {SelectGridComponent} from "./select/select-grid.component";
-import {EditGridComponent} from "./edit/edit-grid.component";
 import {RowGroupGridComponent} from "./row-group/row-group-grid.component";
 import {FixedGridComponent} from "./fixed/fixed-grid.component";
 import {FilterGridComponent} from "./filter/filter-grid.component";
@@ -54,6 +55,7 @@ import {ValidationComponent} from "./validation/validation.component";
       { path: "alerts", component: AlertsGridComponent },
       { path: "busy", component: BusyDemoComponent },
       { path: "copypaste", component: CopyPasteGridComponent },
+      { path: "docs", component: DocsComponent},
       { path: "dynamic-config", component: DynamicConfigGridComponent },
       { path: "edit", component: EditGridComponent },
       { path: "empty", component: EmptyGridComponent },
@@ -83,6 +85,7 @@ import {ValidationComponent} from "./validation/validation.component";
     CopyPasteGridComponent,
     DemoComponent,
     DictionaryFilterRenderer,
+    DocsComponent,
     DynamicConfigGridComponent,
     EditGridComponent,
     EmptyGridComponent,
