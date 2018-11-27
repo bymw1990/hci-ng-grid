@@ -106,7 +106,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-          Click the button to push the following key value pair.  For example, you can try "title" and "Test".
+          Click the button to push the following key value pair.  For example, you can try "title" with "Test".  Also, "theme" with "report".
         </div>
         <div class="card-text">
           <button class="btn btn-primary" (click)="pushConfig3()">Push:</button>

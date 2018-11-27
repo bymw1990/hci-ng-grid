@@ -156,7 +156,7 @@ export class ExternalDataComponent implements OnInit {
   public onExternalDataCall3: Function;
 
   columns: Column[] = [
-    new Column({ field: "idPatient", name: "ID" }),
+    new Column({ field: "idPatient", name: "ID", isKey: true }),
     new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
     new Column({ field: "middleName", name: "Middle Name" }),
     new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),

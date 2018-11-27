@@ -1108,6 +1108,8 @@ export class GridService {
    * @param {number} mode -2 for first, 2 for last, -1 for previous, 1 for next.
    */
   public setPage(mode: number): void {
+    let page: number = this.pageInfo.getPage();
+
     if (mode === -2) {
       this.pageInfo.setPage(0);
     } else if (mode === -1 && this.pageInfo.page > 0) {
@@ -1118,10 +1120,12 @@ export class GridService {
       this.pageInfo.setPage(this.pageInfo.getNumPages() - 1);
     }
 
-    if (this.externalPaging) {
-      this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
-    } else {
-      this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, true);
+    if (page !== this.pageInfo.getPage()) {
+      if (this.externalPaging) {
+        this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
+      } else {
+        this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, true);
+      }
     }
   }
 
