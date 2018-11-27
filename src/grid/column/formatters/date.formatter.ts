@@ -30,7 +30,7 @@ export class DateFormatter extends FormatterParser {
 
   parse(value: string): any {
     if (value) {
-      let date: string =  moment(<string>value, this.dateFormat).toISOString();
+      let date: string = moment(<string>value, this.dateFormat).toISOString();
 
       if (date === "Invalid Date") {
         throw new Error("Could not format date.");

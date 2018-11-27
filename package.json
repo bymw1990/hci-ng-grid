@@ -8,7 +8,7 @@
     "clean": "npm run rimraf index.js index.d.ts index.ngsummary.json index.metadata.json index.js.map src/**/*.js src/**/*.ngfactory.ts src/**/*.d.ts src/**/*.js.map src/**/*.ngsummary.json src/**/*.metadata.json code-coverage dist",
     "compodoc": "compodoc",
     "copyfiles": "copyfiles",
-    "doc": "npm run compodoc -- src -p tsconfig.json -d docs -n 'hci-ng-grid'",
+    "doc": "npm run compodoc -- src -p ./tsconfig.json -d docs -n 'hci-ng-grid'",
     "karma": "karma",
     "ngc": "ngc",
     "npmPack": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm pack",
@@ -24,12 +24,8 @@
     "src/**/!(*spec).+(js|d.ts|js.map|metadata.json|css)"
   ],
   "dependencies": {
+    "@ng-bootstrap/ng-bootstrap": "1.1.x",
     "moment": "^2.18.1"
-  },
-  "peerDependencies": {
-    "@angular/common": "5.2.x",
-    "@angular/core": "5.2.x",
-    "@ng-bootstrap/ng-bootstrap": "1.1.x"
   },
   "devDependencies": {
     "@angular/animations": "5.2.x",
@@ -41,8 +37,7 @@
     "@angular/platform-browser": "5.2.x",
     "@angular/platform-browser-dynamic": "5.2.x",
     "@angular/router": "5.2.x",
-    "@compodoc/compodoc": "^1.0.0",
-    "@ng-bootstrap/ng-bootstrap": "1.1.x",
+    "@compodoc/compodoc": "1.0.x",
     "@types/jasmine": "^2.5.53",
     "@types/node": "^8.0.0",
     "@types/webpack": "4.1.2",

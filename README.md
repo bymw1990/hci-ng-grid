@@ -130,6 +130,7 @@ default: undefined
 A list of column names that should be used to group rows together.
 ```
 ```
+* Currently disabled *
 groupByCollapsed
 type: boolean
 default: true
@@ -317,3 +318,11 @@ following are examples of built in filters.
         choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ],
         filterRenderer: SelectFilterRenderer
     }
+
+## Known Issues
+
+* Row Groups works upon load, but breaks when filtering is introduced.
+
+## TODOs
+
+* There are only left fixed colums, but some have requested right fixed columns.

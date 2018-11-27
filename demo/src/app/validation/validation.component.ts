@@ -60,6 +60,7 @@ import {Column} from "hci-ng-grid";
             <hci-grid [title]="'Validation Grid'"
                       [data]="data"
                       [columns]="columns"
+                      [mode]="'spreadsheet'"
                       [pageSize]="10"
                       [nVisibleRows]="10">
             </hci-grid>
@@ -93,7 +94,7 @@ export class ValidationComponent {
     new Column({ field: "idPatient", name: "ID", visible: true }),
     new Column({ field: "lastName", name: "Last Name", editConfig: {required: true} }),
     new Column({ field: "firstName", name: "First Name", editConfig: {maxlength: 35} }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
+    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
     new Column({ field: "nLabs", name: "# Labs", editConfig: {pattern: /^[0-9]{1}$/} }),
     new Column({ field: "nLabPath", name: "# Lab Path", editConfig: {pattern: /^[0-9]{1,2}$/} })
   ];

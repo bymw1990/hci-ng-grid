@@ -102,7 +102,7 @@ export class GridService {
    *
    * @param config
    */
-  updateConfig(config: any, forceColumnsChanged?: boolean) {
+  public updateConfig(config: any, forceColumnsChanged?: boolean): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": GridService.updateConfig");
     }
@@ -127,14 +127,6 @@ export class GridService {
         this.gridGlobalService.registerGroup(linkedGroup, this);
       }
     }
-
-    // Selection Related Configuration
-    /*if (config.rowSelect !== undefined) {
-      this.rowSelect = config.rowSelect;
-    }
-    if (config.keyNavigation !== undefined) {
-      this.keyNavigation = config.keyNavigation;
-    }*/
 
     // Column Related Configuration
     if (config.columns !== undefined) {
@@ -215,7 +207,7 @@ export class GridService {
    * paging, it will stay -1, so all data will appear at once.  If nVisibleRows is -1 and there is paging, then the
    * nVisibleRows will be set to the page size.
    */
-  setNVisibleRows() {
+  public setNVisibleRows(): void {
     if (this.config.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
       this.nVisibleRows = this.pageInfo.pageSize;
     } else if (this.config.nVisibleRows === -1 && this.pageInfo.pageSize === -1) {
@@ -229,7 +221,7 @@ export class GridService {
    * @param {string} field
    * @param {number} position
    */
-  updateSortOrder(field: string, position: number) {
+  public updateSortOrder(field: string, position: number): void {
     let n: number = -1;
     for (let i = 0; i < this.columns.length; i++) {
       if (this.columns[i].field === field) {
@@ -268,7 +260,7 @@ export class GridService {
    * Based upon the nature of the columns, sorts them.  For example, utility columns as a negative, then fixed columns
    * starting at zero then others.
    */
-  initColumnDefinitions() {
+  public initColumnDefinitions(): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": GridService.initColumnDefinitions()");
     }
@@ -312,7 +304,7 @@ export class GridService {
    * Usually called when config changes, re-init the columns.  We re-sort based upon the preferred sort order then
    * calculate things like visible columns and group by, then re-sort based on the rendering order.
    */
-  initColumnProperties(columnMap: Map<string, Column[]>) {
+  public initColumnProperties(columnMap: Map<string, Column[]>): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": GridService.initColumnProperties");
     }
@@ -353,16 +345,6 @@ export class GridService {
     }
 
     let groupByDisplay: string = undefined;
-
-    /*if (this.rowSelect) {
-      let rowSelectColumn: Column = Column.deserialize({ name: "", template: "InputCell", width: 30, minWidth: 30, maxWidth: 30 });
-      rowSelectColumn.field = "ROW_SELECT";
-      rowSelectColumn.sortable = false;
-      rowSelectColumn.renderOrder = 0;
-      rowSelectColumn.isFixed = true;
-      rowSelectColumn.isUtility = true;
-      this.columns.push(rowSelectColumn);
-    }*/
 
     this.nVisibleColumns = 0;
 
@@ -457,7 +439,7 @@ export class GridService {
    *
    * @returns {Map<string, Column[]>}
    */
-  createColumnMap(): Map<string, Column[]> {
+  public createColumnMap(): Map<string, Column[]> {
     let columnMap: Map<string, Column[]> = new Map<string, Column[]>();
     columnMap.set("ALL", []);
     columnMap.set("UTILITY", []);
@@ -468,31 +450,31 @@ export class GridService {
     return columnMap;
   }
 
-  getConfigSubject(): BehaviorSubject<any> {
+  public getConfigSubject(): BehaviorSubject<any> {
     return this.configSubject;
   }
 
-  getColumnHeaders(): boolean {
+  public getColumnHeaders(): boolean {
     return this.columnHeaders;
   }
 
-  getNVisibleRows(): number {
+  public getNVisibleRows(): number {
     return this.nVisibleRows;
   }
 
-  getNFixedColumns(): number {
+  public getNFixedColumns(): number {
     return this.nFixedColumns;
   }
 
-  getNNonFixedColumns(): number {
+  public getNNonFixedColumns(): number {
     return this.nNonFixedColumns;
   }
 
-  getColumnDefinitions() {
+  public getColumns(): Column[] {
     return this.columns;
   }
 
-  getViewDataSubject(): BehaviorSubject<Row[]> {
+  public getViewDataSubject(): BehaviorSubject<Row[]> {
     return this.viewDataSubject;
   }
 
@@ -501,7 +483,7 @@ export class GridService {
    *
    * @returns {Array<number>}
    */
-  getKeyColumns(): Array<number> {
+  public getKeyColumns(): Array<number> {
     let keys: number[] = [];
     for (var i = 0; i < this.columns.length; i++) {
       if (this.columns[i].isKey) {
@@ -511,23 +493,23 @@ export class GridService {
     return keys;
   }
 
-  getColumn(j: number): Column {
+  public getColumn(j: number): Column {
     return this.columns[j];
   }
 
-  isColumnSelectable(j: number): boolean {
+  public isColumnSelectable(j: number): boolean {
     return this.columns[j].selectable;
   }
 
-  getNVisibleColumns(): number {
+  public getNVisibleColumns(): number {
     return this.nVisibleColumns;
   }
 
-  getColumnMapSubject(): Subject<Map<string, Column[]>> {
+  public getColumnMapSubject(): Subject<Map<string, Column[]>> {
     return this.columnMapSubject;
   }
 
-  setGridElement(gridElement: HTMLElement) {
+  public setGridElement(gridElement: HTMLElement): void {
     this.gridElement = gridElement;
   }
 
@@ -536,7 +518,7 @@ export class GridService {
    * from an external viewDataSubject source, the call should be made to that service to delete the rows, then the grid should just
    * be refreshed.
    */
-  deleteSelectedRows() {
+  public deleteSelectedRows(): void {
     this.originalData = this.originalData.filter((row: Object) => {
       for (var j = 0; j < this.columns.length; j++) {
         if (this.columns[j].isKey && this.selectedRows.indexOf(this.getField(row, this.columns[j].field)) !== -1) {
@@ -555,7 +537,7 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
-  clearSelectedRows() {
+  public clearSelectedRows(): void {
     for (let row of this.selectedRows) {
       try {
         this.getRowByKey(row).get(this.selectedRowColumn).value = false;
@@ -576,7 +558,7 @@ export class GridService {
    * @param {number} j The column.
    * @returns {boolean} Returns the negated value.
    */
-  negateSelectedRow(i: number, j: number, multiSelect: boolean): boolean {
+  public negateSelectedRow(i: number, j: number, multiSelect: boolean): boolean {
     this.selectedRowColumn = j;
 
     let key: any = this.getKey(i, j);
@@ -611,7 +593,7 @@ export class GridService {
     return value;
   }
 
-  setSelectedRow(i: number, j: number) {
+  public setSelectedRow(i: number, j: number): void {
     let key: any = this.getKey(i, j);
     this.getRow(i).get(j).value = true;
 
@@ -621,7 +603,7 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
-  setUnselectedRow(i: number, j: number) {
+  public setUnselectedRow(i: number, j: number): void {
     let key: any = this.getKey(i, j);
     this.getRow(i).get(j).value = false;
 
@@ -631,27 +613,27 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
-  getSelectedRows(): any[] {
+  public getSelectedRows(): any[] {
     return this.selectedRows;
   }
 
-  getSelectedRowsSubject(): Subject<any[]> {
+  public getSelectedRowsSubject(): Subject<any[]> {
     return this.selectedRowsSubject;
   }
 
-  cellDataUpdate(range: Range) {
+  public cellDataUpdate(range: Range): void {
     this.cellDataUpdateObserved.next(range);
   }
 
-  doubleClickRow(i: number) {
+  public doubleClickRow(i: number): void {
     this.doubleClickObserved.next(this.viewData[i]);
   }
 
-  getKey(i: number, j: number): any {
+  public getKey(i: number, j?: number): any {
     return this.viewData[i].key;
   }
 
-  getRowByKey(key: any): Row {
+  public getRowByKey(key: any): Row {
     for (let row of this.viewData) {
       if (row.key === key) {
         return row;
@@ -675,7 +657,7 @@ export class GridService {
    * Sort
    * Paginate
    */
-  filter() {
+  public filter(): void {
     if (this.externalFiltering) {
       this.filterInfo = [];
       this.filterMap.forEach((filters: FilterInfo[]) => {
@@ -694,7 +676,7 @@ export class GridService {
     }
   }
 
-  getColumnIndexByField(field: string) {
+  public getColumnIndexByField(field: string): number {
     for (var j = 0; j < this.columns.length; j++) {
       if (this.columns[j].field === field) {
         return j;
@@ -703,7 +685,7 @@ export class GridService {
     return -1;
   }
 
-  filterPreparedData() {
+  public filterPreparedData(): void {
     if (isDevMode()) {
       console.debug("filterPreparedData");
     }
@@ -832,7 +814,9 @@ export class GridService {
                   }
                 }
               } else {
-                console.debug("hci-grid: " + this.id + ": Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
+                if (isDevMode()) {
+                  console.debug("hci-grid: " + this.id + ": Filter text: " + filterInfo.value + ": " + this.preparedData[i].get(j).value);
+                }
 
                 if (this.preparedData[i].get(j).value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
                   colInc = false;
@@ -855,7 +839,7 @@ export class GridService {
     this.preparedData = filteredData;
   }
 
-  getCell(i: number, j: number): Cell {
+  public getCell(i: number, j: number): Cell {
     try {
       return this.viewData[i].get(j);
     } catch (e) {
@@ -863,7 +847,7 @@ export class GridService {
     }
   }
 
-  getField(row: Object, field: String): Object {
+  public getField(row: Object, field: String): Object {
     if (!field) {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": getField: field is undefined.");
@@ -880,7 +864,7 @@ export class GridService {
     return obj;
   }
 
-  getRow(i: number): Row {
+  public getRow(i: number): Row {
     if (i > this.viewData.length - 1) {
       return undefined;
     } else {
@@ -888,7 +872,7 @@ export class GridService {
     }
   }
 
-  getRowFromKey(key: any): Row {
+  public getRowFromKey(key: any): Row {
     for (let row of this.viewData) {
       if (row.key === key) {
         return row;
@@ -898,7 +882,7 @@ export class GridService {
     return undefined;
   }
 
-  getRowIndexFromKey(key: any): number {
+  public getRowIndexFromKey(key: any): number {
     for (let i = 0; i < this.viewData.length; i++) {
       if (this.viewData[i].key === key) {
         return i;
@@ -908,7 +892,7 @@ export class GridService {
     return undefined;
   }
 
-  clearDirtyCell(i: number, j: number) {
+  public clearDirtyCell(i: number, j: number): void {
     this.getRow(i).get(j).dirty = false;
 
     for (let ii = 0; ii < this.dirtyCells.length; ii++) {
@@ -920,7 +904,7 @@ export class GridService {
     this.dirtyCellsSubject.next(this.dirtyCells);
   }
 
-  handleValueChange(i: number, j: number, key: number, newValue: any, oldValue: any) {
+  public handleValueChange(i: number, j: number, key: number, newValue: any, oldValue: any): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": handleValueChange: " + i + " " + j + " " + newValue + " " + oldValue);
     }
@@ -949,7 +933,7 @@ export class GridService {
    *
    * @param originalData
    */
-  initDataWithOptions(prep: boolean, filter: boolean, sort: boolean, paginate: boolean) {
+  public initDataWithOptions(prep: boolean, filter: boolean, sort: boolean, paginate: boolean): void {
     if (!this.originalData) {
       return;
     }
@@ -1019,7 +1003,7 @@ export class GridService {
     this.viewDataSubject.next(this.viewData);
   }
 
-  resetUtilityColumns() {
+  public resetUtilityColumns(): void {
     this.clearSelectedRows();
 
     for (var i = 0; i < this.preparedData.length; i++) {
@@ -1033,7 +1017,7 @@ export class GridService {
     }
   }
 
-  prepareData() {
+  public prepareData(): void {
     if (!this.columns) {
       if (isDevMode()) {
         console.info("prepareData: No Columns, returning.");
@@ -1071,7 +1055,7 @@ export class GridService {
    * @param originalData
    * @returns {boolean}
    */
-  setOriginalData(originalData: Object[]): boolean {
+  public setOriginalData(originalData: Object[]): boolean {
     this.originalData = originalData;
 
     if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50) {
@@ -1093,7 +1077,7 @@ export class GridService {
     }
   }
 
-  initData() {
+  public initData(): void {
     this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
   }
 
@@ -1106,7 +1090,7 @@ export class GridService {
    * @param field
    * @param value
    */
-  setInputDataValue(key: number, field: string, value: any) {
+  public setInputDataValue(key: number, field: string, value: any): void {
     var fields = field.split(".");
 
     var obj = this.originalData[key];
@@ -1116,7 +1100,12 @@ export class GridService {
     obj[fields[fields.length - 1]] = value;
   }
 
-  setPage(mode: number) {
+  /**
+   * Used to change the page the grid is on.
+   *
+   * @param {number} mode -2 for first, 2 for last, -1 for previous, 1 for next.
+   */
+  public setPage(mode: number): void {
     if (mode === -2) {
       this.pageInfo.setPage(0);
     } else if (mode === -1 && this.pageInfo.page > 0) {
@@ -1134,7 +1123,7 @@ export class GridService {
     }
   }
 
-  setPageSize(pageSize: number) {
+  public setPageSize(pageSize: number) {
     this.pageInfo.setPageSize(pageSize);
     this.pageInfo.setPage(0);
 
@@ -1154,7 +1143,7 @@ export class GridService {
    *
    * @param column
    */
-  sort(field: string) {
+  public sort(field: string) {
     if (this.sortInfo.field === null || this.sortInfo.field !== field) {
       this.sortInfo.field = field;
       this.sortInfo.asc = true;
@@ -1170,7 +1159,7 @@ export class GridService {
     }
   }
 
-  sortPreparedData() {
+  public sortPreparedData() {
     let sortColumns: number[] = [];
 
     if (this.sortInfo.field === null && this.groupBy) {
@@ -1228,11 +1217,11 @@ export class GridService {
     }
   }
 
-  getValueSubject(): Subject<Point> {
+  public getValueSubject(): Subject<Point> {
     return this.valueSubject;
   }
 
-  getColumnByName(name: string): Column {
+  public getColumnByName(name: string): Column {
     for (let column of this.columns) {
       if (column.name === name) {
         return column;
@@ -1240,11 +1229,11 @@ export class GridService {
     }
   }
 
-  getFilterMapSubject(): BehaviorSubject<Map<string, FilterInfo[]>> {
+  public getFilterMapSubject(): BehaviorSubject<Map<string, FilterInfo[]>> {
     return this.filterMapSubject;
   }
 
-  addFilter(field: string, filterInfo: FilterInfo) {
+  public addFilter(field: string, filterInfo: FilterInfo) {
     if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
     }
@@ -1259,7 +1248,7 @@ export class GridService {
    * @param {string} field
    * @param {FilterInfo[]} filters
    */
-  addFilters(field: string, filters: FilterInfo[]) {
+  public addFilters(field: string, filters: FilterInfo[]) {
     if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
     }
@@ -1273,7 +1262,7 @@ export class GridService {
    * @param {string} field
    * @param {FilterInfo[]} filters
    */
-  globalClearPushFilter(field: string, filters: FilterInfo[]) {
+  public globalClearPushFilter(field: string, filters: FilterInfo[]) {
     if (this.linkedGroups) {
       for (let linkedGroup of this.linkedGroups) {
         this.gridGlobalService.clearPushFilter(linkedGroup, this.id, field, filters);
@@ -1281,31 +1270,31 @@ export class GridService {
     }
   }
 
-  getOriginalData(): Object[] {
+  public getOriginalData(): Object[] {
     return this.originalData;
   }
 
-  getOriginalRow(i: number): any {
+  public getOriginalRow(i: number): any {
     return this.originalData[i];
   }
 
-  getPreparedData(): Row[] {
+  public getPreparedData(): Row[] {
     return this.preparedData;
   }
 
-  getDataChangeSubject(): Subject<any> {
+  public getDataChangeSubject(): Subject<any> {
     return this.dataChangeSubject;
   }
 
-  getDirtyCells(): Point[] {
+  public getDirtyCells(): Point[] {
     return this.dirtyCells;
   }
 
-  getDirtyCellsSubject(): Subject<Point[]> {
+  public getDirtyCellsSubject(): Subject<Point[]> {
     return this.dirtyCellsSubject;
   }
 
-  getRowChangedSubject(): Subject<RowChange> {
+  public getRowChangedSubject(): Subject<RowChange> {
     return this.rowChangedSubject;
   }
 }

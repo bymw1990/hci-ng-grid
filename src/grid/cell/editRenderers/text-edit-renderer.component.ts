@@ -2,6 +2,7 @@ import {Component, ElementRef, ViewChild} from "@angular/core";
 
 import {Point} from "../../utils/point";
 import {CellEditRenderer} from "./cell-edit-renderer";
+import * as moment from "moment";
 
 @Component({
   selector: "hci-grid-text-edit",
@@ -30,7 +31,6 @@ export class TextEditRenderer extends CellEditRenderer {
   @ViewChild("input") input: ElementRef;
 
   invalid: boolean = false;
-  type: string;
   required: boolean;
   minlength: number;
   maxlength: number;
@@ -51,9 +51,6 @@ export class TextEditRenderer extends CellEditRenderer {
   setConfig(config: any) {
     super.setConfig(config);
 
-    if (config.type) {
-      this.type = config.type;
-    }
     if (config.required !== undefined) {
       this.required = config.required;
     }
@@ -72,6 +69,8 @@ export class TextEditRenderer extends CellEditRenderer {
     this.renderer.removeClass(this.input.nativeElement, "ng-valid");
     this.renderer.removeClass(this.input.nativeElement, "ng-invalid");
 
+    this.invalid = false;
+
     if (this.required !== undefined && this.required && !value) {
       this.invalid = true;
     } else if (this.minlength && !value) {
@@ -84,14 +83,22 @@ export class TextEditRenderer extends CellEditRenderer {
       this.invalid = true;
     } else if (this.pattern && value && value.match(this.pattern) === null) {
       this.invalid = true;
-    } else {
-      this.invalid = false;
-      this.value = value;
+    } else if (this.column.dataType === "date" && this.column.format) {
+      try {
+        let date: string = moment(<string>value, this.column.format).toISOString();
+
+        if (date === "Invalid date" || date.indexOf("NaN") >= 0 || value.length !== this.column.format.length) {
+          this.invalid = true;
+        }
+      } catch (error) {
+        this.invalid = true;
+      }
     }
 
     if (this.invalid) {
       this.renderer.addClass(this.input.nativeElement, "ng-invalid");
     } else {
+      this.value = value;
       this.renderer.addClass(this.input.nativeElement, "ng-valid");
     }
   }

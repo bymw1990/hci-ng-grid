@@ -19,6 +19,9 @@
     "outDir": "./dist",
     "rootDir": "./"
   },
+  "include": [
+    "**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "demo",
@@ -26,9 +29,6 @@
     "src/**/*.spec.ts"
   ],
   "baseUrl": "./src",
-  "files": [
-    "./index.ts"
-  ],
   "angularCompilerOptions": {
     "genDir": "dist",
     "debug": false,

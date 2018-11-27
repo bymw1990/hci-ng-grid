@@ -758,7 +758,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Clears all the currently registered listeners.
    */
-  resetEventListeners() {
+  public resetEventListeners(): void {
     this.clickListeners = [];
     this.dblClickListeners = [];
     this.mouseDownListeners = [];
@@ -770,7 +770,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Create instances of the event listeners and place them in the appropriate event type arrays.
    */
-  public registerEventListeners() {
+  public registerEventListeners(): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": registerEventListeners");
     }
@@ -815,39 +815,39 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return this.busySubject;
   }
 
-  public addClickListener(clickListener: EventListener) {
+  public addClickListener(clickListener: EventListener): void {
     this.clickListeners.push(clickListener);
   }
 
-  public doPageFirst() {
+  public doPageFirst(): void {
     if (!this.busy) {
       this.gridService.setPage(-2);
     }
   }
 
-  public doPagePrevious() {
+  public doPagePrevious(): void {
     if (!this.busy) {
       this.gridService.setPage(-1);
     }
   }
 
-  public doPageSize(value: number) {
+  public doPageSize(value: number): void {
     this.gridService.setPageSize(value);
   }
 
-  public doPageNext() {
+  public doPageNext(): void {
     if (!this.busy) {
       this.gridService.setPage(1);
     }
   }
 
-  public doPageLast() {
+  public doPageLast(): void {
     if (!this.busy) {
       this.gridService.setPage(2);
     }
   }
 
-  public clearSelectedRows() {
+  public clearSelectedRows(): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": clearSelectedRows");
     }
@@ -861,19 +861,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  public deleteSelectedRows() {
+  public deleteSelectedRows(): void {
     this.gridService.deleteSelectedRows();
   }
 
-  getGridService(): GridService {
+  public getGridService(): GridService {
     return this.gridService;
   }
 
-  getGridEventService(): GridEventService {
+  public getGridEventService(): GridEventService {
     return this.gridEventService;
   }
 
-  public updateConfig() {
+  public updateConfig(): void {
     if (this.config.busyTemplate) {
       this.busyTemplate = this.config.busyTemplate;
     }
@@ -882,7 +882,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  updateMode() {
+  public updateMode(): void {
     if (!this.mode) {
       return;
     } else if (this.mode === "spreadsheet") {
@@ -900,7 +900,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} delay (Optional) In ms, the delay or interval delay until trying to render.
    * @param {string} id (Optional) Id of a dom parent, loops until the display is not "none".
    */
-  doRender(delay?: number, id?: string) {
+  public doRender(delay?: number, id?: string): void {
     if (this.doRenderSubscription) {
       this.doRenderSubscription.unsubscribe();
     }
@@ -945,7 +945,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * The bound scroll listener for the #right-view container.
    */
-  onScroll() {
+  public onScroll(): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": onScroll");
     }
@@ -955,7 +955,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  onScrollRightView(event: Event) {
+  public onScrollRightView(event: Event): void {
     this.event = SCROLL;
 
     if (isDevMode()) {
@@ -976,7 +976,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  mouseDown(event: MouseEvent) {
+  public mouseDown(event: MouseEvent): void {
     if (!event || !event.target) {
       return;
     }
@@ -997,7 +997,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  mouseOver(event: MouseEvent) {
+  public mouseOver(event: MouseEvent): void {
     if (!event || !event.target) {
       return;
     }
@@ -1014,7 +1014,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  mouseUp(event: MouseEvent) {
+  public mouseUp(event: MouseEvent): void {
     if (!event || !event.target) {
       return;
     }
@@ -1035,7 +1035,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  mouseDrag(event: MouseEvent) {
+  public mouseDrag(event: MouseEvent): void {
     if (!event || !event.target) {
       return;
     }
@@ -1052,7 +1052,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  click(event: MouseEvent) {
+  public click(event: MouseEvent): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": click");
     }
@@ -1083,7 +1083,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  dblClick(event: MouseEvent) {
+  public dblClick(event: MouseEvent): void {
     this.singleClickCancel = true;
     clearTimeout(this.clickTimer);
     if (isDevMode()) {
@@ -1105,7 +1105,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {Event} event
    */
-  onFocus(event: Event) {
+  public onFocus(event: Event): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": onFocus: " + (<HTMLElement>event.target).id);
     }
@@ -1122,7 +1122,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {MouseEvent} event
    */
-  keyDown(event: KeyboardEvent) {
+  public keyDown(event: KeyboardEvent): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": GridComponent.onKeyDown");
     }
@@ -1269,7 +1269,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {Point} location The cell location to perform popup on.
    */
-  createPopup(location: Point) {
+  public createPopup(location: Point): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": createPopup at " + location.toString());
     }
@@ -1300,7 +1300,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {any[]} selectedRows
    */
-  updateSelectedRows(selectedRows: any[]) {
+  public updateSelectedRows(selectedRows: any[]): void {
     if (isDevMode()) {
       console.info("hci-grid: " + this.id + ": updateSelectedRows: " + JSON.stringify(selectedRows));
     }
@@ -1335,7 +1335,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} i
    * @param {number} j
    */
-  clearDirtyCell(i: number, j: number) {
+  public clearDirtyCell(i: number, j: number): void {
     this.gridService.clearDirtyCell(i, j);
   }
 
@@ -1343,7 +1343,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
    * combination of config and @Input settings.
    */
-  private buildConfigFromInput() {
+  private buildConfigFromInput(): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": buildConfigFromInput");
     }
@@ -1397,7 +1397,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private findBaseRowCell() {
+  private findBaseRowCell(): void {
     this.rowHeight = this.gridContainer.nativeElement.querySelector("#base-row").offsetHeight;
     if (!this.rowHeight || this.rowHeight === 0) {
       this.rowHeight = 30;
@@ -1407,7 +1407,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Calculate the sizes of the containers and column header sizes.
    */
-  private updateGridContainerAndColumnSizes() {
+  private updateGridContainerAndColumnSizes(): void {
     this.gridService.setNVisibleRows();
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": updateGridContainerAndColumnSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
@@ -1541,7 +1541,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private setGridData(gridData: Row[]) {
+  private setGridData(gridData: Row[]): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": setGridData");
       console.debug(gridData);
@@ -1554,7 +1554,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Removed currently rendered rows.  Then render cells and inject html from the view renderers in to each cell.
    */
-  private renderCellsAndData(scroll?: boolean) {
+  private renderCellsAndData(scroll?: boolean): void {
     if (isDevMode()) {
       if (this.columnMap) {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: columnMap.length: " + this.columnMap.get("ALL").length + " gridData.length: " + this.gridData.length);
@@ -1664,7 +1664,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {Point[]} dirtyCells
    */
-  private renderDirtyCells(dirtyCells: Point[]) {
+  private renderDirtyCells(dirtyCells: Point[]): void {
     let els: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".ng-dirty");
     for (let el of els) {
       this.renderer.removeClass(el, "ng-dirty");
@@ -1712,7 +1712,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} j The cell number.
    * @param {string} value The original value to display after formatting.
    */
-  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string) {
+  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string): void {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
     this.renderer.addClass(eCell, "hci-grid-cell");
@@ -1741,7 +1741,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} i The row number.
    * @param {number} j The column number.
    */
-  private selectComponent(i: number, j: number) {
+  private selectComponent(i: number, j: number): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": selectComponent: " + i + " " + j);
     }
@@ -1755,7 +1755,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Remove the selected class from all selected cells.
    */
-  private clearSelectedComponents() {
+  private clearSelectedComponents(): void {
     let els: HTMLElement[] = this.gridContainer.nativeElement.querySelector("#grid-content").querySelectorAll(".selected");
     for (let el of els) {
       this.renderer.removeClass(el, "selected");
@@ -1767,7 +1767,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {HTMLElement} cellElement The cell dom element.
    */
-  private createCellComponent(cellElement: HTMLElement) {
+  private createCellComponent(cellElement: HTMLElement): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": createCellComponent: " + cellElement.id);
     }
@@ -1812,7 +1812,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Sets the height of the view containers based on either the rows allowed to render or the data size.
    */
-  private updateGridContainerHeight() {
+  private updateGridContainerHeight(): void {
     if (this.gridService.nVisibleRows) {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
@@ -1842,7 +1842,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    *
    * @param {Range} range The min and max cell location that represents the selection.
    */
-  private updateSelectedCells(range: Range) {
+  private updateSelectedCells(range: Range): void {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": updateSelectedCells: " + ((range) ? range.toString() : "undefined"));
     }
@@ -1888,7 +1888,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param event The window event.
    */
   @HostListener("document:click", ["$event"])
-  private documentClickEvent(event) {
+  private documentClickEvent(event): void {
     if (!this.el.nativeElement.contains(event.target)) {
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
