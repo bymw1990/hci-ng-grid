@@ -20,7 +20,7 @@ import {Column, RangeSelectListener} from "hci-ng-grid";
               &lt;hci-grid
                 [title]="'Copy Paste Grid'"
                 [data]="copyPasteData"
-                [columnDefinitions]="copyPasteColumns"
+                [columns]="copyPasteColumns"
                 [eventListeners]="listeners"&gt;
               &lt;/hci-grid&gt;
               
@@ -72,7 +72,7 @@ import {Column, RangeSelectListener} from "hci-ng-grid";
         <p>
           <hci-grid [title]="'Copy Paste Grid'"
                     [data]="copyPasteData"
-                    [columnDefinitions]="copyPasteColumns"
+                    [columns]="copyPasteColumns"
                     [eventListeners]="listeners">
           </hci-grid>
         </p>

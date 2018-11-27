@@ -38,7 +38,7 @@ describe("DashboardComponent Tests", () => {
     let grid = fixture.componentInstance;
 
     let config = {
-      columnDefinitions: [ new Column({ field: "a", name: "a" }) ]
+      columns: [ new Column({ field: "a", name: "a" }) ]
     };
 
     grid.boundData = [

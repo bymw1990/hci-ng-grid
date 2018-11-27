@@ -16,7 +16,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config1>
             <pre>
               &lt;hci-grid [data]="data1"
-                       [columnDefinitions]="columns"
+                       [columns]="columns"
                        [pageSize]="10"
                        [pageSizes]="[5, 10, 25]"&gt;
               &lt;/hci-grid&gt;
@@ -33,7 +33,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [pageSize]="10"
                     [pageSizes]="[5, 10, 25]">
           </hci-grid>
@@ -53,7 +53,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config2>
             <pre>
               &lt;hci-grid [data]="data2"
-                       [columnDefinitions]="columns"
+                       [columns]="columns"
                        [theme]="''"&gt;
               &lt;/hci-grid&gt;
               
@@ -69,7 +69,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [data]="data2"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [theme]="''">
           </hci-grid>
         </p>
@@ -90,7 +90,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               &lt;hci-grid [title]="'Demographics Report'"
                         [data]="data3"
-                        [columnDefinitions]="columns3"
+                        [columns]="columns3"
                         [theme]="'report'"
                         [nVisibleRows]="-1"&gt;
               &lt;/hci-grid&gt;
@@ -108,7 +108,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           <hci-grid [title]="'Demographics Report'"
                     [data]="data3"
-                    [columnDefinitions]="columns3"
+                    [columns]="columns3"
                     [theme]="'report'"
                     [nVisibleRows]="-1">
           </hci-grid>
@@ -130,7 +130,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Demographics Report'"
                 [data]="data4"
-                [columnDefinitions]="columns3"
+                [columns]="columns3"
                 [theme]="'report override'"
                 [nVisibleRows]="-1"&gt;
               &lt;/hci-grid&gt;
@@ -156,7 +156,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Demographics Report'"
                     [data]="data4"
-                    [columnDefinitions]="columns3"
+                    [columns]="columns3"
                     [theme]="'report override'"
                     [nVisibleRows]="-1">
           </hci-grid>
@@ -177,7 +177,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Demographics Report'"
                 [data]="data5"
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [theme]="'big'"
                 [nVisibleRows]="-1"&gt;
               &lt;/hci-grid&gt;
@@ -206,7 +206,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Demographics Report'"
                     [data]="data5"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [theme]="'big'"
                     [nVisibleRows]="-1">
           </hci-grid>

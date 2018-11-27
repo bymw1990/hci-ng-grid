@@ -38,7 +38,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Externalyl Controlled Grid'"
                 [data]="data"
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [pageSize]="10"
                 [pageSizes]="[10, 25, 100]&gt;
               &lt;/hci-grid&gt;
@@ -60,7 +60,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid #grid
                     [title]="'Externally Controlled Grid'"
                     [data]="data"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [pageSize]="10"
                     [pageSizes]="[10, 25, 100]">
           </hci-grid>

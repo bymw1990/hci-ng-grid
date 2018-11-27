@@ -22,7 +22,7 @@ import {Column} from "hci-ng-grid";
                 &lt;hci-grid
                   [title]="'Validation Grid'"
                   [data]="data"
-                  [columnDefinitions]="columns"
+                  [columns]="columns"
                   [pageSize]="10"
                   [nVisibleRows]="10"&gt;
                 &lt;/hci-grid&gt;
@@ -59,7 +59,7 @@ import {Column} from "hci-ng-grid";
           <div>
             <hci-grid [title]="'Validation Grid'"
                       [data]="data"
-                      [columnDefinitions]="columns"
+                      [columns]="columns"
                       [pageSize]="10"
                       [nVisibleRows]="10">
             </hci-grid>

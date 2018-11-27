@@ -25,9 +25,7 @@ export class GridService {
   static defaultConfig: any = {
     theme: "spreadsheet",
     columnHeaders: true,
-    rowSelect: false,
-    keyNavigation: false,
-    groupByCollapsed: false,
+    groupByCollapsed: true,
     externalFiltering: false,
     externalSorting: false,
     externalPaging: false,
@@ -43,9 +41,7 @@ export class GridService {
 
   id: string;
   columnHeaders: boolean;
-  rowSelect: boolean;
-  keyNavigation: boolean;
-  columnDefinitions: Column[];
+  columns: Column[];
   fixedColumns: string[];
   groupBy: string[];
   groupByCollapsed: boolean;
@@ -133,23 +129,23 @@ export class GridService {
     }
 
     // Selection Related Configuration
-    if (config.rowSelect !== undefined) {
+    /*if (config.rowSelect !== undefined) {
       this.rowSelect = config.rowSelect;
     }
     if (config.keyNavigation !== undefined) {
       this.keyNavigation = config.keyNavigation;
-    }
+    }*/
 
     // Column Related Configuration
-    if (config.columnDefinitions !== undefined) {
-      if (this.columnDefinitions !== config.columnDefinitions) {
+    if (config.columns !== undefined) {
+      if (this.columns !== config.columns) {
         columnsChanged = true;
       }
       // Bring in column defaults to config
-      for (var i = 0; i < config.columnDefinitions.length; i++) {
-        config.columnDefinitions[i] = Object.assign({}, Column.defaultConfig, config.columnDefinitions[i]);
+      for (var i = 0; i < config.columns.length; i++) {
+        config.columns[i] = Object.assign({}, Column.defaultConfig, config.columns[i]);
       }
-      this.columnDefinitions = Column.deserializeArray(config.columnDefinitions);
+      this.columns = Column.deserializeArray(config.columns);
     }
     if (config.columnHeaders !== undefined) {
       if (this.columnHeaders !== config.columnHeaders) {
@@ -235,8 +231,8 @@ export class GridService {
    */
   updateSortOrder(field: string, position: number) {
     let n: number = -1;
-    for (let i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].field === field) {
+    for (let i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].field === field) {
         n = i;
         break;
       }
@@ -248,20 +244,20 @@ export class GridService {
     if (n === -1) {
       console.warn("hci-grid: " + this.id + ": GridService.updateSortOrder: Column not found.");
     } else if (position === -2) {
-      this.columnDefinitions[n].sortOrder = 0;
+      this.columns[n].sortOrder = 0;
       for (let i = n - 1; i >= 0; i--) {
-        this.columnDefinitions[i].sortOrder = this.columnDefinitions[i].sortOrder + 1;
+        this.columns[i].sortOrder = this.columns[i].sortOrder + 1;
       }
     } else if (position === -1 && n > 0) {
-      this.columnDefinitions[n].sortOrder = this.columnDefinitions[n].sortOrder - 1;
-      this.columnDefinitions[n - 1].sortOrder = this.columnDefinitions[n - 1].sortOrder + 1;
-    } else if (position === 1 && n < this.columnDefinitions.length - 1) {
-      this.columnDefinitions[n].sortOrder = this.columnDefinitions[n].sortOrder + 1;
-      this.columnDefinitions[n + 1].sortOrder = this.columnDefinitions[n + 1].sortOrder - 1;
+      this.columns[n].sortOrder = this.columns[n].sortOrder - 1;
+      this.columns[n - 1].sortOrder = this.columns[n - 1].sortOrder + 1;
+    } else if (position === 1 && n < this.columns.length - 1) {
+      this.columns[n].sortOrder = this.columns[n].sortOrder + 1;
+      this.columns[n + 1].sortOrder = this.columns[n + 1].sortOrder - 1;
     } else if (position === 2) {
-      this.columnDefinitions[n].sortOrder = this.columnDefinitions.length - 1;
-      for (let i = n + 1; i < this.columnDefinitions.length; i++) {
-        this.columnDefinitions[i].sortOrder = this.columnDefinitions[i].sortOrder - 1;
+      this.columns[n].sortOrder = this.columns.length - 1;
+      for (let i = n + 1; i < this.columns.length; i++) {
+        this.columns[i].sortOrder = this.columns[i].sortOrder - 1;
       }
     }
 
@@ -279,7 +275,7 @@ export class GridService {
 
     let columnMap: Map<string, Column[]> = this.createColumnMap();
 
-    if (!this.columnDefinitions) {
+    if (!this.columns) {
       this.columnMapSubject.next(columnMap);
       return;
     }
@@ -287,9 +283,9 @@ export class GridService {
 
     this.nFixedColumns = 0;
     this.nNonFixedColumns = 0;
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
-      if (this.columnDefinitions[j].visible) {
-        if (this.columnDefinitions[j].isFixed) {
+    for (var j = 0; j < this.columns.length; j++) {
+      if (this.columns[j].visible) {
+        if (this.columns[j].isFixed) {
           this.nFixedColumns = this.nFixedColumns + 1;
         } else {
           this.nNonFixedColumns = this.nNonFixedColumns + 1;
@@ -298,16 +294,16 @@ export class GridService {
     }
 
     let keyDefined: boolean = false;
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].isKey) {
+    for (var i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].isKey) {
         keyDefined = true;
       }
     }
-    if (!keyDefined && this.columnDefinitions.length > 0) {
-      this.columnDefinitions[0].isKey = true;
+    if (!keyDefined && this.columns.length > 0) {
+      this.columns[0].isKey = true;
     }
 
-    this.config.columnDefinitions = this.columnDefinitions;
+    this.config.columns = this.columns;
 
     this.columnMapSubject.next(columnMap);
   }
@@ -321,7 +317,7 @@ export class GridService {
       console.debug("hci-grid: " + this.id + ": GridService.initColumnProperties");
     }
 
-    this.columnDefinitions.sort((a: Column, b: Column) => {
+    this.columns.sort((a: Column, b: Column) => {
       if (a.sortOrder && b.sortOrder) {
         if (a.sortOrder < b.sortOrder) {
           return -1;
@@ -339,13 +335,13 @@ export class GridService {
       }
     });
 
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
+    for (var j = 0; j < this.columns.length; j++) {
       // Reset isLast
-      this.columnDefinitions[j].isLast = false;
+      this.columns[j].isLast = false;
 
-      if (this.columnDefinitions[j].choiceUrl) {
-        this.http.get(this.columnDefinitions[j].choiceUrl).subscribe((choices: any) => {
-          this.columnDefinitions[j].choices = choices;
+      if (this.columns[j].choiceUrl) {
+        this.http.get(this.columns[j].choiceUrl).subscribe((choices: any) => {
+          this.columns[j].choices = choices;
         });
       }
     }
@@ -358,66 +354,66 @@ export class GridService {
 
     let groupByDisplay: string = undefined;
 
-    if (this.rowSelect) {
+    /*if (this.rowSelect) {
       let rowSelectColumn: Column = Column.deserialize({ name: "", template: "InputCell", width: 30, minWidth: 30, maxWidth: 30 });
       rowSelectColumn.field = "ROW_SELECT";
       rowSelectColumn.sortable = false;
       rowSelectColumn.renderOrder = 0;
       rowSelectColumn.isFixed = true;
       rowSelectColumn.isUtility = true;
-      this.columnDefinitions.push(rowSelectColumn);
-    }
+      this.columns.push(rowSelectColumn);
+    }*/
 
     this.nVisibleColumns = 0;
 
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
+    for (var j = 0; j < this.columns.length; j++) {
       if (this.fixedColumns) {
         // Reset isFixed to false
-        this.columnDefinitions[j].isFixed = false;
+        this.columns[j].isFixed = false;
 
         for (var k = 0; k < this.fixedColumns.length; k++) {
-          if (this.columnDefinitions[j].field === this.fixedColumns[k]) {
-            this.columnDefinitions[j].isFixed = true;
+          if (this.columns[j].field === this.fixedColumns[k]) {
+            this.columns[j].isFixed = true;
           }
         }
       }
       if (this.groupBy) {
         for (var k = 0; k < this.groupBy.length; k++) {
-          if (this.columnDefinitions[j].field === this.groupBy[k]) {
-            groupByDisplay = (groupByDisplay) ? groupByDisplay + ", " + this.columnDefinitions[j].name : this.columnDefinitions[j].name;
-            this.columnDefinitions[j].isGroup = true;
-            this.columnDefinitions[j].visible = false;
+          if (this.columns[j].field === this.groupBy[k]) {
+            groupByDisplay = (groupByDisplay) ? groupByDisplay + ", " + this.columns[j].name : this.columns[j].name;
+            this.columns[j].isGroup = true;
+            this.columns[j].visible = false;
             break;
           }
         }
       }
 
-      if (this.columnDefinitions[j].visible) {
+      if (this.columns[j].visible) {
         this.nVisibleColumns = this.nVisibleColumns + 1;
       } else {
-        this.columnDefinitions[j].selectable = false;
+        this.columns[j].selectable = false;
       }
 
       // Set the order of columns based on how they should appear.  Non visible columns are at the back.
-      if (this.columnDefinitions[j].isUtility) {
-        this.columnDefinitions[j].renderOrder = this.columnDefinitions[j].sortOrder;
-      } else if (this.columnDefinitions[j].isFixed) {
-        this.columnDefinitions[j].renderOrder = 10000 + this.columnDefinitions[j].sortOrder;
-      } else if (this.columnDefinitions[j].visible) {
-        this.columnDefinitions[j].renderOrder = 20000 + this.columnDefinitions[j].sortOrder;
+      if (this.columns[j].isUtility) {
+        this.columns[j].renderOrder = this.columns[j].sortOrder;
+      } else if (this.columns[j].isFixed) {
+        this.columns[j].renderOrder = 10000 + this.columns[j].sortOrder;
+      } else if (this.columns[j].visible) {
+        this.columns[j].renderOrder = 20000 + this.columns[j].sortOrder;
       } else {
-        this.columnDefinitions[j].renderOrder = 30000 + this.columnDefinitions[j].sortOrder;
+        this.columns[j].renderOrder = 30000 + this.columns[j].sortOrder;
       }
     }
 
     if (nGroupBy > 0) {
       let column: Column = new Column({renderOrder: 1999, field: "GROUPBY", name: groupByDisplay, selectable: false});
-      this.columnDefinitions.push(column);
+      this.columns.push(column);
       this.nVisibleColumns = this.nVisibleColumns + 1;
     }
 
     // Re-sort columns based on render order.
-    this.columnDefinitions.sort((a: Column, b: Column) => {
+    this.columns.sort((a: Column, b: Column) => {
       if (a.renderOrder < b.renderOrder) {
         return -1;
       } else if (a.renderOrder > b.renderOrder) {
@@ -427,30 +423,30 @@ export class GridService {
       }
     });
 
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
-      columnMap.get("ALL").push(this.columnDefinitions[j]);
+    for (var j = 0; j < this.columns.length; j++) {
+      columnMap.get("ALL").push(this.columns[j]);
 
-      if (this.columnDefinitions[j].visible) {
-        this.columnDefinitions[j].id = j;
-        columnMap.get("VISIBLE").push(this.columnDefinitions[j]);
+      if (this.columns[j].visible) {
+        this.columns[j].id = j;
+        columnMap.get("VISIBLE").push(this.columns[j]);
 
-        if (this.columnDefinitions[j].isUtility) {
-          columnMap.get("UTILITY").push(this.columnDefinitions[j]);
+        if (this.columns[j].isUtility) {
+          columnMap.get("UTILITY").push(this.columns[j]);
         }
-        if (this.columnDefinitions[j].isUtility || this.columnDefinitions[j].isFixed) {
-          columnMap.get("LEFT_VISIBLE").push(this.columnDefinitions[j]);
+        if (this.columns[j].isUtility || this.columns[j].isFixed) {
+          columnMap.get("LEFT_VISIBLE").push(this.columns[j]);
         } else {
-          columnMap.get("MAIN_VISIBLE").push(this.columnDefinitions[j]);
+          columnMap.get("MAIN_VISIBLE").push(this.columns[j]);
         }
       } else {
-        columnMap.get("NON_VISIBLE").push(this.columnDefinitions[j]);
+        columnMap.get("NON_VISIBLE").push(this.columns[j]);
       }
     }
 
     if (isDevMode()) {
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        console.debug("field: " + this.columnDefinitions[j].field + ", sortOrder: " + this.columnDefinitions[j].sortOrder + ", renderOrder: " + this.columnDefinitions[j].renderOrder
-            + ", visible: " + this.columnDefinitions[j].visible + ", selectable: " + this.columnDefinitions[j].selectable + ", isFixed: " + this.columnDefinitions[j].isFixed);
+      for (var j = 0; j < this.columns.length; j++) {
+        console.debug("field: " + this.columns[j].field + ", sortOrder: " + this.columns[j].sortOrder + ", renderOrder: " + this.columns[j].renderOrder
+            + ", visible: " + this.columns[j].visible + ", selectable: " + this.columns[j].selectable + ", isFixed: " + this.columns[j].isFixed);
       }
     }
   }
@@ -493,7 +489,7 @@ export class GridService {
   }
 
   getColumnDefinitions() {
-    return this.columnDefinitions;
+    return this.columns;
   }
 
   getViewDataSubject(): BehaviorSubject<Row[]> {
@@ -507,8 +503,8 @@ export class GridService {
    */
   getKeyColumns(): Array<number> {
     let keys: number[] = [];
-    for (var i = 0; i < this.columnDefinitions.length; i++) {
-      if (this.columnDefinitions[i].isKey) {
+    for (var i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].isKey) {
         keys.push(i);
       }
     }
@@ -516,11 +512,11 @@ export class GridService {
   }
 
   getColumn(j: number): Column {
-    return this.columnDefinitions[j];
+    return this.columns[j];
   }
 
   isColumnSelectable(j: number): boolean {
-    return this.columnDefinitions[j].selectable;
+    return this.columns[j].selectable;
   }
 
   getNVisibleColumns(): number {
@@ -542,8 +538,8 @@ export class GridService {
    */
   deleteSelectedRows() {
     this.originalData = this.originalData.filter((row: Object) => {
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].isKey && this.selectedRows.indexOf(this.getField(row, this.columnDefinitions[j].field)) !== -1) {
+      for (var j = 0; j < this.columns.length; j++) {
+        if (this.columns[j].isKey && this.selectedRows.indexOf(this.getField(row, this.columns[j].field)) !== -1) {
           return false;
         }
       }
@@ -699,8 +695,8 @@ export class GridService {
   }
 
   getColumnIndexByField(field: string) {
-    for (var j = 0; j < this.columnDefinitions.length; j++) {
-      if (this.columnDefinitions[j].field === field) {
+    for (var j = 0; j < this.columns.length; j++) {
+      if (this.columns[j].field === field) {
         return j;
       }
     }
@@ -718,8 +714,8 @@ export class GridService {
       for (var i = 0; i < this.preparedData.length; i++) {
         let inc: boolean = true;
 
-        for (var j = 0; j < this.columnDefinitions.length; j++) {
-          let filters: FilterInfo[] = this.filterMap.get(this.columnDefinitions[j].field);
+        for (var j = 0; j < this.columns.length; j++) {
+          let filters: FilterInfo[] = this.filterMap.get(this.columns[j].field);
           if (!filters) {
             continue;
           }
@@ -732,7 +728,7 @@ export class GridService {
             break;
           }
 
-          if (this.columnDefinitions[j].dataType === "choice") {
+          if (this.columns[j].dataType === "choice") {
             if (filters.length === 0) {
               inc = true;
             } else {
@@ -929,7 +925,7 @@ export class GridService {
       console.debug("hci-grid: " + this.id + ": handleValueChange: " + i + " " + j + " " + newValue + " " + oldValue);
     }
 
-    this.setInputDataValue(key, this.columnDefinitions[j].field, newValue);
+    this.setInputDataValue(key, this.columns[j].field, newValue);
 
     // TODO: Still used?
     this.valueSubject.next(new Point(i, j));
@@ -942,7 +938,7 @@ export class GridService {
       key: this.getRow(i).key,
       i: i,
       j: j,
-      field: this.columnDefinitions[j].field,
+      field: this.columns[j].field,
       oldValue: oldValue,
       newValue: newValue
     });
@@ -992,8 +988,8 @@ export class GridService {
       // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
       // lay next to each other
       let groupColumns: number[] = [];
-      for (var i = 0; i < this.columnDefinitions.length; i++) {
-        if (this.columnDefinitions[i].isGroup) {
+      for (var i = 0; i < this.columns.length; i++) {
+        if (this.columns[i].isGroup) {
           groupColumns.push(i);
         }
       }
@@ -1027,10 +1023,10 @@ export class GridService {
     this.clearSelectedRows();
 
     for (var i = 0; i < this.preparedData.length; i++) {
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].isUtility) {
-          if (this.columnDefinitions[j].defaultValue !== undefined) {
-            this.preparedData[i].get(j).value = this.columnDefinitions[j].defaultValue;
+      for (var j = 0; j < this.columns.length; j++) {
+        if (this.columns[j].isUtility) {
+          if (this.columns[j].defaultValue !== undefined) {
+            this.preparedData[i].get(j).value = this.columns[j].defaultValue;
           }
         }
       }
@@ -1038,30 +1034,30 @@ export class GridService {
   }
 
   prepareData() {
-    if (!this.columnDefinitions) {
+    if (!this.columns) {
       if (isDevMode()) {
         console.info("prepareData: No Columns, returning.");
       }
       return;
     }
     if (isDevMode()) {
-      console.info("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columnDefinitions.length);
+      console.info("prepareData: nData: " + this.originalData.length + ", nCols: " + this.columns.length);
     }
     this.preparedData = [];
 
     for (var i = 0; i < this.originalData.length; i++) {
       let row: Row = new Row();
       row.rowNum = i;
-      for (var j = 0; j < this.columnDefinitions.length; j++) {
-        if (this.columnDefinitions[j].isKey) {
-          row.key = this.getField(this.originalData[i], this.columnDefinitions[j].field);
+      for (var j = 0; j < this.columns.length; j++) {
+        if (this.columns[j].isKey) {
+          row.key = this.getField(this.originalData[i], this.columns[j].field);
         }
-        if (this.columnDefinitions[j].field === "GROUPBY") {
+        if (this.columns[j].field === "GROUPBY") {
           row.add(new Cell({value: "", key: i}));
-        } else if (this.columnDefinitions[j].isUtility) {
+        } else if (this.columns[j].isUtility) {
             row.add(new Cell({value: false}));
         } else {
-          row.add(new Cell({value: this.getField(this.originalData[i], this.columnDefinitions[j].field), key: i}));
+          row.add(new Cell({value: this.getField(this.originalData[i], this.columns[j].field), key: i}));
         }
       }
 
@@ -1082,12 +1078,12 @@ export class GridService {
       this.pageInfo.setPageSize(10);
     }
 
-    if (!this.columnDefinitions && this.originalData.length > 0) {
-      this.columnDefinitions = [];
+    if (!this.columns && this.originalData.length > 0) {
+      this.columns = [];
       let keys: string[] = Object.keys(this.originalData[0]);
       for (var i = 0; i < keys.length; i++) {
-        this.columnDefinitions.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
-        this.columnDefinitions = this.columnDefinitions;
+        this.columns.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
+        this.columns = this.columns;
       }
       this.initColumnDefinitions();
       return true;
@@ -1181,16 +1177,16 @@ export class GridService {
       this.sortInfo.field = "GROUP_BY";
     }
 
-    if (this.columnDefinitions) {
+    if (this.columns) {
       if (this.sortInfo.field === "GROUP_BY") {
-        for (var i = 0; i < this.columnDefinitions.length; i++) {
-          if (this.columnDefinitions[i].isGroup) {
+        for (var i = 0; i < this.columns.length; i++) {
+          if (this.columns[i].isGroup) {
             sortColumns.push(i);
           }
         }
       } else {
-        for (var i = 0; i < this.columnDefinitions.length; i++) {
-          if (this.columnDefinitions[i].field === this.sortInfo.field) {
+        for (var i = 0; i < this.columns.length; i++) {
+          if (this.columns[i].field === this.sortInfo.field) {
             sortColumns.push(i);
             break;
           }
@@ -1237,7 +1233,7 @@ export class GridService {
   }
 
   getColumnByName(name: string): Column {
-    for (let column of this.columnDefinitions) {
+    for (let column of this.columns) {
       if (column.name === name) {
         return column;
       }

@@ -21,7 +21,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Simple Grid'"
                 [data]="simpleData1"
-                [columnDefinitions]="[
+                [columns]="[
                   {{"{"}} field: 'lastName' {{"}"}},
                   {{"{"}} field: 'firstName' {{"}"}},
                   {{"{"}} field: 'dob', dataType: 'date' {{"}"}},
@@ -35,7 +35,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Simple Grid'"
                     [data]="simpleData1"
-                    [columnDefinitions]="[
+                    [columns]="[
                       { field: 'lastName' },
                       { field: 'firstName' },
                       { field: 'dob', dataType: 'date' },
@@ -62,7 +62,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [data]="simpleData2"
-                [columnDefinitions]="[
+                [columns]="[
                   {{"{"}} field: 'lastName' {{"}"}},
                   {{"{"}} field: 'firstName' {{"}"}},
                   {{"{"}} field: 'dob', dataType: 'date' {{"}"}},
@@ -75,7 +75,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [data]="simpleData2"
-                    [columnDefinitions]="[
+                    [columns]="[
                       { field: 'lastName' },
                       { field: 'firstName' },
                       { field: 'dob', dataType: 'date' },
@@ -102,7 +102,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [data]="simpleData3"
-                [columnDefinitions]="[
+                [columns]="[
                   {{"{"}} field: 'lastName', name: 'Last Name' {{"}"}},
                   {{"{"}} field: 'firstName', name: 'First Name' {{"}"}}
                 ]&gt;
@@ -112,7 +112,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [data]="simpleData3"
-                    [columnDefinitions]="[
+                    [columns]="[
                       { field: 'lastName', name: 'Last Name' },
                       { field: 'firstName', name: 'First Name' }
                     ]">
@@ -136,7 +136,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Simple Grid Delayed'"
                 [data]="simpleData4"
-                [columnDefinitions]="columns4"&gt;
+                [columns]="columns4"&gt;
               &lt;/hci-grid&gt;
             </pre>
           </ng-template>
@@ -144,7 +144,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Simple Grid Delayed'"
                     [data]="simpleData4"
-                    [columnDefinitions]="columns4">
+                    [columns]="columns4">
           </hci-grid>
         </p>
       </div>

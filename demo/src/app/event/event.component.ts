@@ -27,7 +27,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Row Select'"
                 [data]="data1"
-                [columnDefinitions]="columns1"
+                [columns]="columns1"
                 [eventListeners]="listeners1"
                 (rowClick)="rowClick($event)"
                 [nVisibleRows]="10"&gt;
@@ -48,7 +48,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Row Select'"
                     [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [eventListeners]="listeners1"
                     (rowClick)="rowClick($event)"
                     [nVisibleRows]="10">

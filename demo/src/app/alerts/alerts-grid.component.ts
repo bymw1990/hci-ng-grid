@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {Column} from "hci-ng-grid";
+import {Column, RangeSelectListener} from "hci-ng-grid";
 
 @Component({
   selector: "alerts-grid",
@@ -12,13 +12,15 @@ import {Column} from "hci-ng-grid";
       <div class="card-body">
         <p class="card-text">
           Try copying a 2x2 range of cells with ctrl-c.  Then select the bottom row, first column.  Hit escape to stop edit mode.
-          Then ctrl-v to paste.  In the console, see the warning that was captured.
+          Then ctrl-v to paste.  The console won't show the warning because we set logWarnings to false.  But we capture it ourselves.
           used.<br />
-          Open the console to see the warning.
+          <span style="color: red;">{{warning}}</span>
         </p>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
+                    [eventListeners]="listeners"
+                    [logWarnings]="false"
                     (warning)="showWarning($event)">
           </hci-grid>
         </p>
@@ -27,6 +29,8 @@ import {Column} from "hci-ng-grid";
     `
 })
 export class AlertsGridComponent {
+
+  warning: string;
 
   data1: Array<Object> = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1971-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
@@ -46,7 +50,11 @@ export class AlertsGridComponent {
     new Column({ field: "address", name: "Address", template: "LabelCell" })
   ];
 
+  listeners: any[] = [
+    {type: RangeSelectListener}
+  ];
+
   showWarning(warning: string) {
-    console.warn(warning);
+    this.warning = warning;
   }
 }

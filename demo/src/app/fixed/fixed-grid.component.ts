@@ -25,7 +25,7 @@ import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-n
               &lt;hci-grid
                 [title]="'Fixed Grid'"
                 [data]="fixedData"
-                [columnDefinitions]="fixedColumns"
+                [columns]="fixedColumns"
                 [fixedColumns]="['firstName', 'lastName']&gt;
               &lt;/hci-grid&gt;
               
@@ -68,7 +68,7 @@ import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-n
         <p>
           <hci-grid [title]="'Fixed Grid'"
                     [data]="fixedData"
-                    [columnDefinitions]="fixedColumns"
+                    [columns]="fixedColumns"
                     [fixedColumns]="['firstName', 'lastName']">
           </hci-grid>
         </p>

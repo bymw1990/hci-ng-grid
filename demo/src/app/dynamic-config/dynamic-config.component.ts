@@ -28,7 +28,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 #grid1
                 [data]="data1"
                 [configurable]="true"
-                [columnDefinitions]="columns1"
+                [columns]="columns1"
                 [userProfile]="grid1"
                 (onConfigChange)="configChange($event)"
                 [pageSize]="5"
@@ -41,7 +41,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid #grid1
                     [data]="data1"
                     [configurable]="true"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [userProfile]="grid1"
                     (onConfigChange)="configChange($event)"
                     [pageSize]="5"
@@ -70,7 +70,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Dynamic Columns Row Select'"
                 [data]="data"
-                [columnDefinitions]="columnsA"&gt;
+                [columns]="columnsA"&gt;
               &lt;/hci-grid&gt;
               
               Columns1:
@@ -91,7 +91,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Dynamic Columns Row Select'"
                     [data]="data"
-                    [columnDefinitions]="columnsA">
+                    [columns]="columnsA">
           </hci-grid>
         </p>
       </div>
@@ -180,7 +180,7 @@ export class DynamicConfigGridComponent {
 
   config3 = {
     title: "Config",
-    columnDefinitions: [
+    columns: [
       {field: "idPatient", name: "ID"},
       {field: "lastName", name: "Last Name"},
       {field: "firstName", name: "First Name"}

@@ -27,7 +27,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Paging Grid'"
                 [data]="pagingData"
-                [columnDefinitions]="pagingColumns"
+                [columns]="pagingColumns"
                 [pageSize]="10"
                 [pageSizes]="[10, 25, 100]&gt;
               &lt;/hci-grid&gt;
@@ -46,7 +46,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div>
           <hci-grid [title]="'Paging Grid'"
                     [data]="pagingData"
-                    [columnDefinitions]="pagingColumns"
+                    [columns]="pagingColumns"
                     [pageSize]="10"
                     [pageSizes]="[10, 25, 100]">
           </hci-grid>

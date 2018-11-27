@@ -53,7 +53,7 @@ import {Dictionary} from "../model/dictionary.interface";
               <hci-grid-multi-choice [model]="config.fixedColumns"
                                      [value]="'field'"
                                      [display]="'name'"
-                                     [choices]="config.columnDefinitions"
+                                     [choices]="config.columns"
                                      (modelChange)="updateArray('fixedColumns', $event)"></hci-grid-multi-choice>
             </div>
           </div>
@@ -79,7 +79,7 @@ import {Dictionary} from "../model/dictionary.interface";
       </ng-container>
       <ng-container *ngIf="state === 2">
         <div class="sub-header">
-          <div *ngFor="let column of config.columnDefinitions; let i = index"
+          <div *ngFor="let column of config.columns; let i = index"
                class="bubble"
                [class.selected]="column.name === selectedColumn.name"
                [style.backgroundColor]="column.visible ? 'lightgreen' : 'lightcoral'"
@@ -255,7 +255,7 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
 
   setState(state: number) {
     this.state = state;
-    this.selectedColumn = this.config.columnDefinitions[0];
+    this.selectedColumn = this.config.columns[0];
   }
 
   updateSortOrder(field: string, position: number) {
@@ -292,9 +292,9 @@ export class ConfigMenuComponent implements OnInit, OnDestroy {
 
   updateColumn(key: string, value: any) {
     let i: number = 0;
-    for (i = 0; i < this.config.columnDefinitions.length; i++) {
-      if (this.config.columnDefinitions[i].field === this.selectedColumn.field) {
-        this.config.columnDefinitions[i][key] = value;
+    for (i = 0; i < this.config.columns.length; i++) {
+      if (this.config.columns[i].field === this.selectedColumn.field) {
+        this.config.columns[i][key] = value;
       }
     }
 

@@ -25,7 +25,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [data]="data"
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [pageSize]="5"
                 [pageSizes]="[5, 10, 25]&gt;
               &lt;/hci-grid&gt;
@@ -43,7 +43,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div [style.width.px]="width">
           <hci-grid [data]="data"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">
           </hci-grid>
@@ -69,7 +69,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [data]="data"
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [pageSize]="5"
                 [pageSizes]="[5, 10, 25]&gt;
               &lt;/hci-grid&gt;
@@ -87,7 +87,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div [style.width.px]="width2">
           <hci-grid [data]="data"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">
           </hci-grid>
@@ -109,7 +109,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [data]="data"
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [pageSize]="5"
                 [pageSizes]="[5, 10, 25]&gt;
               &lt;/hci-grid&gt;
@@ -127,7 +127,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div style="width: 100%;">
           <hci-grid [data]="data"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [nVisibleRows]="5"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">
@@ -153,7 +153,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [data]="data"
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [pageSize]="5"
                 [pageSizes]="[5, 10, 25]&gt;
               &lt;/hci-grid&gt;
@@ -172,7 +172,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div style="width: 100%;">
           <hci-grid *ngIf="showGrid4"
                     [data]="data"
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [nVisibleRows]="5"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">

@@ -17,7 +17,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Empty Grid'"
                     [data]="data1"
-                    [columnDefinitions]="[
+                    [columns]="[
                       { field: 'lastName', name: 'Last Name' },
                       { field: 'firstName', name: 'First Name' },
                       { field: 'dob', name: 'Date of Birth', dataType: 'date' }
@@ -38,7 +38,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Empty Grid'"
                     [data]="data2"
-                    [columnDefinitions]="columns2">
+                    [columns]="columns2">
           </hci-grid>
         </p>
       </div>

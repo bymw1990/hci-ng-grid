@@ -23,7 +23,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
             <pre>
               &lt;hci-grid
                 [data]="data1"
-                [columnDefinitions]="columns1"
+                [columns]="columns1"
                 (onCellSave)="onCellSave($event)"&gt;
               &lt;/hci-grid&gt;
               
@@ -44,7 +44,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     (onCellSave)="onCellSave($event)">
           </hci-grid>
         </p>
@@ -68,7 +68,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
             <pre>
               &lt;hci-grid
                 [data]="data1"
-                [columnDefinitions]="columns1"
+                [columns]="columns1"
                 [saveOnDirtyRowChange]="true"
                 (onRowSave)="onRowSave($event)"&gt;
               &lt;/hci-grid&gt;
@@ -86,7 +86,7 @@ import {ClickRowSelectListener} from "hci-ng-grid";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [saveOnDirtyRowChange]="true"
                     (onRowSave)="onRowSave($event)">
           </hci-grid>

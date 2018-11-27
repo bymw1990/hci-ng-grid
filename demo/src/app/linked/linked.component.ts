@@ -24,14 +24,14 @@ import {
             <pre>
               &lt;hci-grid [data]="data1"
                         [configurable]="true"
-                        [columnDefinitions]="columns1"
+                        [columns]="columns1"
                         [linkedGroups]="['groupA']"
                         [pageSize]="5"
                         [pageSizes]="[5, 10, 25]"&gt;
               &lt;/hci-grid&gt;
               &lt;hci-grid [data]="data2"
                         [configurable]="true"
-                        [columnDefinitions]="columns2"
+                        [columns]="columns2"
                         [linkedGroups]="['groupA']"
                         [pageSize]="5"
                         [pageSizes]="[5, 10, 25]"&gt;
@@ -42,7 +42,7 @@ import {
         <p>
           <hci-grid [data]="data1"
                     [configurable]="true"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [linkedGroups]="['groupA']"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">
@@ -51,7 +51,7 @@ import {
         <p>
           <hci-grid [data]="data2"
                     [configurable]="true"
-                    [columnDefinitions]="columns2"
+                    [columns]="columns2"
                     [linkedGroups]="['groupA']"
                     [pageSize]="5"
                     [pageSizes]="[5, 10, 25]">

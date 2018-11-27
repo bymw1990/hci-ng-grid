@@ -28,7 +28,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [eventListeners]="listeners1"
                     (rowDblClick)="rowDblClick($event)">
           </hci-grid>
@@ -62,7 +62,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div>
           <hci-grid #grid2
                     [data]="data2"
-                    [columnDefinitions]="columns2"
+                    [columns]="columns2"
                     [eventListeners]="listeners2"
                     (selectedRows)="setSelectedRows2($event)"
                     [pageSize]="5"
@@ -98,7 +98,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div>
           <hci-grid #grid3
                     [data]="data3"
-                    [columnDefinitions]="columns3"
+                    [columns]="columns3"
                     [eventListeners]="listeners3"
                     (selectedRows)="setSelectedRows3($event)">
           </hci-grid>
@@ -120,7 +120,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div>
           <hci-grid #grid4
                     [data]="data4"
-                    [columnDefinitions]="columns4"
+                    [columns]="columns4"
                     [eventListeners]="listeners4"
                     [nVisibleRows]="5">
           </hci-grid>
@@ -153,7 +153,7 @@ export class SelectGridComponent extends BaseDemoComponent {
 
   config1Grid: string = `
     <hci-grid [data]="data1"
-              [columnDefinitions]="columns1"
+              [columns]="columns1"
               [eventListeners]="listeners1"
               (rowDblClick)="rowDblClick($event)">
     </hci-grid>
@@ -192,7 +192,7 @@ export class SelectGridComponent extends BaseDemoComponent {
   config2Grid: string = `
     <hci-grid #grid2
               [data]="data2"
-              [columnDefinitions]="columns2"
+              [columns]="columns2"
               [eventListeners]="listeners2"
               (selectedRows)="setSelectedRows2($event)"
               [pageSize]="5"
@@ -234,7 +234,7 @@ export class SelectGridComponent extends BaseDemoComponent {
   config3Grid: string = `
     <hci-grid #grid3
               [data]="data3"
-              [columnDefinitions]="columns3"
+              [columns]="columns3"
               [eventListeners]="listeners3"
               (selectedRows)="setSelectedRows3($event)">
     </hci-grid>
@@ -274,7 +274,7 @@ export class SelectGridComponent extends BaseDemoComponent {
   config4Grid: string = `
     <hci-grid #grid4
               [data]="data4"
-              [columnDefinitions]="columns4"
+              [columns]="columns4"
               [eventListeners]="listeners4"
               [nVisibleRows]="5">
     </hci-grid>

@@ -25,7 +25,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
           <ng-template #config1>
             <pre>
               &lt;hci-grid
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [dataCall]="onExternalDataCall1"
                 [externalFiltering]="true"
                 [externalSorting]="true"
@@ -45,7 +45,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
           </ng-template>
         </div>
         <p>
-          <hci-grid [columnDefinitions]="columns"
+          <hci-grid [columns]="columns"
                     [dataCall]="onExternalDataCall1"
                     [externalFiltering]="true"
                     [externalSorting]="true"
@@ -71,7 +71,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
           <ng-template #config1>
             <pre>
               &lt;hci-grid
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [dataCall]="onExternalDataCall2"
                 [externalFiltering]="true"
                 [externalSorting]="true"
@@ -91,7 +91,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
           </ng-template>
         </div>
         <p>
-          <hci-grid [columnDefinitions]="columns"
+          <hci-grid [columns]="columns"
                     [dataCall]="onExternalDataCall2"
                     [externalFiltering]="true"
                     [externalSorting]="true"
@@ -115,7 +115,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
           <ng-template #config1>
             <pre>
               &lt;hci-grid
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [dataCall]="onExternalDataCall3"
                 [externalFiltering]="true"
                 [externalSorting]="true"
@@ -135,7 +135,7 @@ import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilte
           </ng-template>
         </div>
         <p>
-          <hci-grid [columnDefinitions]="columns"
+          <hci-grid [columns]="columns"
                     [dataCall]="onExternalDataCall3"
                     [externalFiltering]="true"
                     [externalSorting]="true"

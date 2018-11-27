@@ -33,7 +33,7 @@ import {LabPopup} from "../components/lab.component";
               &lt;hci-grid
                 [title]="'Cell Popup'"
                 [data]="data1"
-                [columnDefinitions]="columns1"
+                [columns]="columns1"
                 [fixedColumns]="['firstName', 'lastName']"
                 [eventListeners]="listeners1"
                 [nVisibleRows]="10"&gt;
@@ -59,7 +59,7 @@ import {LabPopup} from "../components/lab.component";
         <p>
           <hci-grid [title]="'Cell Popup'"
                     [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [fixedColumns]="['firstName', 'lastName']"
                     [eventListeners]="listeners1"
                     [nVisibleRows]="10">

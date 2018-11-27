@@ -26,7 +26,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [title]="'Group Grid'"
                 [data]="groupData"
-                [columnDefinitions]="groupColumns"
+                [columns]="groupColumns"
                 [groupBy]="['firstName', 'lastName']"
                 [pageSize]="10"&gt;
               &lt;/hci-grid&gt;
@@ -68,7 +68,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [data]="data1"
-                    [columnDefinitions]="columns1"
+                    [columns]="columns1"
                     [groupBy]="['firstName', 'lastName']"
                     [pageSize]="25">
           </hci-grid>

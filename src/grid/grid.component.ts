@@ -414,7 +414,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() configurable: boolean = false;
   @Input("title") inputTitle: string;
   @Input("theme") inputTheme: string;
-  @Input("columnDefinitions") inputColumnDefinitions: Column[];
+  @Input("columns") inputColumnDefinitions: Column[];
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
   @Input() groupByCollapsed: boolean;
@@ -428,6 +428,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() busyTemplate: TemplateRef<any>;
   @Input() eventListeners: EventListenerArg[] = [];
   @Input() mode: string;
+  @Input() logWarnings: boolean = true;
 
   @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
@@ -496,6 +497,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.updateMode();
 
     this.gridMessageService.messageObservable.subscribe((message: string) => {
+      if (this.logWarnings) {
+        console.warn(message);
+      }
+
       this.warning.emit(message);
     });
   }
@@ -1353,7 +1358,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.inputConfig.linkedGroups = this.inputLinkedGroups;
     }
     if (this.inputColumnDefinitions !== undefined) {
-      this.inputConfig.columnDefinitions = this.inputColumnDefinitions;
+      this.inputConfig.columns = this.inputColumnDefinitions;
     }
     if (this.fixedColumns !== undefined) {
       this.inputConfig.fixedColumns = this.fixedColumns;

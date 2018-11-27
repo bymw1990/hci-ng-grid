@@ -24,7 +24,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config1>
             <pre>
               &lt;hci-grid
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [dataCall]="onExternalDataCall1"
                 [externalFiltering]="true"
                 [externalSorting]="true"
@@ -44,7 +44,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </ng-template>
         </div>
         <p>
-          <hci-grid [columnDefinitions]="columns"
+          <hci-grid [columns]="columns"
                     [dataCall]="onExternalDataCall1"
                     [externalFiltering]="true"
                     [externalSorting]="true"
@@ -76,7 +76,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config2>
             <pre>
               &lt;hci-grid
-                [columnDefinitions]="columns"
+                [columns]="columns"
                 [dataCall]="onExternalDataCall1"
                 [externalFiltering]="true"
                 [externalSorting]="true"
@@ -97,7 +97,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid #grid2
-                    [columnDefinitions]="columns"
+                    [columns]="columns"
                     [busyTemplate]="busyTemplate"
                     [dataCall]="onExternalDataCall1"
                     [externalFiltering]="true"
