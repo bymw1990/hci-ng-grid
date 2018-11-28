@@ -2,21 +2,21 @@ import * as moment from "moment";
 
 import {FormatterParser} from "./formatter-parser";
 
-export class DateFormatter extends FormatterParser {
+export class MsDateFormatter extends FormatterParser {
 
-  dateFormat: string = "MM/DD/YYYY";
+  format: string = "MM/DD/YYYY";
 
   setConfig(config: any) {
     super.setConfig(config);
 
-    if (config.dateFormat) {
-      this.dateFormat = config.dateFormat;
+    if (config.format) {
+      this.format = config.format;
     }
   }
 
-  format(value: any): any {
+  formatValue(value: any): any {
     if (value) {
-      let date: string = moment((new Date(<string>value))).format(this.dateFormat);
+      let date: string = moment(value).format(this.format);
 
       if (date === "Invalid date") {
         throw new Error("Could not format date.");
@@ -28,11 +28,11 @@ export class DateFormatter extends FormatterParser {
     }
   }
 
-  parse(value: string): any {
+  parseValue(value: any): any {
     if (value) {
-      let date: string = moment(<string>value, this.dateFormat).toISOString();
+      let date: number = moment(value, this.format).toDate().getTime();
 
-      if (date === "Invalid Date") {
+      if (isNaN(date)) {
         throw new Error("Could not format date.");
       } else {
         return date;

@@ -162,7 +162,7 @@ export class SimpleGridComponent implements OnInit {
     new Column({ field: "citystatezip", name: "Address 2" })
   ];
 
-  simpleData1: Array<Object> = [
+  simpleData1: Object[] = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1968-11-27T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1966-09-25T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1965-11-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
@@ -171,7 +171,7 @@ export class SimpleGridComponent implements OnInit {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1961-03-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
-  simpleData2: Array<Object> = [
+  simpleData2: Object[] = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1974-11-13T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1975-11-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1976-07-17T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
@@ -180,7 +180,7 @@ export class SimpleGridComponent implements OnInit {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1979-02-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
   ];
 
-  simpleData3: Array<Object> = [
+  simpleData3: Object[] = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith" },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe" },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James" },
@@ -189,13 +189,13 @@ export class SimpleGridComponent implements OnInit {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne" }
   ];
 
-  simpleData4: Array<Object> = null;
+  simpleData4: Object[] = null;
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
     this.dataGeneratorService.generateSimpleData4(55);
-    this.dataGeneratorService.getSimpleData4(5000).subscribe((simpleData4: Array<Object>) => {
+    this.dataGeneratorService.getSimpleData4(5000).subscribe((simpleData4: Object[]) => {
       this.simpleData4 = simpleData4;
     });
   }

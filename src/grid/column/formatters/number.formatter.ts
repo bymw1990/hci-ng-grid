@@ -15,7 +15,7 @@ export class NumberFormatter extends FormatterParser {
     }
   }
 
-  parse(value: string): any {
+  parse(value: any): any {
     if (value) {
       return +value;
     } else {

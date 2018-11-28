@@ -78,7 +78,7 @@ import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-n
 })
 export class FixedGridComponent {
 
-  fixedData: Array<Object>;
+  fixedData: Object[];
 
   fixedColumns: Column[] = [
     new Column({ field: "idPatient", name: "ID", visible: false }),

@@ -58,7 +58,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 export class PagingGridComponent {
 
     dataSize: number = 250;
-    pagingData: Array<Object>;
+    pagingData: Object[];
 
     pagingColumns: Column[] = [
         new Column({ field: "idPatient", name: "ID", visible: false }),

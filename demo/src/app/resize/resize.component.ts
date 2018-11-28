@@ -190,7 +190,7 @@ export class ResizeDemoComponent {
     width2: number = 800;
 
     dataSize: number = 250;
-    data: Array<Object>;
+    data: Object[];
 
     columns: Column[] = [
         new Column({ field: "idPatient", name: "ID", visible: false }),

@@ -30,6 +30,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
                 [title]="'Filter Grid'"
                 [data]="filteredData"
                 [columns]="filteredColumns"
+                [mode]="'spreadsheet'"
                 [pageSizes]="[10, 25, 100]"&gt;
               &lt;/hci-grid&gt;
               
@@ -48,6 +49,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           <hci-grid [title]="'Filter Grid'"
                     [data]="filteredData"
                     [columns]="filteredColumns"
+                    [mode]="'spreadsheet'"
                     [pageSizes]="[10, 25, 100]">
           </hci-grid>
         </p>
@@ -95,7 +97,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
 export class FilterGridComponent {
 
   dataSize: number = 250;
-  filteredData: Array<Object>;
+  filteredData: Object[];
 
   filteredColumns: Column[] = [
     new Column({ field: "idPatient", name: "ID", visible: false }),
@@ -107,7 +109,7 @@ export class FilterGridComponent {
     new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
   ];
 
-  filteredData2: Array<Object>;
+  filteredData2: Object[];
 
   filteredColumns2: Column[] = [
     new Column({ field: "idPatient", name: "ID", visible: false }),

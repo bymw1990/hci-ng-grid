@@ -100,7 +100,7 @@ export class SavingDemoComponent {
   cellSaveOutput: string;
   rowSaveOutput: string;
 
-  data1: Array<Object> = [
+  data1: Object[] = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-01-01T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1973-01-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1972-01-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },

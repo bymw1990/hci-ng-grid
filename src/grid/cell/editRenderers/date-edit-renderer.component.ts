@@ -1,9 +1,11 @@
 import {Component, ElementRef, isDevMode, ViewChild} from "@angular/core";
 
+import * as moment from "moment";
 import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 
 import {CellEditRenderer} from "./cell-edit-renderer";
 import {Point} from "../../utils/point";
+import {Cell} from "../cell";
 
 @Component({
   selector: "hci-grid-date-edit",
@@ -40,7 +42,25 @@ export class DateEditRenderer extends CellEditRenderer {
   }
 
   onModelChange(value: Object) {
-    this.value = this.ngbDateToString(<NgbDateStruct>value);
+    this.value = value;
+  }
+
+  saveData(value?: any): boolean {
+    if (!value) {
+      value = this.value;
+    }
+
+    let newValue: any = this.ngbDateToString(<NgbDateStruct>value);
+
+    if (this.data.value !== newValue) {
+      let oldValue: any = this.data.value;
+      this.data.value = newValue;
+      this.gridService.handleValueChange(this.i, this.j, this.data.key, newValue, oldValue);
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
   stop(event: MouseEvent) {
@@ -65,6 +85,19 @@ export class DateEditRenderer extends CellEditRenderer {
     }
   }
 
+  setData(data: Cell) {
+    this.data = data;
+
+    let date: any = moment(this.data.value);
+    this.value = <NgbDateStruct>{
+      year: date.year(),
+      month: date.month() + 1,
+      day: date.date()
+    };
+
+    console.debug(this.value);
+  }
+
   /**
    * NgbDateStruct stores day, month and year.  Convert this to ISO8601.
    *
@@ -73,12 +106,12 @@ export class DateEditRenderer extends CellEditRenderer {
    */
   private ngbDateToString(date: NgbDateStruct): string {
     if (date === undefined || date === null) {
-      return null;
-    } else if (date.year === undefined || date.month === undefined || date.day === undefined) {
-      return null;
+      return undefined;
+    } else if (!date.year || !date.month || !date.day) {
+      return undefined;
     }
 
-    return date.year + "-" + ((date.month < 10) ? "0" : "") + date.month + "-" + ((date.day < 10) ? "0" : "") + date.day + "T12:00-06:00";
+    return date.year + "-" + ((date.month < 10) ? "0" : "") + date.month + "-" + ((date.day < 10) ? "0" : "") + date.day;
   }
 
 }

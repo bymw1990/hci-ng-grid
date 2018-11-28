@@ -12,12 +12,12 @@ const momentRandom = require("moment-random");
 @Injectable()
 export class DataGeneratorService {
 
-  filteredData: Array<Object> = new Array<Object>();
-  pagingData: Array<Object> = new Array<Object>();
-  fixedData: Array<Object> = new Array<Object>();
-  externalData1: Array<Object> = new Array<Object>();
+  filteredData: Object[] = [];
+  pagingData: Object[] = [];
+  fixedData: Object[] = [];
+  externalData1: Object[] = [];
   externalData2: Object[] = [];
-  simpleData4: Array<Object> = new Array<Object>();
+  simpleData4: Object[] = [];
 
   private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Gerry", "Gina",
       "Harry", "Hellen", "Mike", "Milla", "Sam", "Sarah", "Tim", "Tina" ];
@@ -31,11 +31,11 @@ export class DataGeneratorService {
 
   generateDate(startYear: number, endYear: number): string {
     let date: Date = momentRandom(endYear + "-12-31", startYear + "-01-01");
-    return date.toISOString();
+    return date.toISOString().substring(0, 10);
   }
 
   getData(size: number) {
-    let data = new Array<Object>();
+    let data = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -64,7 +64,7 @@ export class DataGeneratorService {
   }
 
   generateFixedData(size: number) {
-    this.fixedData = new Array<Object>();
+    this.fixedData = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -81,12 +81,12 @@ export class DataGeneratorService {
     }
   }
 
-  getFixedData(filters: string[], sort: string, asc: boolean): Array<Object> {
+  getFixedData(filters: string[], sort: string, asc: boolean): Object[] {
     return this.fixedData;
   }
 
   generateSimpleData4(size: number) {
-    this.simpleData4 = new Array<Object>();
+    this.simpleData4 = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -103,7 +103,7 @@ export class DataGeneratorService {
     }
   }
 
-  getSimpleData4(delay: number): Observable<Array<Object>> {
+  getSimpleData4(delay: number): Observable<Object[]> {
     return new Observable(observer => {
       setTimeout(() => {
         observer.next(this.simpleData4);
@@ -112,7 +112,7 @@ export class DataGeneratorService {
   }
 
   generateFilteredData(size: number) {
-    this.filteredData = new Array<Object>();
+    this.filteredData = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -127,12 +127,12 @@ export class DataGeneratorService {
     }
   }
 
-  getFilteredData(filters: string[], sort: string, asc: boolean): Array<Object> {
+  getFilteredData(filters: string[], sort: string, asc: boolean): Object[] {
     return this.filteredData;
   }
 
   generatePagingData(size: number) {
-    this.pagingData = new Array<Object>();
+    this.pagingData = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -147,12 +147,12 @@ export class DataGeneratorService {
     }
   }
 
-  getPagingData(filters: string[], sort: string, asc: boolean): Array<Object> {
+  getPagingData(filters: string[], sort: string, asc: boolean): Object[] {
     return this.pagingData;
   }
 
   generateExternalData1(size: number) {
-    this.externalData1 = new Array<Object>();
+    this.externalData1 = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
@@ -217,7 +217,7 @@ export class DataGeneratorService {
     let sort: any = externalInfo.getSort();
     let pageInfo: PageInfo = externalInfo.getPage();
 
-    let filtered: Array<Object> = new Array<Object>();
+    let filtered: Object[] = [];
     if (!filters) {
       filtered = externalData;
     } else {
@@ -286,7 +286,7 @@ export class DataGeneratorService {
       return Observable.create(observer => { observer.next(new ExternalData(filtered, externalInfo)); });
     }
 
-    let data: Array<Object> = new Array<Object>();
+    let data: Object[] = [];
 
     console.info(pageInfo);
 

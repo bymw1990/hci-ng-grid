@@ -42,5 +42,6 @@ export {RangeSelectListener} from "./src/grid/event/listeners/range-select.liste
 export {RowDblClickListener} from "./src/grid/event/listeners/row-dbl-click.listener";
 
 export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";
-export {DateFormatter} from "./src/grid/column/formatters/date.formatter";
 export {NumberFormatter} from "./src/grid/column/formatters/number.formatter";
+export {MsDateFormatter} from "./src/grid/column/formatters/ms-date.formatter";
+export {Iso8601DateFormatter} from "./src/grid/column/formatters/iso8601-date.formatter";

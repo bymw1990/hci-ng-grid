@@ -235,11 +235,11 @@ export class ThemingComponent {
     { type: ClickViewListener }
   ];
 
-  data1: Array<Object> = [];
-  data2: Array<Object> = [];
-  data3: Array<Object> = [];
-  data4: Array<Object> = [];
-  data5: Array<Object> = [];
+  data1: Object[] = [];
+  data2: Object[] = [];
+  data3: Object[] = [];
+  data4: Object[] = [];
+  data5: Object[] = [];
 
   columns: Column[] = [
     new Column({ field: "lastName", name: "Last" }),

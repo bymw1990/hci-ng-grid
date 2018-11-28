@@ -93,7 +93,7 @@ export class RowGroupGridComponent {
 
   dataSize: number = 1000;
 
-  data1: Array<Object> = [];
+  data1: Object[] = [];
 
   columns1: Column[] = [
     new Column({ field: "idPatient", name: "ID", visible: false }),

@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 
 import {Column, RangeSelectListener} from "hci-ng-grid";
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "copy-paste-grid",
@@ -19,8 +20,8 @@ import {Column, RangeSelectListener} from "hci-ng-grid";
             <pre>
               &lt;hci-grid
                 [title]="'Copy Paste Grid'"
-                [data]="copyPasteData"
-                [columns]="copyPasteColumns"
+                [data]="data"
+                [columns]="columns"
                 [eventListeners]="listeners"&gt;
               &lt;/hci-grid&gt;
               
@@ -71,8 +72,8 @@ import {Column, RangeSelectListener} from "hci-ng-grid";
         </div>
         <p>
           <hci-grid [title]="'Copy Paste Grid'"
-                    [data]="copyPasteData"
-                    [columns]="copyPasteColumns"
+                    [data]="data"
+                    [columns]="columns"
                     [eventListeners]="listeners">
           </hci-grid>
         </p>
@@ -82,7 +83,7 @@ import {Column, RangeSelectListener} from "hci-ng-grid";
 })
 export class CopyPasteGridComponent {
 
-  copyPasteData: Array<Object> = [
+  data: Object[] = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1976-01-05T00:00-07:00", "nLabs": 1, "nPathLabs": 11 },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1975-02-03T00:00-07:00", "nLabs": 2, "nPathLabs": 22 },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1974-03-21T00:00-07:00", "nLabs": 3, "nPathLabs": 33 },
@@ -91,7 +92,7 @@ export class CopyPasteGridComponent {
     { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1971-06-11T00:00-07:00", "nLabs": 6, "nPathLabs": 66 },
   ];
 
-  copyPasteColumns: any[] = [
+  columns: any[] = [
     { field: "idPatient", name: "ID", visible: false },
     { field: "lastName", name: "Last Name" },
     { field: "firstName", name: "First Name" },
@@ -103,4 +104,9 @@ export class CopyPasteGridComponent {
   listeners: any[] = [
     {type: RangeSelectListener}
   ];
+
+  constructor(private dataGeneratorService: DataGeneratorService) {
+    this.data = this.dataGeneratorService.getData(6);
+  }
+
 }

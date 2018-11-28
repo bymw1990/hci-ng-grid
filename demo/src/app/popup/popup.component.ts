@@ -71,7 +71,7 @@ import {LabPopup} from "../components/lab.component";
 })
 export class PopupComponent {
 
-  data1: Array<Object>;
+  data1: Object[];
   listeners1: Array<any> = [
     { type: ClickCellEditListener },
     { type: CellHoverPopupListener }

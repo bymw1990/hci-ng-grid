@@ -152,7 +152,7 @@ export class DynamicConfigGridComponent {
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];
 
-  data: Array<Object> = [
+  data: Object[] = [
     { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "middleName": "A", "dob": "1952-01-03T00:00-07:00" },
     { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "middleName": "B", "dob": "1971-11-01T00:00-07:00" },
     { "idPatient": 3, "firstName": "Rick", "lastName": "James", "middleName": "C", "dob": "1980-05-21T00:00-07:00" },

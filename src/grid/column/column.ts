@@ -8,7 +8,8 @@ import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.compone
 import {CellPopupRenderer} from "../cell/viewPopupRenderer/cell-popup-renderer";
 import {FormatterParser} from "./formatters/formatter-parser";
 import {EmptyFactory} from "../utils/empty.factory";
-import {DateFormatter} from "./formatters/date.formatter";
+import {MsDateFormatter} from "./formatters/ms-date.formatter";
+import {Iso8601DateFormatter} from "./formatters/iso8601-date.formatter";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -127,11 +128,11 @@ export class Column {
   }
 
   formatValue(value: any): any {
-    return this.formatterParserInstance.format(value);
+    return this.formatterParserInstance.formatValue(value);
   }
 
   parseValue(value: any): string {
-    return this.formatterParserInstance.parse(value);
+    return this.formatterParserInstance.parseValue(value);
   }
 
   setConfig(object: any) {
@@ -241,10 +242,17 @@ export class Column {
     }
 
     if (this.dataType === "date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
-      this.formatterParser = DateFormatter;
+      this.formatterParser = Iso8601DateFormatter;
+    } else if (this.dataType === "ios8601-date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
+      this.formatterParser = Iso8601DateFormatter;
+    } else if (this.dataType === "ms-date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
+      this.formatterParser = MsDateFormatter;
     }
 
     this.formatterParserInstance = (new EmptyFactory<FormatterParser>(this.formatterParser)).getInstance();
+    if (!this.formatterParserConfig["format"] && this.format) {
+      this.formatterParserConfig["format"] = this.format;
+    }
     this.formatterParserInstance.setConfig(this.formatterParserConfig);
   }
 

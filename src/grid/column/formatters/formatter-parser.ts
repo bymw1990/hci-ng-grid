@@ -9,7 +9,7 @@ export class FormatterParser {
     this.config = config;
   }
 
-  format(value: any): any {
+  formatValue(value: any): any {
     if (value) {
       return value;
     } else {
@@ -17,7 +17,7 @@ export class FormatterParser {
     }
   }
 
-  parse(value: string): any {
+  parseValue(value: any): any {
     if (value) {
       return value;
     } else {

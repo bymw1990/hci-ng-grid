@@ -62,7 +62,7 @@ export class EventComponent {
 
   selectedRowID: number;
 
-  data1: Array<Object>;
+  data1: Object[];
   listeners1: Array<any> = [
     { type: ClickViewListener }
   ];

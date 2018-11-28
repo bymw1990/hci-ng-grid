@@ -47,9 +47,9 @@ import { DataGeneratorService } from "../services/data-generator.service";
 })
 export class EmptyGridComponent {
 
-  data1: Array<Object> = [];
+  data1: Object[] = [];
 
-  data2: Array<Object> = [];
+  data2: Object[] = [];
   columns2: Column[] = [];
 
   populate() {
