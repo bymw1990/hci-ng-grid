@@ -53,10 +53,6 @@ export class EmptyGridComponent {
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
-  ngOnInit() {
-    this.data1 = this.dataGeneratorService.getData(13);
-  }
-
   populate() {
     this.data2 = this.dataGeneratorService.getData(5);
     this.columns2 = [

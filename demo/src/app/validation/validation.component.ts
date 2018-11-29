@@ -31,9 +31,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 field: "idPatient", name: "ID", visible: true
                 field: "lastName", name: "Last Name", editConfig: required: true
                 field: "firstName", name: "First Name", editConfig: maxlength: 35
-                field: "dob", name: "Date of Birth", dataType: "date"
+                field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY"
                 field: "nLabs", name: "# Labs", editConfig: pattern: /^[0-9]1$/
-                field: "nLabPath", name: "# Lab Path", editConfig: pattern: /^[0-9]1,2$/
+                field: "path.nPath", name: "# Lab Path", editConfig: pattern: /^[0-9]1,2$/
               </pre>
             </ng-template>
             <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
@@ -52,7 +52,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 <span style="width: 100px;">{{row.lastName}}</span>
                 <span style="width: 200px;">{{row.dob}}</span>
                 <span style="width: 100px;">{{row.nLabs}}</span>
-                <span style="width: 200px;">{{row.nPathLabs}}</span>
+                <span style="width: 200px;">{{row.path.nPath}}</span>
               </div>
             </ng-template>
           </div>
@@ -80,7 +80,7 @@ export class ValidationComponent {
     { field: "firstName", name: "First Name", editConfig: {maxlength: 35} },
     { field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" },
     { field: "nLabs", name: "# Labs", editConfig: {pattern: /^[0-9]{1}$/} },
-    { field: "nLabPath", name: "# Lab Path", editConfig: {pattern: /^[0-9]{1,2}$/} }
+    { field: "path.nPath", name: "# Lab Path", editConfig: {pattern: /^[0-9]{1,2}$/} }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

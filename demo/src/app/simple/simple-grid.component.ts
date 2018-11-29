@@ -11,87 +11,6 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-          A grid uses the default configuration.  Only inputs are title, data and columns.
-        </div>
-        <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
-          <ng-template #config1>
-            <pre>
-              &lt;hci-grid
-                [title]="'Simple Grid'"
-                [data]="data1"
-                [columns]="[
-                  {{"{"}} field: 'lastName' {{"}"}},
-                  {{"{"}} field: 'firstName' {{"}"}},
-                  {{"{"}} field: 'dob', dataType: 'date' {{"}"}},
-                  {{"{"}} field: 'pcg.nLabs' {{"}"}},
-                  {{"{"}} field: 'pcg.nested.nLabPath' {{"}"}},
-                ]&gt;
-              &lt;/hci-grid&gt;
-            </pre>
-          </ng-template>
-        </div>
-        <p>
-          <hci-grid [title]="'Simple Grid'"
-                    [data]="data1"
-                    [columns]="[
-                      { field: 'lastName' },
-                      { field: 'firstName' },
-                      { field: 'dob', dataType: 'date' },
-                      { field: 'pcg.nLabs' },
-                      { field: 'pcg.nested.nLabPath' }
-                    ]">
-          </hci-grid>
-        </p>
-      </div>
-    </div>
-    
-    <div class="card">
-      <div class="card-header">
-        <h4>More Simple Grid</h4>
-      </div>
-      <div class="card-body">
-        <div class="card-text">
-          Here we pass the data array and column definitions.  The column definitions specify the complex data path and the
-          template type and that is all.  There is no filtering, header, sorting or paging.
-        </div>
-        <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
-          <ng-template #config2>
-            <pre>
-              &lt;hci-grid
-                [data]="data2"
-                [columns]="[
-                  {{"{"}} field: 'lastName' {{"}"}},
-                  {{"{"}} field: 'firstName' {{"}"}},
-                  {{"{"}} field: 'dob', dataType: 'date' {{"}"}},
-                  {{"{"}} field: 'pcg.nLabs' {{"}"}},
-                  {{"{"}} field: 'pcg.nested.nLabPath' {{"}"}}
-                ]&gt;
-              &lt;/hci-grid&gt;
-            </pre>
-          </ng-template>
-        </div>
-        <p>
-          <hci-grid [data]="data2"
-                    [columns]="[
-                      { field: 'lastName' },
-                      { field: 'firstName' },
-                      { field: 'dob', dataType: 'date' },
-                      { field: 'pcg.nLabs' },
-                      { field: 'pcg.nested.nLabPath' }
-                    ]">
-          </hci-grid>
-        </p>
-      </div>
-    </div>
-    
-    <div class="card">
-      <div class="card-header">
-        <h4>Even More Simple Grid</h4>
-      </div>
-      <div class="card-body">
-        <div class="card-text">
           Here the only thing passed in is the data.  Visible label columns are created automatically based on every key
           in the object.
         </div>
@@ -113,7 +32,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid [data]="data3"
                     [columns]="[
                       { field: 'lastName', name: 'Last Name' },
-                      { field: 'firstName', name: 'First Name' }
+                      { field: 'firstName', name: 'First Name' },
+                      { field: 'dob', name: 'Date of Birth', dataType: 'date' }
                     ]">
           </hci-grid>
         </p>
@@ -161,16 +81,12 @@ export class SimpleGridComponent implements OnInit {
     { field: "citystatezip", name: "Address 2" }
   ];
 
-  data1: Object[];
-  data2: Object[];
   data3: Object[];
   data4: Object[];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.data1 = this.dataGeneratorService.getData(6);
-    this.data2 = this.dataGeneratorService.getData(6);
     this.data3 = this.dataGeneratorService.getData(6);
     
     this.dataGeneratorService.generateSimpleData4(55);

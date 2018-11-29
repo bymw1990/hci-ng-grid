@@ -23,6 +23,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [data]="data1"
                 [columns]="columns1"
+                [mode]="'spreadsheet'"
                 (onCellSave)="onCellSave($event)"&gt;
               &lt;/hci-grid&gt;
               
@@ -44,6 +45,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columns]="columns1"
+                    [mode]="'spreadsheet'"
                     (onCellSave)="onCellSave($event)">
           </hci-grid>
         </p>
@@ -57,6 +59,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
       <div class="card-body">
         <div class="card-text">
           Edit a cell's value then tab until you hit the next row.  Information and the dirty row as original format will be broadcast.
+          Next, tab through the entire next row and you won't see any emit because there were no changes.
         </div>
         <div class="card-text">
           {{rowSaveOutput}}
@@ -68,6 +71,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [data]="data1"
                 [columns]="columns1"
+                [mode]="'spreadsheet'"
                 [saveOnDirtyRowChange]="true"
                 (onRowSave)="onRowSave($event)"&gt;
               &lt;/hci-grid&gt;
@@ -77,8 +81,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "lastName", name: "Last Name"
               field: "firstName", name: "First Name"
               field: "dob", name: "Date of Birth", dataType: "date"
-              field: "pcg.nLabs", name: "# Labs"
-              field: "pcg.nested.nLabPath", name: "# Lab Path"
+              field: "nLabs", name: "# Labs"
+              field: "path.nPath", name: "# Lab Path"
               ];
             </pre>
           </ng-template>
@@ -86,6 +90,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columns]="columns1"
+                    [mode]="'spreadsheet'"
                     [saveOnDirtyRowChange]="true"
                     (onRowSave)="onRowSave($event)">
           </hci-grid>
@@ -106,8 +111,8 @@ export class SavingDemoComponent {
     { field: "lastName", name: "Last Name" },
     { field: "firstName", name: "First Name" },
     { field: "dob", name: "Date of Birth", dataType: "date" },
-    { field: "pcg.nLabs", name: "# Labs" },
-    { field: "pcg.nested.nLabPath", name: "# Lab Path" }
+    { field: "nLabs", name: "# Labs" },
+    { field: "path.nPath", name: "# Path" }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {

@@ -51,14 +51,14 @@ export class DataGeneratorService {
       let dob: string = this.generateDate(1930, 1990);
       let dobms: number = moment(dob).valueOf();
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
-      let nLabs: number = Math.floor(Math.random() * 100);
+      let nLabs: number = Math.floor(Math.random() * 10);
       let lab = {
         tech: this._lastNames[Math.floor(Math.random() * this._lastNames.length)],
         type: this._labTypes[Math.floor(Math.random() * this._labTypes.length)],
-        value: Math.floor(Math.random() * 200)
+        value: Math.floor(Math.random() * 100)
       };
       let path = {
-        nPath: Math.floor(Math.random() * 200)
+        nPath: Math.floor(Math.random() * 100)
       };
 
       data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, dobms: dobms, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab, path: path });

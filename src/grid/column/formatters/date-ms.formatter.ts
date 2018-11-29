@@ -15,7 +15,7 @@ export class DateMsFormatter extends FormatterParser {
   }
 
   formatValue(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       let date: string = moment(value).format(this.format);
 
       if (date === "Invalid date") {
@@ -29,7 +29,7 @@ export class DateMsFormatter extends FormatterParser {
   }
 
   parseValue(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       let date: number = moment(value, this.format).toDate().getTime();
 
       if (isNaN(date)) {

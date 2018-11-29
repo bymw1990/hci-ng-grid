@@ -18,7 +18,7 @@ export class DateIso8601Formatter extends FormatterParser {
   }
 
   formatValue(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       let date: string = moment(value).format(this.format);
 
       if (date === "Invalid date") {
@@ -32,7 +32,7 @@ export class DateIso8601Formatter extends FormatterParser {
   }
 
   parseValue(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       let date: string = moment(<string>value, this.format).toISOString().substring(0, 10);
 
       if (date === "Invalid Date") {

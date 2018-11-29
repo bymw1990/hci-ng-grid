@@ -10,7 +10,7 @@ export class FormatterParser {
   }
 
   formatValue(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       return value;
     } else {
       return "";
@@ -18,7 +18,7 @@ export class FormatterParser {
   }
 
   parseValue(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       return value;
     } else {
       return "";

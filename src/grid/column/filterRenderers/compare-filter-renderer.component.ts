@@ -190,7 +190,7 @@ export class CompareFilterRenderer extends FilterRenderer {
 
     if (this.column.dataType === "number") {
       this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
-    } else if (this.column.dataType === "date") {
+    } else if (this.column.dataType.indexOf("date") === 0) {
       this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     } else {
       this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);

@@ -24,8 +24,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
               <pre>
                 &lt;hci-grid
                   [title]="'Spreadsheet Grid'"
-                  [data]="editData"
-                  [columns]="editColumns"
+                  [data]="data1"
+                  [columns]="columns1"
                   [pageSize]="25"
                   [nVisibleRows]="10"&gt;
                 &lt;/hci-grid&gt;
@@ -39,8 +39,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 field: "nLabPath", name: "# Lab Path"
               </pre>
             </ng-template>
-            <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
-            <ng-template #data1>
+            <button type="button" class="btn btn-outline-primary" [ngbPopover]="dataConfig1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
+            <ng-template #dataConfig1>
               <div class="d-flex flex-nowrap" style="font-weight: bold;">
                 <span style="width: 100px;">idPatient</span>
                 <span style="width: 100px;">firstName</span>
@@ -49,13 +49,13 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 <span style="width: 100px;">nLabs</span>
                 <span style="width: 200px;">nPathLabs</span>
               </div>
-              <div *ngFor="let row of editData" class="d-flex flex-nowrap">
+              <div *ngFor="let row of data1" class="d-flex flex-nowrap">
                 <span style="width: 100px;">{{row.idPatient}}</span>
                 <span style="width: 100px;">{{row.firstName}}</span>
                 <span style="width: 100px;">{{row.lastName}}</span>
                 <span style="width: 200px;">{{row.dob}}</span>
                 <span style="width: 100px;">{{row.nLabs}}</span>
-                <span style="width: 200px;">{{row.nPathLabs}}</span>
+                <span style="width: 200px;">{{row.path.nPath}}</span>
               </div>
             </ng-template>
           </div>
@@ -83,7 +83,7 @@ export class EditGridComponent {
     { field: "firstName", name: "First Name" },
     { field: "dob", name: "Date of Birth", dataType: "date" },
     { field: "nLabs", name: "# Labs" },
-    { field: "nLabPath", name: "# Lab Path" }
+    { field: "path.nPath", name: "# Path" }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

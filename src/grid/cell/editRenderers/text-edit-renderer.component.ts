@@ -83,7 +83,7 @@ export class TextEditRenderer extends CellEditRenderer {
       this.invalid = true;
     } else if (this.pattern && value && value.match(this.pattern) === null) {
       this.invalid = true;
-    } else if (this.column.dataType === "date" && this.column.format) {
+    } else if (this.column.dataType.indexOf("date") === 0 && this.column.format) {
       try {
         let date: string = moment(<string>value, this.column.format).toISOString();
 

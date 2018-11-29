@@ -8,7 +8,7 @@ export class NumberFormatter extends FormatterParser {
   setConfig(config: any) {}
 
   format(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       return value;
     } else {
       return undefined;
@@ -16,7 +16,7 @@ export class NumberFormatter extends FormatterParser {
   }
 
   parse(value: any): any {
-    if (value) {
+    if (value !== undefined) {
       return +value;
     } else {
       return value;
