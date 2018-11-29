@@ -671,7 +671,7 @@ export class GridService {
 
       this.pageInfo.setPage(0);
 
-      this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.externalSorting) ? this.sortInfo : null, (this.externalPaging) ? this.pageInfo : null));
+      this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.externalSorting) ? this.sortInfo : undefined, this.pageInfo));
     } else {
       this.pageInfo.setPage(0);
       this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
@@ -1130,6 +1130,10 @@ export class GridService {
   }
 
   public setPageSize(pageSize: number) {
+    if (isDevMode()) {
+      console.debug("setPageSize: " + pageSize);
+    }
+
     this.pageInfo.setPageSize(pageSize);
     this.pageInfo.setPage(0);
 

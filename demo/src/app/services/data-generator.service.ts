@@ -190,11 +190,11 @@ export class DataGeneratorService {
     console.debug("Done generateExternalData2: " + this.externalData2.length);
   }
 
-  getExternalData1(externalInfo: ExternalInfo): Observable<ExternalData> {
+  getExternalData1(externalInfo: ExternalInfo): ExternalData {
     return this.getExternalData(externalInfo, this.externalData1, true);
   }
 
-  getExternalData2(externalInfo: ExternalInfo): Observable<ExternalData> {
+  getExternalData2(externalInfo: ExternalInfo): ExternalData {
     return this.getExternalData(externalInfo, this.externalData2, false);
   }
 
@@ -206,12 +206,12 @@ export class DataGeneratorService {
    * @param externalInfo
    * @returns {ExternalData}
    */
-  getExternalData(externalInfo: ExternalInfo, externalData: any[], paging: boolean): Observable<ExternalData> {
+  getExternalData(externalInfo: ExternalInfo, externalData: any[], paging: boolean): ExternalData {
     console.info("getExternalData");
     console.info(externalInfo);
 
     if (!externalInfo) {
-      return Observable.create(observer => { observer.next(new ExternalData(externalData, externalInfo)); });
+      return new ExternalData(externalData, externalInfo);
     }
     if (!externalInfo.getPage()) {
       externalInfo.setPage(new PageInfo());
@@ -285,8 +285,8 @@ export class DataGeneratorService {
       });
     }
 
-    if (!pageInfo || !paging) {
-      return Observable.create(observer => { observer.next(new ExternalData(filtered, externalInfo)); });
+    if (!pageInfo) {
+      return new ExternalData(filtered, externalInfo);
     }
 
     let data: Object[] = [];
@@ -306,17 +306,21 @@ export class DataGeneratorService {
 
     console.info("externalData paging: " + n + " " + page + " " + pageSize);
 
+    if (!paging) {
+      return new ExternalData(filtered, externalInfo);
+    }
+
     if (pageSize > 0) {
       if (page * pageSize > n - 1) {
-        return Observable.create(observer => { observer.next(new ExternalData(data, externalInfo)); });
+        return new ExternalData(data, externalInfo);
       }
 
       for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
         data.push(filtered[i]);
       }
-      return Observable.create(observer => { observer.next(new ExternalData(data, externalInfo)); });
+      return new ExternalData(data, externalInfo);
     } else {
-      return Observable.create(observer => { observer.next(new ExternalData(filtered, externalInfo)); });
+      return new ExternalData(filtered, externalInfo);
     }
   }
 

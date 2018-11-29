@@ -421,7 +421,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() externalFiltering: boolean;
   @Input() externalSorting: boolean;
   @Input() externalPaging: boolean;
-  @Input() pageSize: number;
+  @Input("pageSize") inputPageSize: number;
   @Input("pageSizes") inputPageSizes: number[];
   @Input("nVisibleRows") inputNVisibleRows: number = -1;
   @Input() saveOnDirtyRowChange: boolean = false;
@@ -584,7 +584,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.gridService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
         this.updateGridContainerHeight();
         this.busySubject.next(true);
-        this.onExternalDataCall(externalInfo).then((externalData: ExternalData) => {
+        this.onExternalDataCall(externalInfo).subscribe((externalData: ExternalData) => {
           if (!externalData.externalInfo) {
             this.gridService.pageInfo.setNumPages(1);
           } else {
@@ -1378,8 +1378,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.externalPaging !== undefined) {
       this.inputConfig.externalPaging = this.externalPaging;
     }
-    if (this.pageSize !== undefined) {
-      this.inputConfig.pageSize = this.pageSize;
+    if (this.inputPageSize !== undefined) {
+      this.inputConfig.pageSize = this.inputPageSize;
     }
     if (this.inputPageSizes !== undefined) {
       this.inputConfig.pageSizes = this.inputPageSizes;

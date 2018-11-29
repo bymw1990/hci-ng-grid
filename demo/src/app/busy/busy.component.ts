@@ -3,6 +3,7 @@ import {Component, OnInit, ViewChild} from "@angular/core";
 import {CompareFilterRenderer, ExternalData, ExternalInfo, GridComponent, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: "busy-demo",
@@ -145,17 +146,11 @@ export class BusyDemoComponent implements OnInit {
     this.grid2.getBusySubject().next(busy);
   }
 
-  public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
+  public handleExternalDataCall1(externalInfo: ExternalInfo): Observable<ExternalData> {
     console.info("handleExternalDataCall1");
     console.info(externalInfo);
 
-    return new Promise((resolve, reject) => {
-      this.dataGeneratorService.getExternalData1(externalInfo).subscribe((externalData: ExternalData) => {
-        setTimeout(() =>
-            resolve(externalData), 5000
-        );
-      });
-    });
+    return Observable.of(this.dataGeneratorService.getExternalData1(externalInfo)).delay(5000);
   }
 
 }

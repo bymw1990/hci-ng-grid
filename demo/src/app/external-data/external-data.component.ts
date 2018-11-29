@@ -3,6 +3,7 @@ import {Component, OnInit} from "@angular/core";
 import {CompareFilterRenderer, ExternalData, ExternalInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: "external-data-demo",
@@ -176,32 +177,21 @@ export class ExternalDataComponent implements OnInit {
     this.onExternalDataCall3 = this.handleExternalDataCall3.bind(this);
   }
 
-  public handleExternalDataCall1(externalInfo: ExternalInfo): Promise<ExternalData> {
+  public handleExternalDataCall1(externalInfo: ExternalInfo): Observable<ExternalData> {
     console.info("handleExternalDataCall1");
     console.info(externalInfo);
 
-    return new Promise((resolve, reject) => {
-      this.dataGeneratorService.getExternalData1(externalInfo).subscribe((externalData: ExternalData) => {
-        setTimeout(() =>
-          resolve(externalData), 1000
-        );
-      });
-    });
+    return Observable.of(this.dataGeneratorService.getExternalData1(externalInfo)).delay(1000);
   }
 
-  public handleExternalDataCall2(externalInfo: ExternalInfo): Promise<ExternalData> {
-    return new Promise((resolve, reject) => {
-      this.dataGeneratorService.getExternalData2(externalInfo).subscribe((externalData: ExternalData) => {
-        resolve(externalData);
-      });
-    });
+  public handleExternalDataCall2(externalInfo: ExternalInfo): Observable<ExternalData> {
+    console.info("handleExternalDataCall2");
+    console.info(externalInfo);
+
+    return Observable.of(this.dataGeneratorService.getExternalData2(externalInfo)).delay(1000);
   }
 
-  public handleExternalDataCall3(externalInfo: ExternalInfo): Promise<ExternalData> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() =>
-        resolve(new ExternalData([], externalInfo)), 1000
-      );
-    });
+  public handleExternalDataCall3(externalInfo: ExternalInfo): Observable<ExternalData> {
+    return Observable.of(new ExternalData([], externalInfo)).delay(1000);
   }
 }
