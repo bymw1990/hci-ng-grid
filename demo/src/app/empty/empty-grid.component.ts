@@ -1,7 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { Column } from "hci-ng-grid";
+import {Component} from "@angular/core";
 
-import { DataGeneratorService } from "../services/data-generator.service";
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "empty-grid",
@@ -50,20 +49,20 @@ export class EmptyGridComponent {
   data1: Object[] = [];
 
   data2: Object[] = [];
-  columns2: Column[] = [];
+  columns2: any[] = [];
+
+  constructor(private dataGeneratorService: DataGeneratorService) {}
+
+  ngOnInit() {
+    this.data1 = this.dataGeneratorService.getData(13);
+  }
 
   populate() {
-    this.data2 = [
-      {lastName: "Anne", firstName: "Smith", dob: "1970-11-21T00:00-07:00"},
-      {lastName: "Bob", firstName: "Smith", dob: "1971-11-21T00:00-07:00"},
-      {lastName: "Charlie", firstName: "Smith", dob: "1972-11-21T00:00-07:00"},
-      {lastName: "Delta", firstName: "Smith", dob: "1973-11-21T00:00-07:00"},
-      {lastName: "Echo", firstName: "Smith", dob: "1974-11-21T00:00-07:00"}
-    ];
+    this.data2 = this.dataGeneratorService.getData(5);
     this.columns2 = [
-      new Column({field: "lastName", name: "Last Name"}),
-      new Column({field: "firstName", name: "First Name"}),
-      new Column({field: "dob", name: "Date of Birth", dataType: "date"})
+      {field: "lastName", name: "Last Name"},
+      {field: "firstName", name: "First Name"},
+      {field: "dob", name: "Date of Birth", dataType: "date"}
     ];
   }
 }

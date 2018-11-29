@@ -1,8 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 
-import { DataGeneratorService } from "../services/data-generator.service";
-import { Column, ExternalData, ExternalInfo } from "hci-ng-grid";
-import {CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {CompareFilterRenderer, ExternalData, ExternalInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "external-data-demo",
@@ -155,14 +155,14 @@ export class ExternalDataComponent implements OnInit {
   public onExternalDataCall2: Function;
   public onExternalDataCall3: Function;
 
-  columns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", isKey: true }),
-    new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", filterRenderer: CompareFilterRenderer }),
-    new Column({ field: "gender", name: "Gender", choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer }),
-    new Column({ field: "address", name: "Address" })
+  columns: any[] = [
+    { field: "idPatient", name: "ID", isKey: true },
+    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender", choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
+    { field: "address", name: "Address" }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

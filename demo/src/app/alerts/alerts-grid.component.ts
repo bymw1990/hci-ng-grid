@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 
-import {Column, RangeSelectListener} from "hci-ng-grid";
+import {RangeSelectListener} from "hci-ng-grid";
+
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({

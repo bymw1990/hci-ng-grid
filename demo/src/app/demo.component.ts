@@ -30,6 +30,7 @@ declare const VERSION: string;
             <a class="dropdown-item" routerLink="/busy">Busy</a>
             <a class="dropdown-item" routerLink="/popup">Cell Popup</a>
             <a class="dropdown-item" routerLink="/copypaste">Copy/Paste</a>
+            <a class="dropdown-item" routerLink="/date">Date Formatting</a>
             <a class="dropdown-item" routerLink="/dynamic-config">Dynamic Config</a>
             <a class="dropdown-item" routerLink="/empty">Empty Grid</a>
             <a class="dropdown-item" routerLink="/event">Event Listeners</a>

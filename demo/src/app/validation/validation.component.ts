@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {Column} from "hci-ng-grid";
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "validation-demo",
@@ -72,31 +72,21 @@ import {Column} from "hci-ng-grid";
 })
 export class ValidationComponent {
 
-  data: Object[] = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1970-11-21T00:00-07:00", "nLabs": 1, "nLabPath": 12 },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1960-12-11T00:00-07:00", "nLabs": 2, "nLabPath": 23 },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1940-01-03T00:00-07:00", "nLabs": 3, "nLabPath": 4 },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1950-06-06T00:00-07:00", "nLabs": 1, "nLabPath": 93 },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "nLabs": 4, "nLabPath": 45 },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1930-01-17T00:00-07:00", "nLabs": 5, "nLabPath": 56 },
-    { "idPatient": 7, "firstName": "Ragini", "lastName": "Kanth", "dob": "1980-02-08T00:00-07:00", "nLabs": 4, "nLabPath": 45 },
-    { "idPatient": 8, "firstName": "Jenny", "lastName": "White", "dob": "1940-05-29T00:00-07:00", "nLabs": 9, "nLabPath": 13 },
-    { "idPatient": 9, "firstName": "Sam", "lastName": "Black", "dob": "1930-02-22T00:00-07:00", "nLabs": 2, "nLabPath": 5 },
-    { "idPatient": 10, "firstName": "Tim", "lastName": "Lewis", "dob": "1920-06-08T00:00-07:00", "nLabs": 9, "nLabPath": 11 },
-    { "idPatient": 11, "firstName": "Ben", "lastName": "Brown", "dob": "1977-08-12T00:00-07:00", "nLabs": 3, "nLabPath": 87 },
-    { "idPatient": 12, "firstName": "Leslie", "lastName": "Pink", "dob": "1980-11-03T00:00-07:00", "nLabs": 4, "nLabPath": 13 },
-    { "idPatient": 13, "firstName": "Jimmy", "lastName": "Smith", "dob": "1933-04-05T00:00-07:00", "nLabs": 7, "nLabPath": 2 },
-    { "idPatient": 14, "firstName": "Bob", "lastName": "White", "dob": "1944-05-13T00:00-07:00", "nLabs": 8, "nLabPath": 27 },
-    { "idPatient": 15, "firstName": "Jane", "lastName": "Black", "dob": "1955-06-23T00:00-07:00", "nLabs": 6, "nLabPath": 73 }
+  data: Object[];
+
+  columns: any[] = [
+    { field: "idPatient", name: "ID", visible: true },
+    { field: "lastName", name: "Last Name", editConfig: {required: true} },
+    { field: "firstName", name: "First Name", editConfig: {maxlength: 35} },
+    { field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" },
+    { field: "nLabs", name: "# Labs", editConfig: {pattern: /^[0-9]{1}$/} },
+    { field: "nLabPath", name: "# Lab Path", editConfig: {pattern: /^[0-9]{1,2}$/} }
   ];
 
-  columns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: true }),
-    new Column({ field: "lastName", name: "Last Name", editConfig: {required: true} }),
-    new Column({ field: "firstName", name: "First Name", editConfig: {maxlength: 35} }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY" }),
-    new Column({ field: "nLabs", name: "# Labs", editConfig: {pattern: /^[0-9]{1}$/} }),
-    new Column({ field: "nLabPath", name: "# Lab Path", editConfig: {pattern: /^[0-9]{1,2}$/} })
-  ];
+  constructor(private dataGeneratorService: DataGeneratorService) {}
+
+  ngOnInit() {
+    this.data = this.dataGeneratorService.getData(15);
+  }
 
 }

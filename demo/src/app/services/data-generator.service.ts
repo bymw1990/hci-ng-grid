@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Rx";
 
+import * as moment from "moment";
+
 import {ExternalData, ExternalInfo, FilterInfo} from "hci-ng-grid";
 import {PageInfo} from "hci-ng-grid";
 
@@ -47,6 +49,7 @@ export class DataGeneratorService {
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
       let dob: string = this.generateDate(1930, 1990);
+      let dobms: number = moment(dob).valueOf();
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
       let nLabs: number = Math.floor(Math.random() * 100);
       let lab = {
@@ -58,7 +61,7 @@ export class DataGeneratorService {
         nPath: Math.floor(Math.random() * 200)
       };
 
-      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab, path: path });
+      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, dobms: dobms, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab, path: path });
     }
     return data;
   }

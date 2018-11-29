@@ -1,7 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { Column } from "hci-ng-grid";
+import {Component, OnInit} from "@angular/core";
 
-import { DataGeneratorService } from "../services/data-generator.service";
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "simple-grid",
@@ -20,7 +19,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [title]="'Simple Grid'"
-                [data]="simpleData1"
+                [data]="data1"
                 [columns]="[
                   {{"{"}} field: 'lastName' {{"}"}},
                   {{"{"}} field: 'firstName' {{"}"}},
@@ -34,7 +33,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [title]="'Simple Grid'"
-                    [data]="simpleData1"
+                    [data]="data1"
                     [columns]="[
                       { field: 'lastName' },
                       { field: 'firstName' },
@@ -61,7 +60,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           <ng-template #config2>
             <pre>
               &lt;hci-grid
-                [data]="simpleData2"
+                [data]="data2"
                 [columns]="[
                   {{"{"}} field: 'lastName' {{"}"}},
                   {{"{"}} field: 'firstName' {{"}"}},
@@ -74,7 +73,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           </ng-template>
         </div>
         <p>
-          <hci-grid [data]="simpleData2"
+          <hci-grid [data]="data2"
                     [columns]="[
                       { field: 'lastName' },
                       { field: 'firstName' },
@@ -101,7 +100,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           <ng-template #config3>
             <pre>
               &lt;hci-grid
-                [data]="simpleData3"
+                [data]="data3"
                 [columns]="[
                   {{"{"}} field: 'lastName', name: 'Last Name' {{"}"}},
                   {{"{"}} field: 'firstName', name: 'First Name' {{"}"}}
@@ -111,7 +110,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
           </ng-template>
         </div>
         <p>
-          <hci-grid [data]="simpleData3"
+          <hci-grid [data]="data3"
                     [columns]="[
                       { field: 'lastName', name: 'Last Name' },
                       { field: 'firstName', name: 'First Name' }
@@ -135,7 +134,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [title]="'Simple Grid Delayed'"
-                [data]="simpleData4"
+                [data]="data4"
                 [columns]="columns4"&gt;
               &lt;/hci-grid&gt;
             </pre>
@@ -143,7 +142,7 @@ import { DataGeneratorService } from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [title]="'Simple Grid Delayed'"
-                    [data]="simpleData4"
+                    [data]="data4"
                     [columns]="columns4">
           </hci-grid>
         </p>
@@ -153,50 +152,30 @@ import { DataGeneratorService } from "../services/data-generator.service";
 })
 export class SimpleGridComponent implements OnInit {
 
-  columns4: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: true }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "address", name: "Address 1" }),
-    new Column({ field: "citystatezip", name: "Address 2" })
+  columns4: any[] = [
+    { field: "idPatient", name: "ID", visible: true },
+    { field: "lastName", name: "Last Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "address", name: "Address 1" },
+    { field: "citystatezip", name: "Address 2" }
   ];
 
-  simpleData1: Object[] = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1968-11-27T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1966-09-25T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1965-11-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1963-06-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1962-04-16T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1961-03-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
-
-  simpleData2: Object[] = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1974-11-13T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 1, "nested": { "nLabPath": 12 } } },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1975-11-11T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 2, "nested": { "nLabPath": 23 } } },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1976-07-17T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 3, "nested": { "nLabPath": 34 } } },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1977-04-16T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 99, "nested": { "nLabPath": 9 } } },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1978-03-21T00:00-07:00", "pcg": { "qmatm": "What?", "nLabs": 4, "nested": { "nLabPath": 45 } } },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1979-02-11T00:00-07:00", "pcg": { "qmatm": "Huh?", "nLabs": 5, "nested": { "nLabPath": 56 } } }
-  ];
-
-  simpleData3: Object[] = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith" },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe" },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James" },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James"},
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth" },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne" }
-  ];
-
-  simpleData4: Object[] = null;
+  data1: Object[];
+  data2: Object[];
+  data3: Object[];
+  data4: Object[];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
+    this.data1 = this.dataGeneratorService.getData(6);
+    this.data2 = this.dataGeneratorService.getData(6);
+    this.data3 = this.dataGeneratorService.getData(6);
+    
     this.dataGeneratorService.generateSimpleData4(55);
-    this.dataGeneratorService.getSimpleData4(5000).subscribe((simpleData4: Object[]) => {
-      this.simpleData4 = simpleData4;
+    this.dataGeneratorService.getSimpleData4(5000).subscribe((data4: Object[]) => {
+      this.data4 = data4;
     });
   }
 

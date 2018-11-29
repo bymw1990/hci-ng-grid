@@ -1,9 +1,8 @@
 import {Component} from "@angular/core";
 
-import {ClickCellEditListener, CellHoverPopupListener, BigTextPopup, Column} from "hci-ng-grid";
+import {BigTextPopup, ClickCellEditListener, CellHoverPopupListener, CompareFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
-import {CompareFilterRenderer} from "hci-ng-grid";
 import {LabFP} from "../components/lab.formatter";
 import {LabPopup} from "../components/lab.component";
 
@@ -77,15 +76,15 @@ export class PopupComponent {
     { type: CellHoverPopupListener }
   ];
 
-  columns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", popupRenderer: BigTextPopup }),
-    new Column({ field: "middleName", name: "Middle Name", popupRenderer: BigTextPopup }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer }),
-    new Column({ field: "lab", name: "Lab", formatterParser: LabFP, popupRenderer: LabPopup })
+  columns1: any[] = [
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name", popupRenderer: BigTextPopup },
+    { field: "middleName", name: "Middle Name", popupRenderer: BigTextPopup },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "gender", name: "Gender" },
+    { field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer },
+    { field: "lab", name: "Lab", formatterParser: LabFP, popupRenderer: LabPopup }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

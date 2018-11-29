@@ -1,5 +1,7 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {Column, CellNumberRangeView, ClickView, ClickViewListener, EventListenerArg} from "hci-ng-grid";
+
+import {CellNumberRangeView, ClickView, ClickViewListener} from "hci-ng-grid";
+
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -241,33 +243,33 @@ export class ThemingComponent {
   data4: Object[] = [];
   data5: Object[] = [];
 
-  columns: Column[] = [
-    new Column({ field: "lastName", name: "Last" }),
-    new Column({ field: "firstName", name: "First" }),
-    new Column({ field: "dob", name: "Birth Date", dataType: "date" }),
-    new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "address", name: "Address" }),
-    new Column({ field: "nLabs", name: "# Labs" })
+  columns: any[] = [
+    { field: "lastName", name: "Last" },
+    { field: "firstName", name: "First" },
+    { field: "dob", name: "Birth Date", dataType: "date" },
+    { field: "gender", name: "Gender" },
+    { field: "address", name: "Address" },
+    { field: "nLabs", name: "# Labs" }
   ];
 
-  columns1: Column[] = [
-    new Column({ field: "idPatient", name: "ID" }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-    new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "nLabs", name: "# Labs", dataType: "number" }),
-    new Column({ viewRenderer: ClickView, minWidth: 30, width: 30, maxWidth: 30 })
+  columns1: any[] = [
+    { field: "idPatient", name: "ID" },
+    { field: "lastName", name: "Last Name" },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "gender", name: "Gender" },
+    { field: "nLabs", name: "# Labs", dataType: "number" },
+    { viewRenderer: ClickView, minWidth: 30, width: 30, maxWidth: 30 }
   ];
 
-  columns3: Column[] = [
-    new Column({ field: "lastName", name: "Last" }),
-    new Column({ field: "firstName", name: "First" }),
-    new Column({ field: "dob", name: "Birth Date", dataType: "date" }),
-    new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "address", name: "Address" }),
-    new Column({ field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} })
+  columns3: any[] = [
+    { field: "lastName", name: "Last" },
+    { field: "firstName", name: "First" },
+    { field: "dob", name: "Birth Date", dataType: "date" },
+    { field: "gender", name: "Gender" },
+    { field: "address", name: "Address" },
+    { field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

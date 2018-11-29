@@ -71,7 +71,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             <pre>
               &lt;hci-grid
                 [title]="'Dynamic Columns Row Select'"
-                [data]="data"
+                [data]="data2"
                 [columns]="columnsA"
                 [eventListeners]="listeners2"&gt;
               &lt;/hci-grid&gt;
@@ -93,7 +93,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [title]="'Dynamic Columns Row Select'"
-                    [data]="data"
+                    [data]="data2"
                     [columns]="columnsA"
                     [eventListeners]="listeners2">
           </hci-grid>
@@ -118,7 +118,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <ng-template #config2>
             <pre>
               &lt;hci-grid
-                [data]="data"
+                [data]="data3"
                 [config]="config3"&gt;
               &lt;/hci-grid&gt;
               
@@ -131,7 +131,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid #grid3
-                    [data]="data"
+                    [data]="data3"
                     [config]="config3">
           </hci-grid>
         </p>
@@ -141,7 +141,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class DynamicConfigGridComponent {
 
-  data1: any[];
+  data1: Object[];
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: false },
     { field: "lastName", name: "Last Name", widthPercent: 40 },
@@ -150,16 +150,6 @@ export class DynamicConfigGridComponent {
     { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
     { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
-  ];
-
-  data: Object[] = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "middleName": "A", "dob": "1952-01-03T00:00-07:00" },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "middleName": "B", "dob": "1971-11-01T00:00-07:00" },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "middleName": "C", "dob": "1980-05-21T00:00-07:00" },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "middleName": "D", "dob": "1976-02-11T00:00-07:00" },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "middleName": "E", "dob": "1955-08-21T00:00-07:00" },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "middleName": "F", "dob": "1950-09-11T00:00-07:00" },
-    { "idPatient": 7, "firstName": "Jimmy", "lastName": "Zephod", "middleName": "F", "dob": "1960-01-17T00:00-07:00" }
   ];
 
   columnsA1: any[] = [
@@ -179,13 +169,12 @@ export class DynamicConfigGridComponent {
 
   columnsA: any = this.columnsA1;
 
+  data2: Object[];
   listeners2: any[] = [
     {type: ClickRowSelectListener}
   ];
 
-  key: string = "title";
-  value: any = "Test";
-
+  data3: Object[];
   config3 = {
     title: "Config",
     columns: [
@@ -195,12 +184,17 @@ export class DynamicConfigGridComponent {
     ]
   };
 
+  key: string = "title";
+  value: any = "Test";
+
   @ViewChild("grid3") grid3: GridComponent;
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
     this.data1 = this.dataGeneratorService.getData(123);
+    this.data2 = this.dataGeneratorService.getData(7);
+    this.data3 = this.dataGeneratorService.getData(7);
   }
 
   setColumnsA1() {

@@ -43,6 +43,7 @@ import {DemoInterceptor} from "./services/demo.interceptor";
 import {SavingDemoComponent} from "./saving/saving.component";
 import {BusyDemoComponent} from "./busy/busy.component";
 import {ValidationComponent} from "./validation/validation.component";
+import {DateDemoComponent} from "./date/date.component";
 
 @NgModule({
   imports: [
@@ -55,6 +56,7 @@ import {ValidationComponent} from "./validation/validation.component";
       { path: "alerts", component: AlertsGridComponent },
       { path: "busy", component: BusyDemoComponent },
       { path: "copypaste", component: CopyPasteGridComponent },
+      { path: "date", component: DateDemoComponent},
       { path: "docs", component: DocsComponent},
       { path: "dynamic-config", component: DynamicConfigGridComponent },
       { path: "edit", component: EditGridComponent },
@@ -83,6 +85,7 @@ import {ValidationComponent} from "./validation/validation.component";
     AlertsGridComponent,
     BusyDemoComponent,
     CopyPasteGridComponent,
+    DateDemoComponent,
     DemoComponent,
     DictionaryFilterRenderer,
     DocsComponent,

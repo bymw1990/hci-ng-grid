@@ -2,7 +2,7 @@ import {FormatterParser} from "hci-ng-grid";
 
 export class LabFP extends FormatterParser {
 
-  format(value: any): string {
+  formatValue(value: any): string {
     if (value === undefined || value === null) {
       return "";
     } else {
@@ -10,11 +10,11 @@ export class LabFP extends FormatterParser {
     }
   }
 
-  parse(value: string): any {
+  parseValue(value: any): any {
     if (value === undefined || value === null) {
       return "";
     } else {
-      return null;
+      return undefined;
     }
   }
 }

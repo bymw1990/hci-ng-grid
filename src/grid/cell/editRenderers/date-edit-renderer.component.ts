@@ -1,7 +1,7 @@
-import {Component, ElementRef, isDevMode, ViewChild} from "@angular/core";
+import {Component, ElementRef, isDevMode, SimpleChange, SimpleChanges, ViewChild} from "@angular/core";
 
 import * as moment from "moment";
-import {NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDatepicker, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 
 import {CellEditRenderer} from "./cell-edit-renderer";
 import {Point} from "../../utils/point";
@@ -17,7 +17,8 @@ import {Cell} from "../cell";
                     (mousedown)="stop($event)"
                     (click)="onClick($event)"
                     (keydown)="onKeyDown($event)"
-                    class="edit-renderer"></ngb-datepicker>
+                    class="edit-renderer">
+    </ngb-datepicker>
   `,
   styles: [ `
 
@@ -30,15 +31,16 @@ import {Cell} from "../cell";
 })
 export class DateEditRenderer extends CellEditRenderer {
 
-  @ViewChild("datepicker", {read: ElementRef}) datepicker: ElementRef;
+  @ViewChild("datepicker", {read: ElementRef}) datepickerEl: ElementRef;
+  @ViewChild("datepicker") datepicker: NgbDatepicker;
 
   /**
    * Upon creation of the datepicker, focus on it to enable key nav.
    */
-  ngAfterViewInit() {
-    this.changeDetectorRef.markForCheck();
-    this.datepicker.nativeElement.focus();
-    this.changeDetectorRef.detectChanges();
+  init() {
+    this.datepickerEl.nativeElement.focus();
+
+    this.datepicker.navigateTo(this.value);
   }
 
   onModelChange(value: Object) {
@@ -72,7 +74,7 @@ export class DateEditRenderer extends CellEditRenderer {
       console.debug("ChoiceEditRenderer.onClick");
     }
 
-    this.saveData();
+    //this.saveData();
 
     event.stopPropagation();
     event.preventDefault();
@@ -90,16 +92,18 @@ export class DateEditRenderer extends CellEditRenderer {
 
     let date: any = moment(this.data.value);
     this.value = <NgbDateStruct>{
-      year: date.year(),
-      month: date.month() + 1,
-      day: date.date()
+      year: +date.year(),
+      month: +date.month() + 1,
+      day: +date.date()
     };
-
-    console.debug(this.value);
   }
 
   /**
-   * NgbDateStruct stores day, month and year.  Convert this to ISO8601.
+   * NgbDateStruct stores day, month and year.  Parse this to the expected date type.
+   *
+   * This is a little complicated because the format in the view (say MM/DD/YYYY) is not the same format as the editor
+   * which is the NgbDateStruct.  To handle this, you need to convert the NgbDateStruct to a iso8601 date, then create
+   * a moment out of that.  Then you can use whatever the formatter is to format it.  Then you can take that and parse it.
    *
    * @param date
    * @returns {any}
@@ -111,7 +115,9 @@ export class DateEditRenderer extends CellEditRenderer {
       return undefined;
     }
 
-    return date.year + "-" + ((date.month < 10) ? "0" : "") + date.month + "-" + ((date.day < 10) ? "0" : "") + date.day;
+    let v: any = date.year + "-" + ((date.month < 10) ? "0" : "") + date.month + "-" + ((date.day < 10) ? "0" : "") + date.day;
+    v = moment(v).format(this.column.formatterParserInstance["format"]);
+    return this.column.parseValue(v);
   }
 
 }

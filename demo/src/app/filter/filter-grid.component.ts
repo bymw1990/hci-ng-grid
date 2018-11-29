@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {DictionaryFilterRenderer} from "./dictionary-filter.component";
@@ -99,26 +99,26 @@ export class FilterGridComponent {
   dataSize: number = 250;
   filteredData: Object[];
 
-  filteredColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
-    new Column({ field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer }),
-    new Column({ field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer })
+  filteredColumns: any[] = [
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
+    { field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer }
   ];
 
   filteredData2: Object[];
 
-  filteredColumns2: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name" }),
-    new Column({ field: "dob", name: "Date of Birth" }),
-    new Column({ field: "genderDict", name: "Gender", dataType: "choice", filterRenderer: DictionaryFilterRenderer, filterConfig: {url: "http://localhost/dictionary/gender"} }),
-    new Column({ field: "nLabs", name: "# Labs", dataType: "number" })
+  filteredColumns2: any[] = [
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name" },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name" },
+    { field: "dob", name: "Date of Birth" },
+    { field: "genderDict", name: "Gender", dataType: "choice", filterRenderer: DictionaryFilterRenderer, filterConfig: {url: "http://localhost/dictionary/gender"} },
+    { field: "nLabs", name: "# Labs", dataType: "number" }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

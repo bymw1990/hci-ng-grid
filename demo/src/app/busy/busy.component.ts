@@ -1,9 +1,6 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
 
-import {
-  Column, CompareFilterRenderer, ExternalData, ExternalInfo, GridComponent, SelectFilterRenderer,
-  TextFilterRenderer
-} from "hci-ng-grid";
+import {CompareFilterRenderer, ExternalData, ExternalInfo, GridComponent, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -126,14 +123,14 @@ export class BusyDemoComponent implements OnInit {
 
   public onExternalDataCall1: Function;
 
-  columns: Column[] = [
-    new Column({ field: "idPatient", name: "ID" }),
-    new Column({ field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", filterRenderer: CompareFilterRenderer }),
-    new Column({ field: "gender", name: "Gender", choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer }),
-    new Column({ field: "address", name: "Address" })
+  columns: any[] = [
+    { field: "idPatient", name: "ID" },
+    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", format: "MM/DD/YYYY", filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender", choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
+    { field: "address", name: "Address" }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import {Component} from "@angular/core";
 
-import {Column, RangeSelectListener} from "hci-ng-grid";
+import {RangeSelectListener} from "hci-ng-grid";
+
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -83,14 +84,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class CopyPasteGridComponent {
 
-  data: Object[] = [
-    { "idPatient": 1, "firstName": "Bob", "lastName": "Smith", "dob": "1976-01-05T00:00-07:00", "nLabs": 1, "nPathLabs": 11 },
-    { "idPatient": 2, "firstName": "Jane", "lastName": "Doe", "dob": "1975-02-03T00:00-07:00", "nLabs": 2, "nPathLabs": 22 },
-    { "idPatient": 3, "firstName": "Rick", "lastName": "James", "dob": "1974-03-21T00:00-07:00", "nLabs": 3, "nPathLabs": 33 },
-    { "idPatient": 4, "firstName": "Rick", "lastName": "James", "dob": "1973-04-11T00:00-07:00", "nLabs": 4, "nPathLabs": 44 },
-    { "idPatient": 5, "firstName": "Ragini", "lastName": "Kanth", "dob": "1972-05-21T00:00-07:00", "nLabs": 5, "nPathLabs": 55 },
-    { "idPatient": 6, "firstName": "Sameer", "lastName": "Byrne", "dob": "1971-06-11T00:00-07:00", "nLabs": 6, "nPathLabs": 66 },
-  ];
+  data: Object[];
 
   columns: any[] = [
     { field: "idPatient", name: "ID", visible: false },

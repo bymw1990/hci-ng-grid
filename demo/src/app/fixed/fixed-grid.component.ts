@@ -1,8 +1,8 @@
-import { Component } from "@angular/core";
+import {Component} from "@angular/core";
 
-import { DataGeneratorService } from "../services/data-generator.service";
-import { Column } from "hci-ng-grid";
 import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-ng-grid";
+
+import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
   selector: "fixed-grid",
@@ -80,16 +80,16 @@ export class FixedGridComponent {
 
   fixedData: Object[];
 
-  fixedColumns: Column[] = [
-    new Column({ field: "idPatient", name: "ID", visible: false }),
-    new Column({ field: "lastName", name: "Last Name" }),
-    new Column({ field: "middleName", name: "Middle Name" }),
-    new Column({ field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer }),
-    new Column({ field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }),
-    new Column({ field: "gender", name: "Gender" }),
-    new Column({ field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer }),
-    new Column({ field: "citystatezip", name: "City, State Zip", minWidth: 300 }),
-    new Column({ field: "phone", name: "Phone", filterRenderer: TextFilterRenderer })
+  fixedColumns: any[] = [
+    { field: "idPatient", name: "ID", visible: false },
+    { field: "lastName", name: "Last Name" },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "gender", name: "Gender" },
+    { field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer },
+    { field: "citystatezip", name: "City, State Zip", minWidth: 300 },
+    { field: "phone", name: "Phone", filterRenderer: TextFilterRenderer }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

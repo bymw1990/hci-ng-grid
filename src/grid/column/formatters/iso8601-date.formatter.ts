@@ -2,6 +2,9 @@ import * as moment from "moment";
 
 import {FormatterParser} from "./formatter-parser";
 
+/**
+ * Designed to work with dates coming from the backend in the ISO 8601 date format of YYYY-MM-DD.
+ */
 export class Iso8601DateFormatter extends FormatterParser {
 
   format: string = "MM/DD/YYYY";
@@ -15,10 +18,8 @@ export class Iso8601DateFormatter extends FormatterParser {
   }
 
   formatValue(value: any): any {
-    console.debug(value);
-
     if (value) {
-      let date: string = moment((new Date(<string>value))).format(this.format);
+      let date: string = moment(value).format(this.format);
 
       if (date === "Invalid date") {
         throw new Error("Could not format date.");
@@ -32,7 +33,7 @@ export class Iso8601DateFormatter extends FormatterParser {
 
   parseValue(value: any): any {
     if (value) {
-      let date: string = moment(<string>value, this.format).toISOString();
+      let date: string = moment(<string>value, this.format).toISOString().substring(0, 10);
 
       if (date === "Invalid Date") {
         throw new Error("Could not format date.");

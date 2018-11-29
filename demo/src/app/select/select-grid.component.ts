@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, ElementRef, ViewChild} from "@angular/core";
-
-import {Column, GridComponent, CheckRowSelectView, RowDblClickListener} from "hci-ng-grid";
-import {ClickRowSelectListener} from "hci-ng-grid";
+import {Component, ViewChild} from "@angular/core";
 import {SafeHtml} from "@angular/platform-browser";
+
+import {CheckRowSelectView, ClickRowSelectListener, GridComponent, RowDblClickListener} from "hci-ng-grid";
+
 import {BaseDemoComponent} from "../base-demo.component";
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -159,7 +159,7 @@ export class SelectGridComponent extends BaseDemoComponent {
     </hci-grid>
   `;
   config1Columns: string = `
-    columns1: Column[] = [
+    columns1: any[] = [
       { isKey: true, field: "idPatient", name: "ID", visible: false }),
       { field: "lastName", name: "Last Name" }),
       { field: "firstName", name: "First Name" }),
@@ -200,7 +200,7 @@ export class SelectGridComponent extends BaseDemoComponent {
     </hci-grid>
   `;
   config2Columns: string = `
-    columns2: Column[] = [
+    columns2: any[] = [
       { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 }),
       { isKey: true, field: "idPatient", name: "ID" }),
       { field: "lastName", name: "Last Name" }),
@@ -240,7 +240,7 @@ export class SelectGridComponent extends BaseDemoComponent {
     </hci-grid>
   `;
   config3Columns: string = `
-    columns3: Column[] = [
+    columns3: any[] = [
       { field: "select", viewRenderer: CheckRowSelectView, width: 30, minWidth: 30, maxWidth: 30 },
       { isKey: true, field: "idPatient", name: "ID", visible: true },
       { field: "lastName", name: "Last Name" },

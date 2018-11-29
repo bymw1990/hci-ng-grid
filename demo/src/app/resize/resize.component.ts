@@ -1,7 +1,5 @@
 import {Component} from "@angular/core";
 
-import {Column} from "hci-ng-grid";
-
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -192,14 +190,14 @@ export class ResizeDemoComponent {
     dataSize: number = 250;
     data: Object[];
 
-    columns: Column[] = [
-        new Column({ field: "idPatient", name: "ID", visible: false }),
-        new Column({ field: "lastName", name: "Last Name" }),
-        new Column({ field: "middleName", name: "Middle Name" }),
-        new Column({ field: "firstName", name: "First Name" }),
-        new Column({ field: "dob", name: "Date of Birth", dataType: "date" }),
-        new Column({ field: "gender", name: "Gender" }),
-        new Column({ field: "address", name: "Address" })
+    columns: any[] = [
+        { field: "idPatient", name: "ID", visible: false },
+        { field: "lastName", name: "Last Name" },
+        { field: "middleName", name: "Middle Name" },
+        { field: "firstName", name: "First Name" },
+        { field: "dob", name: "Date of Birth", dataType: "date" },
+        { field: "gender", name: "Gender" },
+        { field: "address", name: "Address" }
     ];
 
     showGrid4: boolean = false;

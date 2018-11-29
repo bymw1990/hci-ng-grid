@@ -1,10 +1,8 @@
 import {Component} from "@angular/core";
 
+import {ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+
 import {DataGeneratorService} from "../services/data-generator.service";
-import {
-  ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer,
-  TextFilterRenderer
-} from "hci-ng-grid";
 
 @Component({
   selector: "linked-grid",
