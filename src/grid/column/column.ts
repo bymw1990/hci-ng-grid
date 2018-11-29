@@ -8,8 +8,8 @@ import {TextEditRenderer} from "../cell/editRenderers/text-edit-renderer.compone
 import {CellPopupRenderer} from "../cell/viewPopupRenderer/cell-popup-renderer";
 import {FormatterParser} from "./formatters/formatter-parser";
 import {EmptyFactory} from "../utils/empty.factory";
-import {MsDateFormatter} from "./formatters/ms-date.formatter";
-import {Iso8601DateFormatter} from "./formatters/iso8601-date.formatter";
+import {DateMsFormatter} from "./formatters/date-ms.formatter";
+import {DateIso8601Formatter} from "./formatters/date-iso8601.formatter";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -242,18 +242,28 @@ export class Column {
     }
 
     if (this.dataType === "date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
-      this.formatterParser = Iso8601DateFormatter;
-    } else if (this.dataType === "ios8601-date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
-      this.formatterParser = Iso8601DateFormatter;
-    } else if (this.dataType === "ms-date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
-      this.formatterParser = MsDateFormatter;
+      this.formatterParser = DateIso8601Formatter;
+      this.dataType = "date-iso8601";
+    } else if (this.dataType === "date-iso8601" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
+      this.formatterParser = DateIso8601Formatter;
+    } else if (this.dataType === "date-ms" && (!object.formatterParser || object.formatterParser === FormatterParser)) {
+      this.formatterParser = DateMsFormatter;
+    }
+
+    if (this.dataType.indexOf("date") === 0 && !this.format) {
+      this.format = "MM/DD/YYYY";
     }
 
     this.formatterParserInstance = (new EmptyFactory<FormatterParser>(this.formatterParser)).getInstance();
     if (!this.formatterParserConfig["format"] && this.format) {
       this.formatterParserConfig["format"] = this.format;
     }
+
     this.formatterParserInstance.setConfig(this.formatterParserConfig);
+
+    if (this.formatterParserInstance["format"] && !this.format) {
+      this.format = this.formatterParserInstance["format"];
+    }
   }
 
 }

@@ -44,7 +44,7 @@ export class DateDemoComponent {
     { field: "lastName", name: "Last Name", template: "LabelCell" },
     { field: "firstName", name: "First Name", template: "LabelCell" },
     { field: "dob", name: "DoB ISO8601", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
-    { field: "dobms", name: "DoB MS", dataType: "ms-date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }
+    { field: "dobms", name: "DoB MS", dataType: "date-ms", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {

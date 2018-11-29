@@ -1,10 +1,11 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, ViewChild} from "@angular/core";
 
 import * as moment from "moment";
 
 import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
+import {NgbDatepicker} from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -46,24 +47,28 @@ import {FilterInfo} from "../../utils/filter-info";
           </div>
         </div>
         
-        <ng-container *ngIf="column.dataType === 'date'">
+        <ng-container *ngIf="column.dataType.indexOf('date-') === 0">
           <div class="form-group">
             <div class="input-group flex-nowrap" (click)="stop($event)">
-              <!--<input ngbDatepicker #d1="ngbDatepicker"-->
-              <input 
-                     [ngModel]="lowValue"
+              <input [ngModel]="lowValue"
                      (ngModelChange)="valueChange($event)"
-                     placeholder="yyyy-mm-dd"
-                     [pattern]="datePattern"
+                     [placeholder]="column.format"
+                     [style.color]="filters && !filters[0].valid ? 'red' : 'inherit'"
                      class="form-control value inputs" />
-              <div class="input-group-append">
-                <!--<button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button">
+              <!--<div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="dLow.toggle()" type="button">
                   <i class="fas fa-calendar-alt"></i>
-                </button>-->
-              </div>
+                </button>
+              </div>-->
             </div>
             <div *ngIf="operator === 'B' || operator === 'O'"
                  class="input-group flex-nowrap">
+              <input
+                  [ngModel]="highValue"
+                  (ngModelChange)="highValueChange($event)"
+                  [placeholder]="column.format"
+                  class="form-control value inputs" />
+              <!--
               <input ngbDatepicker #d2="ngbDatepicker"
                      [ngModel]="highValue"
                      (ngModelChange)="highValueChange($event)"
@@ -75,11 +80,11 @@ import {FilterInfo} from "../../utils/filter-info";
                 <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
                   <i class="fas fa-calendar-alt"></i>
                 </button>
-              </div>
+              </div>-->
             </div>
           </div>
         </ng-container>
-        <ng-container *ngIf="column.dataType !== 'date'">
+        <ng-container *ngIf="column.dataType.indexOf('date-') !== 0">
           <input [ngModel]="filters[0].value"
                  (ngModelChange)="valueChange($event)"
                  class="value inputs" />
@@ -158,8 +163,6 @@ export class CompareFilterRenderer extends FilterRenderer {
     { value: "O", display: "Outside" }
   ];
 
-  datePattern: string = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
-
   filter() {
     this.filters[0].valid = true;
     this.gridService.addFilters(this.column.field, this.filters);
@@ -198,14 +201,15 @@ export class CompareFilterRenderer extends FilterRenderer {
   }
 
   format(value: any): any {
-    if (!value) {
+    return this.column.formatValue(value);
+    /*if (!value) {
       return value;
     } else if (this.column.dataType === "date") {
       let d: string[] = value.split("-");
       return {year: +d[0], month: +d[1], day: +d[2]};
     } else {
       return value;
-    }
+    }*/
   }
 
   /**
@@ -215,15 +219,17 @@ export class CompareFilterRenderer extends FilterRenderer {
    * @returns {any}
    */
   parse(value: any): any {
-    if (this.column.dataType === "date") {
+    return this.column.parseValue(value);
+    /*if (this.column.dataType.indexOf("date") === 0) {
       if (value) {
-        return value.year + "-" + ((value.month < 10) ? "0" : "") + value.month + "-" + ((value.day < 10) ? "0" : "") + value.day + "T12:00-06:00";
+        let v: any = moment(value, this.column.formatterParserInstance["format"]).format(this.column.formatterParserInstance["format"]);
+        return this.column.parseValue(v);
       } else {
         return undefined;
       }
     } else {
       return value;
-    }
+    }*/
   }
 
   valueChange(value: any) {
@@ -231,9 +237,20 @@ export class CompareFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
-    this.filters[0].valid = (!value || value === "") ? false : true;
-    this.filters[0].value = this.parse(value);
-    this.changed = true;
+    this.filters[0].valid = true;
+
+    try {
+      if (!value || value.length === 0) {
+        this.filters[0].valid = false;
+      } else if (this.column.format && value.length !== this.column.format.length) {
+        this.filters[0].valid = false;
+      }
+
+      this.filters[0].value = this.parse(value);
+      this.changed = true;
+    } catch (error) {
+      this.filters[0].valid = false;
+    }
   }
 
   highValueChange(value: any) {
@@ -241,9 +258,13 @@ export class CompareFilterRenderer extends FilterRenderer {
       this.setConfig({});
     }
 
-    this.filters[0].valid = (!value || value === "") ? false : true;
-    this.filters[0].highValue = this.parse(value);
-    this.changed = true;
+    try {
+      this.filters[0].valid = (!value || value === "") ? false : true;
+      this.filters[0].highValue = this.parse(value);
+      this.changed = true;
+    } catch (error) {
+      this.filters[0].valid = false;
+    }
   }
 
   valueClear() {

@@ -1,4 +1,4 @@
-import {Component, ElementRef} from "@angular/core";
+import {ChangeDetectorRef, Component, ElementRef} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
 import {FilterInfo, FilterRenderer, GridService} from "hci-ng-grid";
@@ -110,8 +110,8 @@ export class DictionaryFilterRenderer extends FilterRenderer {
   init: boolean = false;
   changed: boolean = false;
 
-  constructor(private http: HttpClient, gridService: GridService, elementRef: ElementRef) {
-    super(gridService, elementRef);
+  constructor(private http: HttpClient, gridService: GridService, elementRef: ElementRef, changeDetectorRef: ChangeDetectorRef) {
+    super(gridService, elementRef, changeDetectorRef);
   }
 
   filter() {

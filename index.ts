@@ -43,5 +43,5 @@ export {RowDblClickListener} from "./src/grid/event/listeners/row-dbl-click.list
 
 export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";
 export {NumberFormatter} from "./src/grid/column/formatters/number.formatter";
-export {MsDateFormatter} from "./src/grid/column/formatters/ms-date.formatter";
-export {Iso8601DateFormatter} from "./src/grid/column/formatters/iso8601-date.formatter";
+export {DateMsFormatter} from "./src/grid/column/formatters/date-ms.formatter";
+export {DateIso8601Formatter} from "./src/grid/column/formatters/date-iso8601.formatter";

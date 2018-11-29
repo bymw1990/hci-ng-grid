@@ -1,4 +1,4 @@
-import {ElementRef, EventEmitter, Input, Output} from "@angular/core";
+import {ChangeDetectorRef, ElementRef, EventEmitter, Input, Output} from "@angular/core";
 
 import {Column} from "../column";
 import {GridService} from "../../services/grid.service";
@@ -15,10 +15,12 @@ export class FilterRenderer {
   width: number = 250;
   gridService: GridService;
   elementRef: ElementRef;
+  changeDetectorRef: ChangeDetectorRef;
 
-  constructor(gridService: GridService, elementRef: ElementRef) {
+  constructor(gridService: GridService, elementRef: ElementRef, changeDetectorRef: ChangeDetectorRef) {
     this.gridService = gridService;
     this.elementRef = elementRef;
+    this.changeDetectorRef = changeDetectorRef;
   }
 
   ngOnInit() {

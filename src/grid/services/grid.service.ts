@@ -772,12 +772,12 @@ export class GridService {
                     break;
                   }
                 }
-              } else if (filterInfo.dataType === "date") {
+              } else if (filterInfo.dataType.indexOf("date") === 0) {
                 colInc = false;
 
-                let v: any = this.preparedData[i].get(j).value.substr(0, 10);
-                let f1: any = filterInfo.value.substr(0, 10);
-                let f2: any = (filterInfo.highValue) ? filterInfo.highValue.substr(0, 10) : null;
+                let v: any = this.preparedData[i].get(j).value;
+                let f1: any = filterInfo.value;
+                let f2: any = filterInfo.highValue;
 
                 if (filterInfo.operator === "E") {
                   if (v === f1) {
