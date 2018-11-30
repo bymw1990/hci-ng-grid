@@ -269,7 +269,7 @@ export class ThemingComponent {
     { field: "dob", name: "Birth Date", dataType: "date" },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address" },
-    { field: "nLabs", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} }
+    { field: "path.nPath", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
