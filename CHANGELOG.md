@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.0.2](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.0.2)
+    - Fix keywords and add .npmignore.
+
+## [2.0.1](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.0.1)
+    - Fix readme and license in artifact.
+
 ## [2.0.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.0.0)
     - Refactor of rendering and how data/config/events are listened to.
     - Listeners for saving cells and rows.

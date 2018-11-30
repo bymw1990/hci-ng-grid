@@ -7,6 +7,24 @@
     be expected to support.  By default, the grid is simple and basic, but becomes full featured through
     configuration.
 
+## Install
+
+```
+"dependencies": {
+    "hci-ng-grid": "2.0.x"
+}
+```
+```
+import {GridModule} from "hci-ng-grid";
+```
+```
+@NgModule({
+    imports: [
+        GridModule.forRoot()
+    ]
+})
+```
+
 ## Publishing
 
     Compiled code gets moved to the dist folder with a copy of the package.json.  Custom commands are required for

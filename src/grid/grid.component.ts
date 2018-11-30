@@ -1820,14 +1820,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
       if (this.gridService.getNVisibleRows() <= 0) {
-        let height: number = Math.max(100, this.gridData.length * this.rowHeight);
+        let height: number = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
       } else {
-        let height: number = Math.max(100, this.gridService.getNVisibleRows() * this.rowHeight);
+        let height: number = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
         this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
