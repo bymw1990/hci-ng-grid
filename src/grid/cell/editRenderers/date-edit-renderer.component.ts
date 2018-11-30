@@ -1,4 +1,4 @@
-import {Component, ElementRef, isDevMode, SimpleChange, SimpleChanges, ViewChild} from "@angular/core";
+import {Component, ElementRef, isDevMode, ViewChild} from "@angular/core";
 
 import * as moment from "moment";
 import {NgbDatepicker, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";

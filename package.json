@@ -1,18 +1,21 @@
 {
   "name": "hci-ng-grid",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Comprehensive angular grid component",
+  "license": "MIT",
   "repository": "git+https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid.git",
+  "homepage": "https://huntsmancancerinstitute-risr.github.io",
   "scripts": {
     "build": "npm run clean && npm run ngc && npm run doc && npm run karma start && npm run copyfiles package.json dist/ && npm run copyfiles -- src/grid/themes/*.css dist/",
     "clean": "npm run rimraf index.js index.d.ts index.ngsummary.json index.metadata.json index.js.map src/**/*.js src/**/*.ngfactory.ts src/**/*.d.ts src/**/*.js.map src/**/*.ngsummary.json src/**/*.metadata.json code-coverage dist",
     "compodoc": "compodoc",
     "copyfiles": "copyfiles",
+    "copyToDist": "npm run copyfiles -- LICENSE package.json README.md dist/",
     "doc": "npm run compodoc -- src -p ./tsconfig.json -d docs -n 'hci-ng-grid'",
     "karma": "karma",
     "ngc": "ngc",
-    "npmPack": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm pack",
-    "npmPublish": "npm run build && npm run copyfiles -- package.json dist/ && cd dist && npm publish --access public",
+    "npmPack": "npm run build && npm run copyToDist && cd dist && npm pack",
+    "npmPublish": "npm run build && npm run copyToDist && cd dist && npm publish --access public",
     "push": "cd dist && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json|css)\" ../demo/node_modules/hci-ng-grid && cd ..",
     "rimraf": "rimraf"
   },
@@ -25,7 +28,7 @@
   ],
   "dependencies": {
     "@ng-bootstrap/ng-bootstrap": "1.1.x",
-    "moment": "^2.18.1"
+    "moment": "2.18.x"
   },
   "devDependencies": {
     "@angular/animations": "5.2.x",
