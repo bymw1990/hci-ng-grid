@@ -112,6 +112,10 @@ module.exports = function(env) {
           to: "favicon.ico"
         },
         {
+            from: "assets",
+            to: "assets"
+        },
+        {
           from: "../../docs",
           to: "compodoc"
         }
