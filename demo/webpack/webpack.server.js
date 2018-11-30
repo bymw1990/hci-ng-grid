@@ -34,7 +34,7 @@ module.exports = function(env) {
 
     output: {
       path: path.join(process.cwd(), "dist"),
-      publicPath: "/",
+      publicPath: "/hci-ng-grid-demo/",
       filename: "[name].bundle.js",
       chunkFilename: "[id].chunk.js",
       sourceMapFilename: "[file].map"
@@ -108,10 +108,10 @@ module.exports = function(env) {
 
       new HtmlWebpackPlugin({
         template: "index.html",
-        baseUrl: "/"
+        baseUrl: "/hci-ng-grid-demo/"
       }),
 
-      new BaseHrefWebpackPlugin({ baseHref: "/" }),
+      new BaseHrefWebpackPlugin({ baseHref: "/hci-ng-grid-demo/" }),
 
       new CopyWebpackPlugin([
         {
@@ -130,7 +130,7 @@ module.exports = function(env) {
           "ENV": "'production'",
           "NODE_ENV": "'production'"
         },
-        "CONTENT_PATH": "'/'",
+        "CONTENT_PATH": "'/hci-ng-grid-demo/'",
         "VERSION": JSON.stringify(require("../../package.json").version)
       }),
 
