@@ -328,6 +328,10 @@ const SCROLL: number = 1;
       height: 250px;
     }
     
+    #right-view.hidden-x {
+      overflow-x: hidden;
+    }
+    
     #right-container {
       white-space: nowrap;
     }
@@ -1456,20 +1460,68 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   /**
+   * Sets the height of the view containers based on either the rows allowed to render or the data size.
+   */
+  private updateGridContainerHeight(): void {
+    if (this.gridService.nVisibleRows) {
+      if (isDevMode()) {
+        console.debug("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
+      }
+
+      let gridHeight: number = this.gridContainer.nativeElement.offsetHeight;
+      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+      let height: number = 0;
+      if (this.gridService.getNVisibleRows() <= 0) {
+        height = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
+      } else {
+        height = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
+      }
+
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
+    }
+  }
+
+  /**
    * Calculate the sizes of the containers and column header sizes.
    */
-  private updateGridContainerAndColumnSizes(): void {
+  private updateGridContainerHeightAndColumnSizes(): void {
     this.gridService.setNVisibleRows();
+
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": updateGridContainerAndColumnSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
+      console.debug("hci-grid: " + this.id + ": updateGridContainerHeightAndColumnSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
     }
+
+    let gridHeight: number = 0;
+    let headerHeight: number = 0;
+    let contentViewHeight: number = 0;
+
+    headerHeight = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+    contentViewHeight = 0;
+    if (this.gridService.getNVisibleRows() <= 0) {
+      contentViewHeight = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
+    } else {
+      contentViewHeight = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
+    }
+
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentViewHeight) + "px");
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentViewHeight + "px");
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentViewHeight + "px");
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + contentViewHeight) + "px");
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + contentViewHeight) + "px");
+    gridHeight = this.gridContainer.nativeElement.offsetHeight;
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
 
     let e = this.gridContainer.nativeElement;
     let gridWidth: number =  this.el.nativeElement.parentElement.offsetWidth;
 
     this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
     let insideGridWidth: number = gridWidth;
-    let w: number = 0;
+    //let w: number = 0;
 
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": gridWidth: " + gridWidth);
@@ -1488,7 +1540,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let nonFixedWidth: number = 0;
     let nonFixedMinWidth: number = 0;
 
-    let exactWidth: number = 0;
+    let columnRenderWidth: number = 0;
     let remainder: number = 0;
 
     let nAutoWidth: number = 0;
@@ -1532,38 +1584,50 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
         for (let column of this.columnMap.get("VISIBLE")) {
           if (column.renderWidth === 0) {
-            column.renderWidth = Math.max(availableWidth / nAutoWidth, column.minWidth);
+            column.renderWidth = Math.floor(Math.max(availableWidth / nAutoWidth, column.minWidth));
           }
         }
       }
 
       for (let column of this.columnMap.get("VISIBLE")) {
-        exactWidth = column.renderWidth;
-        if (exactWidth !== Math.floor(exactWidth)) {
-          remainder = remainder + exactWidth - Math.floor(exactWidth);
-        }
-        e = this.gridContainer.nativeElement.querySelector("#header-" + column.id);
-        w = Math.floor(exactWidth);
+        columnRenderWidth = column.renderWidth;
 
-        if (this.columnMap.get("VISIBLE")[this.columnMap.get("VISIBLE").length - 1].field === column.field) {
-          w = w + remainder;
+        e = this.gridContainer.nativeElement.querySelector("#header-" + column.id);
+
+        /**
+         * Since the calculated renderWidth is floored, we may have remainder left over.  If so, and less than the gridWidth,
+         * then have the last column take up all remaining space.
+         */
+        if (column.isLast && column.isFixed) {
+          if (fixedWidth + columnRenderWidth < gridWidth) {
+            columnRenderWidth = gridWidth - fixedWidth;
+          }
+        } else if (column.isLast && !column.isFixed) {
+          if (fixedWidth + nonFixedWidth + columnRenderWidth < gridWidth) {
+            columnRenderWidth = gridWidth - fixedWidth - nonFixedWidth;
+          }
         }
+        column.renderWidth = columnRenderWidth;
+
         if (e) {
-          column.renderWidth = w;
-          this.renderer.setStyle(e, "width", w + "px");
+          this.renderer.setStyle(e, "width", columnRenderWidth + "px");
           if (column.isLast) {
             this.renderer.addClass(e, "last");
           }
         }
         if (column.isFixed) {
           column.renderLeft = Math.max(fixedWidth, fixedMinWidth);
-          fixedWidth = fixedWidth + w;
+          fixedWidth = fixedWidth + columnRenderWidth;
         } else {
           column.renderLeft = Math.max(nonFixedWidth, nonFixedMinWidth);
-          nonFixedWidth = nonFixedWidth + w;
+          nonFixedWidth = nonFixedWidth + columnRenderWidth;
         }
       }
     }
+
+    fixedWidth = Math.floor(fixedWidth);
+    nonFixedWidth = Math.floor(nonFixedWidth);
+    let rightViewWidth: number = gridWidth - Math.max(fixedWidth, fixedMinWidth);
 
     e = this.gridContainer.nativeElement.querySelector("#left-view");
     this.renderer.setStyle(e, "width", fixedWidth + "px");
@@ -1584,11 +1648,27 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     e = this.gridContainer.nativeElement.querySelector("#right-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+    this.renderer.setStyle(e, "width", rightViewWidth + "px");
     if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
       this.renderer.setStyle(e, "overflow-y", "hidden");
     } else {
       this.renderer.setStyle(e, "overflow-y", "auto");
+    }
+
+    if (nonFixedWidth > rightViewWidth) {
+      e = this.gridContainer.nativeElement.querySelector("#right-view");
+      this.renderer.removeClass(e, "hidden-x");
+
+      contentViewHeight += 17;
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentViewHeight) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentViewHeight + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentViewHeight + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + contentViewHeight) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + contentViewHeight) + "px");
+      gridHeight = this.gridContainer.nativeElement.offsetHeight;
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
+    } else {
+      this.renderer.addClass(e, "hidden-x");
     }
   }
 
@@ -1617,8 +1697,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     }
     this.changeDetectorRef.detectChanges();
-    this.updateGridContainerHeight();
-    this.updateGridContainerAndColumnSizes();
+    this.updateGridContainerHeightAndColumnSizes();
 
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
     for (let i of this.renderedRows) {
@@ -1861,33 +1940,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.componentRef.setData(this.gridData[i].get(j));
       this.componentRef.setLocation(cellElement);
       this.componentRef.init();
-    }
-  }
-
-  /**
-   * Sets the height of the view containers based on either the rows allowed to render or the data size.
-   */
-  private updateGridContainerHeight(): void {
-    if (this.gridService.nVisibleRows) {
-      if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
-      }
-
-      let gridHeight: number = this.gridContainer.nativeElement.offsetHeight;
-      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
-      let height: number = 0;
-      if (this.gridService.getNVisibleRows() <= 0) {
-        height = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
-      } else {
-        height = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
-      }
-
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
     }
   }
 

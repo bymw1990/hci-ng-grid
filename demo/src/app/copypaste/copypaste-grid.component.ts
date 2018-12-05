@@ -32,7 +32,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "firstName", name: "First Name"
               field: "dob", name: "Date of Birth", dataType: "date"
               field: "nLabs", name: "# Labs"
-              field: "nPathLabs", name: "# Path Labs"
+              field: "path.nPath", name: "# Path"
             </pre>
           </ng-template>
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="dataTemplate" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
@@ -92,7 +92,7 @@ export class CopyPasteGridComponent {
     { field: "firstName", name: "First Name" },
     { field: "dob", name: "Date of Birth", dataType: "date" },
     { field: "nLabs", name: "# Labs" },
-    { field: "nPathLabs", name: "# Lab Path" }
+    { field: "path.nPath", name: "# Path" }
   ];
 
   listeners: any[] = [

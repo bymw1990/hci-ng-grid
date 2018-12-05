@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.1.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.1.0)
+    - Removed allowing auto column generation when no columns configured.
+    - Added wait listeners to pause configuration while waiting on any requests.
+    - Add spinner for loading and prevent data display if no columns.
+    - Bump height if view has scrollbar.
+    - Fix column width calculation.
+
 ## [2.0.2](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.0.2)
     - Fix keywords and add .npmignore.
 

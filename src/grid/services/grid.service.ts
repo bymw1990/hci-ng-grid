@@ -477,6 +477,10 @@ export class GridService {
       }
     }
 
+    if (columnMap.get("VISIBLE").length > 0) {
+      columnMap.get("VISIBLE")[columnMap.get("VISIBLE").length - 1].isLast = true;
+    }
+
     if (isDevMode()) {
       for (var j = 0; j < this.columns.length; j++) {
         console.debug("field: " + this.columns[j].field + ", sortOrder: " + this.columns[j].sortOrder + ", renderOrder: " + this.columns[j].renderOrder
