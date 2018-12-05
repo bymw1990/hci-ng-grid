@@ -137,11 +137,7 @@ module.exports = function(env) {
         "VERSION": JSON.stringify(require("../../package.json").version)
       }),
 
-      new ExtractTextPlugin("[name].css"),
-
-      new webpack.ProvidePlugin({
-        d3: "d3"
-      })
+      new ExtractTextPlugin("[name].css")
     ]
   };
 }

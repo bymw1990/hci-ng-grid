@@ -34,11 +34,12 @@ export class DataTypesDemoComponent {
 
   data1: Object[];
   columns1: any[] = [
-    { field: "idPatient", name: "ID", visible: false },
+    { field: "idPatient", name: "ID", visible: true },
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
-    { field: "genderDict", name: "Gender", choiceUrl: "/api/dictionary/gender", choiceValue: "value", choiceDisplay: "display" },
+    { field: "genderDict", name: "Gender", choices: [{v: 1, d: "F"}, {v: 2, d: "M"}, {v: 3, d: "U"}], choiceValue: "v", choiceDisplay: "d" },
+    { field: "genderDict", name: "Gender Url", choiceUrl: "/api/dictionary/gender", choiceValue: "value", choiceDisplay: "display" },
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

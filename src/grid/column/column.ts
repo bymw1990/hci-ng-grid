@@ -1,4 +1,4 @@
-import {Type} from "@angular/core";
+import {isDevMode, Type} from "@angular/core";
 
 import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
 import {CellTextView} from "../cell/viewRenderers/cell-text-view";
@@ -220,17 +220,17 @@ export class Column {
       this.viewRenderer = object.viewRenderer;
     }
 
-    if (object.choices !== undefined && object.choices.length > 0) {
-      this.setChoices(object.choices);
-      this.dataType = "choice";
-    }
-
     if (object.choiceValue) {
       this.choiceValue = object.choiceValue;
     }
     if (object.choiceDisplay) {
       this.choiceDisplay = object.choiceDisplay;
     }
+    if (object.choices !== undefined && object.choices.length > 0) {
+      this.setChoices(object.choices);
+      this.dataType = "choice";
+    }
+
     if (object.choiceUrl !== undefined) {
       this.choiceUrl = object.choiceUrl;
       this.dataType = "choice";
@@ -274,6 +274,12 @@ export class Column {
     this.choiceMap.clear();
     for (let choice of this.choices) {
       this.choiceMap.set(choice[this.choiceValue], choice[this.choiceDisplay]);
+    }
+
+    if (isDevMode()) {
+      console.debug("setChoices: " + this.choiceValue + ", " + this.choiceDisplay);
+      console.debug(this.choices);
+      console.debug(this.choiceMap);
     }
   }
 }

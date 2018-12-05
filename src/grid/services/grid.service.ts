@@ -305,8 +305,6 @@ export class GridService {
       }
     }
 
-    console.debug("nWaiters: " + this.nColumnWaiters);
-
     if (this.columnWaiter.length > 0) {
       for (let subject of this.columnWaiter) {
         this.columnWaiterSubscriptions.push(
@@ -321,7 +319,6 @@ export class GridService {
                     }
                   }
 
-                  console.debug("Finalizing after waiters.")
                   this.columnWaiter = [];
                   this.columnWaiterSubscriptions = [];
                   this.initColumnDefinitionsFinalize(columnMap);
@@ -331,7 +328,6 @@ export class GridService {
         );
       }
     } else {
-      console.debug("Finalizing with no waiters.")
       this.initColumnDefinitionsFinalize(columnMap);
     }
   }
