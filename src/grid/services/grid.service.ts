@@ -1,7 +1,7 @@
 import {Injectable, isDevMode} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
-import {Subject} from "rxjs/Rx";
+import {Subject, Subscription} from "rxjs/Rx";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 import {GridGlobalService} from "./grid-global.service";
@@ -15,6 +15,7 @@ import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
 import {RowChange} from "../utils/row-change";
+import {Observable} from "rxjs/Observable";
 
 /**
  * The service for handling configuration and data binding/parsing.
@@ -91,6 +92,10 @@ export class GridService {
 
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
+
+  private nColumnWaiters: number = 0;
+  private columnWaiter: Subject<boolean>[] = [];
+  private columnWaiterSubscriptions: Subscription[] = [];
 
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
@@ -197,9 +202,9 @@ export class GridService {
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
       this.initColumnDefinitions();
+    } else {
+      this.configSubject.next(this.config);
     }
-
-    this.configSubject.next(this.config);
   }
 
   /**
@@ -283,6 +288,55 @@ export class GridService {
       this.columns[0].isKey = true;
     }
 
+    for (let column of this.columns) {
+      if (column.choiceUrl) {
+        let wait: Subject<boolean> = new Subject<boolean>();
+        this.nColumnWaiters++;
+        this.columnWaiter.push(wait);
+
+        this.http.get(column.choiceUrl).subscribe((choices: any) => {
+          if (isDevMode()) {
+            console.debug("choiceUrl.subscribe: choices: " + choices.length);
+          }
+
+          column.setChoices(choices);
+          wait.next(false);
+        });
+      }
+    }
+
+    if (this.columnWaiter.length > 0) {
+      for (let subject of this.columnWaiter) {
+        this.columnWaiterSubscriptions.push(
+            subject.subscribe((waiting: boolean) => {
+              if (!waiting) {
+                this.nColumnWaiters--;
+
+                if (this.nColumnWaiters === 0) {
+                  for (let subscription of this.columnWaiterSubscriptions) {
+                    if (subscription) {
+                      subscription.unsubscribe();
+                    }
+                  }
+
+                  this.columnWaiter = [];
+                  this.columnWaiterSubscriptions = [];
+                  this.initColumnDefinitionsFinalize(columnMap);
+                }
+              }
+            })
+        );
+      }
+    } else {
+      this.initColumnDefinitionsFinalize(columnMap);
+    }
+  }
+
+  initColumnDefinitionsFinalize(columnMap: Map<string, Column[]>) {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": GridService.initColumnDefinitionsFinalize()");
+    }
+
     this.initColumnProperties(columnMap);
 
     this.nFixedColumns = 0;
@@ -300,6 +354,8 @@ export class GridService {
     this.config.columns = this.columns;
 
     this.columnMapSubject.next(columnMap);
+
+    this.configSubject.next(this.config);
   }
 
   /**
@@ -332,12 +388,6 @@ export class GridService {
     for (var j = 0; j < this.columns.length; j++) {
       // Reset isLast
       this.columns[j].isLast = false;
-
-      if (this.columns[j].choiceUrl) {
-        this.http.get(this.columns[j].choiceUrl).subscribe((choices: any) => {
-          this.columns[j].choices = choices;
-        });
-      }
     }
 
     this.nUtilityColumns = 0;
@@ -507,7 +557,7 @@ export class GridService {
     return this.nVisibleColumns;
   }
 
-  public getColumnMapSubject(): Subject<Map<string, Column[]>> {
+  public getColumnMapSubject(): BehaviorSubject<Map<string, Column[]>> {
     return this.columnMapSubject;
   }
 

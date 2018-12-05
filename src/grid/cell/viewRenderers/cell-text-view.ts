@@ -5,7 +5,14 @@ import {Column} from "../../column/column";
 
 export class CellTextView implements CellViewRenderer {
 
-  updateColumn(column: Column) {}
+  column: Column;
+
+  updateColumn(column: Column) {
+    this.column = column;
+
+    console.debug("updateColumn");
+    console.debug(column.choiceMap);
+  }
 
   setConfig(config: any) {}
 
@@ -17,8 +24,19 @@ export class CellTextView implements CellViewRenderer {
     renderer.setStyle(span, "overflow-x", "hidden");
     renderer.setStyle(span, "text-overflow", "ellipsis");
 
-    let text = renderer.createText(column.formatValue(value));
+    let text = undefined;
+    if (this.column.dataType === "choice") {
+      text = renderer.createText(this.getChoice(value));
+    } else {
+      text = renderer.createText(column.formatValue(value));
+    }
     renderer.appendChild(span, text);
     return span;
+  }
+
+  getChoice(value: any): any {
+    let display: any = this.column.choiceMap.get(value);
+
+    return (display) ? display : "";
   }
 }

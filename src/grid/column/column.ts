@@ -69,7 +69,8 @@ export class Column {
   editable: boolean = true;
   clickable: boolean = true;
 
-  choices: Array<any> = [];
+  choices: any[] = [];
+  choiceMap: Map<any, any> = new Map<any, any>();
   choiceValue: string = "value";
   choiceDisplay: string = "display";
   choiceUrl: string;
@@ -220,9 +221,10 @@ export class Column {
     }
 
     if (object.choices !== undefined && object.choices.length > 0) {
-      this.choices = object.choices;
+      this.setChoices(object.choices);
       this.dataType = "choice";
     }
+
     if (object.choiceValue) {
       this.choiceValue = object.choiceValue;
     }
@@ -266,4 +268,12 @@ export class Column {
     }
   }
 
+  setChoices(choices: any[]): void {
+    this.choices = choices;
+
+    this.choiceMap.clear();
+    for (let choice of this.choices) {
+      this.choiceMap.set(choice[this.choiceValue], choice[this.choiceDisplay]);
+    }
+  }
 }

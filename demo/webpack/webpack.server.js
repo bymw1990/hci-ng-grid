@@ -35,9 +35,8 @@ module.exports = function(env) {
     output: {
       path: path.join(process.cwd(), "dist"),
       publicPath: "/hci-ng-grid-demo/",
-      filename: "[name].bundle.js",
-      chunkFilename: "[id].chunk.js",
-      sourceMapFilename: "[file].map"
+      filename: "[name].[chunkhash].bundle.js",
+      chunkFilename: "[id].[chunkhash].chunk.js"
     },
 
     module: {

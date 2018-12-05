@@ -44,6 +44,7 @@ import {SavingDemoComponent} from "./saving/saving.component";
 import {BusyDemoComponent} from "./busy/busy.component";
 import {ValidationComponent} from "./validation/validation.component";
 import {DateDemoComponent} from "./date/date.component";
+import {DataTypesDemoComponent} from "./data-types/data-types.component";
 
 @NgModule({
   imports: [
@@ -56,6 +57,7 @@ import {DateDemoComponent} from "./date/date.component";
       { path: "alerts", component: AlertsGridComponent },
       { path: "busy", component: BusyDemoComponent },
       { path: "copypaste", component: CopyPasteGridComponent },
+      { path: "data-types", component: DataTypesDemoComponent },
       { path: "date", component: DateDemoComponent},
       { path: "docs", component: DocsComponent},
       { path: "dynamic-config", component: DynamicConfigGridComponent },
@@ -85,6 +87,7 @@ import {DateDemoComponent} from "./date/date.component";
     AlertsGridComponent,
     BusyDemoComponent,
     CopyPasteGridComponent,
+    DataTypesDemoComponent,
     DateDemoComponent,
     DemoComponent,
     DictionaryFilterRenderer,

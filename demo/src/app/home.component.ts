@@ -63,6 +63,7 @@ export class HomeComponent {
     {header: "Busy", route: "busy", body: "Shows the default and custom overlay shown when data is being fetched."},
     {header: "Cell Popup", route: "popup", body: "When text in cells is large, show the entire text in a popup.  Also, custom popups for complex objects."},
     {header: "Copy and Paste", route: "copypaste", body: "Copy and paste from within the grid and to and from spreadsheet software."},
+    {header: "Data Types", route: "data-types", body: "See how different text, dates, numbers, choices, etc. can be configured."},
     {header: "Dynamic Config", route: "dynamic-config", body: "User has the power to custom configure the grid."},
     {header: "Empty", route: "empty", body: "What a grid looks like when bound to an empty array."},
     {header: "Event", route: "event", body: "Use event listeners to handle row selects and output information."},

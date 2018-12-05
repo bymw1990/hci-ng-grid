@@ -68,6 +68,16 @@ const SCROLL: number = 1;
          (dblclick)="dblClick($event)"
          (keydown)="keyDown($event)">
       
+      <div #loadingOverlay id="hci-grid-loading">
+        <ng-container>
+          <div class="busy-default">
+            <div class="mx-auto my-auto">
+              <span class="fas fa-sync fa-spin fa-5x fa-fw busy-default-icon"></span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      
       <input #focuser1 id="focuser1" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
@@ -96,7 +106,6 @@ const SCROLL: number = 1;
             <ng-container *ngTemplateOutlet="busyTemplate"></ng-container>
           </ng-container>
           <ng-container *ngIf="!busyTemplate">
-
             <div class="busy-default">
               <div class="mx-auto my-auto">
                 <span class="fas fa-sync fa-spin fa-5x fa-fw busy-default-icon"></span>
@@ -333,6 +342,16 @@ const SCROLL: number = 1;
       border: none;
     }
     
+    #hci-grid-loading {
+      display: none;
+      position: absolute;
+      z-index: 9999;
+    }
+
+    #hci-grid-loading.show {
+      display: flex;
+    }
+    
     #hci-grid-busy {
       display: none;
       position: absolute;
@@ -397,6 +416,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("copypastearea") copypastearea: any;
   @ViewChild("gridContainer") gridContainer: ElementRef;
   @ViewChild("busyOverlay") busyOverlay: ElementRef;
+  @ViewChild("loadingOverlay") loadingOverlay: ElementRef;
   @ViewChild("emptyContent") emptyContent: ElementRef;
   @ViewChild("focuser1") focuser1: ElementRef;
   @ViewChild("focuser2") focuser2: ElementRef;
@@ -453,6 +473,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   /* The height of cell rows which is used to calculate the total grid size. */
   rowHeight: number = 30;
+
+  /* The loading flag controls animations during configuration setting. */
+  loading: boolean = false;
+  loadingSubject: Subject<boolean> = new Subject<boolean>();
 
   /* The busy flag controls animations during data load. */
   busy: boolean = false;
@@ -528,6 +552,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       this.config = config;
+      this.loadingSubject.next(false);
 
       this.updateConfig();
 
@@ -560,6 +585,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.gridService.setOriginalData(this.boundData);
       this.gridService.initData();
       this.busySubject.next(false);
+    });
+
+    /* Subscribe to loading change.  Update the loading boolean. */
+    this.loadingSubject.subscribe((loading: boolean) => {
+      if (isDevMode()) {
+        console.debug("hci-grid: " + this.id + ": loadingSubject.subscribe: " + loading);
+      }
+      this.loading = loading;
+      if (this.loadingOverlay && this.loadingOverlay.nativeElement) {
+        if (loading) {
+          this.renderer.addClass(this.loadingOverlay.nativeElement, "show");
+        } else {
+          this.renderer.removeClass(this.loadingOverlay.nativeElement, "show");
+        }
+      }
     });
 
     /* Subscribe to busy change.  Update the busy boolean. */
@@ -618,6 +658,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridEventService.setSelectedLocation(undefined, undefined);
 
     this.buildConfigFromInput();
+
+    this.loadingSubject.next(true);
     this.gridService.updateConfig(this.inputConfig);
 
     this.gridService.setGridElement(this.gridContainer.nativeElement);
@@ -729,6 +771,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (changes["config"]) {
       // Flag this config as originating externally.  Don't re-broadcast.
       this.inputConfig.external = true;
+
+      this.loadingSubject.next(true);
       this.gridService.updateConfig(this.inputConfig);
     }
     if (changes["boundData"]) {
@@ -740,6 +784,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
         // Flag this config as originating externally.  Don't re-broadcast.
         this.inputConfig.external = true;
         this.buildConfigFromInput();
+
+        this.loadingSubject.next(true);
         this.gridService.updateConfig(this.inputConfig);
         break;
       }
@@ -1414,7 +1460,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     let e = this.gridContainer.nativeElement;
-    //let gridWidth: number = e.offsetWidth;
     let gridWidth: number =  this.el.nativeElement.parentElement.offsetWidth;
 
     this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
@@ -1430,6 +1475,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       insideGridWidth = gridWidth - 17;
     }
 
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "width", gridWidth + "px");
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "width", gridWidth + "px");
 
     let fixedWidth: number = 0;
@@ -1615,6 +1661,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
       rRow = this.createRow(rightContainer, "right", i);
       this.renderedRows.push(i);
+
+      if (!this.columnMap) {
+        return;
+      }
 
       for (let column of this.columnMap.get("LEFT_VISIBLE")) {
         cell = this.gridData[i].get(column.id);
@@ -1818,22 +1868,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
       }
 
+      let gridHeight: number = this.gridContainer.nativeElement.offsetHeight;
       let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+      let height: number = 0;
       if (this.gridService.getNVisibleRows() <= 0) {
-        let height: number = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
+        height = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
       } else {
-        let height: number = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
-        this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
+        height = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
       }
+
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
     }
   }
 

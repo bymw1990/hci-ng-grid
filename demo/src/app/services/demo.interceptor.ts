@@ -17,9 +17,9 @@ export class DemoInterceptor implements HttpInterceptor {
           console.info("GET .*/dictionary/gender");
         }
         return Observable.of(new HttpResponse<any>({ status: 200, body: [
-            {value: 0, display: "Female"},
-            {value: 1, display: "Male"},
-            {value: 2, display: "Unknown"}
+            {value: 1, display: "Female"},
+            {value: 2, display: "Male"},
+            {value: 3, display: "Unknown"}
           ] }));
       }
 

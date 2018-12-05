@@ -21,7 +21,7 @@ export class DataGeneratorService {
   externalData2: Object[] = [];
   simpleData4: Object[] = [];
 
-  private _firstNames: string[] = [ "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Gerry", "Gina",
+  private _firstNames: string[] = [ "Alice", "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Gerry", "Gina",
       "Harry", "Hellen", "Mike", "Milla", "Sam", "Sarah", "Tim", "Tina" ];
   private _lastNames: string[] = [ "Black", "Brown", "Grey", "Khan", "Smith", "White" ];
   private _middleNames: string[] = [ "", "A", "C", "D", "H", "L", "N", "O", "R", "T", "Z" ];
@@ -41,7 +41,7 @@ export class DataGeneratorService {
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
-      let genderDict: number = j % 2;
+      let genderDict: number = (Math.random() < 0.05) ? 3 : j % 2 + 1;
       let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
@@ -159,6 +159,7 @@ export class DataGeneratorService {
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
+      let genderChoice: number = j % 2;
       let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
@@ -166,7 +167,7 @@ export class DataGeneratorService {
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
       let dob: string = this.generateDate(1930, 1990);
 
-      this.externalData1.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, address: addy + " " + street });
+      this.externalData1.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, gender: gender, genderChoice: genderChoice, address: addy + " " + street });
     }
   }
 
