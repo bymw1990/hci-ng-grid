@@ -1,6 +1,8 @@
 import {Component} from "@angular/core";
 
-import {TextFilterRenderer} from "hci-ng-grid";
+import {Observable} from "rxjs/Observable";
+
+import {ExternalData, ExternalInfo, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -13,7 +15,14 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-          TODO
+          This grid uses the same gender data twice.  The data is values of 1, 2, or 3.  The first column specifies manual
+          choice types.  The last column specifies a url to fetch the choices from.  For example, if you rely on a REST call
+          to fetch dictionaries, you would want the second option.
+        </div>
+        <div class="card-text">
+          Also to note that this demo uses an external data call with a 100-900 ms delay and the choiceUrl has a 250-750 ms
+          delay.  This is important because the grid waits for the choiceUrl response before finalizing configuration and
+          the column configuration is needed before the data can be prepared.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -22,7 +31,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <p>
           <hci-grid [title]="'Filter Grid'"
-                    [data]="data1"
+                    [dataCall]="dataCall1"
                     [columns]="columns1">
           </hci-grid>
         </p>
@@ -32,6 +41,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class DataTypesDemoComponent {
 
+  dataCall1: (externalInfo: ExternalInfo) => {};
   data1: Object[];
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: true },
@@ -46,5 +56,9 @@ export class DataTypesDemoComponent {
 
   ngOnInit() {
     this.data1 = this.dataGeneratorService.getData(250);
+
+    this.dataCall1 = (externalInfo: ExternalInfo) => {
+      return Observable.of(new ExternalData(this.dataGeneratorService.getData(250), externalInfo)).delay(Math.random() * 900 + 100);
+    };
   }
 }

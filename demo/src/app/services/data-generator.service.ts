@@ -36,7 +36,7 @@ export class DataGeneratorService {
     return date.toISOString().substring(0, 10);
   }
 
-  getData(size: number) {
+  getData(size: number): any[] {
     let data = [];
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
