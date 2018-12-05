@@ -28,6 +28,7 @@ describe("DashboardComponent Tests", () => {
     let fixture = TestBed.createComponent(GridComponent);
     let grid = fixture.componentInstance;
     grid.boundData = [];
+    grid.inputColumnDefinitions = [ new Column({ field: "a", name: "a" }) ];
     fixture.detectChanges();
 
     expect(grid.getGridService().getOriginalData().length).toBe(0);
@@ -37,10 +38,7 @@ describe("DashboardComponent Tests", () => {
     let fixture = TestBed.createComponent(GridComponent);
     let grid = fixture.componentInstance;
 
-    let config = {
-      columns: [ new Column({ field: "a", name: "a" }) ]
-    };
-
+    grid.inputColumnDefinitions = [ new Column({ field: "a", name: "a" }) ];
     grid.boundData = [
       {a: "A"}, {a: "B"}, {a: "C"}, {a: "D"}, {a: "E"}
     ];

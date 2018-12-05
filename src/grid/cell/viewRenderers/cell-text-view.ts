@@ -9,9 +9,6 @@ export class CellTextView implements CellViewRenderer {
 
   updateColumn(column: Column) {
     this.column = column;
-
-    console.debug("updateColumn");
-    console.debug(column.choiceMap);
   }
 
   setConfig(config: any) {}

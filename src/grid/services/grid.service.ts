@@ -296,7 +296,7 @@ export class GridService {
 
         this.http.get(column.choiceUrl).subscribe((choices: any) => {
           if (isDevMode()) {
-            console.debug("choiceUrl.subscribe: choices: " + choices.length);
+            console.debug("choiceUrl.subscribe: " + column.field + ": choices: " + choices.length);
           }
 
           column.setChoices(choices);
@@ -304,6 +304,8 @@ export class GridService {
         });
       }
     }
+
+    console.debug("nWaiters: " + this.nColumnWaiters);
 
     if (this.columnWaiter.length > 0) {
       for (let subject of this.columnWaiter) {
@@ -319,6 +321,7 @@ export class GridService {
                     }
                   }
 
+                  console.debug("Finalizing after waiters.")
                   this.columnWaiter = [];
                   this.columnWaiterSubscriptions = [];
                   this.initColumnDefinitionsFinalize(columnMap);
@@ -328,6 +331,7 @@ export class GridService {
         );
       }
     } else {
+      console.debug("Finalizing with no waiters.")
       this.initColumnDefinitionsFinalize(columnMap);
     }
   }
@@ -989,6 +993,12 @@ export class GridService {
     if (!this.originalData) {
       return;
     }
+    if (!this.isColumnMapDefined()) {
+      if (isDevMode()) {
+        console.info("hci-grid: " + this.id + ": initData: Columns not yet set, skipping initData.");
+      }
+      return;
+    }
 
     if (prep) {
       this.prepareData();
@@ -1114,7 +1124,7 @@ export class GridService {
       this.pageInfo.setPageSize(10);
     }
 
-    if (!this.columns && this.originalData.length > 0) {
+    /*if (!this.columns && this.originalData.length > 0) {
       this.columns = [];
       let keys: string[] = Object.keys(this.originalData[0]);
       for (var i = 0; i < keys.length; i++) {
@@ -1126,11 +1136,17 @@ export class GridService {
     } else {
       this.initData();
       return false;
-    }
+    }*/
+    this.initData();
+    return false;
   }
 
   public initData(): void {
     this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
+  }
+
+  public isColumnMapDefined(): boolean {
+    return this.columnMapSubject.getValue() && this.columnMapSubject.getValue().get("ALL") && this.columnMapSubject.getValue().get("ALL").length > 0;
   }
 
   /**

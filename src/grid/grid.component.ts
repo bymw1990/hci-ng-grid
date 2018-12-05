@@ -536,7 +536,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit() {
     this.findBaseRowCell();
 
-    this.columnsChangedSubscription = this.gridService.getColumnMapSubject().subscribe((columnMap: Map<string, Column[]>) => {
+    /*this.columnsChangedSubscription = this.gridService.getColumnMapSubject().subscribe((columnMap: Map<string, Column[]>) => {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": getColumnsChangedSubject().subscribe");
       }
@@ -544,7 +544,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.columnMap = columnMap;
       this.gridService.initData();
       this.doRender();
-    });
+    });*/
 
     this.gridService.getConfigSubject().subscribe((config: any) => {
       if (isDevMode()) {
@@ -557,6 +557,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.updateConfig();
 
       this.gridService.pageInfo = this.gridService.pageInfo;
+      this.columnMap = this.gridService.getColumnMapSubject().getValue();
       this.gridService.initData();
       this.doRender();
 
@@ -647,17 +648,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
     /* Get initial page Info */
     this.pageInfo = this.gridService.pageInfo;
 
+    this.pageInfo = this.gridService.pageInfo;
+    this.gridEventService.setSelectedLocation(undefined, undefined);
+
+    this.buildConfigFromInput();
+
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
       this.gridService.externalInfoObserved.next(new ExternalInfo(undefined, undefined, this.pageInfo));
     } else if (this.boundData) {
       this.gridService.setOriginalData(this.boundData);
     }
-
-    this.pageInfo = this.gridService.pageInfo;
-    this.gridEventService.setSelectedLocation(undefined, undefined);
-
-    this.buildConfigFromInput();
 
     this.loadingSubject.next(true);
     this.gridService.updateConfig(this.inputConfig);
@@ -763,6 +764,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {{[p: string]: SimpleChange}} changes
    */
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+    if (!this.initialized) {
+      return;
+    }
+
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": ngOnChanges");
       console.debug(changes);
@@ -1490,14 +1495,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let availableWidth: number = insideGridWidth;
 
     if (isDevMode()) {
-      if (!this.columnMap) {
+      if (!this.gridService.isColumnMapDefined()) {
         console.debug("hci-grid: " + this.id + ": columnMap is undefined");
       } else {
         console.debug("hci-grid: " + this.id + ": visible columnMap: " + this.columnMap.get("VISIBLE").length);
       }
     }
 
-    if (this.columnMap) {
+    if (this.gridService.isColumnMapDefined()) {
       for (let column of this.columnMap.get("VISIBLE")) {
         column.renderWidth = 0;
         if (column.width > 0) {
@@ -1602,7 +1607,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private renderCellsAndData(scroll?: boolean): void {
     if (isDevMode()) {
-      if (this.columnMap) {
+      if (this.gridService.isColumnMapDefined()) {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: columnMap.length: " + this.columnMap.get("ALL").length + " gridData.length: " + this.gridData.length);
       } else {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: columnMap is undefined: gridData.length: " + this.gridData.length);
@@ -1662,7 +1667,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       rRow = this.createRow(rightContainer, "right", i);
       this.renderedRows.push(i);
 
-      if (!this.columnMap) {
+      if (!this.gridService.isColumnMapDefined()) {
         return;
       }
 
