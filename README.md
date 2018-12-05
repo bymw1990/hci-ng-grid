@@ -1,6 +1,6 @@
 # HCI's Angular Grid Library
 
-## [hci-ng-grid Demo on Github](https://huntsmancancerinstitute-risr.github.io/hci-ng-grid)
+## [hci-ng-grid Demo on Github](https://huntsmancancerinstitute-risr.github.io/hci-ng-grid-demo)
 
 ## Intro
     This grid is designed to be a full featured grid that can handle nearly anything that complex data tables may
