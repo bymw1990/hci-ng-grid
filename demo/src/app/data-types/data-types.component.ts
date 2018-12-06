@@ -42,7 +42,6 @@ import {DataGeneratorService} from "../services/data-generator.service";
 export class DataTypesDemoComponent {
 
   dataCall1: (externalInfo: ExternalInfo) => {};
-  data1: Object[];
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: true },
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
@@ -55,8 +54,6 @@ export class DataTypesDemoComponent {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.data1 = this.dataGeneratorService.getData(250);
-
     this.dataCall1 = (externalInfo: ExternalInfo) => {
       return Observable.of(new ExternalData(this.dataGeneratorService.getData(250), externalInfo)).delay(Math.random() * 900 + 100);
     };

@@ -1,5 +1,8 @@
 # Change Log
 
+## [2.1.1](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.1.1)
+    - Fix syntax in README.
+
 ## [2.1.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.1.0)
     - Removed allowing auto column generation when no columns configured.
     - Added wait listeners to pause configuration while waiting on any requests.

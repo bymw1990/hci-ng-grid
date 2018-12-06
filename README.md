@@ -47,7 +47,7 @@ The basic syntax for data provided by the implementing component.
 
     <hci-grid
       [data]="dataArray"
-      [columnDefinitions]="[
+      [columns]="[
         { field: "col1", name: "Column 1" },
         { field: "col2", name: "Column 2" },
       ]">
@@ -57,7 +57,7 @@ The basic syntax for an external data call.
 
     <hci-grid
       [dataCall]="dataRequest"
-      [columnDefinitions]="[
+      [columns]="[
         { field: "col1", name: "Column 1" },
         { field: "col2", name: "Column 2" },
       ]"
@@ -69,14 +69,12 @@ The basic syntax for an external data call.
 
 And a function using mocked external data call.
 
-    dataRequest(externalInfo: ExternalInfo): Promise<ExternalData> {
-      return new Promise((resolve, reject) => {
-        this.dataGeneratorService.getExternalData1(externalInfo).subscribe((externalData: ExternalData) => {
-          setTimeout(() =>
-            resolve(externalData), 1000
-          );
-        });
-      });
+    dataRequest: (externalInfo: ExternalInfo) => {};
+
+    ngOnInit() {
+      this.dataRequest = (externalInfo: ExternalInfo) => {
+        return Observable.of(new ExternalData(this.dataGeneratorService.getData(250), externalInfo)).delay(500);
+      };
     }
 
 ## Inputs
