@@ -79,7 +79,7 @@ import {DataTypesDemoComponent} from "./data-types/data-types.component";
       { path: "simple", component: SimpleGridComponent },
       { path: "theming", component: ThemingComponent },
       { path: "validation", component: ValidationComponent },
-    ]),
+    ], {useHash: true}),
     NgbModule.forRoot(),
     GridModule.forRoot()
   ],
