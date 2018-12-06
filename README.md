@@ -282,6 +282,16 @@ $event: [key1, key2, ...]
 This is an array of any instead of number because the row key could be anything.
 ```
 
+## Global Config
+
+The root module can take configuration json that can be used to set defaults for every grid.
+For example, if you want every grid in your application to use the same theme and you don't want
+to specify that theme in every instance of the grid, you can do the following:
+
+    GridModule.forRoot({
+      theme: "report"
+    })
+
 ## Advanced Features
 
 ### Rendering Cells
