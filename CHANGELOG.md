@@ -1,5 +1,8 @@
 # Change Log
 
+## [3.0.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.0.0)
+    - Generalize column wait configuration.  Changes public api.
+
 ## [2.1.1](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.1.1)
     - Fix syntax in README.
 

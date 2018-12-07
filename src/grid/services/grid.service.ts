@@ -73,7 +73,10 @@ export class GridService {
   gridElement: HTMLElement;
 
   private selectedRowColumn: number = 0;
+
+  private columnMap: Map<string, Column[]> = new Map<string, Column[]>();
   private columnMapSubject: BehaviorSubject<Map<string, Column[]>> = new BehaviorSubject<Map<string, Column[]>>(undefined);
+
   private filterMap: Map<string, FilterInfo[]> = new Map<string, FilterInfo[]>();
   private filterMapSubject: BehaviorSubject<Map<string, FilterInfo[]>> = new BehaviorSubject<Map<string, FilterInfo[]>>(this.filterMap);
   private configured: boolean = false;
@@ -93,9 +96,9 @@ export class GridService {
   private selectedRows: any[] = [];
   private selectedRowsSubject: Subject<any[]> = new Subject<any[]>();
 
-  private nColumnWaiters: number = 0;
-  private columnWaiter: Subject<boolean>[] = [];
-  private columnWaiterSubscriptions: Subscription[] = [];
+  private nConfigWait: number = 0;
+  private configWaitSubjects: Subject<boolean>[] = [];
+  private configWaitSubscriptions: Subscription[] = [];
 
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
@@ -201,7 +204,7 @@ export class GridService {
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
-      this.initColumnDefinitions();
+      this.initializeColumns();
     } else {
       this.configSubject.next(this.config);
     }
@@ -262,22 +265,79 @@ export class GridService {
   }
 
   /**
+   * If there is a configuration step that needs to wait for a request, that gets pushed here as a callback function.
+   * It must expect a subject that once the response comes back, does a next false to that subject.  If this wait involves
+   * columns, there will be a lot of subjects and the idea is to wait for all of them before going to the next step.
+   *
+   * @param {(subject: Subject<boolean>) => any} callback
+   */
+  pushConfigWait(callback: (subject: Subject<boolean>) => any) {
+    this.nConfigWait++;
+    let subject: Subject<boolean> = new Subject<boolean>();
+    this.configWaitSubjects.push(subject);
+
+    callback(subject);
+  }
+
+  /**
+   * This should be called after all configWaitSubjects are in place.  This function subscribes to them and when those
+   * subscriptions come back with false, will subtract the number of active waiting subjects.  When it hits zero, we
+   * unsubscribe all the subscriptions, reset the subject/subscription arrays and call the onComplete callback.  This
+   * allows any function here to use this wait system and specify its next call in the callback.
+   *
+   * @param {() => any} onComplete
+   */
+  subscribeConfigWait(onComplete: () => any) {
+    if (this.configWaitSubjects.length > 0) {
+      for (let subject of this.configWaitSubjects) {
+        this.configWaitSubscriptions.push(
+          subject.subscribe((waiting: boolean) => {
+            if (!waiting) {
+              this.nConfigWait--;
+
+              if (this.nConfigWait === 0) {
+                for (let subscription of this.configWaitSubscriptions) {
+                  if (subscription) {
+                    subscription.unsubscribe();
+                  }
+                }
+
+                this.configWaitSubjects = [];
+                this.configWaitSubscriptions = [];
+
+                onComplete();
+              }
+            }
+          })
+        );
+      }
+    } else {
+      onComplete();
+    }
+  }
+
+  public initializeColumns(): void {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": GridService.initializeColumns()");
+    }
+
+    this.initializeColumnsKeysAndChoices();
+  }
+
+  /**
    * Based upon the nature of the columns, sorts them.  For example, utility columns as a negative, then fixed columns
    * starting at zero then others.
    */
-  public initColumnDefinitions(): void {
-    if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": GridService.initColumnDefinitions()");
-    }
+  public initializeColumnsKeysAndChoices(): void {
+    this.createColumnMap();
 
-    let columnMap: Map<string, Column[]> = this.createColumnMap();
-
+    // If no columns are defined, return the map with the empty key values.
     if (!this.columns) {
-      this.columnMapSubject.next(columnMap);
+      this.columnMapSubject.next(this.columnMap);
       return;
     }
 
-    // Prior to arranging columns in initColumnProperties, if the key is not set, use the first column.
+    // Prior to arranging columns in initializeColumnsGroupSortMap, if the key is not set, use the first column.
     let keyDefined: boolean = false;
     for (var i = 0; i < this.columns.length; i++) {
       if (this.columns[i].isKey) {
@@ -290,81 +350,29 @@ export class GridService {
 
     for (let column of this.columns) {
       if (column.choiceUrl) {
-        let wait: Subject<boolean> = new Subject<boolean>();
-        this.nColumnWaiters++;
-        this.columnWaiter.push(wait);
-
-        this.http.get(column.choiceUrl).subscribe((choices: any) => {
-          if (isDevMode()) {
-            console.debug("choiceUrl.subscribe: " + column.field + ": choices: " + choices.length);
-          }
-
-          column.setChoices(choices);
-          wait.next(false);
+        // Push a callback to request an array of choices from the choiceUrl.
+        this.pushConfigWait((subject: Subject<boolean>) => {
+          this.http.get(column.choiceUrl).subscribe((choices: any) => {
+            column.setChoices(choices);
+            subject.next(false);
+          });
         });
       }
     }
 
-    if (this.columnWaiter.length > 0) {
-      for (let subject of this.columnWaiter) {
-        this.columnWaiterSubscriptions.push(
-            subject.subscribe((waiting: boolean) => {
-              if (!waiting) {
-                this.nColumnWaiters--;
-
-                if (this.nColumnWaiters === 0) {
-                  for (let subscription of this.columnWaiterSubscriptions) {
-                    if (subscription) {
-                      subscription.unsubscribe();
-                    }
-                  }
-
-                  this.columnWaiter = [];
-                  this.columnWaiterSubscriptions = [];
-                  this.initColumnDefinitionsFinalize(columnMap);
-                }
-              }
-            })
-        );
-      }
-    } else {
-      this.initColumnDefinitionsFinalize(columnMap);
-    }
-  }
-
-  initColumnDefinitionsFinalize(columnMap: Map<string, Column[]>) {
-    if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": GridService.initColumnDefinitionsFinalize()");
-    }
-
-    this.initColumnProperties(columnMap);
-
-    this.nFixedColumns = 0;
-    this.nNonFixedColumns = 0;
-    for (var j = 0; j < this.columns.length; j++) {
-      if (this.columns[j].visible) {
-        if (this.columns[j].isFixed) {
-          this.nFixedColumns = this.nFixedColumns + 1;
-        } else {
-          this.nNonFixedColumns = this.nNonFixedColumns + 1;
-        }
-      }
-    }
-
-    this.config.columns = this.columns;
-
-    this.columnMapSubject.next(columnMap);
-
-    this.configSubject.next(this.config);
+    // Trigger the next initialize step upon done waiting if there is anything to wait on.
+    this.subscribeConfigWait(() => {
+      this.initializeColumnsGroupSortMap();
+    });
   }
 
   /**
    * Usually called when config changes, re-init the columns.  We re-sort based upon the preferred sort order then
    * calculate things like visible columns and group by, then re-sort based on the rendering order.
    */
-  public initColumnProperties(columnMap: Map<string, Column[]>): void {
+  public initializeColumnsGroupSortMap(): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": GridService.initColumnProperties");
+      console.debug("hci-grid: " + this.id + ": GridService.initializeColumnsGroupSortMap");
     }
 
     this.columns.sort((a: Column, b: Column) => {
@@ -457,28 +465,29 @@ export class GridService {
       }
     });
 
+    // Push the columns to the different maps.
     for (var j = 0; j < this.columns.length; j++) {
-      columnMap.get("ALL").push(this.columns[j]);
+      this.columnMap.get("ALL").push(this.columns[j]);
 
       if (this.columns[j].visible) {
         this.columns[j].id = j;
-        columnMap.get("VISIBLE").push(this.columns[j]);
+        this.columnMap.get("VISIBLE").push(this.columns[j]);
 
         if (this.columns[j].isUtility) {
-          columnMap.get("UTILITY").push(this.columns[j]);
+          this.columnMap.get("UTILITY").push(this.columns[j]);
         }
         if (this.columns[j].isUtility || this.columns[j].isFixed) {
-          columnMap.get("LEFT_VISIBLE").push(this.columns[j]);
+          this.columnMap.get("LEFT_VISIBLE").push(this.columns[j]);
         } else {
-          columnMap.get("MAIN_VISIBLE").push(this.columns[j]);
+          this.columnMap.get("MAIN_VISIBLE").push(this.columns[j]);
         }
       } else {
-        columnMap.get("NON_VISIBLE").push(this.columns[j]);
+        this.columnMap.get("NON_VISIBLE").push(this.columns[j]);
       }
     }
 
-    if (columnMap.get("VISIBLE").length > 0) {
-      columnMap.get("VISIBLE")[columnMap.get("VISIBLE").length - 1].isLast = true;
+    if (this.columnMap.get("VISIBLE").length > 0) {
+      this.columnMap.get("VISIBLE")[this.columnMap.get("VISIBLE").length - 1].isLast = true;
     }
 
     if (isDevMode()) {
@@ -487,6 +496,32 @@ export class GridService {
             + ", visible: " + this.columns[j].visible + ", selectable: " + this.columns[j].selectable + ", isFixed: " + this.columns[j].isFixed);
       }
     }
+
+    this.initializeColumnsFinalize();
+  }
+
+  initializeColumnsFinalize() {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": GridService.initializeColumnsFinalize()");
+    }
+
+    this.nFixedColumns = 0;
+    this.nNonFixedColumns = 0;
+    for (var j = 0; j < this.columns.length; j++) {
+      if (this.columns[j].visible) {
+        if (this.columns[j].isFixed) {
+          this.nFixedColumns = this.nFixedColumns + 1;
+        } else {
+          this.nNonFixedColumns = this.nNonFixedColumns + 1;
+        }
+      }
+    }
+
+    this.config.columns = this.columns;
+
+    this.columnMapSubject.next(this.columnMap);
+
+    this.configSubject.next(this.config);
   }
 
   /**
@@ -495,15 +530,14 @@ export class GridService {
    *
    * @returns {Map<string, Column[]>}
    */
-  public createColumnMap(): Map<string, Column[]> {
-    let columnMap: Map<string, Column[]> = new Map<string, Column[]>();
-    columnMap.set("ALL", []);
-    columnMap.set("UTILITY", []);
-    columnMap.set("VISIBLE", []);
-    columnMap.set("LEFT_VISIBLE", []);
-    columnMap.set("MAIN_VISIBLE", []);
-    columnMap.set("NON_VISIBLE", []);
-    return columnMap;
+  public createColumnMap(): void {
+    this.columnMap = new Map<string, Column[]>();
+    this.columnMap.set("ALL", []);
+    this.columnMap.set("UTILITY", []);
+    this.columnMap.set("VISIBLE", []);
+    this.columnMap.set("LEFT_VISIBLE", []);
+    this.columnMap.set("MAIN_VISIBLE", []);
+    this.columnMap.set("NON_VISIBLE", []);
   }
 
   public getConfigSubject(): BehaviorSubject<any> {
@@ -1117,28 +1151,14 @@ export class GridService {
    * @param originalData
    * @returns {boolean}
    */
-  public setOriginalData(originalData: Object[]): boolean {
+  public setOriginalData(originalData: Object[]): void {
     this.originalData = originalData;
 
     if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50) {
       this.pageInfo.setPageSize(10);
     }
 
-    /*if (!this.columns && this.originalData.length > 0) {
-      this.columns = [];
-      let keys: string[] = Object.keys(this.originalData[0]);
-      for (var i = 0; i < keys.length; i++) {
-        this.columns.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
-        this.columns = this.columns;
-      }
-      this.initColumnDefinitions();
-      return true;
-    } else {
-      this.initData();
-      return false;
-    }*/
     this.initData();
-    return false;
   }
 
   public initData(): void {
