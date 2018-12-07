@@ -22,7 +22,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           Also to note that this demo uses an external data call with a 100-900 ms delay and the choiceUrl has a 250-750 ms
           delay.  This is important because the grid waits for the choiceUrl response before finalizing configuration and
-          the column configuration is needed before the data can be prepared.
+          the column configuration is needed before the data can be prepared.  I have three choiceUrl columns here to make
+          sure that the column initialization is properly waiting for all requests.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -45,10 +46,11 @@ export class DataTypesDemoComponent {
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: true },
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
-    { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "genderDict", name: "Gender", choices: [{v: 1, d: "F"}, {v: 2, d: "M"}, {v: 3, d: "U"}], choiceValue: "v", choiceDisplay: "d" },
     { field: "genderDict", name: "Gender Url", choiceUrl: "/api/dictionary/gender", choiceValue: "value", choiceDisplay: "display" },
+    { field: "raceDict", name: "Race Url", choiceUrl: "/api/dictionary/race", choiceValue: "value", choiceDisplay: "display" },
+    { field: "stateDict", name: "State Url", choiceUrl: "/api/dictionary/states", choiceValue: "value", choiceDisplay: "display" }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}

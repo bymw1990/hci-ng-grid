@@ -42,10 +42,12 @@ export class DataGeneratorService {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
       let genderDict: number = (Math.random() < 0.05) ? 3 : j % 2 + 1;
+      let raceDict: number = Math.floor(Math.random() * 6 + 1);
       let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
       let lastName: string = this._lastNames[Math.floor(Math.random() * this._lastNames.length)];
       let city: string = this._cities[Math.floor(Math.random() * this._cities.length)];
+      let stateDict: number = Math.floor(Math.random() * 50 + 1);
       let addy: number = Math.floor(Math.random() * 9800 + 100);
       let street: string = this._streets1[Math.floor(Math.random() * this._streets1.length)] + this._streets2[Math.floor(Math.random() * this._streets2.length)] + " " + this._stypes[Math.floor(Math.random() * this._stypes.length)];
       let dob: string = this.generateDate(1930, 1990);
@@ -61,7 +63,7 @@ export class DataGeneratorService {
         nPath: Math.floor(Math.random() * 100)
       };
 
-      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, dobms: dobms, gender: gender, genderDict: genderDict, address: addy + " " + street, citystatezip: city + ", UT 84101", phone: phone, nLabs: nLabs, lab: lab, path: path });
+      data.push({ idPatient: i, middleName: middleName, firstName: firstName, lastName: lastName, dob: dob, dobms: dobms, gender: gender, genderDict: genderDict, raceDict: raceDict, address: addy + " " + street, citystatezip: city + ", UT 84101", stateDict: stateDict, phone: phone, nLabs: nLabs, lab: lab, path: path });
     }
     return data;
   }
