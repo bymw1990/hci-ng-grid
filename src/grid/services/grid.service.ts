@@ -30,6 +30,7 @@ export class GridService {
     externalFiltering: false,
     externalSorting: false,
     externalPaging: false,
+    pageSize: -1,
     pageSizes: [10, 25, 50],
     nVisibleRows: -1,
     busyTemplate: undefined
@@ -84,6 +85,7 @@ export class GridService {
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
+  private height: number;
 
   private rowChangedSubject: Subject<RowChange> = new Subject<RowChange>();
 
@@ -99,6 +101,8 @@ export class GridService {
   private nConfigWait: number = 0;
   private configWaitSubjects: Subject<boolean>[] = [];
   private configWaitSubscriptions: Subscription[] = [];
+
+  private configSet: boolean = false;
 
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
@@ -199,8 +203,14 @@ export class GridService {
     if (config.nVisibleRows !== undefined) {
       this.nVisibleRows = config.nVisibleRows;
     }
+    if (config.height !== undefined) {
+      this.height = config.height;
+    }
 
     this.setNVisibleRows();
+
+    this.configSet = true;
+    this.setAutoPageSize();
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
@@ -1154,11 +1164,17 @@ export class GridService {
   public setOriginalData(originalData: Object[]): void {
     this.originalData = originalData;
 
-    if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50) {
-      this.pageInfo.setPageSize(10);
-    }
+    this.setAutoPageSize();
 
     this.initData();
+  }
+
+  public setAutoPageSize(): void {
+    if (this.originalData && this.configSet) {
+      if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50 && this.height === undefined) {
+        this.pageInfo.setPageSize(10);
+      }
+    }
   }
 
   public initData(): void {

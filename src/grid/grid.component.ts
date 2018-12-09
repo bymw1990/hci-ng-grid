@@ -82,18 +82,20 @@ const SCROLL: number = 1;
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div *ngIf="config.title || configurable" id="title-bar">
-        <div>{{config.title}}</div>
-        <ng-container *ngIf="configurable">
-          <div class="right" ngbDropdown placement="bottom-right">
-            <a id="config-dropdown-toggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
-              <i class="fas fa-cog fa-lg"></i>
-            </a>
-            <ul ngbDropdownMenu id="config-dropdown-menu" aria-labelledby="config-dropdown-toggle" class="dropdown-menu">
-              <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
-            </ul>
-          </div>
-        </ng-container>
+      <div id="title-bar">
+        <div class="title-bar" *ngIf="config.title || configurable">
+          <div>{{config.title}}</div>
+          <ng-container *ngIf="configurable">
+            <div class="right" ngbDropdown placement="bottom-right">
+              <a id="config-dropdown-toggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
+                <i class="fas fa-cog fa-lg"></i>
+              </a>
+              <ul ngbDropdownMenu id="config-dropdown-menu" aria-labelledby="config-dropdown-toggle" class="dropdown-menu">
+                <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
+              </ul>
+            </div>
+          </ng-container>
+        </div>
       </div>
 
       <div #mainContent id="main-content">
@@ -188,12 +190,11 @@ const SCROLL: number = 1;
       <input #focuser2 id="focuser2" style="position: absolute; left: -100000px; width: 0px; height: 0px;" (focus)="onFocus($event)" />
       
       <!-- Footer -->
-      <div *ngIf="pageInfo.pageSize > 0"
-           id="grid-footer"
+      <div id="grid-footer"
            (mouseup)="$event.stopPropagation()"
            (mousedown)="$event.stopPropagation()"
            (click)="$event.stopPropagation()">
-        <div>
+        <div *ngIf="pageInfo.pageSize > 0" class="grid-footer">
           <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
             Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
@@ -228,6 +229,7 @@ const SCROLL: number = 1;
       height: 0px;
       width: 100%;
       position: relative;
+      display: flex;
       z-index: -1;
       border: none;
       background-color: transparent;
@@ -239,17 +241,17 @@ const SCROLL: number = 1;
       width: 100%;
     }
 
-    #title-bar {
+    .title-bar {
       display: inline-flex;
       width: 100%;
     }
 
-    #title-bar .right {
+    .title-bar .right {
       margin-left: auto;
       margin-right: 0px;
     }
 
-    #title-bar .dropdown-toggle.no-arrow::after {
+    .title-bar .dropdown-toggle.no-arrow::after {
       display: none;
     }
 
@@ -336,7 +338,7 @@ const SCROLL: number = 1;
       white-space: nowrap;
     }
     
-    #grid-footer {
+    .grid-footer {
       width: 100%;
       border-top: none;
       padding: 3px;
@@ -453,6 +455,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() eventListeners: EventListenerArg[] = [];
   @Input() mode: string;
   @Input() logWarnings: boolean = true;
+  @Input() height: number;
 
   @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
@@ -498,6 +501,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private componentRef: CellEditRenderer;
   private selectedLocationSubscription: Subscription;
 
+  private lastScrollPoint: Point;
+
   /* Arrays of listeners for different types.  A single instance of a listener can exist on multiple types. */
   private clickListeners: EventListener[] = [];
   private dblClickListeners: EventListener[] = [];
@@ -523,6 +528,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngOnInit() {
     this.registerEventListeners();
     this.updateMode();
+
+    if (this.height) {
+      this.renderer.setStyle(this.el.nativeElement, "height", this.height + "px");
+    }
 
     this.gridMessageService.messageObservable.subscribe((message: string) => {
       if (this.logWarnings) {
@@ -688,8 +697,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.findBaseRowCell();
-
-    this.gridContainer.nativeElement.querySelector("#right-view").addEventListener("scroll", this.onScroll.bind(this), true);
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
@@ -1000,16 +1007,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * The bound scroll listener for the #right-view container.
    */
-  public onScroll(): void {
-    if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": onScroll");
-    }
-
-    if (this.componentRef) {
-      this.componentRef.updateLocation();
-    }
-  }
-
   public onScrollRightView(event: Event): void {
     this.event = SCROLL;
 
@@ -1017,12 +1014,23 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("hci-grid: " + this.id + ": onScrollRightView");
     }
     let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
+
+    if (this.lastScrollPoint && this.lastScrollPoint.equalsIJ(rightRowContainer.scrollLeft, rightRowContainer.scrollTop)) {
+      this.event = NO_EVENT;
+      return;
+    } else {
+      this.lastScrollPoint = new Point(rightRowContainer.scrollLeft, rightRowContainer.scrollTop);
+    }
+
     let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-header-container");
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
     this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
     this.renderCellsAndData();
 
+    if (this.componentRef) {
+      this.componentRef.updateLocation();
+    }
     this.event = NO_EVENT;
   }
 
@@ -1445,6 +1453,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.inputTheme !== undefined) {
       this.inputConfig.theme = this.inputTheme;
     }
+    if (this.height !== undefined && this.height > 0) {
+      this.inputConfig.height = this.height;
+    }
 
     if (this.inputConfig.id === undefined && this.id === undefined) {
       this.id = this.gridService.id;
@@ -1497,15 +1508,20 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     let gridHeight: number = 0;
-    let headerHeight: number = 0;
     let contentViewHeight: number = 0;
 
-    headerHeight = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+    let titleHeight: number = this.gridContainer.nativeElement.querySelector("#title-bar").offsetHeight;
+    let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+    let footerHeight: number = this.gridContainer.nativeElement.querySelector("#grid-footer").offsetHeight;
     contentViewHeight = 0;
-    if (this.gridService.getNVisibleRows() <= 0) {
-      contentViewHeight = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
+    if (this.height) {
+      contentViewHeight = this.height - titleHeight - headerHeight - footerHeight;
     } else {
-      contentViewHeight = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
+      if (this.gridService.getNVisibleRows() <= 0) {
+        contentViewHeight = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
+      } else {
+        contentViewHeight = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
+      }
     }
 
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentViewHeight) + "px");
@@ -1649,7 +1665,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     e = this.gridContainer.nativeElement.querySelector("#right-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
     this.renderer.setStyle(e, "width", rightViewWidth + "px");
-    if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize) {
+    if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize && this.pageInfo.pageSize !== -1) {
       this.renderer.setStyle(e, "overflow-y", "hidden");
     } else {
       this.renderer.setStyle(e, "overflow-y", "auto");
@@ -1659,7 +1675,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       e = this.gridContainer.nativeElement.querySelector("#right-view");
       this.renderer.removeClass(e, "hidden-x");
 
-      contentViewHeight += 17;
+      if (!this.height) {
+        contentViewHeight += 17;
+      }
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentViewHeight) + "px");
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentViewHeight + "px");
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentViewHeight + "px");

@@ -37,7 +37,7 @@ export class Point {
     }
   }
 
-  equalsIJK(i: number, j: number, k: number): boolean {
+  equalsIJ(i: number, j: number): boolean {
     return this._i === i && this._j === j;
   }
 

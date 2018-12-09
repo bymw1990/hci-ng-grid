@@ -170,10 +170,45 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div style="width: 100%;">
           <hci-grid *ngIf="showGrid4"
                     [data]="data"
+                    [columns]="columns">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Fixed Height</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Sets the grid height to 100px.  The grid content sets itself accordingly.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right">Show Config</button>
+          <ng-template #config5>
+            <pre>
+              &lt;hci-grid
+                [data]="data"
+                [columns]="columns"
+                [height]="100"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
+        <div style="width: 100%;">
+          <hci-grid [data]="data"
                     [columns]="columns"
-                    [nVisibleRows]="5"
-                    [pageSize]="5"
-                    [pageSizes]="[5, 10, 25]">
+                    [height]="100">
           </hci-grid>
         </div>
       </div>
