@@ -20,7 +20,7 @@
   border-bottom: black 1px solid;
 }
 
-#grid-container.spreadsheet #grid-footer {
+#grid-container.spreadsheet .grid-footer {
   border: black 1px solid;
 }
 

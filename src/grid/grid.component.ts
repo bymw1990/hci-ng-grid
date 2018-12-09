@@ -194,7 +194,7 @@ const SCROLL: number = 1;
            (mouseup)="$event.stopPropagation()"
            (mousedown)="$event.stopPropagation()"
            (click)="$event.stopPropagation()">
-        <div *ngIf="pageInfo.pageSize > 0">
+        <div *ngIf="pageInfo.pageSize > 0" class="grid-footer">
           <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
             Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
@@ -229,6 +229,7 @@ const SCROLL: number = 1;
       height: 0px;
       width: 100%;
       position: relative;
+      display: flex;
       z-index: -1;
       border: none;
       background-color: transparent;
@@ -337,7 +338,7 @@ const SCROLL: number = 1;
       white-space: nowrap;
     }
     
-    #grid-footer {
+    .grid-footer {
       width: 100%;
       border-top: none;
       padding: 3px;
@@ -499,6 +500,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private popupRef: CellPopupRenderer;
   private componentRef: CellEditRenderer;
   private selectedLocationSubscription: Subscription;
+
+  private lastScrollPoint: Point;
 
   /* Arrays of listeners for different types.  A single instance of a listener can exist on multiple types. */
   private clickListeners: EventListener[] = [];
@@ -694,8 +697,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.findBaseRowCell();
-
-    this.gridContainer.nativeElement.querySelector("#right-view").addEventListener("scroll", this.onScroll.bind(this), true);
 
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
@@ -1006,16 +1007,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * The bound scroll listener for the #right-view container.
    */
-  public onScroll(): void {
-    if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": onScroll");
-    }
-
-    if (this.componentRef) {
-      this.componentRef.updateLocation();
-    }
-  }
-
   public onScrollRightView(event: Event): void {
     this.event = SCROLL;
 
@@ -1023,12 +1014,23 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("hci-grid: " + this.id + ": onScrollRightView");
     }
     let rightRowContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
+
+    if (this.lastScrollPoint && this.lastScrollPoint.equalsIJ(rightRowContainer.scrollLeft, rightRowContainer.scrollTop)) {
+      this.event = NO_EVENT;
+      return;
+    } else {
+      this.lastScrollPoint = new Point(rightRowContainer.scrollLeft, rightRowContainer.scrollTop);
+    }
+
     let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-header-container");
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
     this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
     this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
     this.renderCellsAndData();
 
+    if (this.componentRef) {
+      this.componentRef.updateLocation();
+    }
     this.event = NO_EVENT;
   }
 
@@ -1673,7 +1675,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       e = this.gridContainer.nativeElement.querySelector("#right-view");
       this.renderer.removeClass(e, "hidden-x");
 
-      contentViewHeight += 17;
+      if (!this.height) {
+        contentViewHeight += 17;
+      }
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentViewHeight) + "px");
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentViewHeight + "px");
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentViewHeight + "px");

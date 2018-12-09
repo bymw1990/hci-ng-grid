@@ -99,6 +99,8 @@ export class GridService {
   private columnWaiter: Subject<boolean>[] = [];
   private columnWaiterSubscriptions: Subscription[] = [];
 
+  private configSet: boolean = false;
+
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
   }
@@ -203,6 +205,9 @@ export class GridService {
     }
 
     this.setNVisibleRows();
+
+    this.configSet = true;
+    this.setAutoPageSize();
 
     // Notify listeners if anything related to column configuration changed.
     if (columnsChanged) {
@@ -1125,13 +1130,18 @@ export class GridService {
   public setOriginalData(originalData: Object[]): boolean {
     this.originalData = originalData;
 
-    if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50 && (this.height === undefined || this.height === 0)) {
-      // TODO: Fix figure out height.
-      //this.pageInfo.setPageSize(10);
-    }
+    this.setAutoPageSize();
 
     this.initData();
     return false;
+  }
+
+  public setAutoPageSize(): void {
+    if (this.originalData && this.configSet) {
+      if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50 && this.height === undefined) {
+        this.pageInfo.setPageSize(10);
+      }
+    }
   }
 
   public initData(): void {
