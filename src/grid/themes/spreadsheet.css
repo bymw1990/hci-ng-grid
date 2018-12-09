@@ -1,5 +1,5 @@
 
-#grid-container.spreadsheet #title-bar {
+#grid-container.spreadsheet .title-bar {
   padding: 10px;
   font-weight: bold;
   font-size: large;

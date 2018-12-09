@@ -30,6 +30,7 @@ export class GridService {
     externalFiltering: false,
     externalSorting: false,
     externalPaging: false,
+    pageSize: -1,
     pageSizes: [10, 25, 50],
     nVisibleRows: -1,
     busyTemplate: undefined
@@ -81,6 +82,7 @@ export class GridService {
   private nFixedColumns: number = 0;
   private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
+  private height: number;
 
   private rowChangedSubject: Subject<RowChange> = new Subject<RowChange>();
 
@@ -195,6 +197,9 @@ export class GridService {
     }
     if (config.nVisibleRows !== undefined) {
       this.nVisibleRows = config.nVisibleRows;
+    }
+    if (config.height !== undefined) {
+      this.height = config.height;
     }
 
     this.setNVisibleRows();
@@ -1120,23 +1125,11 @@ export class GridService {
   public setOriginalData(originalData: Object[]): boolean {
     this.originalData = originalData;
 
-    if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50) {
-      this.pageInfo.setPageSize(10);
+    if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50 && (this.height === undefined || this.height === 0)) {
+      // TODO: Fix figure out height.
+      //this.pageInfo.setPageSize(10);
     }
 
-    /*if (!this.columns && this.originalData.length > 0) {
-      this.columns = [];
-      let keys: string[] = Object.keys(this.originalData[0]);
-      for (var i = 0; i < keys.length; i++) {
-        this.columns.push(Column.deserialize({ field: keys[i], template: "LabelCell" }));
-        this.columns = this.columns;
-      }
-      this.initColumnDefinitions();
-      return true;
-    } else {
-      this.initData();
-      return false;
-    }*/
     this.initData();
     return false;
   }

@@ -171,9 +171,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid *ngIf="showGrid4"
                     [data]="data"
                     [columns]="columns"
-                    [nVisibleRows]="5"
-                    [pageSize]="5"
-                    [pageSizes]="[5, 10, 25]">
+                    [height]="100">
           </hci-grid>
         </div>
       </div>
