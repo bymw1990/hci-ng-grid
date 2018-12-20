@@ -38,6 +38,7 @@ import {FilterInfo} from "../utils/filter-info";
     </div>
   `,
   styles: [`
+
     .sort-icon {
       margin-left: auto;
       padding-right: 5px;

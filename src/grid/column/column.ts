@@ -10,6 +10,7 @@ import {FormatterParser} from "./formatters/formatter-parser";
 import {EmptyFactory} from "../utils/empty.factory";
 import {DateMsFormatter} from "./formatters/date-ms.formatter";
 import {DateIso8601Formatter} from "./formatters/date-iso8601.formatter";
+import {ChoiceEditRenderer} from "../cell/editRenderers/choice-edit-renderer.component";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -38,7 +39,6 @@ export class Column {
     choiceDisplay: "display",
     formatterParserConfig: {},
     formatterParser: FormatterParser,
-    editRenderer: TextEditRenderer,
     viewConfig: {},
     viewRenderer: CellTextView,
     filterConfig: {}
@@ -64,6 +64,7 @@ export class Column {
   dataType: string = "string";
   selectable: boolean = true;
   isLast: boolean = false;
+  externalConfig: any;
 
   visible: boolean = true;
   editable: boolean = true;
@@ -82,7 +83,7 @@ export class Column {
   popupRenderer: Type<CellPopupRenderer>;
 
   editConfig: any = {};
-  editRenderer: Type<CellEditRenderer> = TextEditRenderer;
+  editRenderer: Type<CellEditRenderer>;
 
   viewConfig: any = {};
   viewRenderer: Type<CellViewRenderer> = CellTextView;
@@ -191,6 +192,9 @@ export class Column {
     if (object.selectable !== undefined) {
       this.selectable = object.selectable;
     }
+    if (object.externalConfig) {
+      this.externalConfig = object.externalConfig;
+    }
 
     if (object.visible !== undefined) {
       this.visible = object.visible;
@@ -241,6 +245,14 @@ export class Column {
     }
     if (object.formatterParser) {
       this.formatterParser = object.formatterParser;
+    }
+
+    if (!this.editRenderer) {
+      if (this.dataType === "choice") {
+        this.editRenderer = ChoiceEditRenderer;
+      } else {
+        this.editRenderer = TextEditRenderer;
+      }
     }
 
     if (this.dataType === "date" && (!object.formatterParser || object.formatterParser === FormatterParser)) {

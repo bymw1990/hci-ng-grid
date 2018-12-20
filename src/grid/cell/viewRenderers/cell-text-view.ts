@@ -27,6 +27,9 @@ export class CellTextView implements CellViewRenderer {
     } else {
       text = renderer.createText(column.formatValue(value));
     }
+
+    text = (text) ? text : "";
+
     renderer.appendChild(span, text);
     return span;
   }

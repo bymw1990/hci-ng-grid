@@ -10,18 +10,10 @@ export class FormatterParser {
   }
 
   formatValue(value: any): any {
-    if (value !== undefined) {
-      return value;
-    } else {
-      return "";
-    }
+    return value;
   }
 
   parseValue(value: any): any {
-    if (value !== undefined) {
-      return value;
-    } else {
-      return "";
-    }
+    return value;
   }
 }

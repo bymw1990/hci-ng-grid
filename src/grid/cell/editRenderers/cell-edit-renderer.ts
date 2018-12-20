@@ -76,7 +76,7 @@ export class CellEditRenderer {
     this.renderer.setStyle(this.elementRef.nativeElement, "margin-top", this.hostElement.parentElement.offsetTop + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "width", this.hostElement.offsetWidth + "px");
     this.renderer.setStyle(this.elementRef.nativeElement, "height", this.hostElement.offsetHeight + "px");
-    this.renderer.setStyle(this.elementRef.nativeElement, "z-index", "99");
+    this.renderer.setStyle(this.elementRef.nativeElement, "z-index", "100");
   }
 
   @HostListener("window:resize", ["$event"])

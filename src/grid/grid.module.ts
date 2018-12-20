@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
-import {ModuleWithProviders, NgModule} from "@angular/core";
+import {ANALYZE_FOR_ENTRY_COMPONENTS, ModuleWithProviders, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 
@@ -61,13 +61,32 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
   ]
 })
 export class GridModule {
-  static forRoot(globalConfig?: any): ModuleWithProviders {
+
+  static forRoot(globalConfig?: any, components?: any[]): ModuleWithProviders {
     return {
       providers: [
         GridGlobalService,
-        {provide: "globalConfig", useValue: (globalConfig) ? globalConfig : {}}
+        {provide: "globalConfig", useValue: (globalConfig) ? globalConfig : {}},
+        {
+          provide: ANALYZE_FOR_ENTRY_COMPONENTS,
+          useValue: components,
+          multi: true
+        }
       ],
       ngModule: GridModule
+    };
+  }
+
+  static withComponents(components: any[]): ModuleWithProviders {
+    return {
+      ngModule: GridModule,
+      providers: [
+        {
+          provide: ANALYZE_FOR_ENTRY_COMPONENTS,
+          useValue: components,
+          multi: true
+        }
+      ]
     };
   }
 }

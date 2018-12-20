@@ -142,7 +142,7 @@ const SCROLL: number = 1;
                                  style="vertical-align: top; display: inline-flex; align-items: center;"
                                  [style.height.px]="rowHeight"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                                 [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                                 [style.max-width]="!column.isLast && column.maxWidth ? column.maxWidth + 'px' : 'none'">
               </hci-column-header>
             </div>
           </div>
@@ -161,7 +161,7 @@ const SCROLL: number = 1;
                                  style="vertical-align: top; display: inline-flex; align-items: center;"
                                  [style.height.px]="rowHeight"
                                  [style.min-width]="column.minWidth ? column.minWidth + 'px' : 'initial'"
-                                 [style.max-width]="column.maxWidth ? column.maxWidth + 'px' : 'initial'">
+                                 [style.max-width]="!column.isLast && column.maxWidth ? column.maxWidth + 'px' : 'none'">
               </hci-column-header>
             </div>
           </div>
@@ -410,8 +410,8 @@ const SCROLL: number = 1;
       font-size: 72px;
       color: lightgrey;
     }
-
-    `]
+ 
+  `]
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
@@ -1322,7 +1322,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       event.stopPropagation();
       this.gridEventService.arrowFrom(undefined, 0, 1, undefined);
     } else if (event.keyCode === 27) {
+      event.preventDefault();
       event.stopPropagation();
+      this.focuser1.nativeElement.focus();
       this.gridEventService.setSelectedLocation(new Point(-1, -1), new EventMeta(event.altKey, event.ctrlKey, event.shiftKey));
     }
   }
@@ -1350,6 +1352,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.popupRef = this.popupContainer.createComponent(factory).instance;
     this.popupRef.setPosition(location);
     this.popupRef.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
+  }
+
+  /**
+   * Remove the popup comonent and clear the popup container view of children.
+   */
+  public clearPopup() {
+    this.popupRef = undefined;
+    this.popupContainer.clear();
   }
 
   /**
@@ -1537,7 +1547,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
     let insideGridWidth: number = gridWidth;
-    //let w: number = 0;
 
     if (isDevMode()) {
       console.debug("hci-grid: " + this.id + ": gridWidth: " + gridWidth);
@@ -1879,8 +1888,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
     this.renderer.setStyle(eCell, "height", this.rowHeight + "px");
     this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
-    this.renderer.setStyle(eCell, "min-width:", column.minWidth + "px");
-    this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
+    this.renderer.setStyle(eCell, "min-width", column.minWidth + "px");
+    if (!column.isLast) {
+      this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
+    }
     this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
 
     this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, i, j));

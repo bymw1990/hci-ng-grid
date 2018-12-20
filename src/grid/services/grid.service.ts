@@ -498,6 +498,12 @@ export class GridService {
 
     if (this.columnMap.get("VISIBLE").length > 0) {
       this.columnMap.get("VISIBLE")[this.columnMap.get("VISIBLE").length - 1].isLast = true;
+
+      if (this.columnMap.get("LEFT_VISIBLE").length > 0 && this.columnMap.get("MAIN_VISIBLE").length === 0) {
+        this.columnMap.get("LEFT_VISIBLE")[this.columnMap.get("LEFT_VISIBLE").length - 1].isLast = true;
+      } else {
+        this.columnMap.get("MAIN_VISIBLE")[this.columnMap.get("MAIN_VISIBLE").length - 1].isLast = true;
+      }
     }
 
     if (isDevMode()) {

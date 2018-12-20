@@ -119,6 +119,7 @@ export class TextEditRenderer extends CellEditRenderer {
       this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
       this.saveData();
     } else if (event.keyCode === 27) {
+      event.preventDefault();
       event.stopPropagation();
       this.gridEventService.getUnselectSubject().next(undefined);
     } else {

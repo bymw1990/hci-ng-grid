@@ -18,13 +18,23 @@ export class CellHoverPopupListener extends EventListener implements MouseOverLi
     }
     if (idElement !== null && idElement.id.startsWith("cell-")) {
       let location: Point = HtmlUtil.getLocation(idElement);
-      if (!location || !this.gridService.getColumn(location.j).popupRenderer) {
-        this.grid.popupContainer.clear();
-        return false;
+
+      let currentEl: HTMLElement = this.grid.gridContainer.nativeElement.querySelector(".cell-popup");
+      if (currentEl) {
+        let currentLocation: Point = HtmlUtil.getLocation(currentEl);
+        if (currentLocation && currentLocation.equals(location)) {
+          return false;
+        }
       }
-      this.grid.createPopup(location);
-      return true;
+
+      this.grid.clearPopup();
+      if (location && this.gridService.getColumn(location.j).popupRenderer) {
+        this.grid.createPopup(location);
+        return true;
+      }
+      return false;
     } else {
+      this.grid.clearPopup();
       return false;
     }
   }

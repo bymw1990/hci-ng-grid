@@ -44,9 +44,10 @@ export class CellPopupRenderer {
    * Correctly position the editor popup over the selected cell.
    */
   updateLocation() {
+    this.renderer.addClass(this.elementRef.nativeElement, "cell-popup");
     this.renderer.setStyle(this.elementRef.nativeElement, "position", "absolute");
     this.renderer.setStyle(this.elementRef.nativeElement, "height", this.hostElement.offsetHeight + "px");
-    this.renderer.setStyle(this.elementRef.nativeElement, "z-index", "99");
+    this.renderer.setStyle(this.elementRef.nativeElement, "z-index", "200");
 
     let wHost: number = this.hostElement.offsetWidth;
     let mainContent: number = (<HTMLElement>this.hostElement.closest("#main-content")).offsetWidth;
