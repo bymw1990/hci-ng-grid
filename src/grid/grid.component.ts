@@ -1624,12 +1624,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
          * then have the last column take up all remaining space.
          */
         if (column.isLast && column.isFixed) {
-          if (fixedWidth + columnRenderWidth < gridWidth) {
-            columnRenderWidth = gridWidth - fixedWidth;
+          if (fixedWidth + columnRenderWidth < insideGridWidth) {
+            columnRenderWidth = insideGridWidth - fixedWidth;
           }
         } else if (column.isLast && !column.isFixed) {
-          if (fixedWidth + nonFixedWidth + columnRenderWidth < gridWidth) {
-            columnRenderWidth = gridWidth - fixedWidth - nonFixedWidth;
+          if (fixedWidth + nonFixedWidth + columnRenderWidth < insideGridWidth) {
+            columnRenderWidth = insideGridWidth - fixedWidth - nonFixedWidth;
           }
         }
         column.renderWidth = columnRenderWidth;

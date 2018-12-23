@@ -9,7 +9,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
   template: `
     <div class="card">
       <div class="card-header">
-        <h4>Excel (default) Theme</h4>
+        <h4>Spreadsheet (default) Theme</h4>
       </div>
       <div class="card-body">
         <div class="card-text">
