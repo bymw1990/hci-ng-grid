@@ -25,10 +25,9 @@ export class CellTextView implements CellViewRenderer {
     if (this.column.dataType === "choice") {
       text = renderer.createText(this.getChoice(value));
     } else {
-      text = renderer.createText(column.formatValue(value));
+      let formatted: any = column.formatValue(value);
+      text = renderer.createText((formatted) ? formatted : "");
     }
-
-    text = (text) ? text : "";
 
     renderer.appendChild(span, text);
     return span;
