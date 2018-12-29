@@ -4,6 +4,7 @@
     - Generalize column wait configuration.  Changes public api.
     - Fixes to popup behavior.
     - Column allows externalConfig storage.
+    - Default format/parser more generic.
 
 ## [2.1.1](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v2.1.1)
     - Fix syntax in README.
