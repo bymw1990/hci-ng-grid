@@ -1,4 +1,5 @@
 import {EventListener} from "./src/grid/event/event-listener";
+import {ColumnHeaderComponent} from "./src/grid/column/column-header.component";
 
 export {GridModule} from "./src/grid/grid.module";
 export {GridComponent} from "./src/grid/grid.component";
@@ -6,6 +7,7 @@ export {GridService} from "./src/grid/services/grid.service";
 export {GridGlobalService} from "./src/grid/services/grid-global.service";
 
 export {Column} from "./src/grid/column/column";
+export {ColumnHeaderComponent} from "./src/grid/column/column-header.component";
 export {ExternalData} from "./src/grid/utils/external-data";
 export {ExternalInfo} from "./src/grid/utils/external-info";
 export {FilterInfo} from "./src/grid/utils/filter-info";
