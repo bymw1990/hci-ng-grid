@@ -41,7 +41,8 @@ export class Column {
     formatterParser: FormatterParser,
     viewConfig: {},
     viewRenderer: CellTextView,
-    filterConfig: {}
+    filterConfig: {},
+    headerClasses: ""
   };
 
   id: number;
@@ -65,6 +66,7 @@ export class Column {
   selectable: boolean = true;
   isLast: boolean = false;
   externalConfig: any;
+  headerClasses: string = "";
 
   visible: boolean = true;
   editable: boolean = true;
@@ -194,6 +196,9 @@ export class Column {
     }
     if (object.externalConfig) {
       this.externalConfig = object.externalConfig;
+    }
+    if (object.headerClasses) {
+      this.headerClasses = object.headerClasses;
     }
 
     if (object.visible !== undefined) {
