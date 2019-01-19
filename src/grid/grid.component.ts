@@ -221,7 +221,6 @@ const SCROLL: number = 1;
     `
 
     :host {
-      display: block;
       width: 100%;
     }
     
@@ -438,6 +437,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   // The following inputs are useful shortcuts for what can be provided via the config input.
   @Input() configurable: boolean = false;
+  @Input() display: string = "flow-root";
   @Input("title") inputTitle: string;
   @Input("theme") inputTheme: string;
   @Input("columns") inputColumnDefinitions: Column[];
@@ -526,6 +526,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
               private gridGlobalService: GridGlobalService) {}
 
   ngOnInit() {
+    this.renderer.setStyle(this.el.nativeElement, "display", this.display);
+
     this.registerEventListeners();
     this.updateMode();
 

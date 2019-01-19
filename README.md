@@ -11,7 +11,7 @@
 
 ```
 "dependencies": {
-    "hci-ng-grid": "3.0.0-beta.3"
+    "hci-ng-grid": "3.0.0"
 }
 ```
 ```
@@ -217,6 +217,12 @@ logWarnings
 type: boolean
 default: true
 True if you want warnings to show in the console.
+```
+```
+display
+type: string
+default: flow-root
+Sets the display on the root component.  Although you could also do this with style on the grid.
 ```
 
 ## Outputs

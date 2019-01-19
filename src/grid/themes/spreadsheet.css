@@ -12,6 +12,7 @@
 
 #grid-container.spreadsheet #header-content {
   font-weight: bold;
+  border-bottom: black 1px solid;
 }
 
 #grid-container.spreadsheet #main-content {
@@ -24,13 +25,9 @@
   border: black 1px solid;
 }
 
-#grid-container.spreadsheet #left-view {
-  border-top: black 1px solid;
-}
+#grid-container.spreadsheet #left-view {}
 
-#grid-container.spreadsheet #right-view {
-  border-top: black 1px solid;
-}
+#grid-container.spreadsheet #right-view {}
 
 #grid-container.spreadsheet #left-header-view{
   border-top: black 1px solid;
