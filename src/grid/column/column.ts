@@ -11,6 +11,8 @@ import {EmptyFactory} from "../utils/empty.factory";
 import {DateMsFormatter} from "./formatters/date-ms.formatter";
 import {DateIso8601Formatter} from "./formatters/date-iso8601.formatter";
 import {ChoiceEditRenderer} from "../cell/editRenderers/choice-edit-renderer.component";
+import {Row} from "../row/row";
+import {SortInfo} from "../utils/sort-info";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -93,6 +95,8 @@ export class Column {
 
   filterConfig: any = {};
   filterRenderer: Type<FilterRenderer>;
+
+  sortFunction: (a: any, b: any, sortInfo: SortInfo, column: Column) => number;
 
   renderLeft: number = 0;
   renderWidth: number = 0;
@@ -201,6 +205,10 @@ export class Column {
       this.headerClasses = object.headerClasses;
     }
 
+    if (object.sortFunction) {
+      this.sortFunction = object.sortFunction;
+    }
+
     if (object.visible !== undefined) {
       this.visible = object.visible;
     }
@@ -282,6 +290,66 @@ export class Column {
 
     if (this.formatterParserInstance["format"] && !this.format) {
       this.format = this.formatterParserInstance["format"];
+    }
+
+    if (!this.sortFunction) {
+      if (this.dataType === "number") {
+        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+          if (sortInfo.asc) {
+            return a - b;
+          } else {
+            return b - a;
+          }
+        };
+      } else if (this.dataType === "string") {
+        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+          if (sortInfo.asc) {
+            if (a < b) {
+              return -1;
+            } else if (a > b) {
+              return 1;
+            } else {
+              return 0;
+            }
+          } else {
+            if (a > b) {
+              return -1;
+            } else if (a < b) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        };
+      } else if (this.dataType === "choice") {
+        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+          a = column.choiceMap.get(a);
+          b = column.choiceMap.get(b);
+
+          if (sortInfo.asc) {
+            if (a < b) {
+              return -1;
+            } else if (a > b) {
+              return 1;
+            } else {
+              return 0;
+            }
+          } else {
+            if (a > b) {
+              return -1;
+            } else if (a < b) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        };
+      } else {
+        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+          console.warn("No sort function implemented.");
+          return 0;
+        };
+      }
     }
   }
 

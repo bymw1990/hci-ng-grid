@@ -1278,14 +1278,20 @@ export class GridService {
   }
 
   public sortPreparedData() {
-    let sortColumns: number[] = [];
+    let sortColumns: Column[] = [];
 
     if (this.sortInfo.field === null && this.groupBy) {
       this.sortInfo.field = "GROUP_BY";
     }
 
     if (this.columns) {
-      if (this.sortInfo.field === "GROUP_BY") {
+      for (var i = 0; i < this.columns.length; i++) {
+        if (this.columns[i].field === this.sortInfo.field) {
+          sortColumns.push(this.columns[i]);
+          break;
+        }
+      }
+      /*if (this.sortInfo.field === "GROUP_BY") {
         for (var i = 0; i < this.columns.length; i++) {
           if (this.columns[i].isGroup) {
             sortColumns.push(i);
@@ -1298,34 +1304,15 @@ export class GridService {
             break;
           }
         }
-      }
+      }*/
     }
 
     if (this.preparedData) {
       this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
         let v: number = 0;
         for (var i = 0; i < sortColumns.length; i++) {
-          if (typeof o1.get(sortColumns[i]).value === "number") {
-            if (this.sortInfo.asc) {
-              v = o1.get(sortColumns[i]).value - o2.get(sortColumns[i]).value;
-            } else {
-              v = o2.get(sortColumns[i]).value - o1.get(sortColumns[i]).value;
-            }
-          } else if (typeof o1.get(sortColumns[i]).value === "string") {
-            if (this.sortInfo.asc) {
-              if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
-                v = -1;
-              } else if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
-                v = 1;
-              }
-            } else {
-              if (o1.get(sortColumns[i]).value > o2.get(sortColumns[i]).value) {
-                v = -1;
-              } else if (o1.get(sortColumns[i]).value < o2.get(sortColumns[i]).value) {
-                v = 1;
-              }
-            }
-          }
+          v = sortColumns[i].sortFunction(o1.get(sortColumns[i].id).value, o2.get(sortColumns[i].id).value, this.sortInfo, sortColumns[i]);
+
           if (v !== 0) {
             return v;
           }
