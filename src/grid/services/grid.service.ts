@@ -1188,7 +1188,7 @@ export class GridService {
             b = o2.getHeader();
           } else {
             a = o1.get(sortColumns[i].id).value;
-            a = o2.get(sortColumns[i].id).value;
+            b = o2.get(sortColumns[i].id).value;
           }
 
           v = sortColumns[i].sortFunction(a, b, this.sortInfo, sortColumns[i]);
