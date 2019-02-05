@@ -1783,7 +1783,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         cell = this.gridData[i].get(column.id);
         if (column.isUtility) {
           this.createCell(lRow, column, cell, i, column.id, "");
-        } else if (column.field === "GROUPBY") {
+        } else if (column.field === "GROUP_BY") {
           if (row.hasHeader()) {
             this.createCell(lRow, column, cell, i, column.id, row.header);
           } else {
@@ -1798,7 +1798,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         cell = this.gridData[i].get(column.id);
         if (column.isUtility) {
           this.createCell(rRow, column, cell, i, column.id, "");
-        } else if (column.field === "GROUPBY") {
+        } else if (column.field === "GROUP_BY") {
           if (row.hasHeader()) {
             this.createCell(rRow, column, cell, i, column.id, row.header);
           } else {

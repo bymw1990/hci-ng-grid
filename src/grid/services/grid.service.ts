@@ -459,7 +459,7 @@ export class GridService {
     }
 
     if (nGroupBy > 0) {
-      let column: Column = new Column({renderOrder: 1999, field: "GROUPBY", name: groupByDisplay, selectable: false});
+      let column: Column = new Column({renderOrder: 1999, field: "GROUP_BY", name: groupByDisplay, selectable: false});
       this.columns.push(column);
       this.nVisibleColumns = this.nVisibleColumns + 1;
     }
@@ -1148,10 +1148,10 @@ export class GridService {
         if (this.columns[j].isKey) {
           row.key = this.getField(this.originalData[i], this.columns[j].field);
         }
-        if (this.columns[j].field === "GROUPBY") {
+        if (this.columns[j].field === "GROUP_BY") {
           row.add(new Cell({value: "", key: i}));
         } else if (this.columns[j].isUtility) {
-            row.add(new Cell({value: false}));
+          row.add(new Cell({value: false}));
         } else {
           row.add(new Cell({value: this.getField(this.originalData[i], this.columns[j].field), key: i}));
         }
@@ -1291,27 +1291,23 @@ export class GridService {
           break;
         }
       }
-      /*if (this.sortInfo.field === "GROUP_BY") {
-        for (var i = 0; i < this.columns.length; i++) {
-          if (this.columns[i].isGroup) {
-            sortColumns.push(i);
-          }
-        }
-      } else {
-        for (var i = 0; i < this.columns.length; i++) {
-          if (this.columns[i].field === this.sortInfo.field) {
-            sortColumns.push(i);
-            break;
-          }
-        }
-      }*/
     }
 
     if (this.preparedData) {
       this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
         let v: number = 0;
         for (var i = 0; i < sortColumns.length; i++) {
-          v = sortColumns[i].sortFunction(o1.get(sortColumns[i].id).value, o2.get(sortColumns[i].id).value, this.sortInfo, sortColumns[i]);
+          let a: any;
+          let b: any;
+          if (sortColumns[i].field === "GROUP_BY") {
+            a = o1.getHeader();
+            b = o2.getHeader();
+          } else {
+            a = o1.get(sortColumns[i].id).value;
+            a = o2.get(sortColumns[i].id).value;
+          }
+
+          v = sortColumns[i].sortFunction(a, b, this.sortInfo, sortColumns[i]);
 
           if (v !== 0) {
             return v;
