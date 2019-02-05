@@ -13,6 +13,7 @@ import {DateIso8601Formatter} from "./formatters/date-iso8601.formatter";
 import {ChoiceEditRenderer} from "../cell/editRenderers/choice-edit-renderer.component";
 import {Row} from "../row/row";
 import {SortInfo} from "../utils/sort-info";
+import {FilterInfo} from "../utils/filter-info";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -96,6 +97,7 @@ export class Column {
   filterConfig: any = {};
   filterRenderer: Type<FilterRenderer>;
 
+  filterFunction: (value: any, filters: FilterInfo[], column: Column) => boolean;
   sortFunction: (a: any, b: any, sortInfo: SortInfo, column: Column) => number;
 
   renderLeft: number = 0;
@@ -205,6 +207,9 @@ export class Column {
       this.headerClasses = object.headerClasses;
     }
 
+    if (object.filterFunction) {
+      this.filterFunction = object.filterFunction;
+    }
     if (object.sortFunction) {
       this.sortFunction = object.sortFunction;
     }
@@ -292,64 +297,12 @@ export class Column {
       this.format = this.formatterParserInstance["format"];
     }
 
-    if (!this.sortFunction) {
-      if (this.dataType === "number") {
-        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
-          if (sortInfo.asc) {
-            return a - b;
-          } else {
-            return b - a;
-          }
-        };
-      } else if (this.dataType === "string") {
-        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
-          if (sortInfo.asc) {
-            if (a < b) {
-              return -1;
-            } else if (a > b) {
-              return 1;
-            } else {
-              return 0;
-            }
-          } else {
-            if (a > b) {
-              return -1;
-            } else if (a < b) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }
-        };
-      } else if (this.dataType === "choice") {
-        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
-          a = column.choiceMap.get(a);
-          b = column.choiceMap.get(b);
+    if (!this.filterFunction) {
+      this.filterFunction = this.createDefaultFilterFunction();
+    }
 
-          if (sortInfo.asc) {
-            if (a < b) {
-              return -1;
-            } else if (a > b) {
-              return 1;
-            } else {
-              return 0;
-            }
-          } else {
-            if (a > b) {
-              return -1;
-            } else if (a < b) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }
-        };
-      } else {
-        this.sortFunction = (a: any, b: any, sortInfo: SortInfo, column: Column) => {
-          console.warn("No sort function implemented.");
-          return 0;
-        };
-      }
+    if (!this.sortFunction) {
+      this.sortFunction = this.createDefaultSortFunction();
     }
   }
 
@@ -363,6 +316,169 @@ export class Column {
 
     if (isDevMode()) {
       console.debug("setChoices: choiceValue: " + this.choiceValue + ", choiceDisplay:" + this.choiceDisplay + ", nChoices: " + this.choices.length);
+    }
+  }
+
+  createDefaultFilterFunction(): (value: any, filters: FilterInfo[], column: Column) => boolean {
+    if (this.dataType === "string") {
+      return (value: any, filters: FilterInfo[], column: Column) => {
+        for (let filterInfo of filters) {
+          if (value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+    } else if (this.dataType === "number") {
+      return (value: any, filters: FilterInfo[], column: Column) => {
+        for (let filterInfo of filters) {
+          if (filterInfo.operator === "E") {
+            if (+value !== +filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "LE") {
+            if (+value > +filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "LT") {
+            if (+value >= +filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "GE") {
+            if (+value < +filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "GT") {
+            if (+value <= +filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "B") {
+            if (+value < +filterInfo.value || +value > +filterInfo.highValue) {
+              return false;
+            }
+          } else if (filterInfo.operator === "O") {
+            if (+value >= +filterInfo.value && +value <= +filterInfo.highValue) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }
+    } else if (this.dataType === "choice") {
+      return (value: any, filters: FilterInfo[], column: Column) => {
+        let include: boolean = false;
+
+        for (let filterInfo of filters) {
+          if (value === filterInfo.value) {
+            include = true;
+            break;
+          }
+        }
+
+        return include;
+      }
+    } else if (this.dataType.indexOf("date") === 0) {
+      return (value: any, filters: FilterInfo[], column: Column) => {
+        for (let filterInfo of filters) {
+          if (filterInfo.operator === "E") {
+            if (value !== filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "LE") {
+            if (value > filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "LT") {
+            if (value <= filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "GE") {
+            if (value < filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "GT") {
+            if (value <= filterInfo.value) {
+              return false;
+            }
+          } else if (filterInfo.operator === "B") {
+            if (value < filterInfo.value || value > filterInfo.highValue) {
+              return false;
+            }
+          } else if (filterInfo.operator === "O") {
+            if (value >= filterInfo.value && value <= filterInfo.highValue ) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }
+    } else {
+      return (value: any, filters: FilterInfo[], column: Column) => {
+        return true;
+      }
+    }
+  }
+
+  createDefaultSortFunction(): (a: any, b: any, sortInfo: SortInfo, column: Column) => number {
+    if (this.dataType === "number") {
+      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+        if (sortInfo.asc) {
+          return a - b;
+        } else {
+          return b - a;
+        }
+      };
+    } else if (this.dataType === "string") {
+      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+        if (sortInfo.asc) {
+          if (a < b) {
+            return -1;
+          } else if (a > b) {
+            return 1;
+          } else {
+            return 0;
+          }
+        } else {
+          if (a > b) {
+            return -1;
+          } else if (a < b) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+      };
+    } else if (this.dataType === "choice") {
+      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+        a = column.choiceMap.get(a);
+        b = column.choiceMap.get(b);
+
+        if (sortInfo.asc) {
+          if (a < b) {
+            return -1;
+          } else if (a > b) {
+            return 1;
+          } else {
+            return 0;
+          }
+        } else {
+          if (a > b) {
+            return -1;
+          } else if (a < b) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+      };
+    } else {
+      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+        console.warn("No sort function implemented.");
+        return 0;
+      };
     }
   }
 }
