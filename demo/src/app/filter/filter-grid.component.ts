@@ -117,7 +117,7 @@ export class FilterGridComponent {
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name" },
     { field: "dob", name: "Date of Birth" },
-    { field: "genderDict", name: "Gender", dataType: "choice", filterRenderer: DictionaryFilterRenderer, filterConfig: {url: "http://localhost/dictionary/gender"} },
+    { field: "genderDict", name: "Gender", dataType: "choice", filterRenderer: DictionaryFilterRenderer, choiceUrl: "http://localhost/dictionary/gender" },
     { field: "nLabs", name: "# Labs", dataType: "number" }
   ];
 

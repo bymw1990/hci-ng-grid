@@ -315,7 +315,7 @@ export class Column {
     }
 
     if (isDevMode()) {
-      console.debug("setChoices: choiceValue: " + this.choiceValue + ", choiceDisplay:" + this.choiceDisplay + ", nChoices: " + this.choices.length);
+      console.debug("setChoices: choiceValue: " + this.choiceValue + ", choiceDisplay: " + this.choiceDisplay + ", nChoices: " + this.choices.length);
     }
   }
 
