@@ -1,6 +1,9 @@
 import {Component} from "@angular/core";
 
-import {ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {
+  ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SortInfo, FilterInfo, SelectFilterRenderer,
+  TextFilterRenderer
+} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {DictionaryFilterRenderer} from "./dictionary-filter.component";
@@ -62,7 +65,10 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
       </div>
       <div class="card-body">
         <div class="card-text">
-          TODO
+          The gender column has a custom renderer, sort function and filter function.  The sort just does a reverse of
+          the expected behavior.  The filter includes a subset word search.  So searching male will include female but
+          unknown will be excluded.  The renderer is a copy of the default select renderer, but will later add some
+          configuration as an example.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
@@ -80,8 +86,31 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
               field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
-              field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {{"{"}}value: "Female", display: "Female"{{"}"}}, {{"{"}}value: "Male", display: "Male"{{"}"}} ], filterRenderer: SelectFilterRenderer
+              field: "genderDict",
+                name: "Gender",
+                dataType: "choice",
+                choiceUrl: "http://localhost/dictionary/gender",
+                filterRenderer: DictionaryFilterRenderer,
+                filterFunction: this.customFilter, sortFunction: this.customSort
               field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
+              
+              customSort(a: any, b: any, sortInfo: SortInfo, column: Column): number {{"{"}}
+                if (sortInfo.asc) {{"{"}}
+                  return b - a;
+                {{"}"}} else {{"{"}}
+                  return a - b;
+                {{"}"}}
+              }
+              
+              customFilter(value: any, filters: FilterInfo[], column: Column): boolean {{"{"}}
+                for (let filterInfo of filters) {{"{"}}
+                  if (column.choiceMap.get(value).toString().toLowerCase().indexOf(column.choiceMap.get(filterInfo.value).toString().toLowerCase()) === -1) {{"{"}}
+                    return false;
+                  {{"}"}}
+                {{"}"}}
+            
+                return true;
+              {{"}"}}
             </pre>
           </ng-template>
         </div>
@@ -117,7 +146,12 @@ export class FilterGridComponent {
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name" },
     { field: "dob", name: "Date of Birth" },
-    { field: "genderDict", name: "Gender", dataType: "choice", filterRenderer: DictionaryFilterRenderer, choiceUrl: "http://localhost/dictionary/gender" },
+    { field: "genderDict",
+      name: "Gender",
+      dataType: "choice",
+      choiceUrl: "http://localhost/dictionary/gender",
+      filterRenderer: DictionaryFilterRenderer,
+      filterFunction: this.customFilter, sortFunction: this.customSort },
     { field: "nLabs", name: "# Labs", dataType: "number" }
   ];
 
@@ -130,5 +164,23 @@ export class FilterGridComponent {
   initData() {
     this.filteredData = this.dataGeneratorService.getData(this.dataSize);
     this.filteredData2 = this.dataGeneratorService.getData(this.dataSize);
+  }
+
+  customSort(a: any, b: any, sortInfo: SortInfo, column: Column): number {
+    if (sortInfo.asc) {
+      return b - a;
+    } else {
+      return a - b;
+    }
+  }
+
+  customFilter(value: any, filters: FilterInfo[], column: Column): boolean {
+    for (let filterInfo of filters) {
+      if (column.choiceMap.get(value).toString().toLowerCase().indexOf(column.choiceMap.get(filterInfo.value).toString().toLowerCase()) === -1) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

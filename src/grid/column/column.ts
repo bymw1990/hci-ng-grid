@@ -423,6 +423,10 @@ export class Column {
   }
 
   createDefaultSortFunction(): (a: any, b: any, sortInfo: SortInfo, column: Column) => number {
+    if (isDevMode()) {
+      console.debug(this.field + ": createDefaultSortFunction()");
+    }
+
     if (this.dataType === "number") {
       return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
         if (sortInfo.asc) {

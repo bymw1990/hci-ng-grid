@@ -9,7 +9,7 @@ import {FilterInfo, FilterRenderer, GridService} from "hci-ng-grid";
  * @since 1.0.0
  */
 @Component({
-  selector: "hci-grid-select-filter",
+  selector: "hci-grid-custom-select-filter",
   template: `
     <div class="d-flex flex-nowrap"
          (mousedown)="stop($event)"
@@ -40,44 +40,44 @@ import {FilterInfo, FilterRenderer, GridService} from "hci-ng-grid";
         </div>
 
         <div class="form-group choice-list">
-          <div *ngFor="let choice of choices" class="input-group flex-nowrap" (click)="valueChange(choice.value)">
+          <div *ngFor="let choice of column.choices" class="input-group flex-nowrap" (click)="valueChange(choice[column.choiceValue])">
             <input type="checkbox" id="choiceCheckbox" [ngModel]="choice.selected" class="form-control" />
-            <label class="form-check-label" for="choiceCheckbox">{{choice.display}}</label>
+            <label class="form-check-label" for="choiceCheckbox">{{choice[column.choiceDisplay]}}</label>
           </div>
         </div>
       </div>
     </div>
   `,
   styles: [`
-  
+
     .choice-list {
       max-height: 200px;
       overflow-y: auto;
       border-top: black 2px solid;
     }
-  
+
     .btn {
       padding: 1px 8px;
     }
-    
+
     .form-group {
       flex: 1 0 100%;
     }
-    
+
     .input-group {
       align-items: center;
       padding: 5px;
     }
-    
+
     .form-control {
       flex: 0 1 10%;
       margin-right: 5px;
     }
-    
+
     .form-check-label {
       flex: 1 0 90%;
     }
-    
+
     .parent {
       flex: 1 1 100%;
       align-items: center;
@@ -85,7 +85,7 @@ import {FilterInfo, FilterRenderer, GridService} from "hci-ng-grid";
       flex-wrap: wrap;
       display: flex;
     }
-    
+
     .l-gap {
       margin-left: 5px;
     }
@@ -103,22 +103,19 @@ import {FilterInfo, FilterRenderer, GridService} from "hci-ng-grid";
 })
 export class DictionaryFilterRenderer extends FilterRenderer {
 
-  url: string;
-  choices: any[] = [];
-
   width: number = 300;
   init: boolean = false;
   changed: boolean = false;
 
-  constructor(private http: HttpClient, gridService: GridService, elementRef: ElementRef, changeDetectorRef: ChangeDetectorRef) {
-    super(gridService, elementRef, changeDetectorRef);
+  setConfig(config: any) {
+    super.setConfig(config);
   }
 
   filter() {
     this.filters = [];
-    for (let choice of this.choices) {
+    for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, null, "E", true));
+        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, undefined, "E", true));
       }
     }
 
@@ -131,34 +128,18 @@ export class DictionaryFilterRenderer extends FilterRenderer {
     }
   }
 
-  getChoices() {
-    this.http.get(this.url)
-      .subscribe((choices: any[]) => {
-        this.choices = choices;
-      });
-  }
-
   deselectAll() {
-    for (let choice of this.choices) {
+    for (let choice of this.column.choices) {
       choice.selected = false;
     }
     this.changed = true;
   }
 
   selectAll() {
-    for (let choice of this.choices) {
+    for (let choice of this.column.choices) {
       choice.selected = true;
     }
     this.changed = true;
-  }
-
-  setConfig(config: any) {
-    super.setConfig(config);
-
-    if (config.url) {
-      this.url = config.url;
-      this.getChoices();
-    }
   }
 
   /**
@@ -169,7 +150,7 @@ export class DictionaryFilterRenderer extends FilterRenderer {
   valueChange(id: any) {
     this.changed = true;
 
-    for (let choice of this.choices) {
+    for (let choice of this.column.choices) {
       if (choice.value === id) {
         choice.selected = !choice.selected;
         break;
