@@ -30,6 +30,8 @@ import {ExternalInfo} from "./utils/external-info";
 import {ExternalData} from "./utils/external-data";
 import {Point} from "./utils/point";
 import {Range} from "./utils/range";
+import {SortInfo} from "./utils/sort-info";
+import {FilterInfo} from "./utils/filter-info";
 
 const NO_EVENT: number = -1;
 const RESIZE: number = 0;
@@ -464,8 +466,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowDblClick") outputRowDblClick: EventEmitter<any> = new EventEmitter<any>();
-  @Output("filterEvent") outputFilterEvent: EventEmitter<any> = new EventEmitter<any[]>();
+  @Output("filterEvent") outputFilterEvent: EventEmitter<FilterInfo[]> = new EventEmitter<FilterInfo[]>();
   @Output("dataFiltered") outputDataFiltered: EventEmitter<any> = new EventEmitter<any>();
+  @Output("sortEvent") outputSortEvent: EventEmitter<SortInfo> = new EventEmitter<SortInfo>();
+  @Output("dataSorted") outputDataSorted: EventEmitter<any> = new EventEmitter<any>();
+
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
@@ -655,10 +660,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.getEventSubject().subscribe((event: any) => {
       if (event && event.type === "filter" && event.status === "complete") {
         this.outputDataFiltered.emit(event);
+      } else if (event && event.type === "sort" && event.status === "complete") {
+        this.outputDataSorted.emit(event);
       }
     });
 
-    this.gridService.getFilterEventSubject().subscribe((filters: any[]) => {
+    this.gridService.getSortInfoSubject().subscribe((event: SortInfo) => {
+      this.outputSortEvent.emit(event);
+    });
+
+    this.gridService.getFilterEventSubject().subscribe((filters: FilterInfo[]) => {
       this.outputFilterEvent.emit(filters);
     });
 

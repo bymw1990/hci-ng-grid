@@ -1,12 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 
-import {
-  CompareFilterRenderer, ExternalData, ExternalInfo, FilterInfo, SelectFilterRenderer,
-  TextFilterRenderer
-} from "hci-ng-grid";
+import {Observable} from "rxjs/Observable";
+
+import {CompareFilterRenderer, ExternalData, ExternalInfo, FilterInfo, SelectFilterRenderer, SortInfo, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
-import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: "external-data-demo",
@@ -31,6 +29,12 @@ import {Observable} from "rxjs/Observable";
           Data Filtered Event: {{event1b | json}}
         </div>
         <div class="card-text">
+          Sort Event: {{event1c | json}}
+        </div>
+        <div class="card-text">
+          Data Sorted Event: {{event1d | json}}
+        </div>
+        <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config1>
             <pre>
@@ -40,7 +44,11 @@ import {Observable} from "rxjs/Observable";
                 [externalFiltering]="true"
                 [externalSorting]="true"
                 [externalPaging]="true"
-                [pageSize]="10"&gt;
+                [pageSize]="10"
+                (filterEvent)="grid1FilterEvent($event)"
+                (dataFiltered)="grid1DataFiltered($event)"
+                (sortEvent)="grid1SortEvent($event)"
+                (dataSorted)="grid1DataSorted($event)"&gt;
               &lt;/hci-grid&gt;
               
               Columns:
@@ -62,7 +70,9 @@ import {Observable} from "rxjs/Observable";
                     [externalPaging]="true"
                     [pageSize]="10"
                     (filterEvent)="grid1FilterEvent($event)"
-                    (dataFiltered)="grid1DataFiltered($event)">
+                    (dataFiltered)="grid1DataFiltered($event)"
+                    (sortEvent)="grid1SortEvent($event)"
+                    (dataSorted)="grid1DataSorted($event)">
           </hci-grid>
         </p>
       </div>
@@ -161,8 +171,10 @@ import {Observable} from "rxjs/Observable";
 })
 export class ExternalDataComponent implements OnInit {
 
-  event1a: any;
+  event1a: FilterInfo[] = [];
   event1b: any;
+  event1c: SortInfo;
+  event1d: any;
   dataSize: number = 250;
 
   public onExternalDataCall1: Function;
@@ -190,12 +202,20 @@ export class ExternalDataComponent implements OnInit {
     this.onExternalDataCall3 = this.handleExternalDataCall3.bind(this);
   }
 
-  grid1FilterEvent(event1a: FilterInfo[]): void {
-    this.event1a = event1a;
+  grid1FilterEvent(event: FilterInfo[]): void {
+    this.event1a = event;
   }
 
-  grid1DataFiltered(event1b: any): void {
-    this.event1b = event1b;
+  grid1DataFiltered(event: any): void {
+    this.event1b = event;
+  }
+
+  grid1SortEvent(event: SortInfo): void {
+    this.event1c = event;
+  }
+
+  grid1DataSorted(event: any): void {
+    this.event1d = event;
   }
 
   public handleExternalDataCall1(externalInfo: ExternalInfo): Observable<ExternalData> {

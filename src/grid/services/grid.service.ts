@@ -1007,12 +1007,14 @@ export class GridService {
 
     this.viewDataSubject.next(this.viewData);
 
+    let event: any = this.eventSubject.getValue();
     if (this.eventSubject.getValue().type === "filter") {
-      this.eventSubject.next({
-        type: "filter",
-        status: "complete",
-        nData: (filter) ? this.preparedData.length : this.pageInfo.dataSize
-      });
+      event.status = "complete";
+      event.nData = (filter) ? this.preparedData.length : this.pageInfo.dataSize;
+      this.eventSubject.next(event);
+    } else if (this.eventSubject.getValue().type === "sort") {
+      event.status = "complete";
+      this.eventSubject.next(event);
     }
   }
 
@@ -1167,6 +1169,12 @@ export class GridService {
    * @param column
    */
   public sort(field: string) {
+    this.eventSubject.next({
+      type: "sort",
+      status: "start",
+      field: field
+    });
+
     if (this.sortInfo.field === null || this.sortInfo.field !== field) {
       this.sortInfo.field = field;
       this.sortInfo.asc = true;
@@ -1310,5 +1318,14 @@ export class GridService {
 
   public getRowChangedSubject(): Subject<RowChange> {
     return this.rowChangedSubject;
+  }
+
+  /**
+   * TODO: Rename observed to subject.  Change to event.
+   *
+   * @returns {Subject<SortInfo>}
+   */
+  public getSortInfoSubject(): Subject<SortInfo> {
+    return this.sortInfoObserved;
   }
 }
