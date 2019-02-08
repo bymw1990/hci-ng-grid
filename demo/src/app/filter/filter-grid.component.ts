@@ -135,7 +135,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
 })
 export class FilterGridComponent {
 
-  event1a: any;
+  event1a: FilterInfo[] = [];
   event1b: any;
   dataSize: number = 250;
   filteredData: Object[];
@@ -178,12 +178,12 @@ export class FilterGridComponent {
     this.filteredData2 = this.dataGeneratorService.getData(this.dataSize);
   }
 
-  grid1FilterEvent(event1a: FilterInfo[]): void {
-    this.event1a = event1a;
+  grid1FilterEvent(event: FilterInfo[]): void {
+    this.event1a = event;
   }
 
-  grid1DataFiltered(event1b: any): void {
-    this.event1b = event1b;
+  grid1DataFiltered(event: any): void {
+    this.event1b = event;
   }
 
   customSort(a: any, b: any, sortInfo: SortInfo, column: Column): number {
