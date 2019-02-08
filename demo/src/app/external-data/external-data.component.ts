@@ -1,6 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 
-import {CompareFilterRenderer, ExternalData, ExternalInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {
+  CompareFilterRenderer, ExternalData, ExternalInfo, FilterInfo, SelectFilterRenderer,
+  TextFilterRenderer
+} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {Observable} from "rxjs/Observable";
@@ -20,6 +23,12 @@ import {Observable} from "rxjs/Observable";
           In this demo we specify external call for all filter/sort/paging.  So any time a filter is changed, the page
           size is updated, or the next page is selected, this external function is called to retrieve the data.<br />
           To simulate an api call, a delay of 1 s has been added.
+        </div>
+        <div class="card-text">
+          Filter Event: {{event1a | json}}
+        </div>
+        <div class="card-text">
+          Data Filtered Event: {{event1b | json}}
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
@@ -51,7 +60,9 @@ import {Observable} from "rxjs/Observable";
                     [externalFiltering]="true"
                     [externalSorting]="true"
                     [externalPaging]="true"
-                    [pageSize]="10">
+                    [pageSize]="10"
+                    (filterEvent)="grid1FilterEvent($event)"
+                    (dataFiltered)="grid1DataFiltered($event)">
           </hci-grid>
         </p>
       </div>
@@ -150,6 +161,8 @@ import {Observable} from "rxjs/Observable";
 })
 export class ExternalDataComponent implements OnInit {
 
+  event1a: any;
+  event1b: any;
   dataSize: number = 250;
 
   public onExternalDataCall1: Function;
@@ -175,6 +188,14 @@ export class ExternalDataComponent implements OnInit {
     this.onExternalDataCall1 = this.handleExternalDataCall1.bind(this);
     this.onExternalDataCall2 = this.handleExternalDataCall2.bind(this);
     this.onExternalDataCall3 = this.handleExternalDataCall3.bind(this);
+  }
+
+  grid1FilterEvent(event1a: FilterInfo[]): void {
+    this.event1a = event1a;
+  }
+
+  grid1DataFiltered(event1b: any): void {
+    this.event1b = event1b;
   }
 
   public handleExternalDataCall1(externalInfo: ExternalInfo): Observable<ExternalData> {

@@ -15,7 +15,6 @@ import {Point} from "../utils/point";
 import {FilterInfo} from "../utils/filter-info";
 import {ExternalInfo} from "../utils/external-info";
 import {RowChange} from "../utils/row-change";
-import {Observable} from "rxjs/Observable";
 
 /**
  * The service for handling configuration and data binding/parsing.
@@ -87,7 +86,11 @@ export class GridService {
   private nVisibleColumns: number = 0;
   private height: number;
 
+  private eventSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  private filterEventSubject: BehaviorSubject<FilterInfo[]> = new BehaviorSubject<FilterInfo[]>([]);
   private rowChangedSubject: Subject<RowChange> = new Subject<RowChange>();
+
+  private lastEvent: any;
 
   private dataChangeSubject: Subject<any> = new Subject<any>();
   private valueSubject: Subject<Point> = new Subject<Point>();
@@ -764,6 +767,12 @@ export class GridService {
    * Paginate
    */
   public filter(): void {
+    this.eventSubject.next({
+      type: "filter",
+      status: "start",
+      nData: -1
+    });
+
     if (this.externalFiltering) {
       this.filterInfo = [];
       this.filterMap.forEach((filters: FilterInfo[]) => {
@@ -997,6 +1006,14 @@ export class GridService {
     }
 
     this.viewDataSubject.next(this.viewData);
+
+    if (this.eventSubject.getValue().type === "filter") {
+      this.eventSubject.next({
+        type: "filter",
+        status: "complete",
+        nData: (filter) ? this.preparedData.length : this.pageInfo.dataSize
+      });
+    }
   }
 
   public resetUtilityColumns(): void {
@@ -1011,6 +1028,10 @@ export class GridService {
         }
       }
     }
+  }
+
+  public getEventSubject(): BehaviorSubject<any> {
+    return this.eventSubject;
   }
 
   public prepareData(): void {
@@ -1225,6 +1246,8 @@ export class GridService {
     this.filterMap.get(field).push(filterInfo);
 
     this.filterMapSubject.next(this.filterMap);
+
+    this.filterEventSubject.next([filterInfo]);
   }
 
   /**
@@ -1239,6 +1262,12 @@ export class GridService {
     }
     this.filterMap.set(field, filters);
     this.filterMapSubject.next(this.filterMap);
+
+    this.filterEventSubject.next(filters);
+  }
+
+  public getFilterEventSubject(): BehaviorSubject<FilterInfo[]> {
+    return this.filterEventSubject;
   }
 
   /**

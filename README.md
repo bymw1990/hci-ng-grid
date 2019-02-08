@@ -11,7 +11,7 @@
 
 ```
 "dependencies": {
-    "hci-ng-grid": "3.1.0-beta.0"
+    "hci-ng-grid": "3.1.0-beta.1"
 }
 ```
 ```
@@ -286,6 +286,20 @@ selectedRows
 type: any[]
 $event: [key1, key2, ...]
 This is an array of any instead of number because the row key could be anything.
+```
+```
+filterEvent
+type: any
+$event: {type, status, nData}
+This is emitted when a filter event returns data.  It will provide the number of rows returning.
+```
+```
+dataFiltered
+type: FilterInfo[]
+$event: [filterInfos]
+This is the array of filters used when a column's filters are applied.  In the case of a select where there are multiple
+FilterInfos, this includes the full list and not the one that changed.  This event is fired upon click.  It will take
+some delay for data to come back at which point the filterEvent would be fired.
 ```
 
 ## Global Config

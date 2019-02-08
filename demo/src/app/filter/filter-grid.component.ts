@@ -1,8 +1,8 @@
-import {Component} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 
 import {
   ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SortInfo, FilterInfo, SelectFilterRenderer,
-  TextFilterRenderer
+  TextFilterRenderer, GridComponent
 } from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
@@ -26,6 +26,12 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           </div>
         </div>
         <div class="card-text">
+          Filter Event: {{event1a | json}}
+        </div>
+        <div class="card-text">
+          Data Filtered Event: {{event1b | json}}
+        </div>
+        <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
           <ng-template #config1>
             <pre>
@@ -34,7 +40,9 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
                 [data]="filteredData"
                 [columns]="filteredColumns"
                 [mode]="'spreadsheet'"
-                [pageSizes]="[10, 25, 100]"&gt;
+                [pageSizes]="[10, 25, 100]"
+                (filterEvent)="grid1FilterEvent($event)"
+                (dataFiltered)="grid1DataFiltered($event)"&gt;
               &lt;/hci-grid&gt;
               
               Columns:
@@ -53,7 +61,9 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
                     [data]="filteredData"
                     [columns]="filteredColumns"
                     [mode]="'spreadsheet'"
-                    [pageSizes]="[10, 25, 100]">
+                    [pageSizes]="[10, 25, 100]"
+                    (filterEvent)="grid1FilterEvent($event)"
+                    (dataFiltered)="grid1DataFiltered($event)">
           </hci-grid>
         </p>
       </div>
@@ -125,6 +135,8 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
 })
 export class FilterGridComponent {
 
+  event1a: any;
+  event1b: any;
   dataSize: number = 250;
   filteredData: Object[];
 
@@ -164,6 +176,14 @@ export class FilterGridComponent {
   initData() {
     this.filteredData = this.dataGeneratorService.getData(this.dataSize);
     this.filteredData2 = this.dataGeneratorService.getData(this.dataSize);
+  }
+
+  grid1FilterEvent(event1a: FilterInfo[]): void {
+    this.event1a = event1a;
+  }
+
+  grid1DataFiltered(event1b: any): void {
+    this.event1b = event1b;
   }
 
   customSort(a: any, b: any, sortInfo: SortInfo, column: Column): number {

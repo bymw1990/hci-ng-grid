@@ -464,6 +464,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowDblClick") outputRowDblClick: EventEmitter<any> = new EventEmitter<any>();
+  @Output("filterEvent") outputFilterEvent: EventEmitter<any> = new EventEmitter<any[]>();
+  @Output("dataFiltered") outputDataFiltered: EventEmitter<any> = new EventEmitter<any>();
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
 
@@ -550,16 +552,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   ngAfterViewInit() {
     this.findBaseRowCell();
-
-    /*this.columnsChangedSubscription = this.gridService.getColumnMapSubject().subscribe((columnMap: Map<string, Column[]>) => {
-      if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": getColumnsChangedSubject().subscribe");
-      }
-
-      this.columnMap = columnMap;
-      this.gridService.initData();
-      this.doRender();
-    });*/
 
     this.gridService.getConfigSubject().subscribe((config: any) => {
       if (isDevMode()) {
@@ -658,6 +650,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.updateSelectedRows(selectedRows);
 
       this.selectedRows.emit(selectedRows);
+    });
+
+    this.gridService.getEventSubject().subscribe((event: any) => {
+      if (event && event.type === "filter" && event.status === "complete") {
+        this.outputDataFiltered.emit(event);
+      }
+    });
+
+    this.gridService.getFilterEventSubject().subscribe((filters: any[]) => {
+      this.outputFilterEvent.emit(filters);
     });
 
     /* Get initial page Info */
