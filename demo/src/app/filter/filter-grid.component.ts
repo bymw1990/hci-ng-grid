@@ -1,9 +1,6 @@
-import {Component, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component} from "@angular/core";
 
-import {
-  ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SortInfo, FilterInfo, SelectFilterRenderer,
-  TextFilterRenderer, GridComponent
-} from "hci-ng-grid";
+import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SortInfo, FilterInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {DictionaryFilterRenderer} from "./dictionary-filter.component";
@@ -135,7 +132,8 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
 })
 export class FilterGridComponent {
 
-  event1a: FilterInfo[] = [];
+  initialized: boolean = false;
+  event1a: FilterInfo[];
   event1b: any;
   dataSize: number = 250;
   filteredData: Object[];
@@ -167,10 +165,11 @@ export class FilterGridComponent {
     { field: "nLabs", name: "# Labs", dataType: "number" }
   ];
 
-  constructor(private dataGeneratorService: DataGeneratorService) {}
+  constructor(private dataGeneratorService: DataGeneratorService, private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.initData();
+    this.changeDetectorRef.detectChanges();
   }
 
   initData() {
