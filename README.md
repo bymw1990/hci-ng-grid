@@ -1,4 +1,4 @@
-# HCI's Angular Grid Library
+# Huntsman Cancer Institute's Angular Grid Library
 
 ## [hci-ng-grid Demo on Github](https://huntsmancancerinstitute-risr.github.io/hci-ng-grid-demo)
 
