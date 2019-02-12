@@ -24,6 +24,7 @@ export class Column {
     isKey: false,
     name: undefined,
     format: undefined,
+    sort: true,
     width: 0,
     widthPercent:  0,
     minWidth: 135,
@@ -53,6 +54,7 @@ export class Column {
   field: string;
   name: string;
   format: string;
+  sort: boolean = true;
   validator: any;
   sortable: boolean = true;
   renderOrder: number = 0;
@@ -160,6 +162,9 @@ export class Column {
     }
     if (object.validator !== undefined) {
       this.validator = object.validator;
+    }
+    if (object.sort !== undefined) {
+      this.sort = object.sort;
     }
     if (object.sortOrder !== undefined) {
       this.sortOrder = object.sortOrder;

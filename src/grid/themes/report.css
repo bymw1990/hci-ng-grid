@@ -64,3 +64,10 @@
 #grid-container.report .ng-invalid {
   color: red;
 }
+
+.hci-grid.column-header-tooltip {
+  background-color: black;
+  color: white;
+  border-radius: 1rem;
+  padding: 0.25rem 0.5rem;
+}

@@ -196,7 +196,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               
               Columns:
               field: "idPatient", name: "ID", visible: false
-              field: "lastName", name: "Last Name"
+              field: "lastName", name: "Last Name Long Title"
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name"
               field: "dob", name: "Date of Birth", dataType: "date"
@@ -227,7 +227,7 @@ export class ResizeDemoComponent {
 
     columns: any[] = [
         { field: "idPatient", name: "ID", visible: false },
-        { field: "lastName", name: "Last Name" },
+        { field: "lastName", name: "Last Name Long Title" },
         { field: "middleName", name: "Middle Name" },
         { field: "firstName", name: "First Name" },
         { field: "dob", name: "Date of Birth", dataType: "date" },

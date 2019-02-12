@@ -13,13 +13,16 @@ import {FilterInfo} from "../utils/filter-info";
   selector: "hci-column-header",
   template: `
     <div class="d-flex flex-nowrap"
+         (click)="doSort()"
          style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
-      <span (click)="doSort()"
-            class="hci-grid-tooltip">
+      <span id="header-text"
+            class="hci-grid-header-text"
+            (mouseover)="onMouseOver($event)"
+            (mouseout)="onMouseOut($event)">
         {{ column.name }}
-        <span class="hci-grid-tooltip-text">
-          {{ column.name }}
-        </span>
+      </span>
+      <span id="hidden-header-text" style="visibility: hidden; position: absolute;">
+        {{ column.name }}
       </span>
       <div class="d-flex flex-nowrap sort-icon">
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer">
@@ -48,29 +51,9 @@ import {FilterInfo} from "../utils/filter-info";
       display: none;
     }
     
-    .dropdown-menu {
-      padding: 0;
-    }
-    
-    .hci-grid-tooltip {
+    .hci-grid-header-text {
       text-overflow: ellipsis;
       overflow-x: hidden;
-    }
-
-    .hci-grid-tooltip .hci-grid-tooltip-text {
-      display: none;
-      position: absolute;
-      background-color: black;
-      color: #fff;
-      padding: 2px 4px;
-      border-radius: 6px;
-      top: -4px;
-      left: 105%;
-      z-index: 100;
-    }
-
-    .hci-grid-tooltip:hover .hci-grid-tooltip-text {
-      display: inherit;
     }
   `],
 })
@@ -82,6 +65,10 @@ export class ColumnHeaderComponent {
   asc: number = 0;
   hasFilters: boolean = false;
 
+  private showPopup: boolean = false;
+  private popup: HTMLElement;
+  private headerText: HTMLElement;
+  private hiddenHeaderText: HTMLElement;
   private filterComponent: FilterRenderer;
 
   constructor(private gridService: GridService, private resolver: ComponentFactoryResolver, private el: ElementRef, private renderer: Renderer2) {}
@@ -123,6 +110,9 @@ export class ColumnHeaderComponent {
         this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
       });
     }
+
+    this.headerText = this.el.nativeElement.querySelector("#header-text");
+    this.hiddenHeaderText = this.el.nativeElement.querySelector("#hidden-header-text");
   }
 
   showFilter() {
@@ -139,7 +129,38 @@ export class ColumnHeaderComponent {
   }
 
   doSort() {
-    this.gridService.sort(this.column.field);
+    if (this.column.sort) {
+      this.gridService.sort(this.column.field);
+    }
+  }
+
+  onMouseOver(event: MouseEvent): void {
+    if (Math.floor(this.headerText.offsetWidth) !== Math.floor(this.hiddenHeaderText.offsetWidth)) {
+      this.showPopup = true;
+    }
+
+    if (this.showPopup) {
+      event.stopPropagation();
+
+      this.popup = this.renderer.createElement("div");
+      this.renderer.addClass(this.popup, "hci-grid");
+      this.renderer.addClass(this.popup, "column-header-tooltip");
+      this.renderer.setStyle(this.popup, "height", this.el.nativeElement.offsetHeight);
+      this.renderer.setStyle(this.popup, "position", "absolute");
+      this.renderer.setStyle(this.popup, "left", (event.clientX + 5) + "px");
+      this.renderer.setStyle(this.popup, "top", (event.clientY + 5) + "px");
+      this.renderer.appendChild(this.popup, this.renderer.createText(this.column.name));
+
+      this.renderer.appendChild(document.body, this.popup);
+    }
+  }
+
+  onMouseOut(event: MouseEvent): void {
+    if (this.showPopup) {
+      event.stopPropagation();
+
+      this.renderer.removeChild(document.body, this.popup);
+    }
   }
 
   @HostListener("document:click", ["$event"])
