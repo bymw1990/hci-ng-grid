@@ -144,9 +144,14 @@ export class ColumnHeaderComponent {
 
       this.popup = this.renderer.createElement("div");
       this.renderer.addClass(this.popup, "hci-grid");
+      let themes: string[] = this.gridService.getConfigSubject().getValue().theme.split(" ");
+      for (let theme of themes) {
+        this.renderer.addClass(this.popup, theme);
+      }
       this.renderer.addClass(this.popup, "column-header-tooltip");
       this.renderer.setStyle(this.popup, "height", this.el.nativeElement.offsetHeight);
       this.renderer.setStyle(this.popup, "position", "absolute");
+      this.renderer.setStyle(this.popup, "z-index", "9999");
       this.renderer.setStyle(this.popup, "left", (event.clientX + 5) + "px");
       this.renderer.setStyle(this.popup, "top", (event.clientY + 5) + "px");
       this.renderer.appendChild(this.popup, this.renderer.createText(this.column.name));

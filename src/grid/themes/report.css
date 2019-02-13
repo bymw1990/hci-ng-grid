@@ -65,7 +65,7 @@
   color: red;
 }
 
-.hci-grid.column-header-tooltip {
+.hci-grid.report.column-header-tooltip {
   background-color: black;
   color: white;
   border-radius: 1rem;
