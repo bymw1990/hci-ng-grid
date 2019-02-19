@@ -8,7 +8,7 @@ import {MouseUpListener} from "../mouse-up.interface";
 import {MouseOutListener} from "../mouse-out.interface";
 
 /**
- *
+ * Listener to select a column, drag it to another column and release.
  */
 export class ColumnDndListener extends EventListener implements MouseDownListener, MouseDragListener, MouseUpListener, MouseOutListener {
 
@@ -42,7 +42,7 @@ export class ColumnDndListener extends EventListener implements MouseDownListene
       let view: HTMLElement = <HTMLElement>this.originalTarget.closest(".header-view");
       this.isRight = view.id.startsWith("right-");
 
-      this.clone = <HTMLElement>(<HTMLElement>event.target).cloneNode(true);
+      this.clone = <HTMLElement>this.originalTarget.cloneNode(true);
       this.clone.id = "clone-" + this.lastEventId;
       this.renderer.addClass(this.clone, "header-dnd");
       this.renderer.setStyle(this.clone, "z-index", 9999);
