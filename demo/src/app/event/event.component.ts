@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 
-import {ClickView, ClickViewListener} from "hci-ng-grid";
+import {ClickView, ClickViewListener, ColumnDndListener} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -64,7 +64,8 @@ export class EventComponent {
 
   data1: Object[];
   listeners1: Array<any> = [
-    { type: ClickViewListener }
+    { type: ClickViewListener },
+    { type: ColumnDndListener }
   ];
 
   columns1: any[] = [

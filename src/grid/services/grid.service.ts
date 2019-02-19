@@ -646,6 +646,32 @@ export class GridService {
     this.selectedRowsSubject.next(this.selectedRows);
   }
 
+  public reorderColumn(oldJ: number, newJ: number): void {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": reorderColumn: " + oldJ + " to " + newJ);
+    }
+
+    let visibleColumns: Column[] = this.columnMap.get("VISIBLE");
+
+    if (newJ < oldJ) {
+      visibleColumns[oldJ].sortOrder = visibleColumns[newJ].sortOrder;
+
+      for (let i = oldJ - 1; i >= newJ; i--) {
+        visibleColumns[i].sortOrder = visibleColumns[i].sortOrder + 1;
+      }
+
+      this.initializeColumns();
+    } else if (newJ > oldJ) {
+      visibleColumns[oldJ].sortOrder = visibleColumns[newJ].sortOrder;
+
+      for (let i = oldJ + 1; i <= newJ; i++) {
+        visibleColumns[i].sortOrder = visibleColumns[i].sortOrder - 1;
+      }
+
+      this.initializeColumns();
+    }
+  }
+
   public clearSelectedRows(): void {
     for (let row of this.selectedRows) {
       try {

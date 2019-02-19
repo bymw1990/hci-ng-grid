@@ -64,6 +64,7 @@ const SCROLL: number = 1;
          [ngClass]="config.theme"
          (click)="click($event)"
          (mouseover)="mouseOver($event)"
+         (mouseout)="mouseOut($event)"
          (mousedown)="mouseDown($event)"
          (mouseup)="mouseUp($event)"
          (mousemove)="mouseDrag($event)"
@@ -521,6 +522,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private mouseDragListeners: EventListener[] = [];
   private mouseUpListeners: EventListener[] = [];
   private mouseOverListeners: EventListener[] = [];
+  private mouseOutListeners: EventListener[] = [];
 
   private iFrameWidth: number[] = [0, 0];
 
@@ -846,6 +848,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.mouseDragListeners = [];
     this.mouseUpListeners = [];
     this.mouseOverListeners = [];
+    this.mouseOutListeners = [];
   }
 
   /**
@@ -888,6 +891,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
       if ("mouseOver" in instance) {
         this.mouseOverListeners.push(instance);
+      }
+      if ("mouseOut" in instance) {
+        this.mouseOutListeners.push(instance);
       }
     }
   }
@@ -1086,6 +1092,23 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     for (let mouseOverListener of this.mouseOverListeners) {
       if (mouseOverListener["mouseOver"](event)) {
+        break;
+      }
+    }
+  }
+
+  /**
+   * Handled for mouseOut event.
+   *
+   * @param {MouseEvent} event
+   */
+  public mouseOut(event: MouseEvent): void {
+    if (!event || !event.target) {
+      return;
+    }
+
+    for (let mouseOutListener of this.mouseOutListeners) {
+      if (mouseOutListener["mouseOut"](event)) {
         break;
       }
     }
@@ -2032,6 +2055,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         }
       }
     }
+  }
+
+  getRenderer(): Renderer2 {
+    return this.renderer;
   }
 
   /**

@@ -1,5 +1,7 @@
 import {EventListener} from "./src/grid/event/event-listener";
 import {ColumnHeaderComponent} from "./src/grid/column/column-header.component";
+import {ColumnDndListener} from "./src/grid/event/listeners/column-dnd.listener";
+import {MouseDownListener} from "./src/grid/event/mouse-down.interface";
 
 export {GridModule} from "./src/grid/grid.module";
 export {GridComponent} from "./src/grid/grid.component";
@@ -36,12 +38,19 @@ export {BigTextPopup} from "./src/grid/cell/viewPopupRenderer/bigtext-popup.comp
 export {EventListener} from "./src/grid/event/event-listener";
 export {EventListenerArg} from "./src/grid/event/event-listener-arg.interface";
 
+export {MouseDownListener} from "./src/grid/event/mouse-down.interface";
+export {MouseDragListener} from "./src/grid/event/mouse-drag.interface";
+export {MouseOutListener} from "./src/grid/event/mouse-out.interface";
+export {MouseOverListener} from "./src/grid/event/mouse-over.interface";
+export {MouseUpListener} from "./src/grid/event/mouse-up.interface";
+
 export {ClickViewListener} from "./src/grid/event/click-view.listener";
 export {CellHoverPopupListener} from "./src/grid/event/listeners/cell-hover-popup.listener";
 export {ClickCellEditListener} from "./src/grid/event/listeners/click-cell-edit.listener";
 export {ClickRowSelectListener} from "./src/grid/event/listeners/click-row-select.listener";
 export {RangeSelectListener} from "./src/grid/event/listeners/range-select.listener";
 export {RowDblClickListener} from "./src/grid/event/listeners/row-dbl-click.listener";
+export {ColumnDndListener} from "./src/grid/event/listeners/column-dnd.listener";
 
 export {FormatterParser} from "./src/grid/column/formatters/formatter-parser";
 export {NumberFormatter} from "./src/grid/column/formatters/number.formatter";

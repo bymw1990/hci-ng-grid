@@ -111,13 +111,24 @@ export class Column {
 
   static deserializeArray(list: Object[]): Column[] {
     let columns: Column[] = [];
+
+    let maxSortOrder: number = -1;
     for (var i = 0; i < list.length; i++) {
       let column: Column = Column.deserialize(list[i]);
-      if (!column.sortOrder) {
-        column.sortOrder = i;
+
+      if (column.sortOrder) {
+        maxSortOrder = Math.max(maxSortOrder, column.sortOrder);
       }
+
       columns.push(column);
     }
+
+    for (let column of columns) {
+      if (!column.sortOrder) {
+        column.sortOrder = ++maxSortOrder;
+      }
+    }
+
     return columns;
   }
 
