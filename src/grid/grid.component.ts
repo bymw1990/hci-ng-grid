@@ -84,7 +84,7 @@ const SCROLL: number = 1;
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div id="title-bar">
+      <div id="title-bar" [class.hidden]="!config.title && !configurable">
         <div class="title-bar" *ngIf="config.title || configurable">
           <div>{{config.title}}</div>
           <ng-container *ngIf="configurable">
@@ -240,6 +240,10 @@ const SCROLL: number = 1;
       display: flex;
       flex-direction: column;
       width: 100%;
+    }
+
+    #title-bar.hidden {
+      display: none;
     }
 
     .title-bar {

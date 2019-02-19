@@ -4,8 +4,11 @@
   "description": "Comprehensive angular grid component",
   "keywords": [
     "angular",
+    "angular2",
+    "data",
     "grid",
-    "list"
+    "list",
+    "table"
   ],
   "license": "MIT",
   "repository": "git+https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid.git",
