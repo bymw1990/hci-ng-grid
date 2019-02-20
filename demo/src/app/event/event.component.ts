@@ -63,7 +63,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-          TODO
+          Drag a column to another column to re-sort the columns.  Sorting only works within a container.  So the fixed
+          columns can be sorted or the right columns can be sorted.  Dragging a right column to fixed doesn't work.
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
@@ -93,7 +94,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [title]="'Column Drag n Drop'"
                     [data]="data1"
-                    [columns]="columns1"
+                    [columns]="columns2"
                     [eventListeners]="listeners2"
                     [fixedColumns]="['lastName', 'firstName']"
                     [nVisibleRows]="10">
@@ -121,6 +122,16 @@ export class EventComponent {
     { field: "gender", name: "Gender" },
     { field: "nLabs", name: "# Labs", dataType: "number" },
     { viewRenderer: ClickView, minWidth: 30, width: 30, maxWidth: 30 }
+  ];
+
+  columns2: any[] = [
+    { field: "idPatient", name: "ID" },
+    { field: "lastName", name: "Last Name", widthPercent: 25 },
+    { field: "middleName", name: "Middle Name" },
+    { field: "firstName", name: "First Name", widthPercent: 25 },
+    { field: "dob", name: "Date of Birth", dataType: "date" },
+    { field: "gender", name: "Gender" },
+    { field: "nLabs", name: "# Labs", dataType: "number" }
   ];
 
   listeners2: Array<any> = [

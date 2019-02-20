@@ -1354,4 +1354,8 @@ export class GridService {
   public getSortInfoSubject(): Subject<SortInfo> {
     return this.sortInfoObserved;
   }
+
+  getThemes(): string[] {
+    return this.config.theme.split(" ");
+  }
 }

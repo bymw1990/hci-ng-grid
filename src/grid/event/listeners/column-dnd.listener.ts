@@ -44,12 +44,12 @@ export class ColumnDndListener extends EventListener implements MouseDownListene
 
       this.clone = <HTMLElement>this.originalTarget.cloneNode(true);
       this.clone.id = "clone-" + this.lastEventId;
-      this.renderer.addClass(this.clone, "header-dnd");
+      this.renderer.addClass(this.clone, "drag-n-drop");
+      for (let theme of this.gridService.getThemes()) {
+        this.renderer.addClass(this.clone, theme);
+      }
       this.renderer.setStyle(this.clone, "z-index", 9999);
       this.renderer.setStyle(this.clone, "position", "fixed");
-      this.renderer.setStyle(this.clone, "background-color", "white");
-      this.renderer.setStyle(this.clone, "color", "black");
-      this.renderer.setStyle(this.clone, "border", "black 1px solid");
       this.grid.getRenderer().appendChild(document.body, this.clone);
 
       return true;
