@@ -72,12 +72,17 @@ export class ColumnDndListener extends EventListener implements MouseDownListene
       this.renderer.removeChild(document.body, this.clone);
 
       let targetHeader: HTMLElement = <HTMLElement>(<HTMLElement>event.target).closest(".hci-grid-header");
-      console.debug("Target Column Dnd: " + targetHeader.id);
 
       let view: HTMLElement = <HTMLElement>targetHeader.closest(".header-view");
       if ((this.isRight && view.id.startsWith("right-") || !this.isRight && !view.id.startsWith("right-"))) {
         this.gridService.reorderColumn(+this.originalTarget.id.substring(+this.originalTarget.id.lastIndexOf("-") + 1),
             +targetHeader.id.substring(+targetHeader.id.lastIndexOf("-") + 1));
+
+        this.grid.outputListenerEvent.emit({
+          type: "ColumnDndListener",
+          event: "columnsResorted",
+          columns: this.gridService.getColumnMapSubject().getValue().get("VISIBLE")
+        });
       }
 
       return true;
@@ -98,8 +103,9 @@ export class ColumnDndListener extends EventListener implements MouseDownListene
       this.renderer.setStyle(this.clone, "top", (event.clientY + 5) + "px");
 
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   mouseOut(event: MouseEvent): boolean {

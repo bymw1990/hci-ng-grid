@@ -475,6 +475,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Output("dataFiltered") outputDataFiltered: EventEmitter<any> = new EventEmitter<any>();
   @Output("sortEvent") outputSortEvent: EventEmitter<SortInfo> = new EventEmitter<SortInfo>();
   @Output("dataSorted") outputDataSorted: EventEmitter<any> = new EventEmitter<any>();
+  @Output("listenerEvent") outputListenerEvent: EventEmitter<any> = new EventEmitter<any>();
 
   @Output() warning: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectedRows: EventEmitter<any[]> = new EventEmitter<any[]>();
@@ -1150,6 +1151,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
         break;
       }
     }
+
+    event.stopPropagation();
   }
 
   /**

@@ -62,9 +62,12 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <h4>Column Sort</h4>
       </div>
       <div class="card-body">
-        <div class="card-text">
+        <div class="card-text">s
           Drag a column to another column to re-sort the columns.  Sorting only works within a container.  So the fixed
           columns can be sorted or the right columns can be sorted.  Dragging a right column to fixed doesn't work.
+        </div>
+        <div class="card-text">
+          Column Sort Event: {{columnsResorted | json}}
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
@@ -96,6 +99,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                     [data]="data1"
                     [columns]="columns2"
                     [eventListeners]="listeners2"
+                    (listenerEvent)="setListenerEvent($event)"
                     [fixedColumns]="['lastName', 'firstName']"
                     [nVisibleRows]="10">
           </hci-grid>
@@ -106,6 +110,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class EventComponent {
 
+  columnsResorted: any;
   selectedRowID: number;
 
   data1: Object[];
@@ -150,5 +155,9 @@ export class EventComponent {
 
   rowClick(event: any) {
     this.selectedRowID = +event;
+  }
+
+  setListenerEvent(event: any): void {
+    this.columnsResorted = event;
   }
 }
