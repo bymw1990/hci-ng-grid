@@ -1,5 +1,12 @@
 # Change Log
 
+## [3.1.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.0.0)
+    - Filter to customizable function.
+    - Sort to customizable function.
+    - Emitters for filter and sort events.
+    - Column drag n drop.
+    - Fix: Empty choice array on http error.
+
 ## [3.0.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.0.0)
     - Generalize column wait configuration.  Changes public api.
     - Fixes to popup behavior.

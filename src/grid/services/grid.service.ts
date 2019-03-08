@@ -366,8 +366,17 @@ export class GridService {
         // Push a callback to request an array of choices from the choiceUrl.
         this.pushConfigWait((subject: Subject<boolean>) => {
           this.http.get(column.choiceUrl).subscribe((choices: any) => {
-            column.setChoices(choices);
+            if (choices && choices !== null) {
+              column.setChoices(choices);
+            } else {
+              console.warn("hci-ng-grid: No choice data from: " + column.choiceUrl);
+              column.setChoices([]);
+            }
             subject.next(false);
+          },
+          (error) => {
+            console.error(error);
+            column.setChoices([]);
           });
         });
       }
