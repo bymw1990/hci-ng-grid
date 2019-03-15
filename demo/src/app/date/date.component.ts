@@ -5,7 +5,7 @@ import {CompareFilterRenderer, DateEditRenderer} from "hci-ng-grid";
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
-  selector: "alerts-grid",
+  selector: "date-grid",
   template: `
     <div class="card">
       <div class="card-header">
@@ -14,8 +14,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
       <div class="card-body">
         <p class="card-text">
           This shows the date of birth where the original data is in two different formats.  In both columns, we format
-          the data to the same format.  The two dataTypes are "iso8601-date" and "ms-date".  The dataType "date" defaults
-          to "iso8601-date".  Both columns use the same @ng-bootstrap datepicker.  When the datepicker selection is saved,
+          the data to the same format.  The two dataTypes are "date-iso8601" and "date-ms".  The dataType "date" defaults
+          to "date-iso8601".  Both columns use the same @ng-bootstrap datepicker.  When the datepicker selection is saved,
           the NgbDateStruct is parsed in to the original date format.
         </p>
         <p class="card-text">
