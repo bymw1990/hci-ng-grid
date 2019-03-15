@@ -27,7 +27,7 @@ import {FilterInfo} from "../utils/filter-info";
       <div class="d-flex flex-nowrap sort-icon">
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer">
           <a id="filterDropdownToggle"
-             (click)="showFilter()"
+             (click)="$event.stopPropagation(); showFilter();"
              class="dropdown-toggle"
              [style.color]="hasFilters > 0 ? '#00aa00' : 'inherit'">
             <i class="fas fa-filter"></i>

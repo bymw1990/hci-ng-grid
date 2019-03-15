@@ -1,6 +1,9 @@
 # Change Log
 
-## [3.1.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.0.0)
+## [3.1.1](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.1)
+    - Stop propagation on filter button.
+
+## [3.1.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.0)
     - Filter to customizable function.
     - Sort to customizable function.
     - Emitters for filter and sort events.
