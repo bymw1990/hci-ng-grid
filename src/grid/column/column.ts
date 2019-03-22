@@ -354,6 +354,10 @@ export class Column {
     } else if (this.dataType === "number") {
       return (value: any, filters: FilterInfo[], column: Column) => {
         for (let filterInfo of filters) {
+          if (!value) {
+            return false;
+          }
+
           if (filterInfo.operator === "E") {
             if (+value !== +filterInfo.value) {
               return false;
@@ -402,7 +406,25 @@ export class Column {
       }
     } else if (this.dataType.indexOf("date") === 0) {
       return (value: any, filters: FilterInfo[], column: Column) => {
+        let v: any = value;
+        if (this.dataType === "date-ms") {
+          // If milliseconds, format to date so you don't compare longs with timezone differences.
+          v = this.formatterParserInstance.formatValue(v);
+        }
+
         for (let filterInfo of filters) {
+          if (!v) {
+            return false;
+          }
+
+          let l: any = filterInfo.value;
+          let h: any = filterInfo.highValue;
+
+          if (this.dataType === "date-ms") {
+            l = this.formatterParserInstance.formatValue(l);
+            h = this.formatterParserInstance.formatValue(h);
+          }
+
           if (filterInfo.operator === "E") {
             if (value !== filterInfo.value) {
               return false;
@@ -412,7 +434,7 @@ export class Column {
               return false;
             }
           } else if (filterInfo.operator === "LT") {
-            if (value <= filterInfo.value) {
+            if (value >= filterInfo.value) {
               return false;
             }
           } else if (filterInfo.operator === "GE") {
