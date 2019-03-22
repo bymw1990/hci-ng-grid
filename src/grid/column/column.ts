@@ -335,6 +335,11 @@ export class Column {
     }
   }
 
+  /**
+   * If no filter functions are provided, use these for basic data types such as string, number, date, choices....
+   *
+   * @returns {(value: any, filters: FilterInfo[], column: Column) => boolean}
+   */
   createDefaultFilterFunction(): (value: any, filters: FilterInfo[], column: Column) => boolean {
     if (this.dataType === "string") {
       return (value: any, filters: FilterInfo[], column: Column) => {
@@ -438,23 +443,50 @@ export class Column {
     }
   }
 
+  /**
+   * If no sort functions are provided, use these for basic data types such as string, numbers and choices.
+   *
+   * @returns {(a: any, b: any, sortInfo: SortInfo, column: Column) => number}
+   */
   createDefaultSortFunction(): (a: any, b: any, sortInfo: SortInfo, column: Column) => number {
     if (isDevMode()) {
       console.debug(this.field + ": createDefaultSortFunction()");
     }
 
-    if (this.dataType === "number") {
+    if (this.dataType === "number" || this.dataType === "date-ms") {
       return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
         if (sortInfo.asc) {
-          return a - b;
+          if (a && b) {
+            return a - b;
+          } else if (!a && b) {
+            return -1;
+          } else if (a && !b) {
+            return 1;
+          } else {
+            return 0;
+          }
         } else {
-          return b - a;
+          if (a && b) {
+            return b - a;
+          } else if (!a && b) {
+            return 1;
+          } else if (a && !b) {
+            return -1;
+          } else {
+            return 0;
+          }
         }
       };
-    } else if (this.dataType === "string") {
+    } else if (this.dataType === "string" || this.dataType === "date-iso8601") {
       return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
         if (sortInfo.asc) {
-          if (a < b) {
+          if (!a && b) {
+            return -1;
+          } else if (a && !b) {
+            return 1;
+          } else if (!a && !b) {
+            return 0;
+          } else if (a < b) {
             return -1;
           } else if (a > b) {
             return 1;
@@ -462,7 +494,13 @@ export class Column {
             return 0;
           }
         } else {
-          if (a > b) {
+          if (!a && b) {
+            return 1;
+          } else if (a && !b) {
+            return -1;
+          } else if (!a && !b) {
+            return 0;
+          } else if (a > b) {
             return -1;
           } else if (a < b) {
             return 1;
@@ -477,7 +515,13 @@ export class Column {
         b = column.choiceMap.get(b);
 
         if (sortInfo.asc) {
-          if (a < b) {
+          if (!a && b) {
+            return -1;
+          } else if (a && !b) {
+            return 1;
+          } else if (!a && !b) {
+            return 0;
+          } else if (a < b) {
             return -1;
           } else if (a > b) {
             return 1;
@@ -485,7 +529,13 @@ export class Column {
             return 0;
           }
         } else {
-          if (a > b) {
+          if (!a && b) {
+            return 1;
+          } else if (a && !b) {
+            return -1;
+          } else if (!a && !b) {
+            return 0;
+          } else if (a > b) {
             return -1;
           } else if (a < b) {
             return 1;

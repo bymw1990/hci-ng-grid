@@ -54,6 +54,22 @@ export class DataGeneratorService {
       let dobms: number = moment(dob).valueOf();
       let phone: number = Math.floor(Math.random() * 9999999 + 8010000000);
       let nLabs: number = Math.floor(Math.random() * 10);
+
+      if (Math.random() < 0.05) {
+        middleName = undefined;
+      }
+      if (Math.random() < 0.05) {
+        gender = undefined;
+        genderDict = undefined;
+      }
+      if (Math.random() < 0.05) {
+        dob = undefined;
+        dobms = undefined;
+      }
+      if (Math.random() < 0.05) {
+        nLabs = undefined;
+      }
+
       let lab = {
         tech: this._lastNames[Math.floor(Math.random() * this._lastNames.length)],
         type: this._labTypes[Math.floor(Math.random() * this._labTypes.length)],

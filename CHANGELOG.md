@@ -1,5 +1,8 @@
 # Change Log
 
+## [3.1.2](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.2)
+    - Fix dealing with undefined in default sorting.
+
 ## [3.1.1](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.1)
     - Stop propagation on filter button.
 
