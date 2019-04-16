@@ -112,7 +112,7 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, undefined, "E", true));
+        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice[this.column.choiceValue], undefined, "E", true));
       }
     }
 
@@ -148,7 +148,7 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.changed = true;
 
     for (let choice of this.column.choices) {
-      if (choice.value === id) {
+      if (choice[this.column.choiceValue] === id) {
         choice.selected = !choice.selected;
         break;
       }
