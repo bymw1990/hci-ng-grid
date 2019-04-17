@@ -1,5 +1,11 @@
 # Change Log
 
+## [3.1.5](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.5)
+    - Fix reverse right coloring when left columns are odd.
+
+## [3.1.4](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.4)
+    - Fix filter value column name.
+
 ## [3.1.3](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.3)
     - Fix date filtering and date-ms compare.
 

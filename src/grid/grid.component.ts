@@ -159,6 +159,7 @@ const SCROLL: number = 1;
                                  [column]="column"
                                  [container]="headerContainer"
                                  class="hci-grid-header hci-grid-row-height {{column.headerClasses}}"
+                                 [class.reverse]="columnMap && columnMap.get('LEFT_VISIBLE').length % 2 === 1"
                                  [class.hci-grid-row-height]="!column.filterType"
                                  [class.hci-grid-row-height-filter]="column.filterType"
                                  style="vertical-align: top; display: inline-flex; align-items: center;"
@@ -1837,18 +1838,19 @@ export class GridComponent implements OnChanges, AfterViewInit {
         }
       }
 
+      let reverse: boolean = this.columnMap.get("LEFT_VISIBLE").length % 2 === 1;
       for (let column of this.columnMap.get("MAIN_VISIBLE")) {
         cell = this.gridData[i].get(column.id);
         if (column.isUtility) {
-          this.createCell(rRow, column, cell, i, column.id, "");
+          this.createCell(rRow, column, cell, i, column.id, "", reverse);
         } else if (column.field === "GROUP_BY") {
           if (row.hasHeader()) {
-            this.createCell(rRow, column, cell, i, column.id, row.header);
+            this.createCell(rRow, column, cell, i, column.id, row.header, reverse);
           } else {
-            this.createCell(rRow, column, cell, i, column.id, "");
+            this.createCell(rRow, column, cell, i, column.id, "", reverse);
           }
         } else {
-          this.createCell(rRow, column, cell, i, column.id, cell.value);
+          this.createCell(rRow, column, cell, i, column.id, cell.value, reverse);
         }
       }
 
@@ -1918,7 +1920,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} j The cell number.
    * @param {string} value The original value to display after formatting.
    */
-  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string): void {
+  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, reverse?: boolean): void {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
     this.renderer.addClass(eCell, "hci-grid-cell");
@@ -1927,6 +1929,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (cell.dirty) {
       this.renderer.addClass(eCell, "ng-dirty");
+    }
+    if (reverse) {
+      this.renderer.addClass(eCell, "reverse");
     }
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
