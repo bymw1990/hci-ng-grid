@@ -68,7 +68,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
       </div>
     </div>
-  `, host: {class: "outlet"}
+  `,
+  host: {class: "outlet-column"}
 })
 export class ValidationComponent {
 

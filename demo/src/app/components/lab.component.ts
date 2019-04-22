@@ -40,7 +40,8 @@ import {CellPopupRenderer} from "hci-ng-grid";
       width: 100%;
     }
       
-  `]
+  `],
+  host: {class: "outlet-column"}
 })
 export class LabPopup extends CellPopupRenderer {
 

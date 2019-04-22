@@ -85,7 +85,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
       margin-left: 20px;
     }
     
-  `]
+  `],
+  host: {class: "outlet-column"}
 })
 export class RowGroupGridComponent {
 

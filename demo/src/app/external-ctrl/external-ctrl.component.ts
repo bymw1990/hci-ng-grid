@@ -65,7 +65,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
       </div>
     </div>
-  `
+  `,
+  host: {class: "outlet-column"}
 })
 export class ExternalControlComponent implements OnInit {
 

@@ -38,7 +38,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </p>
       </div>
     </div>
-    `
+  `,
+  host: {class: "outlet-column"}
 })
 export class DataTypesDemoComponent {
 

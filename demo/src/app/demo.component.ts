@@ -53,7 +53,7 @@ declare const VERSION: string;
         </div>
       </div>
     </div>
-    <div id="outlet-parent" class="d-flex flex-column m-3">
+    <div id="outlet-parent" class="d-flex flex-column flex-grow-1">
       <router-outlet></router-outlet>
     </div>
   `,

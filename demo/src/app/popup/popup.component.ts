@@ -66,7 +66,8 @@ import {LabPopup} from "../components/lab.component";
         </p>
       </div>
     </div>
-    `
+  `,
+  host: {class: "outlet-column"}
 })
 export class PopupComponent {
 

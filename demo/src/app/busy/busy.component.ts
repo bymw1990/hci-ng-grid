@@ -114,7 +114,8 @@ import {Observable} from "rxjs/Observable";
         </div>
       </div>
     </ng-template>
-    `
+  `,
+  host: {class: "outlet-column"}
 })
 export class BusyDemoComponent implements OnInit {
 
