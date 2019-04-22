@@ -1,11 +1,7 @@
-import {Component, Input, ViewChild} from "@angular/core";
+import {Component} from "@angular/core";
 
-import * as moment from "moment";
-
-import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
-import {NgbDatepicker} from "@ng-bootstrap/ng-bootstrap";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -23,9 +19,10 @@ import {NgbDatepicker} from "@ng-bootstrap/ng-bootstrap";
          [style.width.px]="width"
          [style.background-color]="valid ? 'inherit' : '#ffccaa;'">
       <div class="parent">
-        <div class="d-flex flex-nowrap" style="margin-bottom: 10px; align-items: center; width: 100%;">
+        <div class="d-flex flex-nowrap"
+             style="margin-bottom: 10px; align-items: center; width: 100%;">
           <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" class="operator">
-            <option *ngFor="let o of options" [ngValue]="o.value" [selected]="o.value === operator.value">
+            <option *ngFor="let o of options" [ngValue]="o.value" [selected]="o.value === operator">
               {{ o.display }}
             </option>
           </select>
@@ -85,10 +82,11 @@ import {NgbDatepicker} from "@ng-bootstrap/ng-bootstrap";
           </div>
         </ng-container>
         <ng-container *ngIf="column.dataType.indexOf('date-') !== 0">
-          <input [ngModel]="filters[0].value"
+          <input *ngIf="filters && filters.length === 1"
+                 [ngModel]="filters[0].value"
                  (ngModelChange)="valueChange($event)"
                  class="value inputs" />
-          <input *ngIf="operator === 'B' || operator === 'O'"
+          <input *ngIf="filters && filters.length === 1 && (operator === 'B' || operator === 'O')"
                  [ngModel]="filters[0].highValue"
                  (ngModelChange)="highValueChange($event)"
                  class="value inputs" />

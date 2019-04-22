@@ -1833,8 +1833,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
           } else {
             this.createCell(lRow, column, cell, i, column.id, "");
           }
-        } else {
+        } else if (cell) {
           this.createCell(lRow, column, cell, i, column.id, cell.value);
+        } else {
+          //console.warn("hci-grid: " + this.id + ": renderCellsAndData: No cell for: " + column.field);
         }
       }
 
@@ -1849,8 +1851,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
           } else {
             this.createCell(rRow, column, cell, i, column.id, "", reverse);
           }
-        } else {
+        } else if (cell) {
           this.createCell(rRow, column, cell, i, column.id, cell.value, reverse);
+        } else {
+          //console.warn("hci-grid: " + this.id + ": renderCellsAndData: No cell for: " + column.field);
         }
       }
 

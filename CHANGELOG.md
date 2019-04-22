@@ -1,5 +1,8 @@
 # Change Log
 
+## [3.1.6](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.6)
+    - Fix choice filter undefined check.
+
 ## [3.1.5](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.5)
     - Fix reverse right coloring when left columns are odd.
 
