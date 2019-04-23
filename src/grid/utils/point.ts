@@ -3,16 +3,13 @@ export class Point {
   private _j: number;
 
   static getPoint(id: string): Point {
-    let array = id.split("-");
-    let last = array.length - 1;
-    if (array.length >= 2) {
-      try {
-        return new Point(+array[last - 1], +array[last]);
-      } catch (e) {
-        return null;
-      }
-    } else {
-      return null;
+    try {
+      let regex: RegExp = new RegExp("[a-z]+-(-?[0-9]+)-(-?[0-9]+)");
+      let groups = regex.exec(id);
+
+      return new Point(+groups[1], +groups[2]);
+    } catch (e) {
+      return undefined;
     }
   }
 
@@ -23,6 +20,10 @@ export class Point {
 
   isNegative() {
     return this._i === -1 || this._j === -1;
+  }
+
+  isNew() {
+    return this._i === -1 && this._j >= 0;
   }
 
   isNotNegative() {

@@ -1,12 +1,12 @@
 import {ChangeDetectorRef, ElementRef, HostListener, isDevMode, Renderer2} from "@angular/core";
 
 import {Subject} from "rxjs/Subject";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 import {Cell} from "../cell";
 import {GridService} from "../../services/grid.service";
 import {GridEventService} from "../../services/grid-event.service";
 import {Column} from "../../column/column";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 /**
  * The base class for cell edit components.  When you view the grid, you see view renderers.  When you select a

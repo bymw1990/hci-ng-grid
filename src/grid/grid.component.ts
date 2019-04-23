@@ -87,7 +87,10 @@ const SCROLL: number = 1;
       <!-- Title Bar -->
       <div id="title-bar" [class.hidden]="!config.title && !configurable">
         <div class="title-bar" *ngIf="config.title || configurable">
-          <div>{{config.title}}</div>
+          <div class="flex-grow-1">{{config.title}}</div>
+          <div (click)="addNewRow()">
+            <i class="fas fa-plus"></i>
+          </div>
           <ng-container *ngIf="configurable">
             <div class="right" ngbDropdown placement="bottom-right">
               <a id="config-dropdown-toggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
@@ -510,6 +513,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   columnsChangedSubscription: Subscription;
   doRenderSubscription: Subscription;
 
+  private newRow: Row;
+
   private event: number = NO_EVENT;
   private popupRef: CellPopupRenderer;
   private componentRef: CellEditRenderer;
@@ -741,7 +746,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.rightCellEditContainer.clear();
       this.componentRef = undefined;
 
-      if (p.isNotNegative()) {
+      if (p.isNotNegative() || (p.i < 0 && p.j >= 0 && this.newRow)) {
         this.selectComponent(p.i, p.j);
       } else {
         this.clearSelectedComponents();
@@ -783,6 +788,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
           row: this.gridService.getOriginalRow(this.gridService.getRow(rowChange.oldRowNum).rowNum)
         });
       }
+    });
+
+    this.gridService.getNewRowSubject().subscribe((newRow: Row) => {
+      this.newRow = newRow;
+      this.renderCellsAndData();
     });
 
     let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
@@ -1778,6 +1788,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         for (let row of leftContainer.querySelectorAll("#row-left-" + i)) {
           this.renderer.removeChild(leftContainer, row);
         }
+
+        for (let row of leftContainer.querySelectorAll("#row-left--1")) {
+          this.renderer.removeChild(leftContainer, row);
+        }
       } catch (e) {
         // Ignore
       }
@@ -1786,6 +1800,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     for (let i of this.renderedRows) {
       try {
         for (let row of rightContainer.querySelectorAll("#row-right-" + i)) {
+          this.renderer.removeChild(rightContainer, row);
+        }
+
+        for (let row of rightContainer.querySelectorAll("#row-right--1")) {
           this.renderer.removeChild(rightContainer, row);
         }
       } catch (e) {
@@ -1860,6 +1878,30 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       if (i === end) {
         break;
+      }
+    }
+
+    if (this.newRow) {
+      let lRow: HTMLElement = undefined;
+      let rRow: HTMLElement = undefined;
+      if (this.gridService.getNFixedColumns() > 0) {
+        lRow = this.createNewRow(leftContainer, "left", 0);
+      }
+      rRow = this.createNewRow(rightContainer, "right", 0);
+
+      for (let column of this.columnMap.get("LEFT_VISIBLE")) {
+        cell = this.newRow.get(column.id);
+        if (!column.isUtility && column.field !== "GROUP_BY") {
+          this.createNewCell(lRow, column, cell, column.id, cell.value);
+        }
+      }
+
+      let reverse: boolean = this.columnMap.get("LEFT_VISIBLE").length % 2 === 1;
+      for (let column of this.columnMap.get("MAIN_VISIBLE")) {
+        cell = this.newRow.get(column.id);
+        if (!column.isUtility && column.field !== "GROUP_BY") {
+          this.createNewCell(rRow, column, cell, column.id, cell.value);
+        }
       }
     }
 
@@ -1952,6 +1994,43 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.appendChild(row, eCell);
   }
 
+  private createNewRow(container: Element, lr: string, top: number): HTMLElement {
+    let row = this.renderer.createElement("div");
+    this.renderer.setAttribute(row, "id", "row-" + lr + "--1");
+    this.renderer.addClass(row, "hci-grid-row");
+    this.renderer.addClass(row, "new-row");
+    this.renderer.addClass(row, "even");
+    this.renderer.setStyle(row, "position", "absolute");
+    this.renderer.setStyle(row, "display", "inline-block");
+    this.renderer.setStyle(row, "top", top + "px");
+    this.renderer.setStyle(row, "height", this.rowHeight + "px");
+    this.renderer.setStyle(row, "width", (container.clientWidth - 2) + "px");
+    this.renderer.appendChild(container, row);
+    return row;
+  }
+
+  private createNewCell(row: HTMLElement, column: Column, cell: Cell, j: number, value: string, reverse?: boolean): void {
+    let eCell = this.renderer.createElement("div");
+    this.renderer.setAttribute(eCell, "id", "cell--1-" + j);
+    this.renderer.addClass(eCell, "hci-grid-cell");
+    if (reverse) {
+      this.renderer.addClass(eCell, "reverse");
+    }
+    this.renderer.setStyle(eCell, "position", "absolute");
+    this.renderer.setStyle(eCell, "display", "flex");
+    this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
+    this.renderer.setStyle(eCell, "height", this.rowHeight + "px");
+    this.renderer.setStyle(eCell, "left", column.renderLeft + "px");
+    this.renderer.setStyle(eCell, "min-width", column.minWidth + "px");
+    if (!column.isLast) {
+      this.renderer.setStyle(eCell, "max-width", column.maxWidth + "px");
+    }
+    this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
+
+    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, -1, j));
+    this.renderer.appendChild(row, eCell);
+  }
+
   /**
    * Select a cell based on the row and column then call a cell edit renderer.
    *
@@ -1993,18 +2072,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.rightCellEditContainer.clear();
 
     if (cellElement.id) {
-      let id: string = cellElement.id;
-      let ids = id.split("-");
-      let i: number = +ids[1];
-      let j: number = +ids[2];
+      let point: Point = Point.getPoint(cellElement.id);
 
-      try {
-        this.gridData[i].get(j);
-      } catch (e) {
-        this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
+      if (point.isNotNegative()) {
+        try {
+          this.gridData[point.i].get(point.j);
+        } catch (e) {
+          this.gridEventService.setSelectedLocation(new Point(-1, -1), undefined);
+        }
       }
 
-      let column: Column = this.columnMap.get("VISIBLE")[j];
+      let column: Column = this.columnMap.get("VISIBLE")[point.j];
 
       if (!column.visible && this.gridEventService.getLastDx() === 1) {
         this.gridEventService.repeatLastEvent();
@@ -2019,8 +2097,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.componentRef = this.rightCellEditContainer.createComponent(factory).instance;
       }
       this.componentRef.setColumn(column);
-      this.componentRef.setPosition(i, j);
-      this.componentRef.setData(this.gridData[i].get(j));
+      this.componentRef.setPosition(point.i, point.j);
+
+      if (point.isNotNegative()) {
+        this.componentRef.setData(this.gridData[point.i].get(point.j));
+      } else if (point.isNew()) {
+        this.componentRef.setData(this.newRow.get(point.j));
+      }
+
       this.componentRef.setLocation(cellElement);
       this.componentRef.init();
     }
@@ -2088,5 +2172,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.rightCellEditContainer.clear();
       this.componentRef = undefined;
     }
+  }
+
+  addNewRow(): void {
+    this.gridService.createNewRow();
   }
 }

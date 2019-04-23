@@ -14,7 +14,6 @@ import {GridModule} from "hci-ng-grid";
 
 import {DemoComponent} from "./demo.component";
 import {DataGeneratorService} from "./services/data-generator.service";
-
 import {DocsComponent} from "./docs/docs.component";
 import {EditGridComponent} from "./edit/edit-grid.component";
 import {HomeComponent} from "./home.component";
@@ -35,7 +34,6 @@ import {EventComponent} from "./event/event.component";
 import {PopupComponent} from "./popup/popup.component";
 import {ResizeDemoComponent} from "./resize/resize.component";
 import {LinkedDemoComponent} from "./linked/linked.component";
-
 import {LabPopup} from "./components/lab.component";
 import {UserProfileDirective} from "./dynamic-config/user-profile.directive";
 import {DictionaryFilterRenderer} from "./filter/dictionary-filter.component";
@@ -45,6 +43,7 @@ import {BusyDemoComponent} from "./busy/busy.component";
 import {ValidationComponent} from "./validation/validation.component";
 import {DateDemoComponent} from "./date/date.component";
 import {DataTypesDemoComponent} from "./data-types/data-types.component";
+import {NewRowDemo} from "./new-row/new-row.component";
 
 @NgModule({
   imports: [
@@ -70,6 +69,7 @@ import {DataTypesDemoComponent} from "./data-types/data-types.component";
       { path: "fixed", component: FixedGridComponent },
       { path: "home", component: HomeComponent },
       { path: "linked", component: LinkedDemoComponent },
+      { path: "new-row", component: NewRowDemo },
       { path: "paging", component: PagingGridComponent },
       { path: "popup", component: PopupComponent },
       { path: "resize", component: ResizeDemoComponent },
@@ -112,7 +112,8 @@ import {DataTypesDemoComponent} from "./data-types/data-types.component";
     SimpleGridComponent,
     ThemingComponent,
     UserProfileDirective,
-    ValidationComponent
+    ValidationComponent,
+    NewRowDemo
   ],
   providers: [
     DataGeneratorService,

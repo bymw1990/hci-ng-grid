@@ -13,9 +13,11 @@ export class ClickCellEditListener extends EventListener implements ClickListene
     }
 
     let idElement: HTMLElement = HtmlUtil.getIdElement(<HTMLElement>event.target);
-    if (idElement !== null && idElement.id.startsWith("cell-")) {
+    if (idElement !== null && idElement.id.indexOf("cell-") >= 0) {
       let location: Point = HtmlUtil.getLocation(idElement);
-      if (!this.gridService.getColumn(location.j).editable) {
+      if (!location) {
+        return false;
+      } else if (!this.gridService.getColumn(location.j).editable) {
         if (isDevMode()) {
           console.debug("ClickCellEditListener.click: Column not editable, returning false.");
         }

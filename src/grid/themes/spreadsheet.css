@@ -69,6 +69,11 @@
   color: red;
 }
 
+#grid-container.spreadsheet .new-row {
+  border: green 1px solid;
+  box-shadow: black 0px 4px 16px;
+}
+
 .hci-grid.spreadsheet.column-header-tooltip {
   background-color: black;
   color: white;

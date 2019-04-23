@@ -107,6 +107,9 @@ export class GridService {
 
   private configSet: boolean = false;
 
+  private newRow: Row;
+  private newRowSubject: Subject<Row> = new Subject<Row>();
+
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
   }
@@ -943,23 +946,26 @@ export class GridService {
       console.debug("hci-grid: " + this.id + ": handleValueChange: " + i + " " + j + " " + newValue + " " + oldValue);
     }
 
-    this.setInputDataValue(key, this.columns[j].field, newValue);
+    if (i === -1) {
+      this.setInputDataValue(key, this.columns[j].field, newValue);
+      this.valueSubject.next(new Point(i, j));
+    } else {
+      this.setInputDataValue(key, this.columns[j].field, newValue);
+      this.valueSubject.next(new Point(i, j));
 
-    // TODO: Still used?
-    this.valueSubject.next(new Point(i, j));
+      this.getRow(i).get(j).dirty = true;
+      this.dirtyCells.push(new Point(i, j));
+      this.dirtyCellsSubject.next(this.dirtyCells);
 
-    this.getRow(i).get(j).dirty = true;
-    this.dirtyCells.push(new Point(i, j));
-    this.dirtyCellsSubject.next(this.dirtyCells);
-
-    this.dataChangeSubject.next({
-      key: this.getRow(i).key,
-      i: i,
-      j: j,
-      field: this.columns[j].field,
-      oldValue: oldValue,
-      newValue: newValue
-    });
+      this.dataChangeSubject.next({
+        key: this.getRow(i).key,
+        i: i,
+        j: j,
+        field: this.columns[j].field,
+        oldValue: oldValue,
+        newValue: newValue
+      });
+    }
   }
 
   /**
@@ -1145,7 +1151,13 @@ export class GridService {
   public setInputDataValue(key: number, field: string, value: any): void {
     var fields = field.split(".");
 
-    var obj = this.originalData[key];
+    let obj: Object;
+    if (key) {
+      obj = this.originalData[key];
+    } else {
+      obj = this.newRow;
+    }
+
     for (var i = 0; i < fields.length - 1; i++) {
       obj = obj[fields[i]];
     }
@@ -1366,5 +1378,35 @@ export class GridService {
 
   getThemes(): string[] {
     return this.config.theme.split(" ");
+  }
+
+  createNewRow(): void {
+    this.newRow = new Row();
+
+    for (var j = 0; j < this.columns.length; j++) {
+      this.newRow.add(new Cell({value: undefined, key: undefined}));
+
+      var fields = this.columns[j].field.split(".");
+
+      if (fields.length === 1) {
+        this.newRow.data[fields[0]] = undefined;
+      } else {
+        let obj: Object = undefined;
+        for (var i = fields.length - 1; i >= 1; i--) {
+          let parent: Object = {};
+          parent[fields[i]] = obj;
+          obj = parent;
+        }
+        this.newRow.data[fields[0]] = obj;
+      }
+    }
+    console.debug("createNewRow");
+    console.debug(this.newRow);
+
+    this.newRowSubject.next(this.newRow);
+  }
+
+  getNewRowSubject(): Subject<Row> {
+    return this.newRowSubject;
   }
 }

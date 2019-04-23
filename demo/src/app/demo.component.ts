@@ -41,6 +41,7 @@ declare const VERSION: string;
             <a class="dropdown-item" routerLink="/filter">Filtering</a>
             <a class="dropdown-item" routerLink="/fixed">Fixed Columns</a>
             <a class="dropdown-item" routerLink="/linked">Linked Grids</a>
+            <a class="dropdown-item" routerLink="/new-row">New Row</a>
             <a class="dropdown-item" routerLink="/paging">Paging</a>
             <a class="dropdown-item" routerLink="/resize">Resize</a>
             <a class="dropdown-item" routerLink="/row-group">Row Grouping</a>

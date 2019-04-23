@@ -53,6 +53,10 @@ demo {
   margin-top: 15px;
 }
 
+.card-header {
+  padding: 0.25rem 1.25rem;
+}
+
 .card-body {
   flex-direction: column;
   flex: 0 0 100%;
