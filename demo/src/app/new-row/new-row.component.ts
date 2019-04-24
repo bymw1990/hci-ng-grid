@@ -1,5 +1,7 @@
 import {Component} from "@angular/core";
 
+import {Observable} from "rxjs/Observable";
+
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -40,6 +42,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                     [data]="data"
                     [columns]="columns"
                     [mode]="'spreadsheet'"
+                    [postNewRow]="postNewRow"
                     [pageSize]="10"
                     [pageSizes]="[10, 25, 100]">
           </hci-grid>
@@ -51,12 +54,14 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class NewRowDemo {
 
+  uniqueId: number;
+
   data: Object[];
   columns: any[] = [
     { field: "idPatient", name: "ID", visible: false },
-    { field: "lastName", name: "Last Name" },
+    { field: "lastName", name: "Last Name", editConfig: {required: true} },
     { field: "middleName", name: "Middle Name" },
-    { field: "firstName", name: "First Name" },
+    { field: "firstName", name: "First Name", editConfig: {required: true} },
     { field: "dob", name: "Date of Birth", dataType: "date" },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address" }
@@ -66,5 +71,11 @@ export class NewRowDemo {
 
   ngOnInit() {
     this.data = this.dataGeneratorService.getData(13);
+    this.uniqueId = this.data.length;
+  }
+
+  postNewRow(data: any): Observable<any> {
+    data.idPatient = this.uniqueId++;
+    return Observable.of(data).delay(Math.random() * 500 + 250);
   }
 }

@@ -1,7 +1,9 @@
 # Change Log
 
-## [3.2.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.2.0)
-    - 
+## [4.0.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v4.0.0)
+    - Add new rows of data.
+    - Visualize invalid fields.
+    - Some rearrange of grid/service organization.
 
 ## [3.1.6](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v3.1.6)
     - Fix choice filter undefined check.

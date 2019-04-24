@@ -2,6 +2,7 @@ import {Injectable, isDevMode} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
 import {Subject, Subscription} from "rxjs/Rx";
+import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 import {GridGlobalService} from "./grid-global.service";
@@ -51,6 +52,7 @@ export class GridService {
   externalPaging: boolean;
   pageSizes: number[];
   nVisibleRows: number;
+  postNewRow: (data: any) => Observable<any>;
 
   originalData: Object[];
   preparedData: Row[];
@@ -86,6 +88,7 @@ export class GridService {
   private nVisibleColumns: number = 0;
   private height: number;
 
+  private busySubject: Subject<boolean> = new Subject<boolean>();
   private eventSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private filterEventSubject: BehaviorSubject<FilterInfo[]> = new BehaviorSubject<FilterInfo[]>([]);
   private rowChangedSubject: Subject<RowChange> = new Subject<RowChange>();
@@ -211,6 +214,9 @@ export class GridService {
     }
     if (config.height !== undefined) {
       this.height = config.height;
+    }
+    if (config.postNewRow !== undefined) {
+      this.postNewRow = config.postNewRow;
     }
 
     this.setNVisibleRows();
@@ -1155,7 +1161,7 @@ export class GridService {
     if (key) {
       obj = this.originalData[key];
     } else {
-      obj = this.newRow;
+      obj = this.newRow.data;
     }
 
     for (var i = 0; i < fields.length - 1; i++) {
@@ -1376,10 +1382,18 @@ export class GridService {
     return this.sortInfoObserved;
   }
 
+  /**
+   * Return the theme split by space.
+   *
+   * @returns {string[]}
+   */
   getThemes(): string[] {
     return this.config.theme.split(" ");
   }
 
+  /**
+   * Create a new empty row with empty data based on the column fields.
+   */
   createNewRow(): void {
     this.newRow = new Row();
 
@@ -1400,13 +1414,56 @@ export class GridService {
         this.newRow.data[fields[0]] = obj;
       }
     }
-    console.debug("createNewRow");
-    console.debug(this.newRow);
+
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": createNewRow:");
+      console.debug(this.newRow);
+    }
 
     this.newRowSubject.next(this.newRow);
   }
 
+  /**
+   * Save the new row.  If custom saving functions exist, use those, otherwise, just add to the original data array.
+   */
+  saveNewRow(): void {
+    let leftRow: HTMLElement = this.gridElement.querySelector("#row-left--1");
+    let rightRow: HTMLElement = this.gridElement.querySelector("#row-right--1");
+    if ((leftRow && leftRow.querySelector(".ng-invalid")) || rightRow.querySelector(".ng-invalid")) {
+      // Prompt invalid message
+    } else if (this.postNewRow) {
+      this.busySubject.next(true);
+
+      this.postNewRow(this.newRow.data).subscribe((newRow: any) => {
+        console.debug(newRow);
+
+        this.originalData.push(newRow);
+        this.initData();
+        this.busySubject.next(false);
+      });
+    } else {
+      this.originalData.push(this.newRow.data);
+      this.initData();
+    }
+
+    this.newRowSubject.next(undefined);
+  }
+
+  /**
+   * Return the newRowSubject.
+   *
+   * @returns {Subject<Row>}
+   */
   getNewRowSubject(): Subject<Row> {
     return this.newRowSubject;
+  }
+
+  /**
+   * Return the busySubject.
+   *
+   * @returns {Subject<boolean>}
+   */
+  getBusySubject(): Subject<boolean> {
+    return this.busySubject;
   }
 }

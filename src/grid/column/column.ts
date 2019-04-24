@@ -43,6 +43,7 @@ export class Column {
     choiceDisplay: "display",
     formatterParserConfig: {},
     formatterParser: FormatterParser,
+    editConfig: {},
     viewConfig: {},
     viewRenderer: CellTextView,
     filterConfig: {},

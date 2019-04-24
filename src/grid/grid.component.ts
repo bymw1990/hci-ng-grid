@@ -175,7 +175,14 @@ const SCROLL: number = 1;
         </div>
 
         <!-- Content -->
-        <div #gridContent id="grid-content">
+        <div #gridContent id="grid-content" class="">
+          <div #newRowOptions
+               id="new-row-options"
+               [style.top.px]="rowHeight">
+            <button class="btn btn-save m-1" (click)="saveNewRow()">Save</button>
+            <button class="btn btn-cancel m-1" (click)="cancelNewRow()">Cancel</button>
+          </div>
+
           <div #leftView id="left-view" class="cell-view">
             <div #leftContainer id="left-container" class="hci-grid-left-row-container">
               <div #leftCellEditContainer></div>
@@ -421,12 +428,24 @@ const SCROLL: number = 1;
       color: lightgrey;
     }
  
+    #new-row-options {
+      display: none;
+      position: absolute;
+      z-index: 1;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-bottom-right-radius: 0.5rem;
+    }
+
+    .adding-new-row #new-row-options {
+      display: flex;
+    }
   `]
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
   @ViewChild("mainContentHeaderContainer", { read: ViewContainerRef }) headerContainer: ViewContainerRef;
   @ViewChild("mainContentPopupContainer", { read: ViewContainerRef }) popupContainer: ViewContainerRef;
+  @ViewChild("mainContentNewRowContainer", { read: ViewContainerRef }) newRowContainer: ViewContainerRef;
   @ViewChild("leftCellEditContainer", { read: ViewContainerRef }) leftCellEditContainer: ViewContainerRef;
   @ViewChild("rightCellEditContainer", { read: ViewContainerRef }) rightCellEditContainer: ViewContainerRef;
   @ViewChild("copypastearea") copypastearea: any;
@@ -467,6 +486,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() mode: string;
   @Input() logWarnings: boolean = true;
   @Input() height: number;
+  @Input() postNewRow: (data: any) => Observable<any>;
 
   @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
@@ -504,7 +524,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   /* The busy flag controls animations during data load. */
   busy: boolean = false;
-  busySubject: Subject<boolean> = new Subject<boolean>();
 
   boundDataSubject: Subject<Object[]> = new Subject<Object[]>();
 
@@ -607,10 +626,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": boundDataSubject.subscribe: " + boundData.length);
       }
-      this.busySubject.next(true);
+      this.gridService.getBusySubject().next(true);
       this.gridService.setOriginalData(this.boundData);
       this.gridService.initData();
-      this.busySubject.next(false);
+      this.gridService.getBusySubject().next(false);
     });
 
     /* Subscribe to loading change.  Update the loading boolean. */
@@ -629,7 +648,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     /* Subscribe to busy change.  Update the busy boolean. */
-    this.busySubject.subscribe((busy: boolean) => {
+    this.gridService.getBusySubject().subscribe((busy: boolean) => {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": busySubject.subscribe: " + busy);
       }
@@ -649,7 +668,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.onExternalDataCall) {
       this.gridService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
         this.updateGridContainerHeight();
-        this.busySubject.next(true);
+        this.gridService.getBusySubject().next(true);
         this.onExternalDataCall(externalInfo).subscribe((externalData: ExternalData) => {
           if (!externalData.externalInfo) {
             this.gridService.pageInfo.setNumPages(1);
@@ -659,7 +678,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           this.gridService.setOriginalData(externalData.data);
 
           this.pageInfo = this.gridService.pageInfo;
-          this.busySubject.next(false);
+          this.gridService.getBusySubject().next(false);
         });
       });
     }
@@ -791,6 +810,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.gridService.getNewRowSubject().subscribe((newRow: Row) => {
+      let gridContent: HTMLElement = this.gridContainer.nativeElement.querySelector("#grid-content");
+      if (newRow) {
+        this.renderer.addClass(gridContent, "adding-new-row");
+      } else {
+        this.renderer.removeClass(gridContent, "adding-new-row");
+      }
+
       this.newRow = newRow;
       this.renderCellsAndData();
     });
@@ -911,7 +937,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   public getBusySubject(): Subject<boolean> {
-    return this.busySubject;
+    return this.gridService.getBusySubject();
   }
 
   public addClickListener(clickListener: EventListener): void {
@@ -1522,6 +1548,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.height !== undefined && this.height > 0) {
       this.inputConfig.height = this.height;
     }
+    if (this.postNewRow) {
+      this.inputConfig.postNewRow = this.postNewRow;
+    }
 
     if (this.inputConfig.id === undefined && this.id === undefined) {
       this.id = this.gridService.id;
@@ -1976,6 +2005,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (cell.dirty) {
       this.renderer.addClass(eCell, "ng-dirty");
     }
+    if (value === undefined && column.editConfig.required) {
+      this.renderer.addClass(eCell, "ng-invalid");
+    }
     if (reverse) {
       this.renderer.addClass(eCell, "reverse");
     }
@@ -2015,6 +2047,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.addClass(eCell, "hci-grid-cell");
     if (reverse) {
       this.renderer.addClass(eCell, "reverse");
+    }
+    if (value === undefined && column.editConfig.required) {
+      this.renderer.addClass(eCell, "ng-invalid");
     }
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
@@ -2176,5 +2211,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   addNewRow(): void {
     this.gridService.createNewRow();
+  }
+
+  saveNewRow(): void {
+    this.gridService.saveNewRow();
+  }
+
+  cancelNewRow(): void {
+    this.gridService.getNewRowSubject().next(undefined);
   }
 }
