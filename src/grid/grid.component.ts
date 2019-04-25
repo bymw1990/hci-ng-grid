@@ -486,7 +486,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() mode: string;
   @Input() logWarnings: boolean = true;
   @Input() height: number;
-  @Input() postNewRow: (data: any) => Observable<any>;
+  @Input() newRowPostCall: (data: any) => Observable<any>;
 
   @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
@@ -1548,8 +1548,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.height !== undefined && this.height > 0) {
       this.inputConfig.height = this.height;
     }
-    if (this.postNewRow) {
-      this.inputConfig.postNewRow = this.postNewRow;
+    if (this.newRowPostCall) {
+      this.inputConfig.newRowPostCall = this.newRowPostCall;
     }
 
     if (this.inputConfig.id === undefined && this.id === undefined) {

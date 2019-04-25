@@ -52,7 +52,7 @@ export class GridService {
   externalPaging: boolean;
   pageSizes: number[];
   nVisibleRows: number;
-  postNewRow: (data: any) => Observable<any>;
+  newRowPostCall: (data: any) => Observable<any>;
 
   originalData: Object[];
   preparedData: Row[];
@@ -215,8 +215,8 @@ export class GridService {
     if (config.height !== undefined) {
       this.height = config.height;
     }
-    if (config.postNewRow !== undefined) {
-      this.postNewRow = config.postNewRow;
+    if (config.newRowPostCall !== undefined) {
+      this.newRowPostCall = config.newRowPostCall;
     }
 
     this.setNVisibleRows();
@@ -1431,10 +1431,10 @@ export class GridService {
     let rightRow: HTMLElement = this.gridElement.querySelector("#row-right--1");
     if ((leftRow && leftRow.querySelector(".ng-invalid")) || rightRow.querySelector(".ng-invalid")) {
       // Prompt invalid message
-    } else if (this.postNewRow) {
+    } else if (this.newRowPostCall) {
       this.busySubject.next(true);
 
-      this.postNewRow(this.newRow.data).subscribe((newRow: any) => {
+      this.newRowPostCall(this.newRow.data).subscribe((newRow: any) => {
         console.debug(newRow);
 
         this.originalData.push(newRow);

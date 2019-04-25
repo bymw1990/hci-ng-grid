@@ -42,7 +42,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                     [data]="data"
                     [columns]="columns"
                     [mode]="'spreadsheet'"
-                    [postNewRow]="boundPostNewRow"
+                    [newRowPostCall]="boundNewRowPostCall"
                     [pageSize]="10"
                     [pageSizes]="[10, 25, 100]">
           </hci-grid>
@@ -67,10 +67,10 @@ export class NewRowDemo {
     { field: "address", name: "Address" }
   ];
 
-  boundPostNewRow: (data: any) => Observable<any>;
+  boundNewRowPostCall: (data: any) => Observable<any>;
 
   constructor(private dataGeneratorService: DataGeneratorService) {
-    this.boundPostNewRow = this.postNewRow.bind(this);
+    this.boundNewRowPostCall = this.newRowPostCall.bind(this);
   }
 
   ngOnInit() {
@@ -78,7 +78,7 @@ export class NewRowDemo {
     this.uniqueId = this.data.length;
   }
 
-  postNewRow(data: any): Observable<any> {
+  newRowPostCall(data: any): Observable<any> {
     data.idPatient = this.uniqueId++;
     return Observable.of(data).delay(Math.random() * 500 + 250);
   }

@@ -6,6 +6,7 @@ import {Point} from "../utils/point";
 import {Range} from "../utils/range";
 import {EventMeta} from "../utils/event-meta";
 import {RowChange} from "../utils/row-change";
+import {Row} from "../row/row";
 
 export const CLICK = 0;
 export const TAB = 1;
@@ -31,10 +32,16 @@ export class GridEventService {
   private lastDy: number = 0;
   private lastEvent: number;
 
+  private newRow: Row;
+
   constructor(private gridService: GridService) {
     if (isDevMode()) {
       console.debug("hci-grid: " + this.gridService.id + ": GridEventService constructor");
     }
+
+    this.gridService.getNewRowSubject().subscribe((newRow: Row) => {
+      this.newRow = newRow;
+    });
   }
 
   getCurrentRange(): Range {
@@ -145,7 +152,7 @@ export class GridEventService {
 
     if (location) {
       this.selectedLocation = location;
-    } else if (this.selectedLocation.isNegative()) {
+    } else if ((!this.newRow && this.selectedLocation.isNegative()) || (this.newRow && this.selectedLocation.isNegative(true))) {
       this.selectedLocation = new Point(0, 0);
       this.selectedLocationSubject.next(this.selectedLocation);
       return;
@@ -160,7 +167,9 @@ export class GridEventService {
       do {
         this.selectedLocation.j = this.selectedLocation.j + dx;
         if (this.selectedLocation.j >= this.gridService.getNVisibleColumns()) {
-          this.selectedLocation.i = this.selectedLocation.i + 1;
+          if (this.selectedLocation.i >= 0) {
+            this.selectedLocation.i = this.selectedLocation.i + 1;
+          }
           this.selectedLocation.j = 0;
         }
         if (this.selectedLocation.j < 0) {
@@ -169,12 +178,17 @@ export class GridEventService {
         }
       } while (!this.gridService.isColumnSelectable(this.selectedLocation.j));
     } else {
-      this.selectedLocation.i = this.selectedLocation.i + dy;
+      if (!this.newRow) {
+        this.selectedLocation.i = this.selectedLocation.i + dy;
+      }
     }
 
-    if (!this.gridService.getRow(this.selectedLocation.i)
-        || this.selectedLocation.isNegative()
-        || !this.gridService.isColumnSelectable(this.selectedLocation.j)) {
+    if ((!this.newRow && this.selectedLocation.isNegative())
+        || (this.newRow && this.selectedLocation.isNegative(true))) {
+      this.selectedLocation = new Point(-1, -1);
+    } else if (!this.newRow && !this.gridService.getRow(this.selectedLocation.i)) {
+      this.selectedLocation = new Point(-1, -1);
+    } else if (!this.gridService.isColumnSelectable(this.selectedLocation.j)) {
       this.selectedLocation = new Point(-1, -1);
     }
 

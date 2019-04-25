@@ -18,8 +18,12 @@ export class Point {
     this._j = j;
   }
 
-  isNegative() {
-    return this._i === -1 || this._j === -1;
+  isNegative(allowNegativeI?: boolean) {
+    if (allowNegativeI) {
+      return this._i < -1 || this._j === -1;
+    } else {
+      return this._i === -1 || this._j === -1;
+    }
   }
 
   isNew() {
