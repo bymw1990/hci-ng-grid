@@ -502,6 +502,13 @@ export class Column {
       };
     } else if (this.dataType === "string" || this.dataType === "date-iso8601") {
       return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+        if (a) {
+          a = a.toLowerCase();
+        }
+        if (b) {
+          b = b.toLowerCase();
+        }
+
         if (sortInfo.asc) {
           if (!a && b) {
             return -1;

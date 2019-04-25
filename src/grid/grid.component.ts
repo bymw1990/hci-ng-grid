@@ -817,6 +817,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.renderer.removeClass(gridContent, "adding-new-row");
       }
 
+      this.clearPopup();
+      this.leftCellEditContainer.clear();
+      this.rightCellEditContainer.clear();
+      this.componentRef = undefined;
+      this.focuser1.nativeElement.focus();
+
       this.newRow = newRow;
       this.renderCellsAndData();
     });
