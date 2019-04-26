@@ -63,7 +63,7 @@ export class NewRowDemo {
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", editConfig: {required: true} },
     { field: "dob", name: "Date of Birth", dataType: "date" },
-    { field: "gender", name: "Gender" },
+    { field: "gender", name: "Gender", dataType: "choice", choices: [{value: "Female", display: "Female"}, {value: "Male", display: "Male"}] },
     { field: "address", name: "Address" }
   ];
 
