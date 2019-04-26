@@ -85,10 +85,13 @@ const SCROLL: number = 1;
       <textarea #copypastearea style="position: absolute; left: -2000px;"></textarea>
       
       <!-- Title Bar -->
-      <div id="title-bar" [class.hidden]="!config.title && !configurable">
+      <div id="title-bar"
+           [class.hidden]="!config.title && !configurable && addNewRowButtonLocation !== 'title-bar'">
         <div class="title-bar" *ngIf="config.title || configurable">
           <div class="flex-grow-1">{{config.title}}</div>
-          <div (click)="addNewRow()">
+          <div *ngIf="addNewRowButtonLocation === 'title-bar'"
+               (click)="addNewRow()"
+               class="add-new-row-btn">
             <i class="fas fa-plus"></i>
           </div>
           <ng-container *ngIf="configurable">
@@ -213,11 +216,13 @@ const SCROLL: number = 1;
            (mouseup)="$event.stopPropagation()"
            (mousedown)="$event.stopPropagation()"
            (click)="$event.stopPropagation()">
-        <div *ngIf="pageInfo.pageSize > 0" class="grid-footer">
+        <div *ngIf="pageInfo.pageSize > 0 || addNewRowButtonLocation === 'footer'" class="grid-footer">
           <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
             Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
-          <div style="margin-left: auto; margin-right: auto; width: 75%; text-align: center;">
+          <div *ngIf="pageInfo.pageSize > 0"
+               class="ml-auto mr-auto"
+               style="text-align: center;">
             <span (click)="doPageFirst()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
             <span (click)="doPagePrevious()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
             <select id="pageSelect"
@@ -229,6 +234,11 @@ const SCROLL: number = 1;
             </select>
             <span (click)="doPageNext()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-forward"></span></span>
             <span (click)="doPageLast()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-forward"></span></span>
+          </div>
+          <div *ngIf="addNewRowButtonLocation === 'footer'"
+               (click)="addNewRow()"
+               class="add-new-row-btn">
+            <i class="fas fa-plus"></i>
           </div>
         </div>
       </div>
@@ -361,9 +371,9 @@ const SCROLL: number = 1;
     }
     
     .grid-footer {
-      width: 100%;
+      display: flex;
       border-top: none;
-      padding: 3px;
+      padding: 0.25rem;
     }
     
     #pageSize {
@@ -473,6 +483,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   // The following inputs are useful shortcuts for what can be provided via the config input.
   @Input() configurable: boolean = false;
   @Input() display: string = "flow-root";
+  @Input() addNewRowButtonLocation: string;
   @Input("title") inputTitle: string;
   @Input("theme") inputTheme: string;
   @Input("columns") inputColumnDefinitions: Column[];

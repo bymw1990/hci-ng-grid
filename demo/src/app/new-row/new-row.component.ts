@@ -2,6 +2,8 @@ import {Component} from "@angular/core";
 
 import {Observable} from "rxjs/Observable";
 
+import {GridService} from "hci-ng-grid";
+
 import {DataGeneratorService} from "../services/data-generator.service";
 
 @Component({
@@ -22,6 +24,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
               &lt;hci-grid
                 [data]="data"
                 [columns]="columns"
+                [mode]="'spreadsheet'"
+                addNewRowButtonLocation="footer"
+                [newRowPostCall]="boundNewRowPostCall"
+                [newRowPostCallError]="newRowPostCallError"
                 [pageSize]="10"
                 [pageSizes]="[10, 25, 100]&gt;
               &lt;/hci-grid&gt;
@@ -38,11 +44,12 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </ng-template>
         </div>
         <div>
-          <hci-grid [title]="'New Row'"
-                    [data]="data"
+          <hci-grid [data]="data"
                     [columns]="columns"
                     [mode]="'spreadsheet'"
+                    addNewRowButtonLocation="footer"
                     [newRowPostCall]="boundNewRowPostCall"
+                    [newRowPostCallError]="newRowPostCallError"
                     [pageSize]="10"
                     [pageSizes]="[10, 25, 100]">
           </hci-grid>
@@ -86,4 +93,11 @@ export class NewRowDemo {
     data.idPatient = this.uniqueId++;
     return Observable.of(data).delay(Math.random() * 500 + 250);
   }
+
+  newRowPostCallError(error: any, gridService?: GridService): Observable<any>  {
+    console.error("Custom Error Function: " + error);
+    gridService.getNewRowMessageSubject().next("Custom Error Function: " + error);
+    return Observable.of(undefined);
+  };
+
 }

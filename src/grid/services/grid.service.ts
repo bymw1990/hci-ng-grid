@@ -113,9 +113,9 @@ export class GridService {
   private newRow: Row;
   private newRowSubject: Subject<Row> = new Subject<Row>();
   private newRowMessageSubject: Subject<string> = new Subject<string>();
-  private newRowPostCallSuccess: (newRow: any) => void;
-  private newRowPostCallError: (error: any) => void;
-  private newRowPostCallFinally: () => void;
+  private newRowPostCallSuccess: (newRow: any, gridService?: GridService) => void;
+  private newRowPostCallError: (error: any, gridService?: GridService) => void;
+  private newRowPostCallFinally: (gridService?: GridService) => void;
 
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
@@ -1456,12 +1456,12 @@ export class GridService {
 
       this.newRowPostCall(this.newRow.data)
         .finally(() => {
-          this.newRowPostCallFinally();
+          this.newRowPostCallFinally(this);
         })
         .subscribe((newRow: any) => {
-          this.newRowPostCallSuccess(newRow);
+          this.newRowPostCallSuccess(newRow, this);
         }, (error: any) => {
-          this.newRowPostCallError(error);
+          this.newRowPostCallError(error, this);
         });
     } else {
       this.originalData.push(this.newRow.data);
@@ -1476,9 +1476,10 @@ export class GridService {
    * @returns {(newRow: any, gridService?: GridService) => void}
    */
   createDefaultNewRowPostCallSuccess(): (newRow: any, gridService?: GridService) => void {
-    return (newRow: any) => {
+    return (newRow: any, gridService?: GridService) => {
       this.originalData.push(newRow);
       this.initData();
+      this.newRowSubject.next(undefined);
     };
   }
 
@@ -1487,8 +1488,8 @@ export class GridService {
    *
    * @returns {(error: any) => void}
    */
-  createDefaultNewRowPostCallError(): (error: any) => void {
-    return (error: any) => {
+  createDefaultNewRowPostCallError(): (error: any, gridService?: GridService) => void {
+    return (error: any, gridService?: GridService) => {
       console.error(error);
       this.getNewRowMessageSubject().next(error);
       return Observable.of(undefined);
@@ -1500,8 +1501,8 @@ export class GridService {
    *
    * @returns {() => void}
    */
-  createDefaultNewRowPostCallFinally(): () => void {
-    return () => {
+  createDefaultNewRowPostCallFinally(): (gridService?: GridService) => void {
+    return (gridService?: GridService) => {
       this.busySubject.next(false);
     };
   }
