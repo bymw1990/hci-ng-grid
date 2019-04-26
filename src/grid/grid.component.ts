@@ -181,6 +181,11 @@ const SCROLL: number = 1;
                [style.top.px]="rowHeight">
             <button class="btn btn-save m-1" (click)="saveNewRow()">Save</button>
             <button class="btn btn-cancel m-1" (click)="cancelNewRow()">Cancel</button>
+            <div class="d-flex new-row-message"
+                 [class.ml-3]="newRowMessage"
+                 [class.mr-3]="newRowMessage">
+              {{newRowMessage}}
+            </div>
           </div>
 
           <div #leftView id="left-view" class="cell-view">
@@ -487,6 +492,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() logWarnings: boolean = true;
   @Input() height: number;
   @Input() newRowPostCall: (data: any) => Observable<any>;
+  @Input() newRowPostCallSuccess: (newRow: any) => void;
+  @Input() newRowPostCallError: (error: any) => void;
+  @Input() newRowPostCallFinally: () => void;
 
   @Output("onCellSave") onCellSave: EventEmitter<any> = new EventEmitter<any>();
   @Output("onRowSave") onRowSave: EventEmitter<any> = new EventEmitter<any>();
@@ -531,6 +539,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   columnsChangedSubscription: Subscription;
   doRenderSubscription: Subscription;
+
+  newRowMessage: string;
 
   private newRow: Row;
 
@@ -809,7 +819,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     });
 
+    this.gridService.getNewRowMessageSubject().subscribe((newRowMessage: string) => {
+      this.newRowMessage = newRowMessage;
+    });
+
     this.gridService.getNewRowSubject().subscribe((newRow: Row) => {
+      this.newRowMessage = undefined;
+
       let gridContent: HTMLElement = this.gridContainer.nativeElement.querySelector("#grid-content");
       if (newRow) {
         this.renderer.addClass(gridContent, "adding-new-row");
@@ -1556,6 +1572,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.newRowPostCall) {
       this.inputConfig.newRowPostCall = this.newRowPostCall;
+    }
+    if (this.newRowPostCallSuccess) {
+      this.inputConfig.newRowPostCallSuccess = this.newRowPostCallSuccess;
+    }
+    if (this.newRowPostCallError) {
+      this.inputConfig.newRowPostCallError = this.newRowPostCallError;
+    }
+    if (this.newRowPostCallFinally) {
+      this.inputConfig.newRowPostCallFinally = this.newRowPostCallFinally;
     }
 
     if (this.inputConfig.id === undefined && this.id === undefined) {

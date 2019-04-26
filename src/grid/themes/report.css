@@ -93,3 +93,10 @@
 #grid-container.report .hci-grid-cell.ng-invalid {
   background-color: rgba(255, 0, 0, 0.1);
 }
+
+#grid-container.report .new-row-message {
+  color: rgb(255, 50, 50);
+  font-size: 1.25rem;
+  width: max-content;
+  align-items: center;
+}

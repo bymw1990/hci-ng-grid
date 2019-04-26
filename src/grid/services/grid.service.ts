@@ -112,6 +112,10 @@ export class GridService {
 
   private newRow: Row;
   private newRowSubject: Subject<Row> = new Subject<Row>();
+  private newRowMessageSubject: Subject<string> = new Subject<string>();
+  private newRowPostCallSuccess: (newRow: any) => void;
+  private newRowPostCallError: (error: any) => void;
+  private newRowPostCallFinally: () => void;
 
   constructor(private gridGlobalService: GridGlobalService, private http: HttpClient) {
     this.gridGlobalService.register(this);
@@ -217,6 +221,21 @@ export class GridService {
     }
     if (config.newRowPostCall !== undefined) {
       this.newRowPostCall = config.newRowPostCall;
+    }
+    if (config.newRowPostCallSuccess !== undefined) {
+      this.newRowPostCallSuccess = config.newRowPostCallSuccess;
+    } else {
+      this.newRowPostCallSuccess = this.createDefaultNewRowPostCallSuccess();
+    }
+    if (config.newRowPostCallError !== undefined) {
+      this.newRowPostCallError = config.newRowPostCallError;
+    } else {
+      this.newRowPostCallError = this.createDefaultNewRowPostCallError();
+    }
+    if (config.newRowPostCallFinally !== undefined) {
+      this.newRowPostCallFinally = config.newRowPostCallFinally;
+    } else {
+      this.newRowPostCallFinally = this.createDefaultNewRowPostCallFinally();
     }
 
     this.setNVisibleRows();
@@ -1430,23 +1449,61 @@ export class GridService {
     let leftRow: HTMLElement = this.gridElement.querySelector("#row-left--1");
     let rightRow: HTMLElement = this.gridElement.querySelector("#row-right--1");
     if ((leftRow && leftRow.querySelector(".ng-invalid")) || rightRow.querySelector(".ng-invalid")) {
-      // Prompt invalid message
+      console.warn("New row has invalid columns.");
+      this.getNewRowMessageSubject().next("Can't save, there are invalid columns.");
     } else if (this.newRowPostCall) {
       this.busySubject.next(true);
 
-      this.newRowPostCall(this.newRow.data).subscribe((newRow: any) => {
-        console.debug(newRow);
-
-        this.originalData.push(newRow);
-        this.initData();
-        this.busySubject.next(false);
-      });
+      this.newRowPostCall(this.newRow.data)
+        .finally(() => {
+          this.newRowPostCallFinally();
+        })
+        .subscribe((newRow: any) => {
+          this.newRowPostCallSuccess(newRow);
+        }, (error: any) => {
+          this.newRowPostCallError(error);
+        });
     } else {
       this.originalData.push(this.newRow.data);
       this.initData();
+      this.newRowSubject.next(undefined);
     }
+  }
 
-    this.newRowSubject.next(undefined);
+  /**
+   * Create a default function for what new row post success.  Push to original data and refresh.
+   *
+   * @returns {(newRow: any, gridService?: GridService) => void}
+   */
+  createDefaultNewRowPostCallSuccess(): (newRow: any, gridService?: GridService) => void {
+    return (newRow: any) => {
+      this.originalData.push(newRow);
+      this.initData();
+    };
+  }
+
+  /**
+   * Create a default function for what new row post error.  Set new row message as error.
+   *
+   * @returns {(error: any) => void}
+   */
+  createDefaultNewRowPostCallError(): (error: any) => void {
+    return (error: any) => {
+      console.error(error);
+      this.getNewRowMessageSubject().next(error);
+      return Observable.of(undefined);
+    };
+  }
+
+  /**
+   * Create a default function for what new row post finally.  Set busy to false.
+   *
+   * @returns {() => void}
+   */
+  createDefaultNewRowPostCallFinally(): () => void {
+    return () => {
+      this.busySubject.next(false);
+    };
   }
 
   /**
@@ -1456,6 +1513,10 @@ export class GridService {
    */
   getNewRowSubject(): Subject<Row> {
     return this.newRowSubject;
+  }
+
+  getNewRowMessageSubject(): Subject<string> {
+    return this.newRowMessageSubject;
   }
 
   /**
