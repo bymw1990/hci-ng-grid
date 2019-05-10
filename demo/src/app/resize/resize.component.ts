@@ -18,7 +18,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </div>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -62,7 +62,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <button (click)="width2 = 800">800</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config2>
             <pre>
               &lt;hci-grid
@@ -102,7 +102,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Test grid resizing when the parent is 100% and changed by window resize.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config3>
             <pre>
               &lt;hci-grid
@@ -146,7 +146,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <button (click)="showGrid4 = !showGrid4">Toggle Grid</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config4>
             <pre>
               &lt;hci-grid
@@ -185,7 +185,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Sets the grid height to 100px.  The grid content sets itself accordingly.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config5>
             <pre>
               &lt;hci-grid

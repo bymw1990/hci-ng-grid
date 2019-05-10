@@ -17,7 +17,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           {{cellSaveOutput}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -65,7 +65,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           {{rowSaveOutput}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config2>
             <pre>
               &lt;hci-grid

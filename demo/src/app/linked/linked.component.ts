@@ -17,7 +17,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           when you filter, the filter is applied to both grids.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config0" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config0" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config0>
             <pre>
               &lt;hci-grid [data]="data1"

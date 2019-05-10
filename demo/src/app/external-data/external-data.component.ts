@@ -35,7 +35,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Data Sorted Event: {{event1d | json}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -89,7 +89,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           which leaves the paging to the grid.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -133,7 +133,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           With a delay of 1s, an empty array is returned.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid

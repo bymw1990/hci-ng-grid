@@ -18,7 +18,7 @@ import {Observable} from "rxjs/Observable";
           call and terminated when the response comes back.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -70,7 +70,7 @@ import {Observable} from "rxjs/Observable";
           <button (click)="setBusy(false)" class="mr-3">Remove Busy</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config2>
             <pre>
               &lt;hci-grid

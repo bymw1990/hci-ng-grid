@@ -19,7 +19,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           modify input cell values and check bound data changes<br />
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -41,7 +41,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "phone", name: "Phone", filterRenderer: TextFilterRenderer
             </pre>
           </ng-template>
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
           <ng-template #data1>
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>

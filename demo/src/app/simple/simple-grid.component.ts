@@ -15,7 +15,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           in the object.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config3>
             <pre>
               &lt;hci-grid
@@ -49,7 +49,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Typical data input passed in bulk, but with a 5s delay in receiving the data.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config4>
             <pre>
               &lt;hci-grid

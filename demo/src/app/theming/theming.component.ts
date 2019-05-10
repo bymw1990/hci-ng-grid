@@ -14,7 +14,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
       <div class="card-body">
         <div class="card-text">
           This is the default theme which borders every cell.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid [data]="data1"
@@ -51,7 +51,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           Force overriding of the theme to one that doesn't exist will show the default which has no borders or
           decorations of any kind.  If implementing your own theme, this is your starting point.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config2>
             <pre>
               &lt;hci-grid [data]="data2"
@@ -87,7 +87,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           A reporting theme designed to look more like a row/column layout in a pdf rather than a spreadsheet.  Special
           view renderers can be added to provide some flare.  In this case we color text and add an icon if number values
           are outside of a range.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config3>
             <pre>
               &lt;hci-grid [title]="'Demographics Report'"
@@ -126,7 +126,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           Take an existing theme and in your app's css, override specific parts.  In this case, change coloring of the
           report theme.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config4>
             <pre>
               &lt;hci-grid
@@ -173,7 +173,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
       <div class="card-body">
         <div class="card-text">
           Creating our own theme which makes the font larger.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="newTheme" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="newTheme" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #newTheme>
             <pre>
               &lt;hci-grid

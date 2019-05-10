@@ -29,7 +29,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           Data Filtered Event: {{event1b | json}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config1>
             <pre>
               &lt;hci-grid
@@ -78,7 +78,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           configuration as an example.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #config2>
             <pre>
               &lt;hci-grid

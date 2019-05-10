@@ -16,7 +16,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Cells can be selected as a 2d array and the data copied.  Columns will be delimited with a \t and rows will be
           delimited with \n.  Similarly, pasted data will be parsed with \n and then with \t.  This is how spreadsheet tools
           such as Excel expect data when copy/pasting multiple cells.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="configTemplate" popoverTitle="Config" placement="right">Show Config</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="configTemplate" popoverTitle="Config" placement="right" container="body">Show Config</button>
           <ng-template #configTemplate>
             <pre>
               &lt;hci-grid
@@ -35,7 +35,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "path.nPath", name: "# Path"
             </pre>
           </ng-template>
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="dataTemplate" popoverTitle="Bound Data" placement="right">Show Bound Data</button>
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="dataTemplate" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
           <ng-template #dataTemplate>
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>

@@ -217,27 +217,26 @@ const SCROLL: number = 1;
            (mousedown)="$event.stopPropagation()"
            (click)="$event.stopPropagation()">
         <div *ngIf="pageInfo.pageSize > 0 || addNewRowButtonLocation === 'footer'" class="grid-footer">
-          <div style="float: left; font-weight: bold;" *ngIf="pageInfo.numPages > 0">
+          <div *ngIf="pageInfo.numPages > 0"
+               class="ml-1"
+               style="font-weight: bold;">
             Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
-          <div *ngIf="pageInfo.pageSize > 0"
-               class="ml-auto mr-auto"
-               style="text-align: center;">
-            <span (click)="doPageFirst()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-backward"></span></span>
-            <span (click)="doPagePrevious()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-backward"></span></span>
+          <div *ngIf="pageInfo.pageSize > 0">
+            <span (click)="doPageFirst()"><span class="fas fa-fast-backward"></span></span>
+            <span (click)="doPagePrevious()" class="pl-3 pr-3"><span class="fas fa-backward"></span></span>
             <select id="pageSelect"
                     [ngModel]="pageInfo.pageSize"
                     (ngModelChange)="doPageSize($event)"
-                    [disabled]="busy"
-                    style="padding-left: 15px; padding-right: 15px;">
+                    [disabled]="busy">
               <option *ngFor="let o of config.pageSizes" [ngValue]="o">{{o}}</option>
             </select>
-            <span (click)="doPageNext()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-forward"></span></span>
-            <span (click)="doPageLast()" style="padding-left: 15px; padding-right: 15px;"><span class="fas fa-fast-forward"></span></span>
+            <span (click)="doPageNext()" class="pl-3 pr-3"><span class="fas fa-forward"></span></span>
+            <span (click)="doPageLast()"><span class="fas fa-fast-forward"></span></span>
           </div>
           <div *ngIf="addNewRowButtonLocation === 'footer'"
                (click)="addNewRow()"
-               class="add-new-row-btn">
+               class="add-new-row-btn mr-1">
             <i class="fas fa-plus"></i>
           </div>
         </div>
@@ -374,6 +373,7 @@ const SCROLL: number = 1;
       display: flex;
       border-top: none;
       padding: 0.25rem;
+      justify-content: space-between;
     }
     
     #pageSize {
