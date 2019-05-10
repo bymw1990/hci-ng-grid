@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {RangeSelectListener} from "hci-ng-grid";
 
@@ -83,6 +83,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class CopyPasteGridComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data: Object[];
 

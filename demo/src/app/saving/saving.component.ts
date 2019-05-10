@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -100,6 +100,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class SavingDemoComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   cellSaveOutput: string;
   rowSaveOutput: string;

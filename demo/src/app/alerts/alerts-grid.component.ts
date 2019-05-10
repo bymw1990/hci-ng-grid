@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {RangeSelectListener} from "hci-ng-grid";
 
@@ -31,6 +31,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class AlertsGridComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   warning: string;
 

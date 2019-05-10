@@ -1,4 +1,4 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component, HostBinding, ViewChild} from "@angular/core";
 
 import {
   CheckRowSelectView, ChoiceEditRenderer, ClickRowSelectListener, CompareFilterRenderer, DateEditRenderer,
@@ -140,6 +140,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class DynamicConfigGridComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data1: Object[];
   columns1: any[] = [

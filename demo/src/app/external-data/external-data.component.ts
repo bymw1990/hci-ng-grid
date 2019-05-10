@@ -171,6 +171,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
 })
 export class ExternalDataComponent implements OnInit {
 
+  @HostBinding("class") classList: string = "demo-component";
+
   event1a: FilterInfo[] = [];
   event1b: any;
   event1c: SortInfo;

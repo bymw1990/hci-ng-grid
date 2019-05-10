@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {Observable} from "rxjs/Observable";
 
@@ -59,6 +59,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class NewRowDemo {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   uniqueId: number;
 

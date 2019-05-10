@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -71,6 +71,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class ValidationComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data: Object[];
 

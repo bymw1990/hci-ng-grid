@@ -8,6 +8,19 @@ demo {
   overflow: hidden;
 }
 
+main {
+  display: flex;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.demo-component {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
 .outlet-column {
   display: flex;
   flex-grow: 1;
@@ -55,6 +68,7 @@ demo {
 
 .card {
   margin-top: 15px;
+  flex-shrink: 0;
 }
 
 .card-header {

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component} from "@angular/core";
+import {ChangeDetectorRef, Component, HostBinding} from "@angular/core";
 
 import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SortInfo, FilterInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
@@ -131,6 +131,8 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
   `
 })
 export class FilterGridComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   initialized: boolean = false;
   event1a: FilterInfo[];

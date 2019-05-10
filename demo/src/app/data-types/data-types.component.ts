@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {Observable} from "rxjs/Observable";
 
@@ -41,6 +41,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class DataTypesDemoComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   dataCall1: (externalInfo: ExternalInfo) => {};
   columns1: any[] = [

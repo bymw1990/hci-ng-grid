@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, HostBinding, OnInit} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -71,6 +71,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class SimpleGridComponent implements OnInit {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   columns4: any[] = [
     { field: "idPatient", name: "ID", visible: true },

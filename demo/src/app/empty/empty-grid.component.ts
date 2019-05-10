@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -45,6 +45,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class EmptyGridComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data1: Object[] = [];
 

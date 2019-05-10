@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {CompareFilterRenderer, DateEditRenderer} from "hci-ng-grid";
 
@@ -36,6 +36,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class DateDemoComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data1: any[];
 

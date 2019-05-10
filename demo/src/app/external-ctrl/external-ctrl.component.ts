@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, HostBinding, OnInit, ViewChild} from "@angular/core";
 
 import {GridComponent} from "hci-ng-grid";
 
@@ -68,6 +68,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class ExternalControlComponent implements OnInit {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   @ViewChild("grid") grid: GridComponent;
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, HostBinding, OnInit, ViewChild} from "@angular/core";
 
 import {CompareFilterRenderer, ExternalData, ExternalInfo, GridComponent, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
@@ -117,6 +117,8 @@ import {Observable} from "rxjs/Observable";
   `
 })
 export class BusyDemoComponent implements OnInit {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   @ViewChild("grid2") grid2: GridComponent;
 

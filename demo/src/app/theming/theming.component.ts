@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component, HostBinding, ViewEncapsulation} from "@angular/core";
 
 import {CellNumberRangeView, ClickView, ClickViewListener} from "hci-ng-grid";
 
@@ -230,6 +230,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   encapsulation: ViewEncapsulation.None
 })
 export class ThemingComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   selectedRowID: number;
 

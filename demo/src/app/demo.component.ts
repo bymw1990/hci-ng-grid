@@ -24,7 +24,7 @@ declare const VERSION: string;
         </div>
         <div ngbDropdown placement="bottom-right" class="d-inline-block">
           <button class="btn btn-outline-primary white" id="routeList" ngbDropdownToggle>Select A Demo</button>
-          <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="routeList">
+          <div ngbDropdownMenu class="dropdown-menu" style="max-height: 400px; overflow-y: auto;" aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/busy">Busy</a>
@@ -54,7 +54,7 @@ declare const VERSION: string;
         </div>
       </div>
     </div>
-    <main class="outlet-row y-auto">
+    <main>
       <router-outlet></router-outlet>
     </main>
   `,

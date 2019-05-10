@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
@@ -60,6 +60,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class LinkedDemoComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data1: any[];
   columns1: any[] = [

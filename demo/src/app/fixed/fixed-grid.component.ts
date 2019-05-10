@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-ng-grid";
 
@@ -77,6 +77,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class FixedGridComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   fixedData: Object[];
 

@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 import {BigTextPopup, ClickCellEditListener, CellHoverPopupListener, CompareFilterRenderer} from "hci-ng-grid";
 
@@ -69,6 +69,8 @@ import {LabPopup} from "../components/lab.component";
   `
 })
 export class PopupComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   data1: Object[];
   listeners1: Array<any> = [

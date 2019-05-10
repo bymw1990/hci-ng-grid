@@ -1,4 +1,4 @@
-import {Component, ViewChild} from "@angular/core";
+import {Component, HostBinding, ViewChild} from "@angular/core";
 import {SafeHtml} from "@angular/platform-browser";
 
 import {CheckRowSelectView, ClickRowSelectListener, GridComponent, RowDblClickListener} from "hci-ng-grid";
@@ -130,6 +130,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
   `
 })
 export class SelectGridComponent extends BaseDemoComponent {
+
+  @HostBinding("class") classList: string = "demo-component";
 
   @ViewChild("grid2") grid2: GridComponent;
   @ViewChild("grid3") grid3: GridComponent;
