@@ -19,24 +19,24 @@
     "hci-ng-grid": "3.2.x"
   },
   "dependencies": {
-    "@angular/common": "^5.2.0",
-    "@angular/compiler": "^5.2.0",
-    "@angular/compiler-cli": "^5.2.0",
-    "@angular/core": "^5.2.0",
-    "@angular/forms": "^5.2.0",
-    "@angular/platform-browser": "^5.2.0",
-    "@angular/router": "^5.2.0",
-    "@fortawesome/fontawesome": "^1.1.2",
-    "@fortawesome/fontawesome-free-regular": "^5.0.13",
-    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@angular/common": ">=5.0.0 <7.0.0",
+    "@angular/compiler": ">=5.0.0 <7.0.0",
+    "@angular/compiler-cli": ">=5.0.0 <7.0.0",
+    "@angular/core": ">=5.0.0 <7.0.0",
+    "@angular/forms": ">=5.0.0 <7.0.0",
+    "@angular/platform-browser": ">=5.0.0 <7.0.0",
+    "@angular/router": ">=5.0.0 <7.0.0",
+    "@fortawesome/fontawesome": "1.1.x",
+    "@fortawesome/fontawesome-free-regular": "5.0.x",
+    "@fortawesome/fontawesome-free-solid": "5.0.x",
     "@ng-bootstrap/ng-bootstrap": "1.1.x",
-    "bootstrap": "^4.1.2",
+    "bootstrap": ">=4.3.1 < 4.4.0",
     "moment": ">=2.19.3",
     "moment-random": "1.0.x",
     "prismjs": "1.15.x",
     "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.5.5",
-    "zone.js": "^0.8.5"
+    "rxjs": "5.5.x",
+    "zone.js": "0.8.x"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.42",
@@ -77,13 +77,13 @@
     "tsconfig-lint": "^0.11.0",
     "tslint": "^4.1.1",
     "tslint-loader": "^2.1.5",
-    "typescript": "^2.5.1",
+    "typescript": "2.5.x",
     "uglify-es": "^3.0.25",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "url-loader": "^0.5.8",
-    "webpack": "3.11.0",
-    "webpack-dev-server": "2.4.1",
-    "webpack-merge": "^4.1.0",
-    "webpack-stream": "^3.2.0"
+    "webpack": "3.11.x",
+    "webpack-dev-middleware": "1.12.x",
+    "webpack-dev-server": "2.7.x",
+    "webpack-merge": "4.1.x"
   }
 }

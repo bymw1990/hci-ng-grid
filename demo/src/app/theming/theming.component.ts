@@ -227,8 +227,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
     }
 
   `],
-  encapsulation: ViewEncapsulation.None,
-  host: {class: "outlet-column"}
+  encapsulation: ViewEncapsulation.None
 })
 export class ThemingComponent {
 

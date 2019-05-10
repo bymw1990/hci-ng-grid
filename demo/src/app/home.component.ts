@@ -1,33 +1,31 @@
-import {Component} from "@angular/core";
+import {Component, HostBinding} from "@angular/core";
 
 @Component({
   selector: "demo-home",
   template: `
-    <div class="card-group justify-content-between">
-      <div class="card full">
-        <div class="card-header">
-          Demo Home
-        </div>
-        <div class="card-body">
-          The grid component has many different configuration options.  Therefore, there are a lot of different
-          demos below illustrating different types of grids with different features.
-          <br />
-          Click on a card below to see that demo.
-        </div>
+    <div class="card full">
+      <div class="card-header">
+        Demo Home
       </div>
-      <div class="card one-third"
-           *ngFor="let demo of demos"
-           (mouseenter)="demo.hover = true;"
-           (mouseleave)="demo.hover = false;"
-           [style.backgroundColor]="demo.hover ? '#ffddbb' : 'inherit'"
-           [style.cursor]="demo.hover ? 'pointer' : 'inherit'"
-           routerLink="/{{demo.route}}">
-        <div class="card-header">
-          {{demo.header}}
-        </div>
-        <div class="card-body">
-          {{demo.body}}
-        </div>
+      <div class="card-body">
+        The grid component has many different configuration options.  Therefore, there are a lot of different
+        demos below illustrating different types of grids with different features.
+        <br />
+        Click on a card below to see that demo.
+      </div>
+    </div>
+    <div class="card one-third"
+         *ngFor="let demo of demos"
+         (mouseenter)="demo.hover = true;"
+         (mouseleave)="demo.hover = false;"
+         [style.backgroundColor]="demo.hover ? '#ffddbb' : 'inherit'"
+         [style.cursor]="demo.hover ? 'pointer' : 'inherit'"
+         routerLink="/{{demo.route}}">
+      <div class="card-header">
+        {{demo.header}}
+      </div>
+      <div class="card-body">
+        {{demo.body}}
       </div>
     </div>
   `,
@@ -57,6 +55,8 @@ import {Component} from "@angular/core";
   `]
 })
 export class HomeComponent {
+
+  @HostBinding("class") classList: string = "outlet-row y-auto card-group justify-content-between p-2";
 
   demos = [
     {header: "Alerts", route: "alerts", body: "Listen for warnings from the grid and manually deal with them."},

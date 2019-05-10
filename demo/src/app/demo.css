@@ -1,22 +1,27 @@
 
-body {
-  overflow-x: hidden;
-  display: flex;
-  flex-grow: 0;
-  flex-direction: column;
-  height: 100vh;
-}
-
 demo {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .outlet-column {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.outlet-row {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.y-auto {
   overflow-y: auto;
 }
 
@@ -45,8 +50,7 @@ demo {
 }
 
 .iframe {
-  width: 100%;
-  height: 90vh;
+  flex-grow: 1;
 }
 
 .card {

@@ -128,8 +128,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
         </p>
       </div>
     </div>
-  `,
-  host: {class: "outlet-column"}
+  `
 })
 export class FilterGridComponent {
 

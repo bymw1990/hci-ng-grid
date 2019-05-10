@@ -215,8 +215,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
     </div>
     
     <div style="margin-bottom: 200px;"></div>
-  `,
-  host: {class: "outlet-column"}
+  `
 })
 export class ResizeDemoComponent {
 

@@ -54,9 +54,9 @@ declare const VERSION: string;
         </div>
       </div>
     </div>
-    <div id="outlet-parent" class="d-flex flex-column flex-grow-1">
+    <main class="outlet-row y-auto">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   `,
   styles: [ `
     a {

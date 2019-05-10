@@ -1446,8 +1446,8 @@ export class GridService {
    * Save the new row.  If custom saving functions exist, use those, otherwise, just add to the original data array.
    */
   saveNewRow(): void {
-    let leftRow: HTMLElement = this.gridElement.querySelector("#row-left--1");
-    let rightRow: HTMLElement = this.gridElement.querySelector("#row-right--1");
+    let leftRow: HTMLElement = <HTMLElement>this.gridElement.querySelector("#row-left--1");
+    let rightRow: HTMLElement = <HTMLElement>this.gridElement.querySelector("#row-right--1");
     if ((leftRow && leftRow.querySelector(".ng-invalid")) || rightRow.querySelector(".ng-invalid")) {
       console.warn("New row has invalid columns.");
       this.getNewRowMessageSubject().next("Can't save, there are invalid columns.");
