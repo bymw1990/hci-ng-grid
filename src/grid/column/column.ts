@@ -503,10 +503,10 @@ export class Column {
     } else if (this.dataType === "string" || this.dataType === "date-iso8601") {
       return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
         if (a) {
-          a = a.toLowerCase();
+          a = a.toString().toLowerCase();
         }
         if (b) {
-          b = b.toLowerCase();
+          b = b.toString().toLowerCase();
         }
 
         if (sortInfo.asc) {

@@ -251,7 +251,7 @@ export class ThemingComponent {
     { field: "dob", name: "Birth Date", dataType: "date" },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address" },
-    { field: "nLabs", name: "# Labs" }
+    { field: "nLabs", name: "# Labs", dataType: "number" }
   ];
 
   columns1: any[] = [
@@ -271,7 +271,7 @@ export class ThemingComponent {
     { field: "dob", name: "Birth Date", dataType: "date" },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address" },
-    { field: "path.nPath", name: "# Labs", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} }
+    { field: "path.nPath", name: "# Labs", dataType: "number", viewRenderer: CellNumberRangeView, viewConfig: {low: 20, high: 80, showIcon: true} }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
