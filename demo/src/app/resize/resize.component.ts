@@ -213,6 +213,16 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header mb-3">
+        <h4>Full Width</h4>
+      </div>
+      <hci-grid [data]="data"
+                [columns]="columns"
+                [height]="100">
+      </hci-grid>
+    </div>
     
     <div style="margin-bottom: 200px;"></div>
   `

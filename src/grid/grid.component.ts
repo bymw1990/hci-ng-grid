@@ -613,7 +613,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getConfigSubject().subscribe((config: any) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": getConfigSubect().subscribe");
+        console.info("hci-grid: " + this.id + ": getConfigSubect().subscribe");
       }
 
       this.config = config;
@@ -637,7 +637,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
     this.gridService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": this.gridService.pageInfoObserved: " + pageInfo.toString());
+        console.info("hci-grid: " + this.id + ": this.gridService.pageInfoObserved: " + pageInfo.toString());
       }
       this.pageInfo = pageInfo;
     });
@@ -645,7 +645,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     /* When the bound data updates, pass it off to the grid service for processing. */
     this.boundDataSubject.subscribe((boundData: Object[]) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": boundDataSubject.subscribe: " + boundData.length);
+        console.info("hci-grid: " + this.id + ": boundDataSubject.subscribe: " + boundData.length);
       }
       this.gridService.getBusySubject().next(true);
       this.gridService.setOriginalData(this.boundData);
@@ -752,10 +752,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let iw: number = this.iframeSensor.nativeElement.offsetWidth;
 
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": iFrame Resize: " + this.iFrameWidth + ", " + iw);
+        console.info("hci-grid: " + this.id + ": iframeSensor: hci-grid width: " + this.el.nativeElement.offsetWidth + ", iFrame Resize: " + this.iFrameWidth + ", " + iw);
       }
 
-      if (iw !== this.iFrameWidth[0] || Math.abs(this.iFrameWidth[1] - iw) > 2) {
+      if (iw !== this.iFrameWidth[0] && Math.abs(this.iFrameWidth[1] - iw) > 2) {
         this.doRender();
       }
       if (iw !== this.iFrameWidth[1]) {
@@ -769,7 +769,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     /* Listen to changes in the data.  Updated data when the data service indicates a change. */
     this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": data.subscribe: " + data.length);
+        console.info("hci-grid: " + this.id + ": data.subscribe: " + data.length);
       }
       this.setGridData(data);
     });
@@ -779,7 +779,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": GridComponent.selectedLocationSubscription");
+        console.info("hci-grid: " + this.id + ": GridComponent.selectedLocationSubscription");
       }
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
@@ -795,7 +795,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridEventService.getUnselectSubject().subscribe((p: Point) => {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": GridComponent.unselectSubjectSubscription");
+        console.info("hci-grid: " + this.id + ": GridComponent.unselectSubjectSubscription");
       }
       this.popupContainer.clear();
       this.leftCellEditContainer.clear();
@@ -872,8 +872,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
 
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": ngOnChanges");
-      console.debug(changes);
+      console.info("hci-grid: " + this.id + ": ngOnChanges");
+      console.info(changes);
     }
 
     if (changes["config"]) {
@@ -927,14 +927,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   public registerEventListeners(): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": registerEventListeners");
+      console.info("hci-grid: " + this.id + ": registerEventListeners");
     }
 
     this.resetEventListeners();
 
     for (let eventListener of this.eventListeners) {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": registering: " + eventListener.type.name);
+        console.info("hci-grid: " + this.id + ": registering: " + eventListener.type.name);
       }
 
       let instance: EventListener = new InjectableFactory<EventListener>(eventListener.type, this.injector).getInstance();
@@ -1007,7 +1007,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   public clearSelectedRows(): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": clearSelectedRows");
+      console.info("hci-grid: " + this.id + ": clearSelectedRows");
     }
 
     let rows: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-row");
@@ -1338,7 +1338,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       let paste: string = this.copypastearea.nativeElement.value;
 
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": Paste Event: " + paste);
+        console.info("hci-grid: " + this.id + ": Paste Event: " + paste);
       }
 
       let range: Range = this.gridEventService.getCurrentRange();
@@ -1400,7 +1400,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       j = range.min.j;
 
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": allowPaste: " + allowPaste);
+        console.info("hci-grid: " + this.id + ": allowPaste: " + allowPaste);
       }
       if (allowPaste === 0) {
         for (var ii = 0; ii < rows.length; ii++) {
@@ -1451,7 +1451,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   public createPopup(location: Point): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": createPopup at " + location.toString());
+      console.info("hci-grid: " + this.id + ": createPopup at " + location.toString());
     }
 
     let column: Column = this.columnMap.get("ALL")[location.j];
@@ -1533,7 +1533,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private buildConfigFromInput(): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": buildConfigFromInput");
+      console.info("hci-grid: " + this.id + ": buildConfigFromInput");
     }
 
     if (this.id !== undefined) {
@@ -1613,7 +1613,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private updateGridContainerHeight(): void {
     if (this.gridService.nVisibleRows) {
       if (isDevMode()) {
-        console.debug("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
+        console.info("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
       }
 
       let gridHeight: number = this.gridContainer.nativeElement.offsetHeight;
@@ -1635,7 +1635,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   /**
-   * Calculate the sizes of the containers and column header sizes.
+   * Calculate the sizes of the containers and column header sizes.  The basic principle is that the grid always fills
+   * the parent's size.  The iframe inside listens to changes to that size to prompt re-rendering of the containers.
    */
   private updateGridContainerHeightAndColumnSizes(): void {
     this.gridService.setNVisibleRows();
@@ -1670,7 +1671,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
 
     let e = this.gridContainer.nativeElement;
-    let gridWidth: number =  this.el.nativeElement.parentElement.offsetWidth;
+    let gridWidth: number =  this.el.nativeElement.offsetWidth;
 
     this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
     let insideGridWidth: number = gridWidth;
@@ -1828,8 +1829,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   private setGridData(gridData: Row[]): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": setGridData");
-      console.debug(gridData);
+      console.info("hci-grid: " + this.id + ": setGridData");
+      console.info(gridData);
     }
 
     this.gridData = gridData;
@@ -2116,7 +2117,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private selectComponent(i: number, j: number): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": selectComponent: " + i + " " + j);
+      console.info("hci-grid: " + this.id + ": selectComponent: " + i + " " + j);
     }
     let e = this.gridContainer.nativeElement.querySelector("#cell-" + i + "-" + j);
 
@@ -2194,7 +2195,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    */
   private updateSelectedCells(range: Range): void {
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": updateSelectedCells: " + ((range) ? range.toString() : "undefined"));
+      console.info("hci-grid: " + this.id + ": updateSelectedCells: " + ((range) ? range.toString() : "undefined"));
     }
 
     let es: HTMLElement[] = this.gridContainer.nativeElement.querySelectorAll(".hci-grid-cell");
