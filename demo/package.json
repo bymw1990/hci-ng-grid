@@ -8,11 +8,11 @@
     "build:server": "npm run clean && npm run ngc && npm run webpack -- --config webpack/webpack.server.js",
     "clean": "npm run rimraf src/**/*.js src/**/*.js.map src/**/*.ngstyle.ts src/**/*.ngfactory.ts src/**/*.ngsummary.json src/**/*.metadata.json src/**/*.d.ts build dist",
     "ngc": "ngc",
-    "postinstall": "cd .. && npm run build && npm run push && cd demo",
+    "postinstall": "npm run build",
     "rimraf": "rimraf",
     "serve": "node server.js",
-    "start": "npm run clean && npm run ngc && webpack-dev-server --config webpack/webpack.live.js",
-    "start-prod": "npm run build:server && npm run serve",
+    "run-demo": "npm run clean && npm run ngc && webpack-dev-server --config webpack/webpack.live.js",
+    "run-demo-prod": "npm run build:server && npm run serve",
     "webpack": "webpack"
   },
   "optionalDependencies": {

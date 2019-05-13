@@ -374,6 +374,7 @@ const SCROLL: number = 1;
       border-top: none;
       padding: 0.25rem;
       justify-content: space-between;
+      align-items: center;
     }
     
     #pageSize {
@@ -1648,9 +1649,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let gridHeight: number = 0;
     let contentViewHeight: number = 0;
 
-    let titleHeight: number = this.gridContainer.nativeElement.querySelector("#title-bar").offsetHeight;
-    let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
-    let footerHeight: number = this.gridContainer.nativeElement.querySelector("#grid-footer").offsetHeight;
+    let titleHeight: number = 0;
+    try {
+      titleHeight = this.gridContainer.nativeElement.querySelector("#title-bar").offsetHeight;
+    } catch (error) {}
+
+    let headerHeight: number = 0;
+    try {
+      headerHeight = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+    } catch (error) {}
+
+    let footerHeight: number = 0;
+    try {
+      footerHeight = this.gridContainer.nativeElement.querySelector("#grid-footer").offsetHeight;
+    } catch (error) {}
+
     contentViewHeight = 0;
     if (this.height) {
       contentViewHeight = this.height - titleHeight - headerHeight - footerHeight;
@@ -1829,8 +1842,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   private setGridData(gridData: Row[]): void {
     if (isDevMode()) {
-      console.info("hci-grid: " + this.id + ": setGridData");
-      console.info(gridData);
+      console.debug("hci-grid: " + this.id + ": setGridData");
+      console.debug(gridData);
     }
 
     this.gridData = gridData;

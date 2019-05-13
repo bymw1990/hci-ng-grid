@@ -1179,8 +1179,10 @@ export class GridService {
     let obj: Object;
     if (key) {
       obj = this.originalData[key];
-    } else {
+    } else if (this.newRow) {
       obj = this.newRow.data;
+    } else {
+      return;
     }
 
     for (var i = 0; i < fields.length - 1; i++) {

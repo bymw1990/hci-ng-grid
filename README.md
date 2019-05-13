@@ -385,3 +385,21 @@ following are examples of built in filters.
 ## TODOs
 
 * There are only left fixed colums, but some have requested right fixed columns.
+
+## Building and Demo
+
+To run the demo for the first time, run the following commands:
+
+    npm install
+    npm run install-demo
+    npm run run-demo
+
+If package.json doesn't change, after making a change to the grid run:
+
+    npm run build
+    npm run run-demo
+
+The grid build automatically copies the transpiled files to the demo/node_modules/hci-ng-grid which mimics pulling
+the dependency from npm.
+
+To mimic a production build and be able to run the demo anywhere, use "npm run run-demo-prod".
