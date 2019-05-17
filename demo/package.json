@@ -8,7 +8,6 @@
     "build:server": "npm run clean && npm run ngc && npm run webpack -- --config webpack/webpack.server.js",
     "clean": "npm run rimraf src/**/*.js src/**/*.js.map src/**/*.ngstyle.ts src/**/*.ngfactory.ts src/**/*.ngsummary.json src/**/*.metadata.json src/**/*.d.ts build dist",
     "ngc": "ngc",
-    "postinstall": "npm run build",
     "rimraf": "rimraf",
     "serve": "node server.js",
     "run-demo": "npm run clean && npm run ngc && webpack-dev-server --config webpack/webpack.live.js",

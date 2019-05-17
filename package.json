@@ -1,6 +1,6 @@
 {
   "name": "hci-ng-grid",
-  "version": "4.0.0-beta.4",
+  "version": "4.0.0-beta.6",
   "description": "Comprehensive angular grid component",
   "keywords": [
     "angular",
@@ -27,7 +27,6 @@
     "ngc": "ngc",
     "npmPack": "npm run build && npm run copyToDist && cd dist && npm pack",
     "npmPublish": "npm run build && npm run copyToDist && cd dist && npm publish --access public",
-    "postinstall": "npm run build",
     "push": "cd dist && npm run copyfiles -- \"index.+(js|d.ts|js.map|metadata.json)\" ../demo/node_modules/hci-ng-grid && npm run copyfiles -- -e \"*.+(ngfactory|ngsummary).*\" \"src/**/*.+(js|d.ts|js.map|metadata.json|css)\" ../demo/node_modules/hci-ng-grid && cd ..",
     "rimraf": "rimraf",
     "run-demo": "gulp run-demo",
