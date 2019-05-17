@@ -11,7 +11,7 @@
 
 ```
 "dependencies": {
-    "hci-ng-grid": "4.0.0-beta.2"
+    "hci-ng-grid": "4.0.0-beta.4"
 }
 ```
 ```
