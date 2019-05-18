@@ -222,7 +222,8 @@ const SCROLL: number = 1;
                style="font-weight: bold;">
             Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
           </div>
-          <div *ngIf="pageInfo.pageSize > 0">
+          <div *ngIf="pageInfo.pageSize > 0"
+               class="ml-auto mr-auto">
             <span (click)="doPageFirst()"><span class="fas fa-fast-backward"></span></span>
             <span (click)="doPagePrevious()" class="pl-3 pr-3"><span class="fas fa-backward"></span></span>
             <select id="pageSelect"
@@ -373,7 +374,6 @@ const SCROLL: number = 1;
       display: flex;
       border-top: none;
       padding: 0.25rem;
-      justify-content: space-between;
       align-items: center;
     }
     

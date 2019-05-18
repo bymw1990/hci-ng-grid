@@ -45,6 +45,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columns]="columns1"
+                    [pageSize]="10"
                     [mode]="'spreadsheet'"
                     (onCellSave)="onCellSave($event)">
           </hci-grid>
@@ -90,6 +91,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columns]="columns1"
+                    [pageSize]="10"
                     [mode]="'spreadsheet'"
                     [saveOnDirtyRowChange]="true"
                     (onRowSave)="onRowSave($event)">
@@ -118,7 +120,7 @@ export class SavingDemoComponent {
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {
-    this.data1 = this.dataGeneratorService.getData(6);
+    this.data1 = this.dataGeneratorService.getData(15);
   }
 
   onCellSave(dataChange: any) {
