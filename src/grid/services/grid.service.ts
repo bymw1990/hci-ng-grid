@@ -972,10 +972,10 @@ export class GridService {
     }
 
     if (i === -1) {
-      this.setInputDataValue(key, this.columns[j].field, newValue);
+      this.setInputDataValue(i, this.columns[j].field, newValue);
       this.valueSubject.next(new Point(i, j));
     } else {
-      this.setInputDataValue(key, this.columns[j].field, newValue);
+      this.setInputDataValue(i, this.columns[j].field, newValue);
       this.valueSubject.next(new Point(i, j));
 
       this.getRow(i).get(j).dirty = true;
@@ -1173,12 +1173,12 @@ export class GridService {
    * @param field
    * @param value
    */
-  public setInputDataValue(key: number, field: string, value: any): void {
+  public setInputDataValue(rowNum: number, field: string, value: any): void {
     var fields = field.split(".");
 
     let obj: Object;
-    if (key) {
-      obj = this.originalData[key];
+    if (rowNum !== undefined && rowNum >= 0) {
+      obj = this.originalData[rowNum];
     } else if (this.newRow) {
       obj = this.newRow.data;
     } else {
