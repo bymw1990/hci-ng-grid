@@ -52,7 +52,7 @@ export class GridService {
   externalPaging: boolean;
   pageSizes: number[];
   nVisibleRows: number;
-  newRowPostCall: (data: any) => Observable<any>;
+  newRowPostCall: (newRow: any) => Observable<any>;
 
   originalData: Object[];
   preparedData: Row[];

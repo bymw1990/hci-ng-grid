@@ -503,7 +503,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() mode: string;
   @Input() logWarnings: boolean = true;
   @Input() height: number;
-  @Input() newRowPostCall: (data: any) => Observable<any>;
+  @Input() newRowPostCall: (newRow: any) => Observable<any>;
   @Input() newRowPostCallSuccess: (newRow: any) => void;
   @Input() newRowPostCallError: (error: any) => void;
   @Input() newRowPostCallFinally: () => void;

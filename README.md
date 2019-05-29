@@ -11,7 +11,7 @@
 
 ```
 "dependencies": {
-    "hci-ng-grid": "4.0.0-beta.5"
+    "hci-ng-grid": "4.0.x"
 }
 ```
 ```
@@ -223,6 +223,36 @@ display
 type: string
 default: flow-root
 Sets the display on the root component.  Although you could also do this with style on the grid.
+```
+```
+addNewRowButtonLocation
+type: string
+default: undefined
+Can be "title-bar" or "footer" depending where you want the add new row button to appear.
+```
+```
+newRowPostCall
+type: (data: newRow) => Observable<any>
+default: undefined
+Implement your own call to handle creating a new row.  For example, persisting it so the new gets an id created in the database.
+```
+```
+newRowPostCallSuccess
+type: (newRow: any) => void
+default: undefined
+Custom command upon successful newRowPostCall().
+```
+```
+newRowPostCallError
+type: (error: any) => void
+default: undefined
+Custom error command upon error from newRowPostCall().
+```
+```
+newRowPostCallFinally
+type: () => void
+default: undefined
+Custom finally command when newRowPostCall() success or error completes.
 ```
 
 ## Outputs
