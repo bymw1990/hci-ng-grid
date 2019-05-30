@@ -1,5 +1,8 @@
 # Change Log
 
+## 5.0.0
+    - To Angular 8, rxjs 6, ng-bootstrap 4.2
+
 ## [4.0.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v4.0.0)
     - Add new rows of data.
     - Visualize invalid fields.
