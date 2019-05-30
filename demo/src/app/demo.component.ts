@@ -22,9 +22,9 @@ declare const VERSION: string;
         <div class="mr-3">
           <button class="btn btn-outline-primary white" routerLink="/docs">Documentation</button>
         </div>
-        <div ngbDropdown placement="bottom-right" class="d-inline-block">
+        <div ngbDropdown class="d-inline-block">
           <button class="btn btn-outline-primary white" id="routeList" ngbDropdownToggle>Select A Demo</button>
-          <div ngbDropdownMenu class="dropdown-menu" style="max-height: 400px; overflow-y: auto;" aria-labelledby="routeList">
+          <div ngbDropdownMenu class="dropdown-menu" style="max-height: 400px; overflow-y: auto; left: auto; right: 0;" aria-labelledby="routeList">
             <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/busy">Busy</a>
