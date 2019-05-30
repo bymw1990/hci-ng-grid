@@ -1,8 +1,9 @@
 import {Component, ElementRef, ViewChild} from "@angular/core";
 
+import * as moment from "moment";
+
 import {Point} from "../../utils/point";
 import {CellEditRenderer} from "./cell-edit-renderer";
-import * as moment from "moment";
 
 @Component({
   selector: "hci-grid-text-edit",
@@ -28,7 +29,7 @@ import * as moment from "moment";
 })
 export class TextEditRenderer extends CellEditRenderer {
 
-  @ViewChild("input") input: ElementRef;
+  @ViewChild("input", {static: true}) input: ElementRef;
 
   invalid: boolean = false;
   required: boolean;

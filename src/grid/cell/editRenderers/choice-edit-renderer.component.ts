@@ -32,7 +32,7 @@ import {Point} from "../../utils/point";
 })
 export class ChoiceEditRenderer extends CellEditRenderer {
 
-  @ViewChild("select") select: ElementRef;
+  @ViewChild("select", {static: true}) select: ElementRef;
 
   ngAfterViewInit() {
     this.select.nativeElement.focus();

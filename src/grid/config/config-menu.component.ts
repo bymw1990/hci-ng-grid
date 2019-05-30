@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, Input, isDevMode, OnDestroy, OnInit} from "@angular/core";
 
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from "rxjs";
 
 import {GridComponent} from "../grid.component";
 import {GridGlobalService} from "../services/grid-global.service";

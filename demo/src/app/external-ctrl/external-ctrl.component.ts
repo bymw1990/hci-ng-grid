@@ -41,7 +41,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 [pageSizes]="[10, 25, 100]&gt;
               &lt;/hci-grid&gt;
               
-              @ViewChild("grid") grid: GridComponent;
+              @ViewChild("grid", static: true) grid: GridComponent;
               
               Columns:
               field: "idPatient", name: "ID", visible: false
@@ -71,7 +71,7 @@ export class ExternalControlComponent implements OnInit {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  @ViewChild("grid") grid: GridComponent;
+  @ViewChild("grid", {static: true}) grid: GridComponent;
 
   hidden: boolean = false;
   dataSize: number = 250;

@@ -1,6 +1,5 @@
-import {Component, ElementRef, Input, ViewChild} from "@angular/core";
+import {Component, ElementRef, ViewChild} from "@angular/core";
 
-import {Column} from "../column";
 import {FilterRenderer} from "./filter-renderer";
 import {FilterInfo} from "../../utils/filter-info";
 
@@ -39,7 +38,7 @@ import {FilterInfo} from "../../utils/filter-info";
 })
 export class TextFilterRenderer extends FilterRenderer {
 
-  @ViewChild("input") input: ElementRef;
+  @ViewChild("input", {static: true}) input: ElementRef;
 
   value: any;
   width: number = 200;

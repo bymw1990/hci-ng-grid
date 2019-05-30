@@ -31,8 +31,8 @@ import {Cell} from "../cell";
 })
 export class DateEditRenderer extends CellEditRenderer {
 
-  @ViewChild("datepicker", {read: ElementRef}) datepickerEl: ElementRef;
-  @ViewChild("datepicker") datepicker: NgbDatepicker;
+  @ViewChild("datepicker", {read: ElementRef, static: true}) datepickerEl: ElementRef;
+  @ViewChild("datepicker", {static: true}) datepicker: NgbDatepicker;
 
   /**
    * Upon creation of the datepicker, focus on it to enable key nav.

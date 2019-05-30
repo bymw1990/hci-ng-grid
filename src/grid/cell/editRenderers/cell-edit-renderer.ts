@@ -1,7 +1,6 @@
 import {ChangeDetectorRef, ElementRef, HostListener, isDevMode, Renderer2} from "@angular/core";
 
-import {Subject} from "rxjs/Subject";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Subject} from "rxjs";
 
 import {Cell} from "../cell";
 import {GridService} from "../../services/grid.service";

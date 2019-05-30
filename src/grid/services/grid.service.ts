@@ -1,9 +1,8 @@
 import {Injectable, isDevMode} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 
-import {Subject, Subscription} from "rxjs/Rx";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable, of, Subject, Subscription} from "rxjs";
+import {finalize} from "rxjs/operators";
 
 import {GridGlobalService} from "./grid-global.service";
 import {Cell} from "../cell/cell";
@@ -1457,9 +1456,9 @@ export class GridService {
       this.busySubject.next(true);
 
       this.newRowPostCall(this.newRow.data)
-        .finally(() => {
+        .pipe(finalize(() => {
           this.newRowPostCallFinally(this);
-        })
+        }))
         .subscribe((newRow: any) => {
           this.newRowPostCallSuccess(newRow, this);
         }, (error: any) => {
@@ -1494,7 +1493,7 @@ export class GridService {
     return (error: any, gridService?: GridService) => {
       console.error(error);
       this.getNewRowMessageSubject().next(error);
-      return Observable.of(undefined);
+      return of(undefined);
     };
   }
 

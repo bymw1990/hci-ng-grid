@@ -6,9 +6,8 @@ import {
   isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector, TemplateRef
 } from "@angular/core";
 
-import {Subject} from "rxjs/Subject";
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs/Subscription";
+import {interval, Observable, Subject, Subscription} from "rxjs";
+import {take, takeWhile} from "rxjs/operators";
 
 import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
@@ -432,7 +431,6 @@ const SCROLL: number = 1;
     .empty-content {
       position: absolute;
       width: 100%;
-      height: -webkit-fill-available;
     }
     
     .empty-content-text {
@@ -459,20 +457,20 @@ const SCROLL: number = 1;
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
-  @ViewChild("mainContentHeaderContainer", { read: ViewContainerRef }) headerContainer: ViewContainerRef;
-  @ViewChild("mainContentPopupContainer", { read: ViewContainerRef }) popupContainer: ViewContainerRef;
-  @ViewChild("mainContentNewRowContainer", { read: ViewContainerRef }) newRowContainer: ViewContainerRef;
-  @ViewChild("leftCellEditContainer", { read: ViewContainerRef }) leftCellEditContainer: ViewContainerRef;
-  @ViewChild("rightCellEditContainer", { read: ViewContainerRef }) rightCellEditContainer: ViewContainerRef;
-  @ViewChild("copypastearea") copypastearea: any;
-  @ViewChild("gridContainer") gridContainer: ElementRef;
-  @ViewChild("busyOverlay") busyOverlay: ElementRef;
-  @ViewChild("loadingOverlay") loadingOverlay: ElementRef;
-  @ViewChild("emptyContent") emptyContent: ElementRef;
-  @ViewChild("focuser1") focuser1: ElementRef;
-  @ViewChild("focuser2") focuser2: ElementRef;
-  @ViewChild("rightRowContainer") rightRowContainer: ElementRef;
-  @ViewChild("iframeSensor") iframeSensor: ElementRef;
+  @ViewChild("mainContentHeaderContainer", { read: ViewContainerRef, static: false }) headerContainer: ViewContainerRef;
+  @ViewChild("mainContentPopupContainer", { read: ViewContainerRef, static: false }) popupContainer: ViewContainerRef;
+  @ViewChild("mainContentNewRowContainer", { read: ViewContainerRef, static: false }) newRowContainer: ViewContainerRef;
+  @ViewChild("leftCellEditContainer", { read: ViewContainerRef, static: false }) leftCellEditContainer: ViewContainerRef;
+  @ViewChild("rightCellEditContainer", { read: ViewContainerRef, static: false }) rightCellEditContainer: ViewContainerRef;
+  @ViewChild("copypastearea", {static: false}) copypastearea: any;
+  @ViewChild("gridContainer", {static: false}) gridContainer: ElementRef;
+  @ViewChild("busyOverlay", {static: false}) busyOverlay: ElementRef;
+  @ViewChild("loadingOverlay", {static: false}) loadingOverlay: ElementRef;
+  @ViewChild("emptyContent", {static: false}) emptyContent: ElementRef;
+  @ViewChild("focuser1", {static: false}) focuser1: ElementRef;
+  @ViewChild("focuser2", {static: false}) focuser2: ElementRef;
+  @ViewChild("rightRowContainer", {static: false}) rightRowContainer: ElementRef;
+  @ViewChild("iframeSensor", {static: false}) iframeSensor: ElementRef;
 
   @Input("data") boundData: Object[];
   @Input("dataCall") onExternalDataCall: Function;
@@ -1073,10 +1071,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": doRender: delay && el: " + el.style.display);
       }
-      this.doRenderSubscription = Observable.interval(delay)
-          .takeWhile((i: any) => {
+      this.doRenderSubscription = interval(delay)
+          .pipe(takeWhile((i: any) => {
             return el.style.display === "none" && i < 10;
-          })
+          }))
           .subscribe(
             (value) => {},
             (error) => {},
@@ -1088,8 +1086,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       if (isDevMode()) {
         console.debug("hci-grid: " + this.id + ": doRender: delay");
       }
-      this.doRenderSubscription = Observable.interval(delay)
-          .take(1)
+      this.doRenderSubscription = interval(delay)
+          .pipe(take(1))
           .subscribe(i => {
             this.renderCellsAndData();
           });

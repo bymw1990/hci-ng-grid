@@ -1,6 +1,7 @@
 import {Component, HostBinding} from "@angular/core";
 
-import {Observable} from "rxjs/Observable";
+import {of} from "rxjs";
+import {delay} from "rxjs/operators";
 
 import {ExternalData, ExternalInfo, TextFilterRenderer} from "hci-ng-grid";
 
@@ -59,7 +60,7 @@ export class DataTypesDemoComponent {
 
   ngOnInit() {
     this.dataCall1 = (externalInfo: ExternalInfo) => {
-      return Observable.of(new ExternalData(this.dataGeneratorService.getData(250), externalInfo)).delay(Math.random() * 900 + 100);
+      return of(new ExternalData(this.dataGeneratorService.getData(250), externalInfo)).pipe(delay(Math.random() * 900 + 100));
     };
   }
 }

@@ -1,5 +1,6 @@
 import {Injectable, isDevMode} from "@angular/core";
-import {Subject} from "rxjs/Rx";
+
+import {Subject} from "rxjs";
 
 import {GridService} from "./grid.service";
 import {Point} from "../utils/point";

@@ -1,7 +1,8 @@
 import {Injectable, isDevMode} from "@angular/core";
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from "@angular/common/http";
 
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
+import {catchError, delay, mergeMap, tap} from "rxjs/operators";
 
 @Injectable()
 export class DemoInterceptor implements HttpInterceptor {
@@ -11,12 +12,12 @@ export class DemoInterceptor implements HttpInterceptor {
       console.debug("DemoInterceptor.intercept: " + request.url);
     }
 
-    return Observable.of(null).mergeMap(() => {
+    return of(null).pipe(mergeMap(() => {
       if (request.url.match(".*/dictionary/gender")) {
         if (isDevMode()) {
           console.info("GET .*/dictionary/gender");
         }
-        return Observable.of(new HttpResponse<any>({ status: 200, body: [
+        return of(new HttpResponse<any>({ status: 200, body: [
           {value: 1, display: "Female"},
           {value: 2, display: "Male"},
           {value: 3, display: "Unknown"}
@@ -25,7 +26,7 @@ export class DemoInterceptor implements HttpInterceptor {
         if (isDevMode()) {
           console.info("GET .*/dictionary/race");
         }
-        return Observable.of(new HttpResponse<any>({ status: 200, body: [
+        return of(new HttpResponse<any>({ status: 200, body: [
           {value: 1, display: "Asian"},
           {value: 2, display: "Black"},
           {value: 3, display: "Hispanic"},
@@ -37,7 +38,7 @@ export class DemoInterceptor implements HttpInterceptor {
         if (isDevMode()) {
           console.info("GET .*/dictionary/states");
         }
-        return Observable.of(new HttpResponse<any>({ status: 200, body: [
+        return of(new HttpResponse<any>({ status: 200, body: [
           {value: 1, display: "AL"},
           {value: 2, display: "AK"},
           {value: 3, display: "AZ"},
@@ -92,20 +93,21 @@ export class DemoInterceptor implements HttpInterceptor {
       }
 
       return next.handle(request)
-        .do((ev: HttpEvent<any>) => {
+        .pipe(tap(event => (ev: HttpEvent<any>) => {
           // Do Default
-        })
-        .catch(response => {
-          if (response instanceof HttpErrorResponse) {
-            console.warn("Http error", response);
-          }
+        }),
+            catchError(
+                response => {
+                  if (response instanceof HttpErrorResponse) {
+                    console.warn("Http error", response);
+                  }
 
-          return Observable.throw(response);
-        });
-    })
-      .materialize()
-      .delay(Math.floor(Math.random() * 500 + 250))
-      .dematerialize();
+                  return Observable.throw(response);
+                }
+            )
+        )
+    }), delay(Math.floor(Math.random() * 500 + 250)));
+
   }
 
 }

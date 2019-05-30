@@ -133,8 +133,8 @@ export class SelectGridComponent extends BaseDemoComponent {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  @ViewChild("grid2") grid2: GridComponent;
-  @ViewChild("grid3") grid3: GridComponent;
+  @ViewChild("grid2", {static: true}) grid2: GridComponent;
+  @ViewChild("grid3", {static: true}) grid3: GridComponent;
 
   clickedRow: any;
   selectedRows2: any[] = [];

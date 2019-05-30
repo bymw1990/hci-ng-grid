@@ -1,9 +1,11 @@
 import {Component, HostBinding, OnInit, ViewChild} from "@angular/core";
 
+import {Observable, of} from "rxjs";
+import {delay} from "rxjs/operators";
+
 import {CompareFilterRenderer, ExternalData, ExternalInfo, GridComponent, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
-import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: "busy-demo",
@@ -120,7 +122,7 @@ export class BusyDemoComponent implements OnInit {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  @ViewChild("grid2") grid2: GridComponent;
+  @ViewChild("grid2", {static: true}) grid2: GridComponent;
 
   dataSize: number = 250;
 
@@ -152,7 +154,7 @@ export class BusyDemoComponent implements OnInit {
     console.info("handleExternalDataCall1");
     console.info(externalInfo);
 
-    return Observable.of(this.dataGeneratorService.getExternalData1(externalInfo)).delay(5000);
+    return of(this.dataGeneratorService.getExternalData1(externalInfo)).pipe(delay(5000));
   }
 
 }

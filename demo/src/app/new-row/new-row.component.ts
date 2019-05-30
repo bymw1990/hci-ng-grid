@@ -1,6 +1,7 @@
 import {Component, HostBinding} from "@angular/core";
 
-import {Observable} from "rxjs/Observable";
+import {Observable, of, throwError} from "rxjs";
+import {delay} from "rxjs/operators";
 
 import {GridService} from "hci-ng-grid";
 
@@ -88,17 +89,17 @@ export class NewRowDemo {
 
   newRowPostCall(data: any): Observable<any> {
     if (data.lastName === "Error") {
-      return Observable.throw("Test save error.").materialize().delay(Math.random() * 500 + 250).dematerialize();
+      return throwError("Test save error.").pipe(delay(Math.random() * 500 + 250));
     }
 
     data.idPatient = this.uniqueId++;
-    return Observable.of(data).delay(Math.random() * 500 + 250);
+    return of(data).pipe(delay(Math.random() * 500 + 250));
   }
 
   newRowPostCallError(error: any, gridService?: GridService): Observable<any>  {
     console.error("Custom Error Function: " + error);
     gridService.getNewRowMessageSubject().next("Custom Error Function: " + error);
-    return Observable.of(undefined);
+    return of(undefined);
   };
 
 }

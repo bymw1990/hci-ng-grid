@@ -1,6 +1,7 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
+import {delay} from "rxjs/operators";
 
 import {CompareFilterRenderer, ExternalData, ExternalInfo, FilterInfo, SelectFilterRenderer, SortInfo, TextFilterRenderer} from "hci-ng-grid";
 
@@ -224,17 +225,17 @@ export class ExternalDataComponent implements OnInit {
     console.info("handleExternalDataCall1");
     console.info(externalInfo);
 
-    return Observable.of(this.dataGeneratorService.getExternalData1(externalInfo)).delay(1000);
+    return of(this.dataGeneratorService.getExternalData1(externalInfo)).pipe(delay(1000));
   }
 
   public handleExternalDataCall2(externalInfo: ExternalInfo): Observable<ExternalData> {
     console.info("handleExternalDataCall2");
     console.info(externalInfo);
 
-    return Observable.of(this.dataGeneratorService.getExternalData2(externalInfo)).delay(1000);
+    return of(this.dataGeneratorService.getExternalData2(externalInfo)).pipe(delay(1000));
   }
 
   public handleExternalDataCall3(externalInfo: ExternalInfo): Observable<ExternalData> {
-    return Observable.of(new ExternalData([], externalInfo)).delay(1000);
+    return of(new ExternalData([], externalInfo)).pipe(delay(1000));
   }
 }

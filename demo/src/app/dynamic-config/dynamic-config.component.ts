@@ -189,7 +189,7 @@ export class DynamicConfigGridComponent {
   key: string = "title";
   value: any = "Test";
 
-  @ViewChild("grid3") grid3: GridComponent;
+  @ViewChild("grid3", {static: true}) grid3: GridComponent;
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
