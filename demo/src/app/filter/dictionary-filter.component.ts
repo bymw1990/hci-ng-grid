@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, ElementRef} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {Component} from "@angular/core";
 
-import {FilterInfo, FilterRenderer, GridService} from "hci-ng-grid";
+import {FilterRenderer} from "hci-ng-grid";
+import {HciFilterDto} from "hci-ng-grid-dto";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -115,7 +115,7 @@ export class DictionaryFilterRenderer extends FilterRenderer {
     this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice.value, undefined, "E", true));
+        this.filters.push(new HciFilterDto(this.column.field, this.column.dataType, choice.value, undefined, "E", true));
       }
     }
 

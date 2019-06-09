@@ -38,7 +38,8 @@ module.exports = function(options) {
                          */
                         helpers.root("node_modules/@angular"),
                         helpers.root("node_modules/rxjs"),
-                        helpers.root("node_modules/@hci")
+                        helpers.root("node_modules/@hci"),
+                        helpers.root("node_modules/hci-ng-grid-dto")
                     ]
                 },
 
@@ -60,7 +61,6 @@ module.exports = function(options) {
                                 inlineSourceMap: true,
                                 compilerOptions: {
                                     removeComments: true
-
                                 }
                             },
                         },

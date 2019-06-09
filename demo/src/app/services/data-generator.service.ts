@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 
 import * as moment from "moment";
 
-import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto} from "hci-ng-grid-dto";
+import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
 
 const momentRandom = require("moment-random");
 
@@ -234,8 +234,8 @@ export class DataGeneratorService {
     if (!externalInfo.getPaging()) {
       externalInfo.setPaging(new HciPagingDto());
     }
-    let filters: any = externalInfo.getFilters();
-    let sort: any = externalInfo.getSorts();
+    let filters: HciFilterDto[] = externalInfo.getFilters();
+    let sorts: HciSortDto[] = externalInfo.getSorts();
     let pageInfo: HciPagingDto = externalInfo.getPaging();
 
     let filtered: Object[] = [];
@@ -281,20 +281,20 @@ export class DataGeneratorService {
       }
     }
 
-    if (sort) {
+    if (sorts && sorts.length === 1) {
       filtered = filtered.sort((a: Object, b: Object) => {
-        if (sort["asc"]) {
-          if (a[sort["field"]] < b[sort["field"]]) {
+        if (sorts[0].getAsc()) {
+          if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
             return -1;
-          } else if (a[sort["field"]] < b[sort["field"]]) {
+          } else if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
             return 1;
           } else {
             return 0;
           }
         } else {
-          if (a[sort["field"]] > b[sort["field"]]) {
+          if (a[sorts[0].getField()] > b[sorts[0].getField()]) {
             return -1;
-          } else if (a[sort["field"]] < b[sort["field"]]) {
+          } else if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
             return 1;
           } else {
             return 0;

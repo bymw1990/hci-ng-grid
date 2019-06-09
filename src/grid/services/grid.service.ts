@@ -1239,24 +1239,12 @@ export class GridService {
    *
    * @param column
    */
-  public sort(field: string) {
+  public sort() {
     this.eventSubject.next({
       type: "sort",
       status: "start",
-      field: field
+      sorts: this.sorts
     });
-
-    if (this.sorts.length === 0) {
-      this.sorts.push(new HciSortDto(field));
-    }
-
-    if (this.sorts[0].field === null || this.sorts[0].field !== field) {
-      this.sorts[0].field = field;
-      this.sorts[0].asc = true;
-    } else {
-      this.sorts[0].asc = !this.sorts[0].asc;
-    }
-    this.sortsSubject.next(this.sorts);
 
     if(this.externalSorting) {
       this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, this.sorts, (this.externalPaging) ? this.paging : null));
@@ -1268,7 +1256,9 @@ export class GridService {
   public sortPreparedData() {
     let sortColumns: Column[] = [];
 
-    if (this.sorts[0].field === null && this.groupBy) {
+    if (!this.sorts || this.sorts.length === 0) {
+      return;
+    } else if (this.sorts[0].field === null && this.groupBy) {
       this.sorts[0].field = "GROUP_BY";
     }
 
@@ -1347,6 +1337,39 @@ export class GridService {
     this.filterMapSubject.next(this.filterMap);
 
     this.filterEventSubject.next(filters);
+  }
+
+  /**
+   * Add a sort field and then perform the sort.  By default, clear the existing sort and start over.
+   *
+   * @param {string} field
+   * @param {boolean} reset
+   */
+  public addSort(field: string, reset: boolean = true): void {
+    if (this.sorts && this.sorts.length === 1 && reset && this.sorts[0].field !== field) {
+      this.sorts = [];
+    }
+
+    if (this.sorts.length === 0) {
+      this.sorts.push(new HciSortDto(field));
+    } else {
+      let exists: boolean = false;
+      for (let sort of this.sorts) {
+        if (sort.field === field) {
+          sort.asc = !sort.asc;
+          exists = true;
+          break;
+        }
+      }
+
+      if (!exists) {
+        this.sorts.push(new HciSortDto(field));
+      }
+    }
+
+    this.sortsSubject.next(this.sorts);
+
+    this.sort();
   }
 
   public getFilterEventSubject(): BehaviorSubject<HciFilterDto[]> {

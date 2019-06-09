@@ -3,7 +3,8 @@ import {Component, HostBinding, OnInit} from "@angular/core";
 import {Observable, of} from "rxjs";
 import {delay} from "rxjs/operators";
 
-import {CompareFilterRenderer, ExternalData, ExternalInfo, FilterInfo, SelectFilterRenderer, SortInfo, TextFilterRenderer} from "hci-ng-grid";
+import {CompareFilterRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {HciDataDto, HciFilterDto, HciGridDto, HciSortDto} from "hci-ng-grid-dto";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -174,9 +175,9 @@ export class ExternalDataComponent implements OnInit {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  event1a: FilterInfo[] = [];
+  event1a: HciFilterDto[] = [];
   event1b: any;
-  event1c: SortInfo;
+  event1c: HciSortDto[] = [];
   event1d: any;
   dataSize: number = 250;
 
@@ -205,7 +206,7 @@ export class ExternalDataComponent implements OnInit {
     this.onExternalDataCall3 = this.handleExternalDataCall3.bind(this);
   }
 
-  grid1FilterEvent(event: FilterInfo[]): void {
+  grid1FilterEvent(event: HciFilterDto[]): void {
     this.event1a = event;
   }
 
@@ -213,7 +214,7 @@ export class ExternalDataComponent implements OnInit {
     this.event1b = event;
   }
 
-  grid1SortEvent(event: SortInfo): void {
+  grid1SortEvent(event: HciSortDto[]): void {
     this.event1c = event;
   }
 
@@ -221,21 +222,21 @@ export class ExternalDataComponent implements OnInit {
     this.event1d = event;
   }
 
-  public handleExternalDataCall1(externalInfo: ExternalInfo): Observable<ExternalData> {
+  public handleExternalDataCall1(externalInfo: HciGridDto): Observable<HciDataDto> {
     console.info("handleExternalDataCall1");
     console.info(externalInfo);
 
     return of(this.dataGeneratorService.getExternalData1(externalInfo)).pipe(delay(1000));
   }
 
-  public handleExternalDataCall2(externalInfo: ExternalInfo): Observable<ExternalData> {
+  public handleExternalDataCall2(externalInfo: HciGridDto): Observable<HciDataDto> {
     console.info("handleExternalDataCall2");
     console.info(externalInfo);
 
     return of(this.dataGeneratorService.getExternalData2(externalInfo)).pipe(delay(1000));
   }
 
-  public handleExternalDataCall3(externalInfo: ExternalInfo): Observable<ExternalData> {
-    return of(new ExternalData([], externalInfo)).pipe(delay(1000));
+  public handleExternalDataCall3(externalInfo: HciGridDto): Observable<HciDataDto> {
+    return of(new HciDataDto([], externalInfo)).pipe(delay(1000));
   }
 }

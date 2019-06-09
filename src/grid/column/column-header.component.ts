@@ -130,7 +130,7 @@ export class ColumnHeaderComponent {
 
   doSort() {
     if (this.column.sort) {
-      this.gridService.sort(this.column.field);
+      this.gridService.addSort(this.column.field);
     }
   }
 

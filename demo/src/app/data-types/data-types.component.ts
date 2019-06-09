@@ -3,7 +3,8 @@ import {Component, HostBinding} from "@angular/core";
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
 
-import {ExternalData, ExternalInfo, TextFilterRenderer} from "hci-ng-grid";
+import {TextFilterRenderer} from "hci-ng-grid";
+import {HciDataDto, HciGridDto} from "hci-ng-grid-dto";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -45,7 +46,7 @@ export class DataTypesDemoComponent {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  dataCall1: (externalInfo: ExternalInfo) => {};
+  dataCall1: (externalInfo: HciGridDto) => {};
   columns1: any[] = [
     { field: "idPatient", name: "ID", visible: true },
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
@@ -59,8 +60,8 @@ export class DataTypesDemoComponent {
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
-    this.dataCall1 = (externalInfo: ExternalInfo) => {
-      return of(new ExternalData(this.dataGeneratorService.getData(250), externalInfo)).pipe(delay(Math.random() * 900 + 100));
+    this.dataCall1 = (externalInfo: HciGridDto) => {
+      return of(new HciDataDto(this.dataGeneratorService.getData(250), externalInfo)).pipe(delay(Math.random() * 900 + 100));
     };
   }
 }

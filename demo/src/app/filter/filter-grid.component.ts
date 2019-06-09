@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, HostBinding} from "@angular/core";
 
-import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SortInfo, FilterInfo, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {HciFilterDto, HciSortDto} from "hci-ng-grid-dto";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 import {DictionaryFilterRenderer} from "./dictionary-filter.component";
@@ -135,7 +136,7 @@ export class FilterGridComponent {
   @HostBinding("class") classList: string = "demo-component";
 
   initialized: boolean = false;
-  event1a: FilterInfo[];
+  event1a: HciFilterDto[];
   event1b: any;
   dataSize: number = 250;
   filteredData: Object[];
@@ -179,7 +180,7 @@ export class FilterGridComponent {
     this.filteredData2 = this.dataGeneratorService.getData(this.dataSize);
   }
 
-  grid1FilterEvent(event: FilterInfo[]): void {
+  grid1FilterEvent(event: HciFilterDto[]): void {
     this.event1a = event;
   }
 
@@ -187,15 +188,17 @@ export class FilterGridComponent {
     this.event1b = event;
   }
 
-  customSort(a: any, b: any, sortInfo: SortInfo, column: Column): number {
-    if (sortInfo.asc) {
+  customSort(a: any, b: any, sortInfo: HciSortDto[], column: Column): number {
+    if (!sortInfo || sortInfo.length === 0) {
+      return 0;
+    } else if (sortInfo[0].asc) {
       return b - a;
     } else {
       return a - b;
     }
   }
 
-  customFilter(value: any, filters: FilterInfo[], column: Column): boolean {
+  customFilter(value: any, filters: HciFilterDto[], column: Column): boolean {
     for (let filterInfo of filters) {
       if (column.choiceMap.get(value).toString().toLowerCase().indexOf(column.choiceMap.get(filterInfo.value).toString().toLowerCase()) === -1) {
         return false;
