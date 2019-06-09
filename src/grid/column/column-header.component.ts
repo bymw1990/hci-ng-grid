@@ -1,10 +1,10 @@
 import {Component, ComponentFactoryResolver, ElementRef, HostListener, Input, Renderer2, ViewContainerRef} from "@angular/core";
 
+import {HciFilterDto, HciSortDto} from "hci-ng-grid-dto";
+
 import {Column} from "./column";
 import {GridService} from "../services/grid.service";
-import {SortInfo} from "../utils/sort-info";
 import {FilterRenderer} from "./filterRenderers/filter-renderer";
-import {FilterInfo} from "../utils/filter-info";
 
 /**
  * Renders the column title and controls icons for filtering and sorting.
@@ -74,19 +74,19 @@ export class ColumnHeaderComponent {
   constructor(private gridService: GridService, private resolver: ComponentFactoryResolver, private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
-    this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, FilterInfo[]>) => {
+    this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, HciFilterDto[]>) => {
       if (this.column) {
         if (filterMap.has(this.column.field)) {
-          this.hasFilters = filterMap.get(this.column.field).filter((filterInfo: FilterInfo) => {
+          this.hasFilters = filterMap.get(this.column.field).filter((filterInfo: HciFilterDto) => {
             return filterInfo.valid;
           }).length === 0 ? false : true;
         }
       }
     });
 
-    this.gridService.sortInfoObserved.subscribe((sortInfo: SortInfo) => {
-      if (this.column.field === sortInfo.field) {
-        if (sortInfo.asc) {
+    this.gridService.sortsSubject.subscribe((sorts: HciSortDto[]) => {
+      if (this.column.field === sorts[0].field) {
+        if (sorts[0].asc) {
           this.asc = 1;
         } else {
           this.asc = -1;

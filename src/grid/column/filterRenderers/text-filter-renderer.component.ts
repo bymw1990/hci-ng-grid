@@ -1,7 +1,8 @@
 import {Component, ElementRef, ViewChild} from "@angular/core";
 
+import {HciFilterDto} from "hci-ng-grid-dto";
+
 import {FilterRenderer} from "./filter-renderer";
-import {FilterInfo} from "../../utils/filter-info";
 
 @Component({
   selector: "hci-grid-text-filter",
@@ -55,9 +56,9 @@ export class TextFilterRenderer extends FilterRenderer {
   reset() {
     super.reset();
     if (this.filters.length === 0) {
-      this.filters.push(new FilterInfo(this.column.field, this.column.dataType, "", undefined, "LIKE", false));
+      this.filters.push(new HciFilterDto(this.column.field, this.column.dataType, "", undefined, "LIKE", false));
     } else {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, "", undefined, "LIKE", false);
+      this.filters[0] = new HciFilterDto(this.column.field, this.column.dataType, "", undefined, "LIKE", false);
     }
 
     if (this.shared) {

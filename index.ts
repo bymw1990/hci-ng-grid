@@ -10,11 +10,6 @@ export {GridGlobalService} from "./src/grid/services/grid-global.service";
 
 export {Column} from "./src/grid/column/column";
 export {ColumnHeaderComponent} from "./src/grid/column/column-header.component";
-export {ExternalData} from "./src/grid/utils/external-data";
-export {ExternalInfo} from "./src/grid/utils/external-info";
-export {FilterInfo} from "./src/grid/utils/filter-info";
-export {PageInfo} from "./src/grid/utils/page-info";
-export {SortInfo} from "./src/grid/utils/sort-info";
 export {Point} from "./src/grid/utils/point";
 
 export {CellViewRenderer} from "./src/grid/cell/viewRenderers/cell-view-renderer.interface";

@@ -1,8 +1,9 @@
 import {Inject, Injectable, isDevMode} from "@angular/core";
 
+import {HciFilterDto} from "hci-ng-grid-dto";
+
 import {Dictionary} from "../model/dictionary.interface";
 import {GridService} from "./grid.service";
-import {FilterInfo} from "../utils/filter-info";
 
 /**
  * A singleton service that allows default configuration for all grids, grouping grids together, and referencing a grid
@@ -79,7 +80,7 @@ export class GridGlobalService {
     }
   }
 
-  clearPushFilter(group: string, id: string, field: string, filters: FilterInfo[]) {
+  clearPushFilter(group: string, id: string, field: string, filters: HciFilterDto[]) {
     for (let grid of this.groupServiceMap.get(group)) {
       if (grid.id !== id) {
         grid.addFilters(field, filters);

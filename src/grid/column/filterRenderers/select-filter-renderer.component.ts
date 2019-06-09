@@ -1,8 +1,8 @@
-import {Component, Input} from "@angular/core";
+import {Component} from "@angular/core";
 
-import {Column} from "../column";
+import {HciFilterDto} from "hci-ng-grid-dto";
+
 import {FilterRenderer} from "./filter-renderer";
-import {FilterInfo} from "../../utils/filter-info";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -112,7 +112,7 @@ export class SelectFilterRenderer extends FilterRenderer {
     this.filters = [];
     for (let choice of this.column.choices) {
       if (choice.selected) {
-        this.filters.push(new FilterInfo(this.column.field, this.column.dataType, choice[this.column.choiceValue], undefined, "E", true));
+        this.filters.push(new HciFilterDto(this.column.field, this.column.dataType, choice[this.column.choiceValue], undefined, "E", true));
       }
     }
 

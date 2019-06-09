@@ -30,6 +30,7 @@
     "@fortawesome/fontawesome-free-solid": "5.0.x",
     "@ng-bootstrap/ng-bootstrap": "4.2.x",
     "bootstrap": ">=4.3.1 < 4.4.0",
+    "hci-ng-grid-dto": "1.0.0-beta.0",
     "moment": ">=2.19.3",
     "moment-random": "1.0.x",
     "prismjs": "1.15.x",

@@ -3,8 +3,7 @@ import {Observable} from "rxjs";
 
 import * as moment from "moment";
 
-import {ExternalData, ExternalInfo, FilterInfo} from "hci-ng-grid";
-import {PageInfo} from "hci-ng-grid";
+import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto} from "hci-ng-grid-dto";
 
 const momentRandom = require("moment-random");
 
@@ -209,11 +208,11 @@ export class DataGeneratorService {
     console.debug("Done generateExternalData2: " + this.externalData2.length);
   }
 
-  getExternalData1(externalInfo: ExternalInfo): ExternalData {
+  getExternalData1(externalInfo: HciGridDto): HciDataDto {
     return this.getExternalData(externalInfo, this.externalData1, true);
   }
 
-  getExternalData2(externalInfo: ExternalInfo): ExternalData {
+  getExternalData2(externalInfo: HciGridDto): HciDataDto {
     return this.getExternalData(externalInfo, this.externalData2, false);
   }
 
@@ -223,39 +222,39 @@ export class DataGeneratorService {
    * To mimic, basically we handle any case where we set the "external flag" for the grid configuration.
    *
    * @param externalInfo
-   * @returns {ExternalData}
+   * @returns {HciDataDto}
    */
-  getExternalData(externalInfo: ExternalInfo, externalData: any[], paging: boolean): ExternalData {
+  getExternalData(externalInfo: HciGridDto, externalData: any[], paging: boolean): HciDataDto {
     console.info("getExternalData");
     console.info(externalInfo);
 
     if (!externalInfo) {
-      return new ExternalData(externalData, externalInfo);
+      return new HciDataDto(externalData, externalInfo);
     }
-    if (!externalInfo.getPage()) {
-      externalInfo.setPage(new PageInfo());
+    if (!externalInfo.getPaging()) {
+      externalInfo.setPaging(new HciPagingDto());
     }
-    let filters: any = externalInfo.getFilter();
-    let sort: any = externalInfo.getSort();
-    let pageInfo: PageInfo = externalInfo.getPage();
+    let filters: any = externalInfo.getFilters();
+    let sort: any = externalInfo.getSorts();
+    let pageInfo: HciPagingDto = externalInfo.getPaging();
 
     let filtered: Object[] = [];
     if (!filters) {
       filtered = externalData;
     } else {
       for (var i = 0; i < externalData.length; i++) {
-        filters = filters.filter((f: FilterInfo) => {
+        filters = filters.filter((f: HciFilterDto) => {
           return f.value !== undefined && f.value !== "";
         });
 
-        filters = filters.sort((a: FilterInfo, b: FilterInfo) => {
+        filters = filters.sort((a: HciFilterDto, b: HciFilterDto) => {
           return a.field.localeCompare(b.field);
         });
 
-        let choiceFilters: FilterInfo[] = filters.filter((f: FilterInfo) => {
+        let choiceFilters: HciFilterDto[] = filters.filter((f: HciFilterDto) => {
           return f.dataType === "choice";
         });
-        let otherFilters: FilterInfo[] = filters.filter((f: FilterInfo) => {
+        let otherFilters: HciFilterDto[] = filters.filter((f: HciFilterDto) => {
           return f.dataType !== "choice";
         });
 
@@ -305,7 +304,7 @@ export class DataGeneratorService {
     }
 
     if (!pageInfo) {
-      return new ExternalData(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo);
     }
 
     let data: Object[] = [];
@@ -316,30 +315,30 @@ export class DataGeneratorService {
     let pageSize: number = pageInfo.getPageSize();
 
     let n: number = filtered.length;
-    externalInfo.getPage().setDataSize(n);
-    if (externalInfo.page.pageSize > 0) {
-      externalInfo.getPage().setNumPages(Math.ceil(n / pageSize));
+    externalInfo.getPaging().setDataSize(n);
+    if (externalInfo.paging.pageSize > 0) {
+      externalInfo.getPaging().setNumPages(Math.ceil(n / pageSize));
     } else {
-      externalInfo.getPage().setNumPages(1);
+      externalInfo.getPaging().setNumPages(1);
     }
 
     console.info("externalData paging: " + n + " " + page + " " + pageSize);
 
     if (!paging) {
-      return new ExternalData(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo);
     }
 
     if (pageSize > 0) {
       if (page * pageSize > n - 1) {
-        return new ExternalData(data, externalInfo);
+        return new HciDataDto(data, externalInfo);
       }
 
       for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
         data.push(filtered[i]);
       }
-      return new ExternalData(data, externalInfo);
+      return new HciDataDto(data, externalInfo);
     } else {
-      return new ExternalData(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo);
     }
   }
 

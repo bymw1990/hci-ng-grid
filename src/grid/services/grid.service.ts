@@ -4,16 +4,14 @@ import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable, of, Subject, Subscription} from "rxjs";
 import {finalize} from "rxjs/operators";
 
+import {HciFilterDto, HciGridDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
+
 import {GridGlobalService} from "./grid-global.service";
 import {Cell} from "../cell/cell";
 import {Row} from "../row/row";
 import {Column} from "../column/column";
 import {Range} from "../utils/range";
-import {SortInfo} from "../utils/sort-info";
-import {PageInfo} from "../utils/page-info";
 import {Point} from "../utils/point";
-import {FilterInfo} from "../utils/filter-info";
-import {ExternalInfo} from "../utils/external-info";
 import {RowChange} from "../utils/row-change";
 
 /**
@@ -59,15 +57,15 @@ export class GridService {
   viewData: Row[] = [];
   viewDataSubject: BehaviorSubject<Row[]> = new BehaviorSubject<Row[]>([]);
 
-  filterInfo: FilterInfo[] = [];
+  filters: HciFilterDto[] = [];
 
-  sortInfo: SortInfo = new SortInfo();
-  sortInfoObserved = new Subject<SortInfo>();
+  sorts: HciSortDto[] = [];
+  sortsSubject = new Subject<HciSortDto[]>();
 
-  pageInfo: PageInfo = new PageInfo();
-  pageInfoObserved = new Subject<PageInfo>();
+  paging: HciPagingDto = new HciPagingDto();
+  pagingSubject = new Subject<HciPagingDto>();
 
-  externalInfoObserved = new Subject<ExternalInfo>();
+  externalInfoObserved = new Subject<HciGridDto>();
   doubleClickObserved = new Subject<Object>();
   cellDataUpdateObserved = new Subject<Range>();
 
@@ -78,8 +76,8 @@ export class GridService {
   private columnMap: Map<string, Column[]> = new Map<string, Column[]>();
   private columnMapSubject: BehaviorSubject<Map<string, Column[]>> = new BehaviorSubject<Map<string, Column[]>>(undefined);
 
-  private filterMap: Map<string, FilterInfo[]> = new Map<string, FilterInfo[]>();
-  private filterMapSubject: BehaviorSubject<Map<string, FilterInfo[]>> = new BehaviorSubject<Map<string, FilterInfo[]>>(this.filterMap);
+  private filterMap: Map<string, HciFilterDto[]> = new Map<string, HciFilterDto[]>();
+  private filterMapSubject: BehaviorSubject<Map<string, HciFilterDto[]>> = new BehaviorSubject<Map<string, HciFilterDto[]>>(this.filterMap);
   private configured: boolean = false;
   private nUtilityColumns: number = 0;
   private nFixedColumns: number = 0;
@@ -89,7 +87,7 @@ export class GridService {
 
   private busySubject: Subject<boolean> = new Subject<boolean>();
   private eventSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
-  private filterEventSubject: BehaviorSubject<FilterInfo[]> = new BehaviorSubject<FilterInfo[]>([]);
+  private filterEventSubject: BehaviorSubject<HciFilterDto[]> = new BehaviorSubject<HciFilterDto[]>([]);
   private rowChangedSubject: Subject<RowChange> = new Subject<RowChange>();
 
   private lastEvent: any;
@@ -207,7 +205,7 @@ export class GridService {
       this.externalPaging = config.externalPaging;
     }
     if (config.pageSize !== undefined) {
-      this.pageInfo.pageSize = config.pageSize;
+      this.paging.pageSize = config.pageSize;
     }
     if (config.pageSizes !== undefined) {
       this.pageSizes = config.pageSizes;
@@ -256,9 +254,9 @@ export class GridService {
    * nVisibleRows will be set to the page size.
    */
   public setNVisibleRows(): void {
-    if (this.config.nVisibleRows === -1 && this.pageInfo.pageSize > 0) {
-      this.nVisibleRows = this.pageInfo.pageSize;
-    } else if (this.config.nVisibleRows === -1 && this.pageInfo.pageSize === -1) {
+    if (this.config.nVisibleRows === -1 && this.paging.pageSize > 0) {
+      this.nVisibleRows = this.paging.pageSize;
+    } else if (this.config.nVisibleRows === -1 && this.paging.pageSize === -1) {
       this.nVisibleRows = -1;
     }
   }
@@ -815,10 +813,10 @@ export class GridService {
   }
 
   /**
-   * Upon filtering, we check for external filtering and if external, post new ExternalInfo to observable.
+   * Upon filtering, we check for external filtering and if external, post new HciGridDto to observable.
    * We will assume that there may be a mix of internal and external filtering/sorting/paging.  If external
-   * filtering, we will send an ExternalInfo object, but if the sort/page is internal, set those values to
-   * null in the ExternalInfo.  So the external call will filter but we will still rely internally on sorting
+   * filtering, we will send an HciGridDto object, but if the sort/page is internal, set those values to
+   * null in the HciGridDto.  So the external call will filter but we will still rely internally on sorting
    * and paging.
    *
    * Filtering Steps
@@ -836,19 +834,19 @@ export class GridService {
     });
 
     if (this.externalFiltering) {
-      this.filterInfo = [];
-      this.filterMap.forEach((filters: FilterInfo[]) => {
-        this.filterInfo = this.filterInfo.concat(filters);
+      this.filters = [];
+      this.filterMap.forEach((filters: HciFilterDto[]) => {
+        this.filters = this.filters.concat(filters);
       });
       if (isDevMode()) {
-        console.debug("GridService.filter: externalFiltering: n: " + this.filterInfo.length);
+        console.debug("GridService.filter: externalFiltering: n: " + this.filters.length);
       }
 
-      this.pageInfo.setPage(0);
+      this.paging.setPage(0);
 
-      this.externalInfoObserved.next(new ExternalInfo(this.filterInfo, (this.externalSorting) ? this.sortInfo : undefined, this.pageInfo));
+      this.externalInfoObserved.next(new HciGridDto(this.filters, (this.externalSorting) ? this.sorts : undefined, this.paging));
     } else {
-      this.pageInfo.setPage(0);
+      this.paging.setPage(0);
       this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
     }
   }
@@ -874,11 +872,11 @@ export class GridService {
         let inc: boolean = true;
 
         for (var j = 0; j < this.columns.length; j++) {
-          let filters: FilterInfo[] = this.filterMap.get(this.columns[j].field);
+          let filters: HciFilterDto[] = this.filterMap.get(this.columns[j].field);
           if (!filters) {
             continue;
           }
-          filters = filters.filter((filter: FilterInfo) => {
+          filters = filters.filter((filter: HciFilterDto) => {
             return filter.valid;
           });
 
@@ -1023,18 +1021,18 @@ export class GridService {
     let END: number = this.preparedData.length;
 
     if (!this.externalPaging) {
-      this.pageInfo.setDataSize(this.preparedData.length);
+      this.paging.setDataSize(this.preparedData.length);
     }
-    if (paginate && this.pageInfo.getPageSize() > 0) {
-      START = this.pageInfo.getPage() * this.pageInfo.getPageSize();
-      END = Math.min(START + this.pageInfo.getPageSize(), this.pageInfo.getDataSize());
-      this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
+    if (paginate && this.paging.getPageSize() > 0) {
+      START = this.paging.getPage() * this.paging.getPageSize();
+      END = Math.min(START + this.paging.getPageSize(), this.paging.getDataSize());
+      this.paging.setNumPages(Math.ceil(this.paging.getDataSize() / this.paging.getPageSize()));
     } else if (this.externalPaging) {
-      this.pageInfo.setNumPages(Math.ceil(this.pageInfo.getDataSize() / this.pageInfo.getPageSize()));
+      this.paging.setNumPages(Math.ceil(this.paging.getDataSize() / this.paging.getPageSize()));
     } else if (!this.externalPaging) {
-      this.pageInfo.setNumPages(1);
+      this.paging.setNumPages(1);
     }
-    this.pageInfoObserved.next(this.pageInfo);
+    this.pagingSubject.next(this.paging);
 
     this.viewData = [];
     if (this.groupBy) {
@@ -1075,7 +1073,7 @@ export class GridService {
     let event: any = this.eventSubject.getValue();
     if (this.eventSubject.getValue().type === "filter") {
       event.status = "complete";
-      event.nData = (filter) ? this.preparedData.length : this.pageInfo.dataSize;
+      event.nData = (filter) ? this.preparedData.length : this.paging.getDataSize();
       this.eventSubject.next(event);
     } else if (this.eventSubject.getValue().type === "sort") {
       event.status = "complete";
@@ -1149,8 +1147,8 @@ export class GridService {
 
   public setAutoPageSize(): void {
     if (this.originalData && this.configSet) {
-      if (this.pageInfo.getPageSize() === -1 && this.originalData.length > 50 && this.height === undefined) {
-        this.pageInfo.setPageSize(10);
+      if (this.paging.getPageSize() === -1 && this.originalData.length > 50 && this.height === undefined) {
+        this.paging.setPageSize(10);
       }
     }
   }
@@ -1196,21 +1194,21 @@ export class GridService {
    * @param {number} mode -2 for first, 2 for last, -1 for previous, 1 for next.
    */
   public setPage(mode: number): void {
-    let page: number = this.pageInfo.getPage();
+    let page: number = this.paging.getPage();
 
     if (mode === -2) {
-      this.pageInfo.setPage(0);
-    } else if (mode === -1 && this.pageInfo.page > 0) {
-      this.pageInfo.setPage(this.pageInfo.getPage() - 1);
-    } else if (mode === 1 && this.pageInfo.getPage() < this.pageInfo.getNumPages() - 1) {
-      this.pageInfo.setPage(this.pageInfo.getPage() + 1);
+      this.paging.setPage(0);
+    } else if (mode === -1 && this.paging.page > 0) {
+      this.paging.setPage(this.paging.getPage() - 1);
+    } else if (mode === 1 && this.paging.getPage() < this.paging.getNumPages() - 1) {
+      this.paging.setPage(this.paging.getPage() + 1);
     } else if (mode === 2) {
-      this.pageInfo.setPage(this.pageInfo.getNumPages() - 1);
+      this.paging.setPage(this.paging.getNumPages() - 1);
     }
 
-    if (page !== this.pageInfo.getPage()) {
+    if (page !== this.paging.getPage()) {
       if (this.externalPaging) {
-        this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
+        this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
       } else {
         this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, true);
       }
@@ -1222,15 +1220,15 @@ export class GridService {
       console.debug("setPageSize: " + pageSize);
     }
 
-    this.pageInfo.setPageSize(pageSize);
-    this.pageInfo.setPage(0);
+    this.paging.setPageSize(pageSize);
+    this.paging.setPage(0);
 
     this.setNVisibleRows();
 
     if (this.externalPaging) {
-      this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, (this.externalSorting) ? this.sortInfo : null, this.pageInfo));
+      this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
     } else {
-      this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, this.pageInfo.getPageSize() > 0);
+      this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, this.paging.getPageSize() > 0);
     }
   }
 
@@ -1248,16 +1246,20 @@ export class GridService {
       field: field
     });
 
-    if (this.sortInfo.field === null || this.sortInfo.field !== field) {
-      this.sortInfo.field = field;
-      this.sortInfo.asc = true;
-    } else {
-      this.sortInfo.asc = !this.sortInfo.asc;
+    if (this.sorts.length === 0) {
+      this.sorts.push(new HciSortDto(field));
     }
-    this.sortInfoObserved.next(this.sortInfo);
+
+    if (this.sorts[0].field === null || this.sorts[0].field !== field) {
+      this.sorts[0].field = field;
+      this.sorts[0].asc = true;
+    } else {
+      this.sorts[0].asc = !this.sorts[0].asc;
+    }
+    this.sortsSubject.next(this.sorts);
 
     if(this.externalSorting) {
-      this.externalInfoObserved.next(new ExternalInfo((this.externalFiltering) ? this.filterInfo : null, this.sortInfo, (this.externalPaging) ? this.pageInfo : null));
+      this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, this.sorts, (this.externalPaging) ? this.paging : null));
     } else {
       this.initDataWithOptions(false, !this.externalFiltering, true, !this.externalPaging);
     }
@@ -1266,13 +1268,13 @@ export class GridService {
   public sortPreparedData() {
     let sortColumns: Column[] = [];
 
-    if (this.sortInfo.field === null && this.groupBy) {
-      this.sortInfo.field = "GROUP_BY";
+    if (this.sorts[0].field === null && this.groupBy) {
+      this.sorts[0].field = "GROUP_BY";
     }
 
     if (this.columns) {
       for (var i = 0; i < this.columns.length; i++) {
-        if (this.columns[i].field === this.sortInfo.field) {
+        if (this.columns[i].field === this.sorts[0].field) {
           sortColumns.push(this.columns[i]);
           break;
         }
@@ -1293,7 +1295,7 @@ export class GridService {
             b = o2.get(sortColumns[i].id).value;
           }
 
-          v = sortColumns[i].sortFunction(a, b, this.sortInfo, sortColumns[i]);
+          v = sortColumns[i].sortFunction(a, b, this.sorts, sortColumns[i]);
 
           if (v !== 0) {
             return v;
@@ -1316,28 +1318,28 @@ export class GridService {
     }
   }
 
-  public getFilterMapSubject(): BehaviorSubject<Map<string, FilterInfo[]>> {
+  public getFilterMapSubject(): BehaviorSubject<Map<string, HciFilterDto[]>> {
     return this.filterMapSubject;
   }
 
-  public addFilter(field: string, filterInfo: FilterInfo) {
+  public addFilter(field: string, filters: HciFilterDto) {
     if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
     }
-    this.filterMap.get(field).push(filterInfo);
+    this.filterMap.get(field).push(filters);
 
     this.filterMapSubject.next(this.filterMap);
 
-    this.filterEventSubject.next([filterInfo]);
+    this.filterEventSubject.next([filters]);
   }
 
   /**
    * Way for external grid or user to add filters to a field.
    *
    * @param {string} field
-   * @param {FilterInfo[]} filters
+   * @param {HciFilterDto[]} filters
    */
-  public addFilters(field: string, filters: FilterInfo[]) {
+  public addFilters(field: string, filters: HciFilterDto[]) {
     if (!this.filterMap.has(field)) {
       this.filterMap.set(field, []);
     }
@@ -1347,7 +1349,7 @@ export class GridService {
     this.filterEventSubject.next(filters);
   }
 
-  public getFilterEventSubject(): BehaviorSubject<FilterInfo[]> {
+  public getFilterEventSubject(): BehaviorSubject<HciFilterDto[]> {
     return this.filterEventSubject;
   }
 
@@ -1355,9 +1357,9 @@ export class GridService {
    * If this grid is linked to other grids, prompt the syncing of this grid's filters through the global service.
    *
    * @param {string} field
-   * @param {FilterInfo[]} filters
+   * @param {HciFilterDto[]} filters
    */
-  public globalClearPushFilter(field: string, filters: FilterInfo[]) {
+  public globalClearPushFilter(field: string, filters: HciFilterDto[]) {
     if (this.linkedGroups) {
       for (let linkedGroup of this.linkedGroups) {
         this.gridGlobalService.clearPushFilter(linkedGroup, this.id, field, filters);
@@ -1396,10 +1398,10 @@ export class GridService {
   /**
    * TODO: Rename observed to subject.  Change to event.
    *
-   * @returns {Subject<SortInfo>}
+   * @returns {Subject<HciSortDto>}
    */
-  public getSortInfoSubject(): Subject<SortInfo> {
-    return this.sortInfoObserved;
+  public getSortsSubject(): Subject<HciSortDto[]> {
+    return this.sortsSubject;
   }
 
   /**

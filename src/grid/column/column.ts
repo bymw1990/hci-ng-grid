@@ -1,5 +1,7 @@
 import {isDevMode, Type} from "@angular/core";
 
+import {HciFilterDto, HciSortDto} from "hci-ng-grid-dto";
+
 import {CellViewRenderer} from "../cell/viewRenderers/cell-view-renderer.interface";
 import {CellTextView} from "../cell/viewRenderers/cell-text-view";
 import {FilterRenderer} from "./filterRenderers/filter-renderer";
@@ -11,9 +13,6 @@ import {EmptyFactory} from "../utils/empty.factory";
 import {DateMsFormatter} from "./formatters/date-ms.formatter";
 import {DateIso8601Formatter} from "./formatters/date-iso8601.formatter";
 import {ChoiceEditRenderer} from "../cell/editRenderers/choice-edit-renderer.component";
-import {Row} from "../row/row";
-import {SortInfo} from "../utils/sort-info";
-import {FilterInfo} from "../utils/filter-info";
 
 /**
  * Contains all configurable information related to a column.  This is the field, name, format, filtering info, etc....
@@ -100,8 +99,8 @@ export class Column {
   filterConfig: any = {};
   filterRenderer: Type<FilterRenderer>;
 
-  filterFunction: (value: any, filters: FilterInfo[], column: Column) => boolean;
-  sortFunction: (a: any, b: any, sortInfo: SortInfo, column: Column) => number;
+  filterFunction: (value: any, filters: HciFilterDto[], column: Column) => boolean;
+  sortFunction: (a: any, b: any, sorts: HciSortDto[], column: Column) => number;
 
   renderLeft: number = 0;
   renderWidth: number = 0;
@@ -341,9 +340,9 @@ export class Column {
    *
    * @returns {(value: any, filters: FilterInfo[], column: Column) => boolean}
    */
-  createDefaultFilterFunction(): (value: any, filters: FilterInfo[], column: Column) => boolean {
+  createDefaultFilterFunction(): (value: any, filters: HciFilterDto[], column: Column) => boolean {
     if (this.dataType === "string") {
-      return (value: any, filters: FilterInfo[], column: Column) => {
+      return (value: any, filters: HciFilterDto[], column: Column) => {
         for (let filterInfo of filters) {
           if (value.toString().toLowerCase().indexOf(filterInfo.value) === -1) {
             return false;
@@ -353,7 +352,7 @@ export class Column {
         return true;
       }
     } else if (this.dataType === "number") {
-      return (value: any, filters: FilterInfo[], column: Column) => {
+      return (value: any, filters: HciFilterDto[], column: Column) => {
         for (let filterInfo of filters) {
           if (!value) {
             return false;
@@ -393,7 +392,7 @@ export class Column {
         return true;
       }
     } else if (this.dataType === "choice") {
-      return (value: any, filters: FilterInfo[], column: Column) => {
+      return (value: any, filters: HciFilterDto[], column: Column) => {
         let include: boolean = false;
 
         for (let filterInfo of filters) {
@@ -406,7 +405,7 @@ export class Column {
         return include;
       }
     } else if (this.dataType.indexOf("date") === 0) {
-      return (value: any, filters: FilterInfo[], column: Column) => {
+      return (value: any, filters: HciFilterDto[], column: Column) => {
         let v: any = value;
         if (this.dataType === "date-ms") {
           // If milliseconds, format to date so you don't compare longs with timezone differences.
@@ -460,7 +459,7 @@ export class Column {
         return true;
       }
     } else {
-      return (value: any, filters: FilterInfo[], column: Column) => {
+      return (value: any, filters: HciFilterDto[], column: Column) => {
         return true;
       }
     }
@@ -471,14 +470,16 @@ export class Column {
    *
    * @returns {(a: any, b: any, sortInfo: SortInfo, column: Column) => number}
    */
-  createDefaultSortFunction(): (a: any, b: any, sortInfo: SortInfo, column: Column) => number {
+  createDefaultSortFunction(): (a: any, b: any, sorts: HciSortDto[], column: Column) => number {
     if (isDevMode()) {
       console.debug(this.field + ": createDefaultSortFunction()");
     }
 
     if (this.dataType === "number" || this.dataType === "date-ms") {
-      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
-        if (sortInfo.asc) {
+      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
+        if (!sorts || sorts.length === 0) {
+          return 0;
+        } else if (sorts[0].asc) {
           if (a && b) {
             return a - b;
           } else if (!a && b) {
@@ -501,7 +502,7 @@ export class Column {
         }
       };
     } else if (this.dataType === "string" || this.dataType === "date-iso8601") {
-      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
         if (a) {
           a = a.toString().toLowerCase();
         }
@@ -509,7 +510,9 @@ export class Column {
           b = b.toString().toLowerCase();
         }
 
-        if (sortInfo.asc) {
+        if (!sorts || sorts.length === 0) {
+          return 0;
+        } else if (sorts[0].asc) {
           if (!a && b) {
             return -1;
           } else if (a && !b) {
@@ -540,11 +543,13 @@ export class Column {
         }
       };
     } else if (this.dataType === "choice") {
-      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
         a = column.choiceMap.get(a);
         b = column.choiceMap.get(b);
 
-        if (sortInfo.asc) {
+        if (!sorts || sorts.length === 0) {
+          return 0;
+        } else if (sorts[0].asc) {
           if (!a && b) {
             return -1;
           } else if (a && !b) {
@@ -575,7 +580,7 @@ export class Column {
         }
       };
     } else {
-      return (a: any, b: any, sortInfo: SortInfo, column: Column) => {
+      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
         console.warn("No sort function implemented.");
         return 0;
       };

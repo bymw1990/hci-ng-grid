@@ -9,6 +9,8 @@ import {
 import {interval, Observable, Subject, Subscription} from "rxjs";
 import {take, takeWhile} from "rxjs/operators";
 
+import {HciDataDto, HciFilterDto, HciGridDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
+
 import {GridService} from "./services/grid.service";
 import {GridEventService} from "./services/grid-event.service";
 import {GridGlobalService} from "./services/grid-global.service";
@@ -24,13 +26,8 @@ import {EventListenerArg} from "./event/event-listener-arg.interface";
 import {InjectableFactory} from "./utils/injectable.factory";
 import {EventMeta} from "./utils/event-meta";
 import {RowChange} from "./utils/row-change";
-import {PageInfo} from "./utils/page-info";
-import {ExternalInfo} from "./utils/external-info";
-import {ExternalData} from "./utils/external-data";
 import {Point} from "./utils/point";
 import {Range} from "./utils/range";
-import {SortInfo} from "./utils/sort-info";
-import {FilterInfo} from "./utils/filter-info";
 
 const NO_EVENT: number = -1;
 const RESIZE: number = 0;
@@ -215,18 +212,18 @@ const SCROLL: number = 1;
            (mouseup)="$event.stopPropagation()"
            (mousedown)="$event.stopPropagation()"
            (click)="$event.stopPropagation()">
-        <div *ngIf="pageInfo.pageSize > 0 || addNewRowButtonLocation === 'footer'" class="grid-footer">
-          <div *ngIf="pageInfo.numPages > 0"
+        <div *ngIf="paging.pageSize > 0 || addNewRowButtonLocation === 'footer'" class="grid-footer">
+          <div *ngIf="paging.numPages > 0"
                class="ml-1"
                style="font-weight: bold;">
-            Page {{pageInfo.page + 1}} of {{pageInfo.numPages}}
+            Page {{paging.page + 1}} of {{paging.numPages}}
           </div>
-          <div *ngIf="pageInfo.pageSize > 0"
+          <div *ngIf="paging.pageSize > 0"
                class="ml-auto mr-auto">
             <span (click)="doPageFirst()"><span class="fas fa-fast-backward"></span></span>
             <span (click)="doPagePrevious()" class="pl-3 pr-3"><span class="fas fa-backward"></span></span>
             <select id="pageSelect"
-                    [ngModel]="pageInfo.pageSize"
+                    [ngModel]="paging.pageSize"
                     (ngModelChange)="doPageSize($event)"
                     [disabled]="busy">
               <option *ngFor="let o of config.pageSizes" [ngValue]="o">{{o}}</option>
@@ -513,9 +510,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Output("cellDblClick") outputCellDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowClick") outputRowClick: EventEmitter<any> = new EventEmitter<any>();
   @Output("rowDblClick") outputRowDblClick: EventEmitter<any> = new EventEmitter<any>();
-  @Output("filterEvent") outputFilterEvent: EventEmitter<FilterInfo[]> = new EventEmitter<FilterInfo[]>();
+  @Output("filterEvent") outputFilterEvent: EventEmitter<HciFilterDto[]> = new EventEmitter<HciFilterDto[]>();
   @Output("dataFiltered") outputDataFiltered: EventEmitter<any> = new EventEmitter<any>();
-  @Output("sortEvent") outputSortEvent: EventEmitter<SortInfo> = new EventEmitter<SortInfo>();
+  @Output("sortEvent") outputSortEvent: EventEmitter<HciSortDto[]> = new EventEmitter<HciSortDto[]>();
   @Output("dataSorted") outputDataSorted: EventEmitter<any> = new EventEmitter<any>();
   @Output("listenerEvent") outputListenerEvent: EventEmitter<any> = new EventEmitter<any>();
 
@@ -525,7 +522,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   config: any = {};
   columnMap: Map<string, Column[]>;
   gridData: Row[] = [];
-  pageInfo: PageInfo = new PageInfo();
+  paging: HciPagingDto = new HciPagingDto();
   initialized: boolean = false;
   gridContainerHeight: number = 0;
 
@@ -620,7 +617,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       this.updateConfig();
 
-      this.gridService.pageInfo = this.gridService.pageInfo;
+      this.gridService.paging = this.gridService.paging;
       this.columnMap = this.gridService.getColumnMapSubject().getValue();
       this.gridService.initData();
       this.doRender();
@@ -634,11 +631,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     /* The grid component handles the footer which includes paging.  Listen to changes in the pageInfo and update. */
-    this.gridService.pageInfoObserved.subscribe((pageInfo: PageInfo) => {
+    this.gridService.pagingSubject.subscribe((paging: HciPagingDto) => {
       if (isDevMode()) {
-        console.info("hci-grid: " + this.id + ": this.gridService.pageInfoObserved: " + pageInfo.toString());
+        console.info("hci-grid: " + this.id + ": this.gridService.pageInfoObserved: " + paging.toString());
       }
-      this.pageInfo = pageInfo;
+      this.paging = paging;
     });
 
     /* When the bound data updates, pass it off to the grid service for processing. */
@@ -686,18 +683,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
     /* Listen to changes in Sort/Filter/Page.
      If there is an onExternalDataCall defined, send that info to that provided function. */
     if (this.onExternalDataCall) {
-      this.gridService.externalInfoObserved.subscribe((externalInfo: ExternalInfo) => {
+      this.gridService.externalInfoObserved.subscribe((externalInfo: HciGridDto) => {
         this.updateGridContainerHeight();
         this.gridService.getBusySubject().next(true);
-        this.onExternalDataCall(externalInfo).subscribe((externalData: ExternalData) => {
-          if (!externalData.externalInfo) {
-            this.gridService.pageInfo.setNumPages(1);
+        this.onExternalDataCall(externalInfo).subscribe((externalData: HciDataDto) => {
+          if (!externalData.gridDto) {
+            this.gridService.paging.setNumPages(1);
           } else {
-            this.gridService.pageInfo = externalData.externalInfo.getPage();
+            this.gridService.paging = externalData.getGridDto().getPaging();
           }
           this.gridService.setOriginalData(externalData.data);
 
-          this.pageInfo = this.gridService.pageInfo;
+          this.paging = this.gridService.paging;
           this.gridService.getBusySubject().next(false);
         });
       });
@@ -717,25 +714,23 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
     });
 
-    this.gridService.getSortInfoSubject().subscribe((event: SortInfo) => {
+    this.gridService.getSortsSubject().subscribe((event: HciSortDto[]) => {
       this.outputSortEvent.emit(event);
     });
 
-    this.gridService.getFilterEventSubject().subscribe((filters: FilterInfo[]) => {
+    this.gridService.getFilterEventSubject().subscribe((filters: HciFilterDto[]) => {
       this.outputFilterEvent.emit(filters);
     });
 
     /* Get initial page Info */
-    this.pageInfo = this.gridService.pageInfo;
-
-    this.pageInfo = this.gridService.pageInfo;
+    this.paging = this.gridService.paging;
     this.gridEventService.setSelectedLocation(undefined, undefined);
 
     this.buildConfigFromInput();
 
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
-      this.gridService.externalInfoObserved.next(new ExternalInfo(undefined, undefined, this.pageInfo));
+      this.gridService.externalInfoObserved.next(new HciGridDto(undefined, undefined, this.paging));
     } else if (this.boundData) {
       this.gridService.setOriginalData(this.boundData);
     }
@@ -774,7 +769,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     /* Update the pageInfo from the proper one in the gridService. */
-    this.pageInfo = this.gridService.pageInfo;
+    this.paging = this.gridService.paging;
 
     this.selectedLocationSubscription = this.gridEventService.getSelectedLocationSubject().subscribe((p: Point) => {
       if (isDevMode()) {
@@ -1641,7 +1636,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.gridService.setNVisibleRows();
 
     if (isDevMode()) {
-      console.debug("hci-grid: " + this.id + ": updateGridContainerHeightAndColumnSizes: " + this.gridService.getNVisibleRows() + " " + this.pageInfo.pageSize);
+      console.debug("hci-grid: " + this.id + ": updateGridContainerHeightAndColumnSizes: " + this.gridService.getNVisibleRows() + " " + this.paging.pageSize);
     }
 
     let gridHeight: number = 0;
@@ -1691,8 +1686,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       console.debug("hci-grid: " + this.id + ": gridWidth: " + gridWidth);
     }
     if (this.gridService.getNVisibleRows() > 0
-        && ((this.pageInfo.pageSize > 0 && this.gridService.getNVisibleRows() < this.pageInfo.pageSize)
-        || (this.pageInfo.pageSize < 0 && this.gridService.getNVisibleRows() < this.gridData.length))) {
+        && ((this.paging.pageSize > 0 && this.gridService.getNVisibleRows() < this.paging.pageSize)
+        || (this.paging.pageSize < 0 && this.gridService.getNVisibleRows() < this.gridData.length))) {
       insideGridWidth = gridWidth - 17;
     }
 
@@ -1813,7 +1808,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     e = this.gridContainer.nativeElement.querySelector("#right-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
     this.renderer.setStyle(e, "width", rightViewWidth + "px");
-    if (this.gridService.getNVisibleRows() === this.pageInfo.pageSize && this.pageInfo.pageSize !== -1) {
+    if (this.gridService.getNVisibleRows() === this.paging.pageSize && this.paging.pageSize !== -1) {
       this.renderer.setStyle(e, "overflow-y", "hidden");
     } else {
       this.renderer.setStyle(e, "overflow-y", "auto");

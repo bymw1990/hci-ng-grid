@@ -1,7 +1,8 @@
 import {Component} from "@angular/core";
 
+import {HciFilterDto} from "hci-ng-grid-dto";
+
 import {FilterRenderer} from "./filter-renderer";
-import {FilterInfo} from "../../utils/filter-info";
 
 /**
  * Offers comparison with a few different data types such as numbers and dates.
@@ -187,11 +188,11 @@ export class CompareFilterRenderer extends FilterRenderer {
     super.reset();
 
     if (this.column.dataType === "number") {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
+      this.filters[0] = new HciFilterDto(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     } else if (this.column.dataType.indexOf("date") === 0) {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
+      this.filters[0] = new HciFilterDto(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     } else {
-      this.filters[0] = new FilterInfo(this.column.field, this.column.dataType, undefined, undefined, "E", false);
+      this.filters[0] = new HciFilterDto(this.column.field, this.column.dataType, undefined, undefined, "E", false);
     }
 
     this.lowValue = this.format(this.filters[0].value);
@@ -200,14 +201,6 @@ export class CompareFilterRenderer extends FilterRenderer {
 
   format(value: any): any {
     return this.column.formatValue(value);
-    /*if (!value) {
-      return value;
-    } else if (this.column.dataType === "date") {
-      let d: string[] = value.split("-");
-      return {year: +d[0], month: +d[1], day: +d[2]};
-    } else {
-      return value;
-    }*/
   }
 
   /**
@@ -218,16 +211,6 @@ export class CompareFilterRenderer extends FilterRenderer {
    */
   parse(value: any): any {
     return this.column.parseValue(value);
-    /*if (this.column.dataType.indexOf("date") === 0) {
-      if (value) {
-        let v: any = moment(value, this.column.formatterParserInstance["format"]).format(this.column.formatterParserInstance["format"]);
-        return this.column.parseValue(v);
-      } else {
-        return undefined;
-      }
-    } else {
-      return value;
-    }*/
   }
 
   valueChange(value: any) {

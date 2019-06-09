@@ -1,6 +1,6 @@
 {
   "name": "hci-ng-grid",
-  "version": "5.0.0-alpha.0",
+  "version": "5.0.0-alpha.1",
   "description": "Comprehensive angular grid component",
   "keywords": [
     "angular",
@@ -19,7 +19,7 @@
     "clean": "npm run rimraf index.js index.d.ts index.ngsummary.json index.metadata.json index.js.map src/**/*.js src/**/*.ngfactory.ts src/**/*.d.ts src/**/*.js.map src/**/*.ngsummary.json src/**/*.metadata.json code-coverage dist",
     "compodoc": "compodoc",
     "copyfiles": "copyfiles",
-    "copyToDist": "npm run copyfiles -- LICENSE package.json README.md dist/",
+    "copyToDist": "npm run copyfiles -- package.json README.md dist/",
     "doc": "npm run compodoc -- src -p ./tsconfig.json -d docs -n 'hci-ng-grid'",
     "gulp": "gulp",
     "install-demo": "gulp install-demo",
@@ -42,6 +42,7 @@
   "dependencies": {
     "@ng-bootstrap/ng-bootstrap": "4.2.x",
     "bootstrap": ">=4.3.1 <4.4.0",
+    "hci-ng-grid-dto": "1.0.0-beta.0",
     "moment": ">=2.19.3"
   },
   "devDependencies": {
@@ -81,6 +82,7 @@
     "gulp-load-plugins": "1.5.x",
     "gulp-rename": "1.4.x",
     "gulp-sequence": "1.0.x",
+    "hci-ng-grid-dto": "1.0.0-beta.0",
     "immutable": "^3.8.1",
     "inline-source-map": "^0.6.2",
     "istanbul-instrumenter-loader": "2.0.0",

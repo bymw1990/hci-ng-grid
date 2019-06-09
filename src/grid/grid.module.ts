@@ -28,7 +28,7 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule
   ],
   declarations: [
     GridComponent,

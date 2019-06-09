@@ -1,15 +1,16 @@
 import {ChangeDetectorRef, ElementRef, EventEmitter, Input, Output} from "@angular/core";
 
+import {HciFilterDto} from "hci-ng-grid-dto";
+
 import {Column} from "../column";
 import {GridService} from "../../services/grid.service";
-import {FilterInfo} from "../../utils/filter-info";
 
 export class FilterRenderer {
 
   @Input() column: Column;
   @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  filters: FilterInfo[];
+  filters: HciFilterDto[];
   config: any = {};
   shared = false;
   width: number = 250;
@@ -28,7 +29,7 @@ export class FilterRenderer {
   }
 
   filtersSubscribe() {
-    this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, FilterInfo[]>) => {
+    this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, HciFilterDto[]>) => {
       if (this.column) {
         if (filterMap.has(this.column.field)) {
           this.filters = filterMap.get(this.column.field);
