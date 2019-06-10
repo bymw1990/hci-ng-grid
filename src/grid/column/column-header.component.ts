@@ -13,7 +13,7 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
   selector: "hci-column-header",
   template: `
     <div class="d-flex flex-nowrap"
-         (click)="doSort()"
+         (click)="doSort($event)"
          style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
       <span id="header-text"
             class="hci-grid-header-text"
@@ -128,8 +128,10 @@ export class ColumnHeaderComponent {
     this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "margin-left", x + "px");
   }
 
-  doSort() {
-    if (this.column.sort) {
+  doSort(event: MouseEvent) {
+    if (this.column.sort && event.ctrlKey) {
+      this.gridService.addSort(this.column.field, false);
+    } else if (this.column.sort) {
       this.gridService.addSort(this.column.field);
     }
   }

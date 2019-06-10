@@ -100,7 +100,7 @@ export class Column {
   filterRenderer: Type<FilterRenderer>;
 
   filterFunction: (value: any, filters: HciFilterDto[], column: Column) => boolean;
-  sortFunction: (a: any, b: any, sorts: HciSortDto[], column: Column) => number;
+  sortFunction: (a: any, b: any, sorts: HciSortDto, column: Column) => number;
 
   renderLeft: number = 0;
   renderWidth: number = 0;
@@ -470,16 +470,14 @@ export class Column {
    *
    * @returns {(a: any, b: any, sortInfo: SortInfo, column: Column) => number}
    */
-  createDefaultSortFunction(): (a: any, b: any, sorts: HciSortDto[], column: Column) => number {
+  createDefaultSortFunction(): (a: any, b: any, sorts: HciSortDto, column: Column) => number {
     if (isDevMode()) {
       console.debug(this.field + ": createDefaultSortFunction()");
     }
 
     if (this.dataType === "number" || this.dataType === "date-ms") {
-      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
-        if (!sorts || sorts.length === 0) {
-          return 0;
-        } else if (sorts[0].asc) {
+      return (a: any, b: any, sorts: HciSortDto, column: Column) => {
+        if (sorts.asc) {
           if (a && b) {
             return a - b;
           } else if (!a && b) {
@@ -502,7 +500,7 @@ export class Column {
         }
       };
     } else if (this.dataType === "string" || this.dataType === "date-iso8601") {
-      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
+      return (a: any, b: any, sorts: HciSortDto, column: Column) => {
         if (a) {
           a = a.toString().toLowerCase();
         }
@@ -510,9 +508,7 @@ export class Column {
           b = b.toString().toLowerCase();
         }
 
-        if (!sorts || sorts.length === 0) {
-          return 0;
-        } else if (sorts[0].asc) {
+        if (sorts.asc) {
           if (!a && b) {
             return -1;
           } else if (a && !b) {
@@ -543,13 +539,11 @@ export class Column {
         }
       };
     } else if (this.dataType === "choice") {
-      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
+      return (a: any, b: any, sorts: HciSortDto, column: Column) => {
         a = column.choiceMap.get(a);
         b = column.choiceMap.get(b);
 
-        if (!sorts || sorts.length === 0) {
-          return 0;
-        } else if (sorts[0].asc) {
+        if (sorts.asc) {
           if (!a && b) {
             return -1;
           } else if (a && !b) {
@@ -580,7 +574,7 @@ export class Column {
         }
       };
     } else {
-      return (a: any, b: any, sorts: HciSortDto[], column: Column) => {
+      return (a: any, b: any, sorts: HciSortDto, column: Column) => {
         console.warn("No sort function implemented.");
         return 0;
       };

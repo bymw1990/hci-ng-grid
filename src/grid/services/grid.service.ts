@@ -1254,7 +1254,7 @@ export class GridService {
   }
 
   public sortPreparedData() {
-    let sortColumns: Column[] = [];
+    /*let sortColumns: Column[] = [];
 
     if (!this.sorts || this.sorts.length === 0) {
       return;
@@ -1286,6 +1286,39 @@ export class GridService {
           }
 
           v = sortColumns[i].sortFunction(a, b, this.sorts, sortColumns[i]);
+
+          if (v !== 0) {
+            return v;
+          }
+        }
+        return v;
+      });
+    }*/
+    if (this.preparedData && this.columns) {
+      let sortColumns: Column[] = [];
+      for (let sort of this.sorts) {
+        for (var i = 0; i < this.columns.length; i++) {
+          if (this.columns[i].field === sort.field) {
+            sortColumns.push(this.columns[i]);
+            break;
+          }
+        }
+      }
+
+      this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
+        let v: number = 0;
+        for (let i = 0; i < sortColumns.length; i++) {
+          let a: any;
+          let b: any;
+          if (sortColumns[i].field === "GROUP_BY") {
+            a = o1.getHeader();
+            b = o2.getHeader();
+          } else {
+            a = o1.get(sortColumns[i].id).value;
+            b = o2.get(sortColumns[i].id).value;
+          }
+
+          v = sortColumns[i].sortFunction(a, b, this.sorts[i], sortColumns[i]);
 
           if (v !== 0) {
             return v;
