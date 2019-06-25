@@ -1254,46 +1254,6 @@ export class GridService {
   }
 
   public sortPreparedData() {
-    /*let sortColumns: Column[] = [];
-
-    if (!this.sorts || this.sorts.length === 0) {
-      return;
-    } else if (this.sorts[0].field === null && this.groupBy) {
-      this.sorts[0].field = "GROUP_BY";
-    }
-
-    if (this.columns) {
-      for (var i = 0; i < this.columns.length; i++) {
-        if (this.columns[i].field === this.sorts[0].field) {
-          sortColumns.push(this.columns[i]);
-          break;
-        }
-      }
-    }
-
-    if (this.preparedData) {
-      this.preparedData = this.preparedData.sort((o1: Row, o2: Row) => {
-        let v: number = 0;
-        for (var i = 0; i < sortColumns.length; i++) {
-          let a: any;
-          let b: any;
-          if (sortColumns[i].field === "GROUP_BY") {
-            a = o1.getHeader();
-            b = o2.getHeader();
-          } else {
-            a = o1.get(sortColumns[i].id).value;
-            b = o2.get(sortColumns[i].id).value;
-          }
-
-          v = sortColumns[i].sortFunction(a, b, this.sorts, sortColumns[i]);
-
-          if (v !== 0) {
-            return v;
-          }
-        }
-        return v;
-      });
-    }*/
     if (this.preparedData && this.columns) {
       let sortColumns: Column[] = [];
       for (let sort of this.sorts) {
@@ -1378,8 +1338,12 @@ export class GridService {
    * @param {string} field
    * @param {boolean} reset
    */
-  public addSort(field: string, reset: boolean = true): void {
-    if (this.sorts && this.sorts.length === 1 && reset && this.sorts[0].field !== field) {
+  public addSort(field: string, ctrl: boolean = false): void {
+    if (this.sorts && this.sorts.length === 1 && this.sorts[0].field === field) {
+      // Regular behavior
+    } else if (this.sorts && this.sorts.length === 1 && !ctrl && this.sorts[0].field !== field) {
+      this.sorts = [];
+    } else if (!ctrl) {
       this.sorts = [];
     }
 

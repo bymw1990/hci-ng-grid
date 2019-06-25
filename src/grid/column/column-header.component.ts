@@ -130,7 +130,7 @@ export class ColumnHeaderComponent {
 
   doSort(event: MouseEvent) {
     if (this.column.sort && event.ctrlKey) {
-      this.gridService.addSort(this.column.field, false);
+      this.gridService.addSort(this.column.field, true);
     } else if (this.column.sort) {
       this.gridService.addSort(this.column.field);
     }
