@@ -33,7 +33,7 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
             <i class="fas fa-filter"></i>
           </a>
         </div>
-        <div [id]="'sort-' + column.id" *ngIf="column.sortable" style="margin-left: 5px;">
+        <div [id]="'sort-' + column.id" *ngIf="column.sortable" style="margin-left: 5px;" [style.color]="firstSort ? 'green' : 'black'">
           <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
           <span *ngIf="asc === -1"><span class="fas fa-arrow-alt-circle-down"></span></span>
         </div>
@@ -63,6 +63,7 @@ export class ColumnHeaderComponent {
   @Input("container") headerContainer: ViewContainerRef;
 
   asc: number = 0;
+  firstSort: boolean = false;
   hasFilters: boolean = false;
 
   private showPopup: boolean = false;
@@ -85,15 +86,25 @@ export class ColumnHeaderComponent {
     });
 
     this.gridService.sortsSubject.subscribe((sorts: HciSortDto[]) => {
-      if (this.column.field === sorts[0].field) {
-        if (sorts[0].asc) {
-          this.asc = 1;
-        } else {
-          this.asc = -1;
+      this.firstSort = false;
+      this.asc = 0;
+
+      for (let i = 0; i < sorts.length; i++) {
+        if (this.column.field === sorts[i].field) {
+          if (sorts[i].asc) {
+            this.asc = 1;
+          } else {
+            this.asc = -1;
+          }
+
+          if (i === 0) {
+            this.firstSort = true;
+          }
+
+          break;
         }
-      } else {
-        this.asc = 0;
       }
+
     });
   }
 
