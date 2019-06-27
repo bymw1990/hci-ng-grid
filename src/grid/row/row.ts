@@ -7,12 +7,12 @@ export class Row {
 
   cells: Cell[] = [];
   data: Object = {};
-  header: any;
-  size: number = 1;
+  //size: number = 1;
 
   i: number;
   private _key: any;
   private _rowNum: number;
+  private _groupKey: string;
   private _selected: boolean = false;
   private _visible: boolean = true;
 
@@ -48,11 +48,20 @@ export class Row {
     return false;
   }
 
-  createHeader(headerColumns: Array<number>) {
-    this.header = undefined;
+  createGroupKey(headerColumns: number[]): string {
+    this._groupKey = undefined;
     for (var i = 0; i < headerColumns.length; i++) {
-      this.header = this.header === undefined ? this.cells[headerColumns[i]].value : this.header + ", " + this.cells[headerColumns[i]].value;
+      this._groupKey = this._groupKey === undefined ? this.cells[headerColumns[i]].value : this._groupKey + "," + this.cells[headerColumns[i]].value;
     }
+    return this._groupKey;
+  }
+
+  getHeader(headerColumns: number[]): string {
+    let header: string = undefined;
+    for (var i = 0; i < headerColumns.length; i++) {
+      header = header === undefined ? this.cells[headerColumns[i]].value : header + ", " + this.cells[headerColumns[i]].value;
+    }
+    return header;
   }
 
   getConcatenatedCells() {
@@ -71,20 +80,16 @@ export class Row {
     return this.cells[i];
   }
 
-  hasHeader(): boolean {
-    return this.header !== undefined;
-  }
-
-  getHeader(): any {
-    return this.header;
-  }
-
-  setHeader(header: any) {
-    this.header = header;
-  }
-
   length(): number {
     return this.cells.length;
+  }
+
+  get groupKey(): string {
+    return this._groupKey;
+  }
+
+  set groupKey(groupKey: string) {
+    this._groupKey = groupKey;
   }
 
   get visible(): boolean {

@@ -28,6 +28,8 @@ import {EventMeta} from "./utils/event-meta";
 import {RowChange} from "./utils/row-change";
 import {Point} from "./utils/point";
 import {Range} from "./utils/range";
+import {RowGroup} from "./row/row-group";
+import {GroupKeyListener} from "./event/listeners/group-key.listener";
 
 const NO_EVENT: number = -1;
 const RESIZE: number = 0;
@@ -486,6 +488,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
   @Input() groupByCollapsed: boolean;
+  @Input() externalGrouping: boolean;
   @Input() externalFiltering: boolean;
   @Input() externalSorting: boolean;
   @Input() externalPaging: boolean;
@@ -584,7 +587,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngOnInit() {
     this.renderer.setStyle(this.el.nativeElement, "display", this.display);
 
-    this.registerEventListeners();
     this.updateMode();
 
     if (this.height) {
@@ -851,6 +853,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
     rightView.addEventListener("scroll", this.onScrollRightView.bind(this), true);
 
+    this.registerEventListeners();
     this.initialized = true;
   }
 
@@ -922,6 +925,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   public registerEventListeners(): void {
     if (isDevMode()) {
       console.info("hci-grid: " + this.id + ": registerEventListeners");
+    }
+
+    if (this.gridService.isGrouping()) {
+      this.eventListeners = [{type: GroupKeyListener}].concat(this.eventListeners);
     }
 
     this.resetEventListeners();
@@ -1551,6 +1558,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.groupByCollapsed !== undefined) {
       this.inputConfig.groupByCollapsed = this.groupByCollapsed;
     }
+    if (this.externalGrouping !== undefined) {
+      this.inputConfig.externalGrouping = this.externalGrouping;
+    }
     if (this.externalFiltering !== undefined) {
       this.inputConfig.externalFiltering = this.externalFiltering;
     }
@@ -1898,6 +1908,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       end = start + end;
     }
 
+    let groupKey: string = undefined;
     let row: Row = undefined;
     let cell: Cell = undefined;
     let lRow: HTMLElement = undefined;
@@ -1924,8 +1935,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
         if (column.isUtility) {
           this.createCell(lRow, column, cell, i, column.id, "");
         } else if (column.field === "GROUP_BY") {
-          if (row.hasHeader()) {
-            this.createCell(lRow, column, cell, i, column.id, row.header);
+          if (!groupKey || groupKey !== row.groupKey) {
+            this.createCell(lRow, column, cell, i, column.id, this.gridService.createHeader(row), this.gridService.getRowGroup(row.groupKey));
+            groupKey = row.groupKey;
           } else {
             this.createCell(lRow, column, cell, i, column.id, "");
           }
@@ -1940,15 +1952,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let column of this.columnMap.get("MAIN_VISIBLE")) {
         cell = this.gridData[i].get(column.id);
         if (column.isUtility) {
-          this.createCell(rRow, column, cell, i, column.id, "", reverse);
+          this.createCell(rRow, column, cell, i, column.id, "", undefined, reverse);
         } else if (column.field === "GROUP_BY") {
-          if (row.hasHeader()) {
-            this.createCell(rRow, column, cell, i, column.id, row.header, reverse);
+          if (!groupKey || groupKey !== row.groupKey) {
+            this.createCell(rRow, column, cell, i, column.id, this.gridService.createHeader(row), this.gridService.getRowGroup(row.groupKey));
+            groupKey = row.groupKey;
           } else {
-            this.createCell(rRow, column, cell, i, column.id, "", reverse);
+            this.createCell(rRow, column, cell, i, column.id, "");
           }
         } else if (cell) {
-          this.createCell(rRow, column, cell, i, column.id, cell.value, reverse);
+          this.createCell(rRow, column, cell, i, column.id, cell.value, undefined, reverse);
         } else {
           //console.warn("hci-grid: " + this.id + ": renderCellsAndData: No cell for: " + column.field);
         }
@@ -2044,7 +2057,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} j The cell number.
    * @param {string} value The original value to display after formatting.
    */
-  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, reverse?: boolean): void {
+  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, rowGroup: RowGroup = undefined, reverse: boolean = false): void {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
     this.renderer.addClass(eCell, "hci-grid-cell");
@@ -2059,6 +2072,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (reverse) {
       this.renderer.addClass(eCell, "reverse");
+    }
+    if (rowGroup) {
+      this.renderer.addClass(eCell, "group-key");
+      this.renderer.addClass(eCell, "group-key-" + rowGroup.groupKey);
     }
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
