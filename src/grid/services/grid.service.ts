@@ -13,6 +13,7 @@ import {Column} from "../column/column";
 import {Range} from "../utils/range";
 import {Point} from "../utils/point";
 import {RowChange} from "../utils/row-change";
+import {RowGroup} from "../row/row-group";
 
 /**
  * The service for handling configuration and data binding/parsing.
@@ -24,6 +25,7 @@ export class GridService {
     theme: "spreadsheet",
     columnHeaders: true,
     groupByCollapsed: true,
+    externalGrouping: false,
     externalFiltering: false,
     externalSorting: false,
     externalPaging: false,
@@ -44,6 +46,7 @@ export class GridService {
   fixedColumns: string[];
   groupBy: string[];
   groupByCollapsed: boolean;
+  externalGrouping: boolean;
   externalFiltering: boolean;
   externalSorting: boolean;
   externalPaging: boolean;
@@ -56,6 +59,8 @@ export class GridService {
 
   viewData: Row[] = [];
   viewDataSubject: BehaviorSubject<Row[]> = new BehaviorSubject<Row[]>([]);
+
+  rowGroups: Map<string, RowGroup> = new Map<string, RowGroup>();
 
   filters: HciFilterDto[] = [];
 
@@ -195,6 +200,9 @@ export class GridService {
     }
 
     // Data Display and Fetching Configuration
+    if (config.externalGrouping !== undefined) {
+      this.externalGrouping = config.externalGrouping;
+    }
     if (config.externalFiltering !== undefined) {
       this.externalFiltering = config.externalFiltering;
     }

@@ -10,11 +10,6 @@ export class Row {
   header: any;
   size: number = 1;
 
-  HIDDEN: number = 0;
-  COLLAPSED: number = 1;
-  EXPANDED: number = 2;
-  state: number = this.EXPANDED;
-
   i: number;
   private _key: any;
   private _rowNum: number;
@@ -78,14 +73,6 @@ export class Row {
 
   hasHeader(): boolean {
     return this.header !== undefined;
-  }
-
-  isExpanded(): boolean {
-    return this.state === this.EXPANDED;
-  }
-
-  isCollaposed(): boolean {
-    return this.state === this.COLLAPSED;
   }
 
   getHeader(): any {

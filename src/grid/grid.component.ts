@@ -1898,8 +1898,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       end = start + end;
     }
 
-    let cell: Cell = undefined;
     let row: Row = undefined;
+    let cell: Cell = undefined;
     let lRow: HTMLElement = undefined;
     let rRow: HTMLElement = undefined;
     for (var i = start; this.gridData.length; i++) {
