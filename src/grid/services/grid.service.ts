@@ -258,6 +258,8 @@ export class GridService {
       this.externalSorting = true;
     }
 
+    this.initializeSorts();
+
     this.setNVisibleRows();
 
     this.configSet = true;
@@ -268,6 +270,19 @@ export class GridService {
       this.initializeColumns();
     } else {
       this.configSubject.next(this.config);
+    }
+  }
+
+  initializeSorts(pushSubject: boolean = true, asc: boolean = true): void {
+    this.sorts = [];
+
+    if (this.isGrouping()) {
+      for (let groupBy of this.groupBy) {
+        this.sorts.push(new HciSortDto(groupBy, asc));
+      }
+    }
+    if (pushSubject) {
+      this.sortsSubject.next(this.sorts);
     }
   }
 
@@ -539,8 +554,8 @@ export class GridService {
     for (var j = 0; j < this.columns.length; j++) {
       this.columnMap.get("ALL").push(this.columns[j]);
 
+      this.columns[j].id = j;
       if (this.columns[j].visible) {
-        this.columns[j].id = j;
         this.columnMap.get("VISIBLE").push(this.columns[j]);
 
         if (this.columns[j].isUtility) {
@@ -1434,6 +1449,16 @@ export class GridService {
     this.filterEventSubject.next(filters);
   }
 
+  public groupByInSort(field: string): boolean {
+    for (let groupField of this.groupBy) {
+      if (field === groupField) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /**
    * Add a sort field and then perform the sort.  By default, clear the existing sort and start over.
    *
@@ -1441,7 +1466,29 @@ export class GridService {
    * @param {boolean} reset
    */
   public addSort(field: string, ctrl: boolean = false): void {
-    if (this.sorts && this.sorts.length === 1 && this.sorts[0].field === field) {
+    let isGrouping: boolean = this.isGrouping();
+    let isGroupBy: boolean = (field === "GROUP_BY") ?  true : false;
+
+    let firstIndex: number = (isGrouping) ? this.groupBy.length : 1;
+
+    if (isGroupBy) {
+      if (this.sorts.length > 0) {
+        this.initializeSorts(true, !this.sorts[0].asc);
+      } else {
+        this.initializeSorts(true, true);
+      }
+      let asc: boolean = this.sorts[0].asc;
+      this.sort();
+      return;
+    } else if (isGrouping) {
+      if (this.sorts.length - 1 === firstIndex && this.sorts[firstIndex].field === field) {
+        // Regular behavior
+      } else if (this.sorts && this.sorts.length - 1 === firstIndex && !ctrl && this.sorts[firstIndex].field !== field) {
+        this.sorts = this.sorts.slice(0, firstIndex);
+      } else if (!ctrl) {
+        this.sorts = this.sorts.slice(0, firstIndex);
+      }
+    } else if (this.sorts.length === 1 && this.sorts[0].field === field) {
       // Regular behavior
     } else if (this.sorts && this.sorts.length === 1 && !ctrl && this.sorts[0].field !== field) {
       this.sorts = [];
