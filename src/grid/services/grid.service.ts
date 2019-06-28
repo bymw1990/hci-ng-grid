@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable, of, Subject, Subscription} from "rxjs";
 import {finalize} from "rxjs/operators";
 
-import {HciFilterDto, HciGridDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
+import {HciFilterDto, HciGridDto, HciGroupingDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
 
 import {GridGlobalService} from "./grid-global.service";
 import {Cell} from "../cell/cell";
@@ -15,6 +15,7 @@ import {Point} from "../utils/point";
 import {RowChange} from "../utils/row-change";
 import {RowGroup} from "../row/row-group";
 import {group} from "@angular/animations";
+import {RowGroupView} from "../cell/viewRenderers/row-group-view";
 
 /**
  * The service for handling configuration and data binding/parsing.
@@ -65,10 +66,10 @@ export class GridService {
 
   rowGroups: Map<string, RowGroup> = new Map<string, RowGroup>();
 
+  grouping: HciGroupingDto = new HciGroupingDto();
   filters: HciFilterDto[] = [];
-
   sorts: HciSortDto[] = [];
-  sortsSubject = new Subject<HciSortDto[]>();
+  sortsSubject = new BehaviorSubject<HciSortDto[]>(this.sorts);
 
   paging: HciPagingDto = new HciPagingDto();
   pagingSubject = new Subject<HciPagingDto>();
@@ -195,6 +196,7 @@ export class GridService {
         columnsChanged = true;
       }
       this.groupBy = config.groupBy;
+      this.grouping.setFields(this.groupBy);
     }
     if (config.groupByCollapsed !== undefined) {
       if (this.groupByCollapsed !== config.groupByCollapsed) {
@@ -534,7 +536,7 @@ export class GridService {
     }
 
     if (nGroupBy > 0) {
-      let column: Column = new Column({renderOrder: 1999, field: "GROUP_BY", name: groupByDisplay, selectable: false});
+      let column: Column = new Column({renderOrder: 1999, field: "GROUP_BY", name: groupByDisplay, selectable: false, viewRenderer: RowGroupView});
       this.columns.push(column);
       this.nVisibleColumns = this.nVisibleColumns + 1;
     }
@@ -1064,10 +1066,10 @@ export class GridService {
     this.resetUtilityColumns();
 
     let START: number = 0;
-    let END: number = this.preparedData.length;
+    let END: number = this.groupedData.length;
 
     if (!this.externalPaging) {
-      this.paging.setDataSize(this.preparedData.length);
+      this.paging.setDataSize(this.groupedData.length);
     }
     if (doPage && this.paging.getPageSize() > 0) {
       START = this.paging.getPage() * this.paging.getPageSize();

@@ -67,7 +67,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columns]="columns1"
-                    [groupBy]="['lastName']">
+                    [groupBy]="['lastName']"
+                    [nVisibleRows]="10">
           </hci-grid>
         </p>
       </div>

@@ -2088,7 +2088,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
 
-    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, i, j));
+    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, i, j, rowGroup));
     this.renderer.appendChild(row, eCell);
   }
 

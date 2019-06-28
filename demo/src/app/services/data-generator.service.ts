@@ -20,7 +20,7 @@ export class DataGeneratorService {
   externalData2: Object[] = [];
   simpleData4: Object[] = [];
 
-  private _firstNames: string[] = [ "Alice", "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Gerry", "Gina",
+  private _firstNames: string[] = [ "Alred", "Amy", "Bob", "Betty", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Jerry", "Gina",
       "Harry", "Hellen", "Mike", "Milla", "Sam", "Sarah", "Tim", "Tina" ];
   private _lastNames: string[] = [ "Black", "Brown", "Grey", "Khan", "Smith", "White" ];
   private _middleNames: string[] = [ "", "A", "C", "D", "H", "L", "N", "O", "R", "T", "Z" ];
