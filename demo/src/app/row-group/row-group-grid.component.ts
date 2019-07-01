@@ -7,7 +7,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
   template: `
     <div class="card">
       <div class="card-header">
-        <h4>Row Grouping</h4>
+        <h4>Row Grouping without Paging</h4>
       </div>
       <div class="card-body">
         <div class="card-text input-row">
@@ -73,6 +73,19 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </p>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Row Grouping with Paging</h4>
+      </div>
+      <div class="card-body">
+        <hci-grid [data]="data1"
+                  [columns]="columns1"
+                  [groupBy]="['lastName']"
+                  [pageSize]="10">
+        </hci-grid>
+      </div>
+    </div>
   `,
   styles: [`
   
@@ -91,7 +104,7 @@ export class RowGroupGridComponent {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  dataSize: number = 1000;
+  dataSize: number = 25;
 
   data1: Object[] = [];
 

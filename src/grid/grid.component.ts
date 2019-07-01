@@ -472,7 +472,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("iframeSensor", {static: false}) iframeSensor: ElementRef;
 
   @Input("data") boundData: Object[];
-  @Input("dataCall") onExternalDataCall: Function;
+  @Input("dataCall") onExternalDataCall: (externalInfo: HciGridDto) => Observable<HciDataDto>;
 
   @Input() id: string;
   @Input("config") inputConfig: any = {};
@@ -687,18 +687,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.onExternalDataCall) {
       this.gridService.externalInfoObserved.subscribe((externalInfo: HciGridDto) => {
         this.updateGridContainerHeight();
-        this.gridService.getBusySubject().next(true);
-        this.onExternalDataCall(externalInfo).subscribe((externalData: HciDataDto) => {
-          if (!externalData.gridDto) {
-            this.gridService.paging.setNumPages(1);
-          } else {
-            this.gridService.paging = externalData.getGridDto().getPaging();
-          }
-          this.gridService.setOriginalData(externalData.data);
-
-          this.paging = this.gridService.paging;
-          this.gridService.getBusySubject().next(false);
-        });
+        this.gridService.doExternalDataCall(externalInfo);
       });
     }
 
@@ -1542,6 +1531,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.inputTitle !== undefined) {
       this.inputConfig.title = this.inputTitle;
+    }
+    if (this.onExternalDataCall) {
+      this.inputConfig = this.onExternalDataCall;
     }
     if (this.inputLinkedGroups !== undefined) {
       this.inputConfig.linkedGroups = this.inputLinkedGroups;
