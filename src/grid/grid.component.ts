@@ -3,7 +3,8 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector, TemplateRef
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector, TemplateRef,
+  ApplicationRef, ComponentRef, EmbeddedViewRef
 } from "@angular/core";
 
 import {interval, Observable, Subject, Subscription} from "rxjs";
@@ -555,7 +556,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private newRow: Row;
 
   private event: number = NO_EVENT;
-  private popupRef: CellPopupRenderer;
+  private popupRef: ComponentRef<CellPopupRenderer>;
   private componentRef: CellEditRenderer;
   private selectedLocationSubscription: Subscription;
 
@@ -579,6 +580,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
               private resolver: ComponentFactoryResolver,
               private changeDetectorRef: ChangeDetectorRef,
               private injector: Injector,
+              private applicationRef: ApplicationRef,
               private gridService: GridService,
               private gridEventService: GridEventService,
               private gridMessageService: GridMessageService,
@@ -1454,23 +1456,28 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (!column.popupRenderer) {
       return;
     }
-    if (this.popupRef && this.popupRef.i === location.i && this.popupRef.j === location.j) {
+    if (this.popupRef && this.popupRef.instance.i === location.i && this.popupRef.instance.j === location.j) {
       return;
     }
 
-    this.popupContainer.clear();
-    let factory = this.resolver.resolveComponentFactory(column.popupRenderer);
-    this.popupRef = this.popupContainer.createComponent(factory).instance;
-    this.popupRef.setPosition(location);
-    this.popupRef.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
+    this.clearPopup();
+    this.popupRef = <ComponentRef<CellPopupRenderer>>this.resolver.resolveComponentFactory(column.popupRenderer).create(this.injector);
+    this.applicationRef.attachView(this.popupRef.hostView);
+    let popupEl: HTMLElement = <HTMLElement>(this.popupRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
+    this.popupRef.instance.setPosition(location);
+    this.popupRef.instance.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
+    this.renderer.appendChild(document.body, popupEl);
   }
 
   /**
    * Remove the popup comonent and clear the popup container view of children.
    */
   public clearPopup() {
-    this.popupRef = undefined;
-    this.popupContainer.clear();
+    if (this.popupRef) {
+      this.applicationRef.detachView(this.popupRef.hostView);
+      this.popupRef.destroy();
+      this.popupRef = undefined;
+    }
   }
 
   /**
