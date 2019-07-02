@@ -41,7 +41,7 @@ export class DataGeneratorService {
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
-      let genderDict: number = (Math.random() < 0.05) ? 3 : j % 2 + 1;
+      let genderDict: number = (Math.random() < 0.05) ? 3 : (j + 1) % 2 + 1;
       let raceDict: number = Math.floor(Math.random() * 6 + 1);
       let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];

@@ -848,6 +848,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.registerEventListeners();
     this.initialized = true;
+
+    this.changeDetectorRef.detectChanges();
   }
 
   /**
