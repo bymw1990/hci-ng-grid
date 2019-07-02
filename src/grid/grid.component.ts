@@ -589,6 +589,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.updateMode();
 
+    this.buildConfigFromInput();
+
     if (this.height) {
       this.renderer.setStyle(this.el.nativeElement, "height", this.height + "px");
     }
@@ -621,8 +623,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       this.gridService.paging = this.gridService.paging;
       this.columnMap = this.gridService.getColumnMapSubject().getValue();
-      this.gridService.initData();
-      this.doRender();
+      /*this.gridService.initData();
+      this.doRender();*/
+      if (this.onExternalDataCall) {
+        this.gridService.doExternalDataCall();
+      } else {
+        this.gridService.initData();
+      }
 
       // If the config update came externally, don't re-broadcast it.
       if (this.config.external !== undefined && this.config.external) {
@@ -684,12 +691,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Listen to changes in Sort/Filter/Page.
      If there is an onExternalDataCall defined, send that info to that provided function. */
-    if (this.onExternalDataCall) {
+    /*if (this.onExternalDataCall) {
       this.gridService.externalInfoObserved.subscribe((externalInfo: HciGridDto) => {
         this.updateGridContainerHeight();
         this.gridService.doExternalDataCall(externalInfo);
       });
-    }
+    }*/
 
     this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.updateSelectedRows(selectedRows);
@@ -717,11 +724,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.paging = this.gridService.paging;
     this.gridEventService.setSelectedLocation(undefined, undefined);
 
-    this.buildConfigFromInput();
+    /* Listen to changes in the data.  Updated data when the data service indicates a change. */
+    this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
+      if (isDevMode()) {
+        console.info("hci-grid: " + this.id + ": viewDataSubject.subscribe: " + data.length);
+      }
+      this.setGridData(data);
+    });
 
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
-      this.gridService.externalInfoObserved.next(new HciGridDto(undefined, undefined, this.paging));
+      //this.gridService.externalInfoObserved.next(new HciGridDto(undefined, undefined, this.paging));
+      this.gridService.doExternalDataCall();
     } else if (this.boundData) {
       this.gridService.setOriginalData(this.boundData);
     }
@@ -747,16 +761,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.iFrameWidth[0] = this.iFrameWidth[1];
         this.iFrameWidth[1] = iw;
       }
-    });
-
-    this.findBaseRowCell();
-
-    /* Listen to changes in the data.  Updated data when the data service indicates a change. */
-    this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
-      if (isDevMode()) {
-        console.info("hci-grid: " + this.id + ": data.subscribe: " + data.length);
-      }
-      this.setGridData(data);
     });
 
     /* Update the pageInfo from the proper one in the gridService. */
@@ -1532,8 +1536,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.inputTitle !== undefined) {
       this.inputConfig.title = this.inputTitle;
     }
-    if (this.onExternalDataCall) {
-      this.inputConfig = this.onExternalDataCall;
+    if (this.onExternalDataCall !== undefined) {
+      this.inputConfig.onExternalDataCall = this.onExternalDataCall;
     }
     if (this.inputLinkedGroups !== undefined) {
       this.inputConfig.linkedGroups = this.inputLinkedGroups;

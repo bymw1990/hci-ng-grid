@@ -2,6 +2,7 @@ import {HciPagingDto} from "hci-ng-grid-dto";
 
 export class RowGroup {
 
+  data: {};
   groupKey: string;
   count: number;
   expanded: boolean = false;

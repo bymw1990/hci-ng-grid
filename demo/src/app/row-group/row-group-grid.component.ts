@@ -1,6 +1,9 @@
 import {Component, HostBinding} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {delay} from "rxjs/operators";
+import {Observable, of} from "rxjs/index";
+import {HciDataDto, HciGridDto} from "hci-ng-grid-dto";
 
 @Component({
   selector: "group-grid",
@@ -86,6 +89,20 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </hci-grid>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Row Grouping with External Data</h4>
+      </div>
+      <div class="card-body">
+        <hci-grid [dataCall]="onExternalDataCall"
+                  [columns]="columns1"
+                  [groupBy]="['lastName']"
+                  [externalGrouping]="true"
+                  [pageSize]="10">
+        </hci-grid>
+      </div>
+    </div>
   `,
   styles: [`
   
@@ -103,6 +120,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
 export class RowGroupGridComponent {
 
   @HostBinding("class") classList: string = "demo-component";
+
+  public onExternalDataCall: (externalInfo: HciGridDto) => Observable<HciDataDto>;
 
   dataSize: number = 25;
 
@@ -127,9 +146,17 @@ export class RowGroupGridComponent {
 
   setDataSize(dataSize: number) {
     this.dataSize = dataSize;
+
+    this.generateData();
   }
 
   generateData() {
+    this.dataGeneratorService.generateExternalData1(this.dataSize);
+    this.onExternalDataCall = this.handleExternalDataCall.bind(this);
     this.data1 = this.dataGeneratorService.getData(this.dataSize);
+  }
+
+  handleExternalDataCall(externalInfo: HciGridDto): Observable<HciDataDto> {
+    return of(this.dataGeneratorService.getExternalData1(externalInfo)).pipe(delay(1000));
   }
 }

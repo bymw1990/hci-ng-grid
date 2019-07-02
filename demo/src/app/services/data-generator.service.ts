@@ -3,7 +3,8 @@ import {Observable} from "rxjs";
 
 import * as moment from "moment";
 
-import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
+import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto, HciSortDto, HciGroupingDto} from "hci-ng-grid-dto";
+import {group} from "@angular/animations";
 
 const momentRandom = require("moment-random");
 
@@ -225,7 +226,7 @@ export class DataGeneratorService {
    * @returns {HciDataDto}
    */
   getExternalData(externalInfo: HciGridDto, externalData: any[], paging: boolean): HciDataDto {
-    console.info("getExternalData");
+    console.info("Demo: DataGeneratorService.getExternalData");
     console.info(externalInfo);
 
     if (!externalInfo) {
@@ -237,6 +238,7 @@ export class DataGeneratorService {
     let filters: HciFilterDto[] = externalInfo.getFilters();
     let sorts: HciSortDto[] = externalInfo.getSorts();
     let pageInfo: HciPagingDto = externalInfo.getPaging();
+    let groupInfo: HciGroupingDto = externalInfo.getGrouping();
 
     let filtered: Object[] = [];
     if (!filters) {
@@ -281,6 +283,32 @@ export class DataGeneratorService {
       }
     }
 
+    let countMap: Map<string, number> = new Map<string, number>();
+    if (groupInfo.getGroupQuery()) {
+      let grouped: Object[] = [];
+
+      for (let row of filtered) {
+        let groupKey: string;
+        for (let groupField of groupInfo.getFields()) {
+          groupKey = (groupKey) ? groupKey + "," + row[groupField] : row[groupField];
+        }
+
+        if (countMap.has(groupKey)) {
+          countMap.set(groupKey, countMap.get(groupKey) + 1);
+        } else {
+          countMap.set(groupKey, 1);
+          let newRow: Object = {};
+          for (let groupField of groupInfo.getFields()) {
+            newRow[groupField] = row[groupField];
+          }
+          newRow["GROUP_BY"] = groupKey;
+          grouped.push(newRow);
+        }
+      }
+
+      filtered = grouped;
+    }
+
     if (sorts && sorts.length === 1) {
       filtered = filtered.sort((a: Object, b: Object) => {
         if (sorts[0].getAsc()) {
@@ -304,10 +332,11 @@ export class DataGeneratorService {
     }
 
     if (!pageInfo) {
-      return new HciDataDto(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo, undefined);
     }
 
     let data: Object[] = [];
+    let dataCounts: number[] = [];
 
     console.info(pageInfo);
 
@@ -325,20 +354,24 @@ export class DataGeneratorService {
     console.info("externalData paging: " + n + " " + page + " " + pageSize);
 
     if (!paging) {
-      return new HciDataDto(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo, undefined);
     }
 
     if (pageSize > 0) {
       if (page * pageSize > n - 1) {
-        return new HciDataDto(data, externalInfo);
+        return new HciDataDto(data, externalInfo, dataCounts);
       }
 
       for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
         data.push(filtered[i]);
+
+        if (filtered[i]["GROUP_BY"]) {
+          dataCounts.push(countMap.get(filtered[i]["GROUP_BY"]));
+        }
       }
-      return new HciDataDto(data, externalInfo);
+      return new HciDataDto(data, externalInfo, dataCounts);
     } else {
-      return new HciDataDto(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo, undefined);
     }
   }
 
