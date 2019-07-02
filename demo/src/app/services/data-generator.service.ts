@@ -309,25 +309,31 @@ export class DataGeneratorService {
       filtered = grouped;
     }
 
-    if (sorts && sorts.length === 1) {
+    if (sorts) {
       filtered = filtered.sort((a: Object, b: Object) => {
-        if (sorts[0].getAsc()) {
-          if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
-            return -1;
-          } else if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
-            return 1;
+        let v: number = 0;
+
+        for (let sort of sorts) {
+          if (sort.getAsc()) {
+            if (a[sort.getField()] < b[sort.getField()]) {
+              return -1;
+            } else if (a[sort.getField()] < b[sort.getField()]) {
+              return 1;
+            } else {
+              continue;
+            }
           } else {
-            return 0;
-          }
-        } else {
-          if (a[sorts[0].getField()] > b[sorts[0].getField()]) {
-            return -1;
-          } else if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
-            return 1;
-          } else {
-            return 0;
+            if (a[sort.getField()] > b[sort.getField()]) {
+              return -1;
+            } else if (a[sort.getField()] < b[sort.getField()]) {
+              return 1;
+            } else {
+              continue;
+            }
           }
         }
+
+        return v;
       });
     }
 

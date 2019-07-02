@@ -37,7 +37,7 @@ export class RowGroupView implements CellViewRenderer {
         renderer.appendChild(spanCount, renderer.createText("(" + rowGroup.count + ")"));
       } else {
         renderer.addClass(icon, "fas");
-        renderer.addClass(icon, "fa-plus");
+        renderer.addClass(icon, "fa-expand-arrows-alt");
         renderer.appendChild(spanCount, renderer.createText("(" + rowGroup.count + ")"));
       }
 

@@ -4,6 +4,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
 import {delay} from "rxjs/operators";
 import {Observable, of} from "rxjs/index";
 import {HciDataDto, HciGridDto} from "hci-ng-grid-dto";
+import {TextFilterRenderer} from "hci-ng-grid";
 
 @Component({
   selector: "group-grid",
@@ -131,7 +132,7 @@ export class RowGroupGridComponent {
     { field: "idPatient", name: "ID", visible: false },
     { field: "lastName", name: "Last Name" },
     { field: "middleName", name: "Middle Name" },
-    { field: "firstName", name: "First Name" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "dob", name: "Date of Birth", dataType: "date" },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address" },

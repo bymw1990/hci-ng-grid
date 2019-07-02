@@ -1072,6 +1072,7 @@ export class GridService {
     if (doSort) {
       this.sortPreparedData();
     }
+    this.calculateRowGroups();
     if (doGroup) {
       this.groupPreparedData();
     } else {
@@ -1179,25 +1180,6 @@ export class GridService {
         }
       }
 
-      if (this.isGrouping()) {
-        let groupKey: string = row.createGroupKey(this.groupColumns);
-
-        if (!this.rowGroups.has(groupKey)) {
-          let rowGroup: RowGroup = new RowGroup(groupKey, (this.originalDataCounts) ? this.originalDataCounts[i] : 1);
-          for (let groupField of this.grouping.getFields()) {
-            rowGroup[groupField] = this.getField(this.originalData[i], groupField);
-          }
-
-          if (this.selectedRowGroup && groupKey === this.selectedRowGroup.groupKey) {
-            rowGroup.expanded = true;
-          }
-
-          this.rowGroups.set(groupKey, rowGroup);
-        } else if (!this.originalDataCounts) {
-          this.rowGroups.get(groupKey).incrementCount();
-        }
-      }
-
       this.preparedData.push(row);
     }
   }
@@ -1244,6 +1226,40 @@ export class GridService {
     } else {
       this.setSelectedRowGroup((rowGroup.expanded) ? rowGroup : undefined);
       this.initDataWithOptions(false, true, false, false, true);
+    }
+  }
+
+  clearRowGroupCounts(): void {
+    this.rowGroups.forEach((rowGroup: RowGroup) => {
+      rowGroup.count = 0;
+    });
+  }
+
+  public calculateRowGroups(): void {
+    if (!this.isGrouping()) {
+      return;
+    }
+
+    this.clearRowGroupCounts();
+    for (let i = 0; i < this.preparedData.length; i++) {
+      if (this.isGrouping()) {
+        let groupKey: string = this.preparedData[i].createGroupKey(this.groupColumns);
+
+        if (!this.rowGroups.has(groupKey)) {
+          let rowGroup: RowGroup = new RowGroup(groupKey, (this.originalDataCounts) ? this.originalDataCounts[i] : 1);
+          for (let groupField of this.grouping.getFields()) {
+            rowGroup[groupField] = this.getField(this.originalData[i], groupField);
+          }
+
+          if (this.selectedRowGroup && groupKey === this.selectedRowGroup.groupKey) {
+            rowGroup.expanded = true;
+          }
+
+          this.rowGroups.set(groupKey, rowGroup);
+        } else if (!this.originalDataCounts) {
+          this.rowGroups.get(groupKey).incrementCount();
+        }
+      }
     }
   }
 
