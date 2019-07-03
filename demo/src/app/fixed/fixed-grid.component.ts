@@ -69,7 +69,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <hci-grid [title]="'Fixed Grid'"
                     [data]="fixedData"
                     [columns]="fixedColumns"
-                    [fixedColumns]="['firstName', 'lastName']">
+                    [fixedColumns]="['firstName', 'lastName']"
+                    [nVisibleRows]="20">
           </hci-grid>
         </p>
       </div>

@@ -3,7 +3,8 @@
  */
 import {
   AfterViewInit, ComponentFactoryResolver, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
-  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector, TemplateRef
+  isDevMode, OnChanges, Output, Renderer2, SimpleChange, ViewChild, ViewContainerRef, Injector, TemplateRef,
+  ApplicationRef, ComponentRef, EmbeddedViewRef
 } from "@angular/core";
 
 import {interval, Observable, Subject, Subscription} from "rxjs";
@@ -28,6 +29,8 @@ import {EventMeta} from "./utils/event-meta";
 import {RowChange} from "./utils/row-change";
 import {Point} from "./utils/point";
 import {Range} from "./utils/range";
+import {RowGroup} from "./row/row-group";
+import {GroupKeyListener} from "./event/listeners/group-key.listener";
 
 const NO_EVENT: number = -1;
 const RESIZE: number = 0;
@@ -470,7 +473,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @ViewChild("iframeSensor", {static: false}) iframeSensor: ElementRef;
 
   @Input("data") boundData: Object[];
-  @Input("dataCall") onExternalDataCall: Function;
+  @Input("dataCall") onExternalDataCall: (externalInfo: HciGridDto) => Observable<HciDataDto>;
 
   @Input() id: string;
   @Input("config") inputConfig: any = {};
@@ -486,6 +489,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   @Input() fixedColumns: string[];
   @Input() groupBy: string[];
   @Input() groupByCollapsed: boolean;
+  @Input() externalGrouping: boolean;
   @Input() externalFiltering: boolean;
   @Input() externalSorting: boolean;
   @Input() externalPaging: boolean;
@@ -552,7 +556,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   private newRow: Row;
 
   private event: number = NO_EVENT;
-  private popupRef: CellPopupRenderer;
+  private popupRef: ComponentRef<CellPopupRenderer>;
   private componentRef: CellEditRenderer;
   private selectedLocationSubscription: Subscription;
 
@@ -576,6 +580,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
               private resolver: ComponentFactoryResolver,
               private changeDetectorRef: ChangeDetectorRef,
               private injector: Injector,
+              private applicationRef: ApplicationRef,
               private gridService: GridService,
               private gridEventService: GridEventService,
               private gridMessageService: GridMessageService,
@@ -584,8 +589,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
   ngOnInit() {
     this.renderer.setStyle(this.el.nativeElement, "display", this.display);
 
-    this.registerEventListeners();
     this.updateMode();
+
+    this.buildConfigFromInput();
 
     if (this.height) {
       this.renderer.setStyle(this.el.nativeElement, "height", this.height + "px");
@@ -619,8 +625,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       this.gridService.paging = this.gridService.paging;
       this.columnMap = this.gridService.getColumnMapSubject().getValue();
-      this.gridService.initData();
-      this.doRender();
+      /*this.gridService.initData();
+      this.doRender();*/
+      if (this.onExternalDataCall) {
+        this.gridService.doExternalDataCall();
+      } else {
+        this.gridService.initData();
+      }
 
       // If the config update came externally, don't re-broadcast it.
       if (this.config.external !== undefined && this.config.external) {
@@ -682,23 +693,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Listen to changes in Sort/Filter/Page.
      If there is an onExternalDataCall defined, send that info to that provided function. */
-    if (this.onExternalDataCall) {
+    /*if (this.onExternalDataCall) {
       this.gridService.externalInfoObserved.subscribe((externalInfo: HciGridDto) => {
         this.updateGridContainerHeight();
-        this.gridService.getBusySubject().next(true);
-        this.onExternalDataCall(externalInfo).subscribe((externalData: HciDataDto) => {
-          if (!externalData.gridDto) {
-            this.gridService.paging.setNumPages(1);
-          } else {
-            this.gridService.paging = externalData.getGridDto().getPaging();
-          }
-          this.gridService.setOriginalData(externalData.data);
-
-          this.paging = this.gridService.paging;
-          this.gridService.getBusySubject().next(false);
-        });
+        this.gridService.doExternalDataCall(externalInfo);
       });
-    }
+    }*/
 
     this.gridService.getSelectedRowsSubject().subscribe((selectedRows: any[]) => {
       this.updateSelectedRows(selectedRows);
@@ -726,11 +726,18 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.paging = this.gridService.paging;
     this.gridEventService.setSelectedLocation(undefined, undefined);
 
-    this.buildConfigFromInput();
+    /* Listen to changes in the data.  Updated data when the data service indicates a change. */
+    this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
+      if (isDevMode()) {
+        console.info("hci-grid: " + this.id + ": viewDataSubject.subscribe: " + data.length);
+      }
+      this.setGridData(data);
+    });
 
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
-      this.gridService.externalInfoObserved.next(new HciGridDto(undefined, undefined, this.paging));
+      //this.gridService.externalInfoObserved.next(new HciGridDto(undefined, undefined, this.paging));
+      this.gridService.doExternalDataCall();
     } else if (this.boundData) {
       this.gridService.setOriginalData(this.boundData);
     }
@@ -756,16 +763,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.iFrameWidth[0] = this.iFrameWidth[1];
         this.iFrameWidth[1] = iw;
       }
-    });
-
-    this.findBaseRowCell();
-
-    /* Listen to changes in the data.  Updated data when the data service indicates a change. */
-    this.gridService.getViewDataSubject().subscribe((data: Row[]) => {
-      if (isDevMode()) {
-        console.info("hci-grid: " + this.id + ": data.subscribe: " + data.length);
-      }
-      this.setGridData(data);
     });
 
     /* Update the pageInfo from the proper one in the gridService. */
@@ -851,7 +848,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     let rightView: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-view");
     rightView.addEventListener("scroll", this.onScrollRightView.bind(this), true);
 
+    this.registerEventListeners();
     this.initialized = true;
+
+    this.changeDetectorRef.detectChanges();
   }
 
   /**
@@ -922,6 +922,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
   public registerEventListeners(): void {
     if (isDevMode()) {
       console.info("hci-grid: " + this.id + ": registerEventListeners");
+    }
+
+    if (this.gridService.isGrouping()) {
+      this.eventListeners = [{type: GroupKeyListener}].concat(this.eventListeners);
     }
 
     this.resetEventListeners();
@@ -1452,23 +1456,28 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (!column.popupRenderer) {
       return;
     }
-    if (this.popupRef && this.popupRef.i === location.i && this.popupRef.j === location.j) {
+    if (this.popupRef && this.popupRef.instance.i === location.i && this.popupRef.instance.j === location.j) {
       return;
     }
 
-    this.popupContainer.clear();
-    let factory = this.resolver.resolveComponentFactory(column.popupRenderer);
-    this.popupRef = this.popupContainer.createComponent(factory).instance;
-    this.popupRef.setPosition(location);
-    this.popupRef.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
+    this.clearPopup();
+    this.popupRef = <ComponentRef<CellPopupRenderer>>this.resolver.resolveComponentFactory(column.popupRenderer).create(this.injector);
+    this.applicationRef.attachView(this.popupRef.hostView);
+    let popupEl: HTMLElement = <HTMLElement>(this.popupRef.hostView as EmbeddedViewRef<any>).rootNodes[0];
+    this.popupRef.instance.setPosition(location);
+    this.popupRef.instance.setLocation(this.gridContainer.nativeElement.querySelector("#cell-" + location.i + "-" + location.j));
+    this.renderer.appendChild(document.body, popupEl);
   }
 
   /**
    * Remove the popup comonent and clear the popup container view of children.
    */
   public clearPopup() {
-    this.popupRef = undefined;
-    this.popupContainer.clear();
+    if (this.popupRef) {
+      this.applicationRef.detachView(this.popupRef.hostView);
+      this.popupRef.destroy();
+      this.popupRef = undefined;
+    }
   }
 
   /**
@@ -1536,6 +1545,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (this.inputTitle !== undefined) {
       this.inputConfig.title = this.inputTitle;
     }
+    if (this.onExternalDataCall !== undefined) {
+      this.inputConfig.onExternalDataCall = this.onExternalDataCall;
+    }
     if (this.inputLinkedGroups !== undefined) {
       this.inputConfig.linkedGroups = this.inputLinkedGroups;
     }
@@ -1550,6 +1562,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (this.groupByCollapsed !== undefined) {
       this.inputConfig.groupByCollapsed = this.groupByCollapsed;
+    }
+    if (this.externalGrouping !== undefined) {
+      this.inputConfig.externalGrouping = this.externalGrouping;
     }
     if (this.externalFiltering !== undefined) {
       this.inputConfig.externalFiltering = this.externalFiltering;
@@ -1729,7 +1744,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       for (let column of this.columnMap.get("VISIBLE")) {
         if (column.widthPercent > 0) {
-          column.renderWidth = Math.max(percentWidth * (column.widthPercent / 100), column.minWidth);
+          column.renderWidth = Math.floor(Math.max(percentWidth * (column.widthPercent / 100), column.minWidth));
           availableWidth = availableWidth - column.renderWidth;
         } else if (column.width === 0) {
           nAutoWidth = nAutoWidth + 1;
@@ -1898,8 +1913,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       end = start + end;
     }
 
-    let cell: Cell = undefined;
+    let groupKey: string = undefined;
     let row: Row = undefined;
+    let cell: Cell = undefined;
     let lRow: HTMLElement = undefined;
     let rRow: HTMLElement = undefined;
     for (var i = start; this.gridData.length; i++) {
@@ -1924,8 +1940,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
         if (column.isUtility) {
           this.createCell(lRow, column, cell, i, column.id, "");
         } else if (column.field === "GROUP_BY") {
-          if (row.hasHeader()) {
-            this.createCell(lRow, column, cell, i, column.id, row.header);
+          if (!groupKey || groupKey !== row.groupKey) {
+            this.createCell(lRow, column, cell, i, column.id, this.gridService.createHeader(row), this.gridService.getRowGroup(row.groupKey));
+            groupKey = row.groupKey;
           } else {
             this.createCell(lRow, column, cell, i, column.id, "");
           }
@@ -1940,15 +1957,16 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let column of this.columnMap.get("MAIN_VISIBLE")) {
         cell = this.gridData[i].get(column.id);
         if (column.isUtility) {
-          this.createCell(rRow, column, cell, i, column.id, "", reverse);
+          this.createCell(rRow, column, cell, i, column.id, "", undefined, reverse);
         } else if (column.field === "GROUP_BY") {
-          if (row.hasHeader()) {
-            this.createCell(rRow, column, cell, i, column.id, row.header, reverse);
+          if (!groupKey || groupKey !== row.groupKey) {
+            this.createCell(rRow, column, cell, i, column.id, this.gridService.createHeader(row), this.gridService.getRowGroup(row.groupKey));
+            groupKey = row.groupKey;
           } else {
-            this.createCell(rRow, column, cell, i, column.id, "", reverse);
+            this.createCell(rRow, column, cell, i, column.id, "");
           }
         } else if (cell) {
-          this.createCell(rRow, column, cell, i, column.id, cell.value, reverse);
+          this.createCell(rRow, column, cell, i, column.id, cell.value, undefined, reverse);
         } else {
           //console.warn("hci-grid: " + this.id + ": renderCellsAndData: No cell for: " + column.field);
         }
@@ -2044,7 +2062,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} j The cell number.
    * @param {string} value The original value to display after formatting.
    */
-  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, reverse?: boolean): void {
+  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, rowGroup: RowGroup = undefined, reverse: boolean = false): void {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
     this.renderer.addClass(eCell, "hci-grid-cell");
@@ -2060,6 +2078,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (reverse) {
       this.renderer.addClass(eCell, "reverse");
     }
+    if (rowGroup) {
+      this.renderer.addClass(eCell, "group-key");
+      this.renderer.addClass(eCell, "group-key-" + rowGroup.groupKey);
+    }
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
     this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
@@ -2071,7 +2093,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     this.renderer.setStyle(eCell, "width", column.renderWidth + "px");
 
-    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, i, j));
+    this.renderer.appendChild(eCell, column.getViewRenderer().createElement(this.renderer, column, value, i, j, rowGroup));
     this.renderer.appendChild(row, eCell);
   }
 

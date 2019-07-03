@@ -55,6 +55,7 @@ export class TextFilterRenderer extends FilterRenderer {
 
   reset() {
     super.reset();
+
     if (this.filters.length === 0) {
       this.filters.push(new HciFilterDto(this.column.field, this.column.dataType, "", undefined, "LIKE", false));
     } else {
@@ -64,6 +65,8 @@ export class TextFilterRenderer extends FilterRenderer {
     if (this.shared) {
       this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   valueChange(value: string) {

@@ -1,5 +1,7 @@
 import {Component, HostBinding} from "@angular/core";
 
+import {stringify} from "flatted/esm";
+
 import {ClickView, ClickViewListener, ColumnDndListener} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
@@ -67,7 +69,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           columns can be sorted or the right columns can be sorted.  Dragging a right column to fixed doesn't work.
         </div>
         <div class="card-text">
-          Column Sort Event: {{columnsResorted | json}}
+          Column Sort Event: (see console)
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
@@ -112,7 +114,7 @@ export class EventComponent {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  columnsResorted: any;
+  columnsResorted: string = "";
   selectedRowID: number;
 
   data1: Object[];
@@ -160,6 +162,7 @@ export class EventComponent {
   }
 
   setListenerEvent(event: any): void {
-    this.columnsResorted = event;
+    console.info(event);
+    this.columnsResorted = (event) ? stringify(event) : "";
   }
 }

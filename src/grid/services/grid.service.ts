@@ -4,7 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable, of, Subject, Subscription} from "rxjs";
 import {finalize} from "rxjs/operators";
 
-import {HciFilterDto, HciGridDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
+import {HciDataDto, HciFilterDto, HciGridDto, HciGroupingDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
 
 import {GridGlobalService} from "./grid-global.service";
 import {Cell} from "../cell/cell";
@@ -13,6 +13,9 @@ import {Column} from "../column/column";
 import {Range} from "../utils/range";
 import {Point} from "../utils/point";
 import {RowChange} from "../utils/row-change";
+import {RowGroup} from "../row/row-group";
+import {group} from "@angular/animations";
+import {RowGroupView} from "../cell/viewRenderers/row-group-view";
 
 /**
  * The service for handling configuration and data binding/parsing.
@@ -23,7 +26,9 @@ export class GridService {
   static defaultConfig: any = {
     theme: "spreadsheet",
     columnHeaders: true,
+    groupBy: [],
     groupByCollapsed: true,
+    externalGrouping: false,
     externalFiltering: false,
     externalSorting: false,
     externalPaging: false,
@@ -43,24 +48,32 @@ export class GridService {
   columns: Column[];
   fixedColumns: string[];
   groupBy: string[];
-  groupByCollapsed: boolean;
-  externalFiltering: boolean;
-  externalSorting: boolean;
-  externalPaging: boolean;
-  pageSizes: number[];
-  nVisibleRows: number;
+  groupByCollapsed: boolean = true;
+  externalGrouping: boolean = false;
+  externalFiltering: boolean = false;
+  externalSorting: boolean = false;
+  externalPaging: boolean = false;
+  pageSizes: number[] = [10, 25, 50];
+  nVisibleRows: number = -1;
   newRowPostCall: (newRow: any) => Observable<any>;
 
+  onExternalDataCall: (externalInfo: HciGridDto) => Observable<HciDataDto>;
+
   originalData: Object[];
+  originalDataCounts: number[];
   preparedData: Row[];
+  groupedData: Row[];
 
   viewData: Row[] = [];
   viewDataSubject: BehaviorSubject<Row[]> = new BehaviorSubject<Row[]>([]);
 
-  filters: HciFilterDto[] = [];
+  selectedRowGroup: RowGroup;
+  rowGroups: Map<string, RowGroup> = new Map<string, RowGroup>();
 
+  grouping: HciGroupingDto = new HciGroupingDto();
+  filters: HciFilterDto[] = [];
   sorts: HciSortDto[] = [];
-  sortsSubject = new Subject<HciSortDto[]>();
+  sortsSubject = new BehaviorSubject<HciSortDto[]>(this.sorts);
 
   paging: HciPagingDto = new HciPagingDto();
   pagingSubject = new Subject<HciPagingDto>();
@@ -84,6 +97,7 @@ export class GridService {
   private nNonFixedColumns: number = 0;
   private nVisibleColumns: number = 0;
   private height: number;
+  private groupColumns: number[] = [];
 
   private busySubject: Subject<boolean> = new Subject<boolean>();
   private eventSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
@@ -149,6 +163,9 @@ export class GridService {
         this.gridGlobalService.registerGroup(linkedGroup, this);
       }
     }
+    if (config.onExternalDataCall) {
+      this.onExternalDataCall = config.onExternalDataCall;
+    }
 
     // Column Related Configuration
     if (config.columns !== undefined) {
@@ -186,6 +203,7 @@ export class GridService {
         columnsChanged = true;
       }
       this.groupBy = config.groupBy;
+      this.grouping.setFields(this.groupBy);
     }
     if (config.groupByCollapsed !== undefined) {
       if (this.groupByCollapsed !== config.groupByCollapsed) {
@@ -195,6 +213,9 @@ export class GridService {
     }
 
     // Data Display and Fetching Configuration
+    if (config.externalGrouping !== undefined) {
+      this.externalGrouping = config.externalGrouping;
+    }
     if (config.externalFiltering !== undefined) {
       this.externalFiltering = config.externalFiltering;
     }
@@ -235,6 +256,19 @@ export class GridService {
       this.newRowPostCallFinally = this.createDefaultNewRowPostCallFinally();
     }
 
+    // If you do external grouping then everything else must be external.
+    if (this.externalGrouping) {
+      this.externalPaging = true;
+    }
+    // If you do external paging, then everything else must be external.
+    if (this.externalPaging) {
+      this.externalGrouping = true;
+      this.externalFiltering = true;
+      this.externalSorting = true;
+    }
+
+    this.initializeSorts();
+
     this.setNVisibleRows();
 
     this.configSet = true;
@@ -245,6 +279,19 @@ export class GridService {
       this.initializeColumns();
     } else {
       this.configSubject.next(this.config);
+    }
+  }
+
+  initializeSorts(pushSubject: boolean = true, asc: boolean = true): void {
+    this.sorts = [];
+
+    if (this.isGrouping()) {
+      for (let groupBy of this.groupBy) {
+        this.sorts.push(new HciSortDto(groupBy, asc));
+      }
+    }
+    if (pushSubject) {
+      this.sortsSubject.next(this.sorts);
     }
   }
 
@@ -496,7 +543,7 @@ export class GridService {
     }
 
     if (nGroupBy > 0) {
-      let column: Column = new Column({renderOrder: 1999, field: "GROUP_BY", name: groupByDisplay, selectable: false});
+      let column: Column = new Column({renderOrder: 1999, field: "GROUP_BY", name: groupByDisplay, selectable: false, viewRenderer: RowGroupView});
       this.columns.push(column);
       this.nVisibleColumns = this.nVisibleColumns + 1;
     }
@@ -516,8 +563,8 @@ export class GridService {
     for (var j = 0; j < this.columns.length; j++) {
       this.columnMap.get("ALL").push(this.columns[j]);
 
+      this.columns[j].id = j;
       if (this.columns[j].visible) {
-        this.columns[j].id = j;
         this.columnMap.get("VISIBLE").push(this.columns[j]);
 
         if (this.columns[j].isUtility) {
@@ -844,10 +891,15 @@ export class GridService {
 
       this.paging.setPage(0);
 
-      this.externalInfoObserved.next(new HciGridDto(this.filters, (this.externalSorting) ? this.sorts : undefined, this.paging));
+      //this.externalInfoObserved.next(new HciGridDto(this.filters, (this.externalSorting) ? this.sorts : undefined, this.paging));
+      if (this.selectedRowGroup) {
+        this.doExternalDataCallGroupBy();
+      } else {
+        this.doExternalDataCall();
+      }
     } else {
       this.paging.setPage(0);
-      this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
+      this.initDataWithOptions(true, !this.externalGrouping, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
     }
   }
 
@@ -995,77 +1047,69 @@ export class GridService {
    *
    * @param originalData
    */
-  public initDataWithOptions(prep: boolean, filter: boolean, sort: boolean, paginate: boolean): void {
+  public initDataWithOptions(doPrepare: boolean, doGroup: boolean, doFilter: boolean, doSort: boolean, doPage: boolean): void {
     if (!this.originalData) {
       return;
     }
+
+    if (isDevMode()) {
+      console.info("hci-grid: " + this.id + ": initDataWithOptions: " + doPrepare + ", " + doGroup + ", " + doFilter + ", " + doSort + ", " + doPage);
+    }
+
     if (!this.isColumnMapDefined()) {
       if (isDevMode()) {
-        console.info("hci-grid: " + this.id + ": initData: Columns not yet set, skipping initData.");
+        console.info("hci-grid: " + this.id + ": initDataWithOptions: Columns not yet set, skipping initData.");
       }
       return;
     }
 
-    if (prep) {
+    if (doPrepare) {
       this.prepareData();
     }
-    if (filter) {
+    if (doFilter) {
       this.filterPreparedData();
     }
-    if (sort) {
+    if (doSort) {
       this.sortPreparedData();
+    }
+    this.calculateRowGroups();
+    if (doGroup) {
+      this.groupPreparedData();
+    } else {
+      this.groupedData = this.preparedData;
     }
     this.resetUtilityColumns();
 
     let START: number = 0;
-    let END: number = this.preparedData.length;
+    let END: number = this.groupedData.length;
 
-    if (!this.externalPaging) {
-      this.paging.setDataSize(this.preparedData.length);
+    if (this.selectedRowGroup && !this.externalPaging) {
+      this.selectedRowGroup.paging.setDataSize(this.groupedData.length);
+    } else if (!this.externalPaging) {
+      this.paging.setDataSize(this.groupedData.length);
     }
-    if (paginate && this.paging.getPageSize() > 0) {
+
+    if (doPage && this.selectedRowGroup) {
+      START = this.selectedRowGroup.paging.getPage() * this.selectedRowGroup.paging.getPageSize();
+      END = Math.min(START + this.selectedRowGroup.paging.getPageSize(), this.selectedRowGroup.paging.getDataSize());
+      this.selectedRowGroup.paging.setNumPages(Math.ceil(this.selectedRowGroup.paging.getDataSize() / this.selectedRowGroup.paging.getPageSize()));
+      this.pagingSubject.next(this.selectedRowGroup.paging);
+    } else if (doPage && this.paging.getPageSize() > 0) {
       START = this.paging.getPage() * this.paging.getPageSize();
       END = Math.min(START + this.paging.getPageSize(), this.paging.getDataSize());
       this.paging.setNumPages(Math.ceil(this.paging.getDataSize() / this.paging.getPageSize()));
+      this.pagingSubject.next(this.paging);
     } else if (this.externalPaging) {
       this.paging.setNumPages(Math.ceil(this.paging.getDataSize() / this.paging.getPageSize()));
+      this.pagingSubject.next(this.paging);
     } else if (!this.externalPaging) {
       this.paging.setNumPages(1);
+      this.pagingSubject.next(this.paging);
     }
-    this.pagingSubject.next(this.paging);
 
     this.viewData = [];
-    if (this.groupBy) {
-      // This is all wrong for sorting... if group by, only search for next common row.
-      // If sorting on non group-by fields, then grouping sort of breaks unless those sorted rows still happen to
-      // lay next to each other
-      let groupColumns: number[] = [];
-      for (var i = 0; i < this.columns.length; i++) {
-        if (this.columns[i].isGroup) {
-          groupColumns.push(i);
-        }
-      }
-
-      for (var i = START; i < END; i++) {
-        this.preparedData[i].createHeader(groupColumns);
-      }
-
-      let currentHeader: any = undefined;
-      for (var i = START; i < END; i++) {
-        if (!currentHeader) {
-          currentHeader = this.preparedData[i].header;
-        } else if (this.preparedData[i].header === currentHeader) {
-          this.preparedData[i].header = undefined;
-        } else {
-          currentHeader = this.preparedData[i].header;
-        }
-
-        this.viewData.push(this.preparedData[i]);
-      }
-    } else {
-      for (var i = START; i < END; i++) {
-        this.viewData.push(this.preparedData[i]);
-      }
+    for (var i = START; i < END; i++) {
+      this.viewData.push(this.groupedData[i]);
     }
 
     this.viewDataSubject.next(this.viewData);
@@ -1073,7 +1117,7 @@ export class GridService {
     let event: any = this.eventSubject.getValue();
     if (this.eventSubject.getValue().type === "filter") {
       event.status = "complete";
-      event.nData = (filter) ? this.preparedData.length : this.paging.getDataSize();
+      event.nData = (doFilter) ? this.groupedData.length : this.paging.getDataSize();
       this.eventSubject.next(event);
     } else if (this.eventSubject.getValue().type === "sort") {
       event.status = "complete";
@@ -1111,6 +1155,15 @@ export class GridService {
     }
     this.preparedData = [];
 
+    this.rowGroups.clear();
+
+    this.groupColumns = [];
+    for (var i = 0; i < this.columns.length; i++) {
+      if (this.columns[i].isGroup) {
+        this.groupColumns.push(i);
+      }
+    }
+
     for (var i = 0; i < this.originalData.length; i++) {
       let row: Row = new Row();
       row.rowNum = i;
@@ -1131,14 +1184,113 @@ export class GridService {
     }
   }
 
+  public setSelectedRowGroup(rowGroup: RowGroup): void {
+    this.selectedRowGroup = rowGroup;
+
+    if (this.selectedRowGroup) {
+      this.selectedRowGroup.setPaging(new HciPagingDto(0, this.paging.getPageSize()));
+    }
+  }
+
+  public expandCollapseRowGroup(groupKey: string): void {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": expandCollapseRowGroup: " + this.externalGrouping + " " + this.paging.getPageSize());
+    }
+
+    let rowGroup: RowGroup = this.rowGroups.get(groupKey);
+    rowGroup.expanded = !rowGroup.expanded;
+
+    if (this.externalGrouping) {
+      if (this.selectedRowGroup && rowGroup.groupKey !== this.selectedRowGroup.groupKey) {
+        this.selectedRowGroup.expanded = false;
+        this.selectedRowGroup = undefined;
+
+        rowGroup.expanded = true;
+      } else if (this.selectedRowGroup) {
+        rowGroup.expanded = false;
+        this.setSelectedRowGroup(undefined);
+      }
+    }
+
+    console.debug(rowGroup);
+
+    if (this.externalGrouping) {
+      if (rowGroup.expanded) {
+        this.setSelectedRowGroup(rowGroup);
+        this.doExternalDataCallGroupBy(new HciGridDto(this.filters, this.sorts, rowGroup.paging, this.grouping));
+      } else {
+        this.doExternalDataCall();
+      }
+    } else if (this.paging.getPageSize() <= 0) {
+      this.initDataWithOptions(false, true, false, false, false);
+    } else {
+      this.setSelectedRowGroup((rowGroup.expanded) ? rowGroup : undefined);
+      this.initDataWithOptions(false, true, false, false, true);
+    }
+  }
+
+  clearRowGroupCounts(): void {
+    this.rowGroups.forEach((rowGroup: RowGroup) => {
+      rowGroup.count = 0;
+    });
+  }
+
+  public calculateRowGroups(): void {
+    if (!this.isGrouping()) {
+      return;
+    }
+
+    this.clearRowGroupCounts();
+    for (let i = 0; i < this.preparedData.length; i++) {
+      if (this.isGrouping()) {
+        let groupKey: string = this.preparedData[i].createGroupKey(this.groupColumns);
+
+        if (!this.rowGroups.has(groupKey)) {
+          let rowGroup: RowGroup = new RowGroup(groupKey, (this.originalDataCounts) ? this.originalDataCounts[i] : 1);
+          for (let groupField of this.grouping.getFields()) {
+            rowGroup[groupField] = this.getField(this.originalData[i], groupField);
+          }
+
+          if (this.selectedRowGroup && groupKey === this.selectedRowGroup.groupKey) {
+            rowGroup.expanded = true;
+          }
+
+          this.rowGroups.set(groupKey, rowGroup);
+        } else if (!this.originalDataCounts) {
+          this.rowGroups.get(groupKey).incrementCount();
+        }
+      }
+    }
+  }
+
+  public groupPreparedData(): void {
+    if (!this.isGrouping()) {
+      this.groupedData = this.preparedData;
+      return;
+    }
+
+    this.groupedData = [];
+    let groupKeySet: Set<string> = new Set<string>();
+
+    for (let i = 0; i < this.preparedData.length; i++) {
+      if (this.selectedRowGroup && this.selectedRowGroup.groupKey !== this.preparedData[i].groupKey) {
+        continue;
+      } else if (!groupKeySet.has(this.preparedData[i].groupKey) || this.rowGroups.get(this.preparedData[i].groupKey).expanded) {
+        this.groupedData.push(this.preparedData[i]);
+      }
+      groupKeySet.add(this.preparedData[i].groupKey);
+    }
+  }
+
   /**
    * TODO: Fix auto create columns.
    *
    * @param originalData
    * @returns {boolean}
    */
-  public setOriginalData(originalData: Object[]): void {
+  public setOriginalData(originalData: Object[], originalDataCounts?: number[]): void {
     this.originalData = originalData;
+    this.originalDataCounts = originalDataCounts;
 
     this.setAutoPageSize();
 
@@ -1147,14 +1299,79 @@ export class GridService {
 
   public setAutoPageSize(): void {
     if (this.originalData && this.configSet) {
-      if (this.paging.getPageSize() === -1 && this.originalData.length > 50 && this.height === undefined) {
+      /*if (this.paging.getPageSize() === -1 && this.originalData.length > 50 && this.height === undefined) {
         this.paging.setPageSize(10);
-      }
+      }*/
     }
   }
 
+  public doExternalDataCall(externalInfo?: HciGridDto): void {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": doExternalDataCall");
+    }
+
+    if (!this.onExternalDataCall) {
+      return;
+    }
+
+    this.busySubject.next(true);
+
+    if (!externalInfo) {
+      externalInfo = new HciGridDto(this.filters, this.sorts, this.paging, this.grouping);
+    }
+
+    if (this.isGrouping()) {
+      externalInfo.getGrouping().setGroupQuery(true);
+    }
+
+    this.onExternalDataCall(externalInfo).subscribe((externalData: HciDataDto) => {
+      if (!externalData.gridDto) {
+        this.paging.setNumPages(1);
+      } else {
+        this.paging = externalData.getGridDto().getPaging();
+      }
+      this.setOriginalData(externalData.data, externalData.dataCounts);
+
+      this.pagingSubject.next(this.paging);
+      this.busySubject.next(false);
+    });
+  }
+
+  public doExternalDataCallGroupBy(gridDto?: HciGridDto): void {
+    if (isDevMode()) {
+      console.debug("hci-grid: " + this.id + ": doExternalDataCallGroupBy");
+    }
+
+    this.busySubject.next(true);
+
+    let newGridDto: HciGridDto;
+    if (!gridDto) {
+      newGridDto = new HciGridDto(this.filters.slice(0), this.sorts.slice(0), this.paging, this.grouping);
+    } else {
+      newGridDto = new HciGridDto(gridDto.getFilters().slice(0), gridDto.getSorts().slice(0), gridDto.getPaging(), gridDto.getGrouping());
+    }
+
+    newGridDto.getGrouping().setGroupQuery(false);
+    newGridDto.setPaging(this.selectedRowGroup.paging);
+    for (let groupField of newGridDto.getGrouping().getFields()) {
+      newGridDto.getFilters().push(new HciFilterDto(groupField, "string", this.selectedRowGroup[groupField], undefined, "E", true));
+    }
+
+    this.onExternalDataCall(newGridDto).subscribe((externalData: HciDataDto) => {
+      if (!externalData.gridDto) {
+        this.selectedRowGroup.paging.setNumPages(1);
+      } else {
+        this.selectedRowGroup.paging = externalData.getGridDto().getPaging();
+      }
+      this.setOriginalData(externalData.data);
+
+      this.pagingSubject.next(this.selectedRowGroup.paging);
+      this.busySubject.next(false);
+    });
+  }
+
   public initData(): void {
-    this.initDataWithOptions(true, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
+    this.initDataWithOptions(true, !this.externalGrouping, !this.externalFiltering, !this.externalSorting, !this.externalPaging);
   }
 
   public isColumnMapDefined(): boolean {
@@ -1194,24 +1411,49 @@ export class GridService {
    * @param {number} mode -2 for first, 2 for last, -1 for previous, 1 for next.
    */
   public setPage(mode: number): void {
-    let page: number = this.paging.getPage();
-
-    if (mode === -2) {
-      this.paging.setPage(0);
-    } else if (mode === -1 && this.paging.page > 0) {
-      this.paging.setPage(this.paging.getPage() - 1);
-    } else if (mode === 1 && this.paging.getPage() < this.paging.getNumPages() - 1) {
-      this.paging.setPage(this.paging.getPage() + 1);
-    } else if (mode === 2) {
-      this.paging.setPage(this.paging.getNumPages() - 1);
-    }
-
-    if (page !== this.paging.getPage()) {
-      if (this.externalPaging) {
-        this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
-      } else {
-        this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, true);
+    if (this.selectedRowGroup) {
+      let page: number = this.selectedRowGroup.paging.getPage();
+      if (mode === -2) {
+        this.selectedRowGroup.paging.setPage(0);
+      } else if (mode === -1 && this.selectedRowGroup.paging.page > 0) {
+        this.selectedRowGroup.paging.setPage(this.selectedRowGroup.paging.getPage() - 1);
+      } else if (mode === 1 && this.paging.getPage() < this.selectedRowGroup.paging.getNumPages() - 1) {
+        this.selectedRowGroup.paging.setPage(this.selectedRowGroup.paging.getPage() + 1);
+      } else if (mode === 2) {
+        this.selectedRowGroup.paging.setPage(this.selectedRowGroup.paging.getNumPages() - 1);
       }
+
+      if (page !== this.selectedRowGroup.paging.getPage()) {
+        if (this.externalPaging) {
+          this.doExternalDataCallGroupBy();
+        } else {
+          this.initDataWithOptions(false, !this.externalGrouping, !this.externalFiltering, !this.externalSorting, true);
+        }
+      }
+
+      this.pagingSubject.next(this.selectedRowGroup.paging);
+    } else {
+      let page: number = this.paging.getPage();
+
+      if (mode === -2) {
+        this.paging.setPage(0);
+      } else if (mode === -1 && this.paging.page > 0) {
+        this.paging.setPage(this.paging.getPage() - 1);
+      } else if (mode === 1 && this.paging.getPage() < this.paging.getNumPages() - 1) {
+        this.paging.setPage(this.paging.getPage() + 1);
+      } else if (mode === 2) {
+        this.paging.setPage(this.paging.getNumPages() - 1);
+      }
+
+      if (page !== this.paging.getPage()) {
+        if (this.externalPaging) {
+          this.doExternalDataCall(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
+        } else {
+          this.initDataWithOptions(false, !this.externalGrouping, !this.externalFiltering, !this.externalSorting, true);
+        }
+      }
+
+      this.pagingSubject.next(this.paging);
     }
   }
 
@@ -1226,9 +1468,14 @@ export class GridService {
     this.setNVisibleRows();
 
     if (this.externalPaging) {
-      this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
+      //this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
+      if (this.selectedRowGroup) {
+        this.doExternalDataCallGroupBy();
+      } else {
+        this.doExternalDataCall();
+      }
     } else {
-      this.initDataWithOptions(false, !this.externalFiltering, !this.externalSorting, this.paging.getPageSize() > 0);
+      this.initDataWithOptions(false, !this.externalGrouping, !this.externalFiltering, !this.externalSorting, this.paging.getPageSize() > 0);
     }
   }
 
@@ -1246,10 +1493,15 @@ export class GridService {
       sorts: this.sorts
     });
 
-    if(this.externalSorting) {
-      this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, this.sorts, (this.externalPaging) ? this.paging : null));
+    if (this.externalSorting) {
+      //this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, this.sorts, (this.externalPaging) ? this.paging : null));
+      if (this.selectedRowGroup) {
+        this.doExternalDataCallGroupBy();
+      } else {
+        this.doExternalDataCall();
+      }
     } else {
-      this.initDataWithOptions(false, !this.externalFiltering, true, !this.externalPaging);
+      this.initDataWithOptions(false, !this.externalGrouping, !this.externalFiltering, true, !this.externalPaging);
     }
   }
 
@@ -1271,8 +1523,8 @@ export class GridService {
           let a: any;
           let b: any;
           if (sortColumns[i].field === "GROUP_BY") {
-            a = o1.getHeader();
-            b = o2.getHeader();
+            a = o1.groupKey;
+            b = o2.groupKey;
           } else {
             a = o1.get(sortColumns[i].id).value;
             b = o2.get(sortColumns[i].id).value;
@@ -1287,6 +1539,22 @@ export class GridService {
         return v;
       });
     }
+  }
+
+  public isGrouping(): boolean {
+    return this.groupBy && this.groupBy.length > 0;
+  }
+
+  public getRowGroup(groupKey: string): RowGroup {
+    return this.rowGroups.get(groupKey);
+  }
+
+  public createHeader(row: Row): string {
+    let header: string = undefined;
+    for (var i = 0; i < this.groupColumns.length; i++) {
+      header = (header === undefined) ? row.cells[this.groupColumns[i]].value : header + ", " + row.cells[this.groupColumns[i]].value;
+    }
+    return header;
   }
 
   public getValueSubject(): Subject<Point> {
@@ -1332,6 +1600,16 @@ export class GridService {
     this.filterEventSubject.next(filters);
   }
 
+  public groupByInSort(field: string): boolean {
+    for (let groupField of this.groupBy) {
+      if (field === groupField) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   /**
    * Add a sort field and then perform the sort.  By default, clear the existing sort and start over.
    *
@@ -1339,7 +1617,29 @@ export class GridService {
    * @param {boolean} reset
    */
   public addSort(field: string, ctrl: boolean = false): void {
-    if (this.sorts && this.sorts.length === 1 && this.sorts[0].field === field) {
+    let isGrouping: boolean = this.isGrouping();
+    let isGroupBy: boolean = (field === "GROUP_BY") ?  true : false;
+
+    let firstIndex: number = (isGrouping) ? this.groupBy.length : 1;
+
+    if (isGroupBy) {
+      if (this.sorts.length > 0) {
+        this.initializeSorts(true, !this.sorts[0].asc);
+      } else {
+        this.initializeSorts(true, true);
+      }
+      let asc: boolean = this.sorts[0].asc;
+      this.sort();
+      return;
+    } else if (isGrouping) {
+      if (this.sorts.length - 1 === firstIndex && this.sorts[firstIndex].field === field) {
+        // Regular behavior
+      } else if (this.sorts && this.sorts.length - 1 === firstIndex && !ctrl && this.sorts[firstIndex].field !== field) {
+        this.sorts = this.sorts.slice(0, firstIndex);
+      } else if (!ctrl) {
+        this.sorts = this.sorts.slice(0, firstIndex);
+      }
+    } else if (this.sorts.length === 1 && this.sorts[0].field === field) {
       // Regular behavior
     } else if (this.sorts && this.sorts.length === 1 && !ctrl && this.sorts[0].field !== field) {
       this.sorts = [];

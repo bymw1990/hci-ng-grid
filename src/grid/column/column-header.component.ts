@@ -86,25 +86,33 @@ export class ColumnHeaderComponent {
     });
 
     this.gridService.sortsSubject.subscribe((sorts: HciSortDto[]) => {
-      this.firstSort = false;
-      this.asc = 0;
+      if (this.column.field === "GROUP_BY") {
+        this.firstSort = true;
+        this.asc = 0;
 
-      for (let i = 0; i < sorts.length; i++) {
-        if (this.column.field === sorts[i].field) {
-          if (sorts[i].asc) {
-            this.asc = 1;
-          } else {
-            this.asc = -1;
+        if (sorts.length > 0) {
+          this.asc = (sorts[0].asc) ? 1 : -1;
+        }
+      } else {
+        this.firstSort = false;
+        this.asc = 0;
+
+        for (let i = 0; i < sorts.length; i++) {
+          if (this.column.field === sorts[i].field) {
+            if (sorts[i].asc) {
+              this.asc = 1;
+            } else {
+              this.asc = -1;
+            }
+
+            if (i === 0) {
+              this.firstSort = true;
+            }
+
+            break;
           }
-
-          if (i === 0) {
-            this.firstSort = true;
-          }
-
-          break;
         }
       }
-
     });
   }
 

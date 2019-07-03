@@ -1,13 +1,17 @@
 import {Component, HostBinding} from "@angular/core";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {delay} from "rxjs/operators";
+import {Observable, of} from "rxjs/index";
+import {HciDataDto, HciGridDto} from "hci-ng-grid-dto";
+import {TextFilterRenderer} from "hci-ng-grid";
 
 @Component({
   selector: "group-grid",
   template: `
     <div class="card">
       <div class="card-header">
-        <h4>Row Grouping</h4>
+        <h4>Row Grouping without Paging</h4>
       </div>
       <div class="card-body">
         <div class="card-text input-row">
@@ -25,7 +29,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 [title]="'Group Grid'"
                 [data]="groupData"
                 [columns]="groupColumns"
-                [groupBy]="['firstName', 'lastName']"
+                [groupBy]="['lastName']"
                 [pageSize]="10"&gt;
               &lt;/hci-grid&gt;
               
@@ -67,10 +71,37 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <p>
           <hci-grid [data]="data1"
                     [columns]="columns1"
-                    [groupBy]="['firstName', 'lastName']"
-                    [pageSize]="25">
+                    [groupBy]="['lastName']"
+                    [nVisibleRows]="10">
           </hci-grid>
         </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Row Grouping with Paging</h4>
+      </div>
+      <div class="card-body">
+        <hci-grid [data]="data1"
+                  [columns]="columns1"
+                  [groupBy]="['lastName']"
+                  [pageSize]="10">
+        </hci-grid>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Row Grouping with External Data</h4>
+      </div>
+      <div class="card-body">
+        <hci-grid [dataCall]="onExternalDataCall"
+                  [columns]="columns1"
+                  [groupBy]="['lastName']"
+                  [externalGrouping]="true"
+                  [pageSize]="10">
+        </hci-grid>
       </div>
     </div>
   `,
@@ -91,7 +122,9 @@ export class RowGroupGridComponent {
 
   @HostBinding("class") classList: string = "demo-component";
 
-  dataSize: number = 1000;
+  public onExternalDataCall: (externalInfo: HciGridDto) => Observable<HciDataDto>;
+
+  dataSize: number = 25;
 
   data1: Object[] = [];
 
@@ -99,7 +132,7 @@ export class RowGroupGridComponent {
     { field: "idPatient", name: "ID", visible: false },
     { field: "lastName", name: "Last Name" },
     { field: "middleName", name: "Middle Name" },
-    { field: "firstName", name: "First Name" },
+    { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "dob", name: "Date of Birth", dataType: "date" },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address" },
@@ -114,9 +147,17 @@ export class RowGroupGridComponent {
 
   setDataSize(dataSize: number) {
     this.dataSize = dataSize;
+
+    this.generateData();
   }
 
   generateData() {
+    this.dataGeneratorService.generateExternalData1(this.dataSize);
+    this.onExternalDataCall = this.handleExternalDataCall.bind(this);
     this.data1 = this.dataGeneratorService.getData(this.dataSize);
+  }
+
+  handleExternalDataCall(externalInfo: HciGridDto): Observable<HciDataDto> {
+    return of(this.dataGeneratorService.getExternalData1(externalInfo)).pipe(delay(1000));
   }
 }

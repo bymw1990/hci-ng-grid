@@ -308,12 +308,12 @@ export class SelectGridComponent extends BaseDemoComponent {
     this.data4 = dataGeneratorService.getData(11);
   }
 
-  ngOnInit() {
+  /*ngOnInit() {
     this.config1Html = this.generateConfig(this.config1Grid, this.config1Columns, this.config1Listeners);
     this.config2Html = this.generateConfig(this.config2Grid, this.config2Columns, this.config2Listeners);
     this.config3Html = this.generateConfig(this.config3Grid, this.config3Columns, this.config3Listeners);
     this.config4Html = this.generateConfig(this.config4Grid, this.config4Columns, this.config4Listeners);
-  }
+  }*/
 
   rowDblClick(event: any) {
     this.clickedRow = +event;

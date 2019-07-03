@@ -3,7 +3,8 @@ import {Observable} from "rxjs";
 
 import * as moment from "moment";
 
-import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto, HciSortDto} from "hci-ng-grid-dto";
+import {HciDataDto, HciGridDto, HciFilterDto, HciPagingDto, HciSortDto, HciGroupingDto} from "hci-ng-grid-dto";
+import {group} from "@angular/animations";
 
 const momentRandom = require("moment-random");
 
@@ -20,7 +21,7 @@ export class DataGeneratorService {
   externalData2: Object[] = [];
   simpleData4: Object[] = [];
 
-  private _firstNames: string[] = [ "Alice", "Alred", "Amy", "Betty", "Bob", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Gerry", "Gina",
+  private _firstNames: string[] = [ "Alred", "Amy", "Bob", "Betty", "Charles", "Charlize", "Doug", "Debbie", "Frank", "Fay", "Jerry", "Gina",
       "Harry", "Hellen", "Mike", "Milla", "Sam", "Sarah", "Tim", "Tina" ];
   private _lastNames: string[] = [ "Black", "Brown", "Grey", "Khan", "Smith", "White" ];
   private _middleNames: string[] = [ "", "A", "C", "D", "H", "L", "N", "O", "R", "T", "Z" ];
@@ -40,7 +41,7 @@ export class DataGeneratorService {
     for (var i = 1; i <= size; i++) {
       let j: number = Math.floor(Math.random() * this._firstNames.length);
       let gender: string = (j % 2 === 0) ? "Male" : "Female";
-      let genderDict: number = (Math.random() < 0.05) ? 3 : j % 2 + 1;
+      let genderDict: number = (Math.random() < 0.05) ? 3 : (j + 1) % 2 + 1;
       let raceDict: number = Math.floor(Math.random() * 6 + 1);
       let firstName: string = this._firstNames[j];
       let middleName: string = this._middleNames[Math.floor(Math.random() * this._middleNames.length)];
@@ -225,7 +226,7 @@ export class DataGeneratorService {
    * @returns {HciDataDto}
    */
   getExternalData(externalInfo: HciGridDto, externalData: any[], paging: boolean): HciDataDto {
-    console.info("getExternalData");
+    console.info("Demo: DataGeneratorService.getExternalData");
     console.info(externalInfo);
 
     if (!externalInfo) {
@@ -237,6 +238,7 @@ export class DataGeneratorService {
     let filters: HciFilterDto[] = externalInfo.getFilters();
     let sorts: HciSortDto[] = externalInfo.getSorts();
     let pageInfo: HciPagingDto = externalInfo.getPaging();
+    let groupInfo: HciGroupingDto = externalInfo.getGrouping();
 
     let filtered: Object[] = [];
     if (!filters) {
@@ -281,33 +283,66 @@ export class DataGeneratorService {
       }
     }
 
-    if (sorts && sorts.length === 1) {
-      filtered = filtered.sort((a: Object, b: Object) => {
-        if (sorts[0].getAsc()) {
-          if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
-            return -1;
-          } else if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
-            return 1;
-          } else {
-            return 0;
-          }
+    let countMap: Map<string, number> = new Map<string, number>();
+    if (groupInfo.getGroupQuery()) {
+      let grouped: Object[] = [];
+
+      for (let row of filtered) {
+        let groupKey: string;
+        for (let groupField of groupInfo.getFields()) {
+          groupKey = (groupKey) ? groupKey + "," + row[groupField] : row[groupField];
+        }
+
+        if (countMap.has(groupKey)) {
+          countMap.set(groupKey, countMap.get(groupKey) + 1);
         } else {
-          if (a[sorts[0].getField()] > b[sorts[0].getField()]) {
-            return -1;
-          } else if (a[sorts[0].getField()] < b[sorts[0].getField()]) {
-            return 1;
+          countMap.set(groupKey, 1);
+          let newRow: Object = {};
+          for (let groupField of groupInfo.getFields()) {
+            newRow[groupField] = row[groupField];
+          }
+          newRow["GROUP_BY"] = groupKey;
+          grouped.push(newRow);
+        }
+      }
+
+      filtered = grouped;
+    }
+
+    if (sorts) {
+      filtered = filtered.sort((a: Object, b: Object) => {
+        let v: number = 0;
+
+        for (let sort of sorts) {
+          if (sort.getAsc()) {
+            if (a[sort.getField()] < b[sort.getField()]) {
+              return -1;
+            } else if (a[sort.getField()] < b[sort.getField()]) {
+              return 1;
+            } else {
+              continue;
+            }
           } else {
-            return 0;
+            if (a[sort.getField()] > b[sort.getField()]) {
+              return -1;
+            } else if (a[sort.getField()] < b[sort.getField()]) {
+              return 1;
+            } else {
+              continue;
+            }
           }
         }
+
+        return v;
       });
     }
 
     if (!pageInfo) {
-      return new HciDataDto(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo, undefined);
     }
 
     let data: Object[] = [];
+    let dataCounts: number[] = [];
 
     console.info(pageInfo);
 
@@ -325,20 +360,24 @@ export class DataGeneratorService {
     console.info("externalData paging: " + n + " " + page + " " + pageSize);
 
     if (!paging) {
-      return new HciDataDto(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo, undefined);
     }
 
     if (pageSize > 0) {
       if (page * pageSize > n - 1) {
-        return new HciDataDto(data, externalInfo);
+        return new HciDataDto(data, externalInfo, dataCounts);
       }
 
       for (var i = page * pageSize; i < Math.min(n, (page + 1) * pageSize); i++) {
         data.push(filtered[i]);
+
+        if (filtered[i]["GROUP_BY"]) {
+          dataCounts.push(countMap.get(filtered[i]["GROUP_BY"]));
+        }
       }
-      return new HciDataDto(data, externalInfo);
+      return new HciDataDto(data, externalInfo, dataCounts);
     } else {
-      return new HciDataDto(filtered, externalInfo);
+      return new HciDataDto(filtered, externalInfo, undefined);
     }
   }
 

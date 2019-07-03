@@ -5,20 +5,23 @@ var webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {BaseHrefWebpackPlugin} = require("base-href-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const path = require("path");
 
 module.exports = function(env) {
+  var environment = "'development'";
+  if (env.production) {
+      environment = "'production'";
+  }
+
   return {
     stats: "errors-only",
-
     devtool: "source-map",
+    mode: (environment == "'production'") ? "production" : "development",
 
     entry: {
-      "main": "./main.ts",
       "polyfills": "./polyfills.ts",
       "vendor": "./vendor.ts",
+      "main": "./main.ts",
       "styles": "./styles.ts"
     },
 
@@ -85,19 +88,6 @@ module.exports = function(env) {
     },
 
     plugins: [
-      new webpack.optimize.CommonsChunkPlugin({
-        name: ["styles", "main", "vendor", "polyfills"]
-      }),
-
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          output: {
-            comments: false
-          },
-          mangle: false
-        }
-      }),
-
       new webpack.ProgressPlugin(),
 
       new webpack.ContextReplacementPlugin(
@@ -128,16 +118,14 @@ module.exports = function(env) {
       ]),
 
       new webpack.DefinePlugin({
-        "ENV": "'production'",
+        "ENV": environment,
         "process.env": {
-          "ENV": "'production'",
-          "NODE_ENV": "'production'"
+          "ENV": environment,
+          "NODE_ENV": environment
         },
         "CONTENT_PATH": "'/hci-ng-grid-demo/'",
         "VERSION": JSON.stringify(require("../../package.json").version)
-      }),
-
-      new ExtractTextPlugin("[name].css")
+      })
     ]
   };
 }

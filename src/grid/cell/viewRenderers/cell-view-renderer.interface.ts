@@ -1,6 +1,7 @@
 import {Renderer2} from "@angular/core";
 
 import {Column} from "../../column/column";
+import {RowGroup} from "../../row/row-group";
 
 export interface CellViewRenderer {
 
@@ -20,5 +21,5 @@ export interface CellViewRenderer {
    */
   setConfig(config: any);
 
-  createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number): HTMLElement;
+  createElement(renderer: Renderer2, column: Column, value: any, i: number, j: number, rowGroup?: RowGroup): HTMLElement;
 }

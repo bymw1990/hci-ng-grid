@@ -4,7 +4,7 @@ import * as prism from "prismjs";
 
 export class BaseDemoComponent {
 
-  generateConfig(html: string, columns?: string, listeners?: string): SafeHtml {
+  /*generateConfig(html: string, columns?: string, listeners?: string): SafeHtml {
     let safeHtml: SafeHtml = "<pre class=\"language-html\"><code class=\"language-html\">"
         + prism.highlight(html, prism.languages["html"])
         + "</code></pre>";
@@ -20,6 +20,6 @@ export class BaseDemoComponent {
     }
 
     return safeHtml;
-  }
+  }*/
 
 }

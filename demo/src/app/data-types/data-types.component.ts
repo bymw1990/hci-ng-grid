@@ -48,7 +48,7 @@ export class DataTypesDemoComponent {
 
   dataCall1: (externalInfo: HciGridDto) => {};
   columns1: any[] = [
-    { field: "idPatient", name: "ID", visible: true },
+    { field: "idPatient", name: "ID", dataType: "number", visible: true },
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "genderDict", name: "Gender", choices: [{v: 1, d: "F"}, {v: 2, d: "M"}, {v: 3, d: "U"}], choiceValue: "v", choiceDisplay: "d" },
