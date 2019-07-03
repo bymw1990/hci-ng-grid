@@ -11,7 +11,7 @@
 
 ```
 "dependencies": {
-    "hci-ng-grid": "5.0.0-alpha.2"
+    "hci-ng-grid": "5.0.0-beta.0"
 }
 ```
 ```
@@ -153,6 +153,12 @@ default: true
 The state for grouped rows if those rows in a group should be hidden or shown by default.
 ```
 ```
+externalGrouping
+type: boolean
+default: false
+True if grouping should be handled by the external data call.  This forces filtering, sorting and paging to also be external.
+```
+```
 externalFiltering
 type: boolean
 default: false
@@ -168,7 +174,7 @@ True if sorting should be handled by the external data call.
 externalPaging
 type: boolean
 default: false
-True if paging should be handled by the external data call.
+True if paging should be handled by the external data call.  This forces filtering, sorting and paging to be external.
 ```
 ```
 pageSize
