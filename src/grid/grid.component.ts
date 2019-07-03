@@ -1744,7 +1744,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       for (let column of this.columnMap.get("VISIBLE")) {
         if (column.widthPercent > 0) {
-          column.renderWidth = Math.max(percentWidth * (column.widthPercent / 100), column.minWidth);
+          column.renderWidth = Math.floor(Math.max(percentWidth * (column.widthPercent / 100), column.minWidth));
           availableWidth = availableWidth - column.renderWidth;
         } else if (column.width === 0) {
           nAutoWidth = nAutoWidth + 1;
