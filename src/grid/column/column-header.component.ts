@@ -1,4 +1,10 @@
-import {Component, ComponentFactoryResolver, ElementRef, HostListener, Input, Renderer2, ViewContainerRef} from "@angular/core";
+import {
+  ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, HostListener, Input, Renderer2,
+  ViewContainerRef
+} from "@angular/core";
+
+import {of} from "Rxjs";
+import {delay} from "Rxjs/operators";
 
 import {HciFilterDto, HciSortDto} from "hci-ng-grid-dto";
 
@@ -33,7 +39,7 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
             <i class="fas fa-filter"></i>
           </a>
         </div>
-        <div [id]="'sort-' + column.id" *ngIf="column.sortable" style="margin-left: 5px;" [style.color]="firstSort ? 'green' : 'black'">
+        <div [id]="'sort-' + column.id" *ngIf="column.sortable" class="ml-1 sort-icon" [class.primary]="firstSort">
           <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
           <span *ngIf="asc === -1"><span class="fas fa-arrow-alt-circle-down"></span></span>
         </div>
@@ -72,9 +78,31 @@ export class ColumnHeaderComponent {
   private hiddenHeaderText: HTMLElement;
   private filterComponent: FilterRenderer;
 
-  constructor(private gridService: GridService, private resolver: ComponentFactoryResolver, private el: ElementRef, private renderer: Renderer2) {}
+  constructor(private gridService: GridService,
+              private resolver: ComponentFactoryResolver,
+              private changeDetectorRef: ChangeDetectorRef,
+              private el: ElementRef,
+              private renderer: Renderer2) {}
 
   ngOnInit() {
+    if (this.column.filterRenderer) {
+      of(undefined).pipe(delay(0)).subscribe(() => {
+        let factory = this.resolver.resolveComponentFactory(this.column.filterRenderer);
+        this.filterComponent = this.headerContainer.createComponent(factory).instance;
+        this.filterComponent.column = this.column;
+        this.filterComponent.setConfig(this.column.filterConfig);
+        this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
+        this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "position", "absolute");
+        this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "z-index", "50");
+        this.filterComponent.close.subscribe((closed: boolean) => {
+          this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
+        });
+      });
+    }
+
+    this.headerText = this.el.nativeElement.querySelector("#header-text");
+    this.hiddenHeaderText = this.el.nativeElement.querySelector("#hidden-header-text");
+
     this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, HciFilterDto[]>) => {
       if (this.column) {
         if (filterMap.has(this.column.field)) {
@@ -116,22 +144,8 @@ export class ColumnHeaderComponent {
     });
   }
 
-  ngAfterViewInit() {
-    if (this.column.filterRenderer) {
-      let factory = this.resolver.resolveComponentFactory(this.column.filterRenderer);
-      this.filterComponent = this.headerContainer.createComponent(factory).instance;
-      this.filterComponent.column = this.column;
-      this.filterComponent.setConfig(this.column.filterConfig);
-      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
-      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "position", "absolute");
-      this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "z-index", "50");
-      this.filterComponent.close.subscribe((closed: boolean) => {
-        this.renderer.setStyle(this.filterComponent.elementRef.nativeElement, "display", "none");
-      });
-    }
-
-    this.headerText = this.el.nativeElement.querySelector("#header-text");
-    this.hiddenHeaderText = this.el.nativeElement.querySelector("#hidden-header-text");
+  ngAfterViewInit(): void {
+    this.changeDetectorRef.detectChanges();
   }
 
   showFilter() {

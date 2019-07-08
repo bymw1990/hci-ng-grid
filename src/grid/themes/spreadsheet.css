@@ -109,3 +109,11 @@
   width: max-content;
   align-items: center;
 }
+
+#grid-container.spreadsheet .sort-icon {
+  color: black;
+}
+
+#grid-container.spreadsheet .sort-icon.primary {
+  color: green;
+}

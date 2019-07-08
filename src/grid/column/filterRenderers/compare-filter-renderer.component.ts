@@ -51,13 +51,8 @@ import {FilterRenderer} from "./filter-renderer";
               <input [ngModel]="lowValue"
                      (ngModelChange)="valueChange($event)"
                      [placeholder]="column.format"
-                     [style.color]="filters && !filters[0].valid ? 'red' : 'inherit'"
+                     [style.color]="filters && filters.length === 1 && !filters[0].valid ? 'red' : 'inherit'"
                      class="form-control value inputs" />
-              <!--<div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="dLow.toggle()" type="button">
-                  <i class="fas fa-calendar-alt"></i>
-                </button>
-              </div>-->
             </div>
             <div *ngIf="operator === 'B' || operator === 'O'"
                  class="input-group flex-nowrap">
@@ -66,19 +61,6 @@ import {FilterRenderer} from "./filter-renderer";
                   (ngModelChange)="highValueChange($event)"
                   [placeholder]="column.format"
                   class="form-control value inputs" />
-              <!--
-              <input ngbDatepicker #d2="ngbDatepicker"
-                     [ngModel]="highValue"
-                     (ngModelChange)="highValueChange($event)"
-                     [minDate]="{year: 1900, month: 1, day: 1}"
-                     placeholder="yyyy-mm-dd"
-                     pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                     class="form-control value inputs" />
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
-                  <i class="fas fa-calendar-alt"></i>
-                </button>
-              </div>-->
             </div>
           </div>
         </ng-container>
@@ -171,6 +153,8 @@ export class CompareFilterRenderer extends FilterRenderer {
     if (this.shared) {
       this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   setConfig(config: any) {
@@ -197,6 +181,8 @@ export class CompareFilterRenderer extends FilterRenderer {
 
     this.lowValue = this.format(this.filters[0].value);
     this.highValue = this.format(this.filters[0].highValue);
+
+    this.changeDetectorRef.detectChanges();
   }
 
   format(value: any): any {

@@ -23,7 +23,7 @@ import {FilterRenderer} from "./filter-renderer";
           <button class="btn btn-primary" (click)="selectAll()">Select All</button>
           <button class="btn btn-secondary l-gap" (click)="deselectAll()">Deselect All</button>
           <div class="d-flex justify-content-end" style="align-items: center; margin-left: auto; margin-right: 10px;">
-            <div *ngIf="changed" (click)="filter()" class="fade-in-out" style="color: green;">
+            <div (click)="filter()" class="fade-in-out" style="color: green;" [style.display]="changed ? 'inherit' : 'none'">
               <i class="fas fa-check-circle fa-lg l-gap"></i>
             </div>
             <div (click)="valueClear()" style="color: red;">
@@ -108,6 +108,11 @@ export class SelectFilterRenderer extends FilterRenderer {
   init: boolean = false;
   changed: boolean = false;
 
+  reset() {
+    super.reset();
+    this.changeDetectorRef.detectChanges();
+  }
+
   filter() {
     this.filters = [];
     for (let choice of this.column.choices) {
@@ -123,6 +128,8 @@ export class SelectFilterRenderer extends FilterRenderer {
     if (this.shared) {
       this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   deselectAll() {
@@ -130,6 +137,8 @@ export class SelectFilterRenderer extends FilterRenderer {
       choice.selected = false;
     }
     this.changed = true;
+
+    this.changeDetectorRef.detectChanges();
   }
 
   selectAll() {
@@ -137,6 +146,8 @@ export class SelectFilterRenderer extends FilterRenderer {
       choice.selected = true;
     }
     this.changed = true;
+
+    this.changeDetectorRef.detectChanges();
   }
 
   /**
@@ -153,6 +164,8 @@ export class SelectFilterRenderer extends FilterRenderer {
         break;
       }
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   /**
@@ -169,6 +182,8 @@ export class SelectFilterRenderer extends FilterRenderer {
     if (this.shared) {
       this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
 }

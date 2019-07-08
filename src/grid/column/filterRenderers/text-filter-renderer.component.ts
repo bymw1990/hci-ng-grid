@@ -46,6 +46,8 @@ export class TextFilterRenderer extends FilterRenderer {
 
   ngAfterViewInit() {
     this.input.nativeElement.focus();
+
+    super.ngAfterViewInit();
   }
 
   setConfig(config: any) {
@@ -92,6 +94,8 @@ export class TextFilterRenderer extends FilterRenderer {
     if (this.shared) {
       this.gridService.globalClearPushFilter(this.column.field, this.filters);
     }
+
+    this.changeDetectorRef.detectChanges();
   }
 
   valueClear() {

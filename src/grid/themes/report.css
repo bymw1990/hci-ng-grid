@@ -100,3 +100,11 @@
   width: max-content;
   align-items: center;
 }
+
+#grid-container.report .sort-icon {
+  color: black;
+}
+
+#grid-container.report .sort-icon.primary {
+  color: green;
+}

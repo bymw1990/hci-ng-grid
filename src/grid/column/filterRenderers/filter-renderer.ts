@@ -28,6 +28,10 @@ export class FilterRenderer {
     this.filtersSubscribe();
   }
 
+  ngAfterViewInit() {
+    this.changeDetectorRef.detectChanges();
+  }
+
   filtersSubscribe() {
     this.gridService.getFilterMapSubject().subscribe((filterMap: Map<string, HciFilterDto[]>) => {
       if (this.column) {
