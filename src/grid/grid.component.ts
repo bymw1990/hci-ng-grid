@@ -532,6 +532,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   /* Timers and data to determine the difference between single and double clicks. */
   clickTimer: any;
+  scrollTimer: any;
   singleClickCancel: boolean = false;
 
   /* The height of cell rows which is used to calculate the total grid size. */
@@ -1119,16 +1120,21 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.lastScrollPoint = new Point(rightRowContainer.scrollLeft, rightRowContainer.scrollTop);
     }
 
-    let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-header-container");
-    let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
-    this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
-    this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
-    this.renderCellsAndData();
-
-    if (this.componentRef) {
-      this.componentRef.updateLocation();
+    if (this.scrollTimer) {
+      clearTimeout(this.scrollTimer);
     }
-    this.event = NO_EVENT;
+    this.scrollTimer = setTimeout(() => {
+      let rightHeaderContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#right-header-container");
+      let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
+      this.renderer.setStyle(rightHeaderContainer, "left", "-" + rightRowContainer.scrollLeft + "px");
+      this.renderer.setStyle(leftContainer, "top", "-" + rightRowContainer.scrollTop + "px");
+      this.renderCellsAndData();
+
+      if (this.componentRef) {
+        this.componentRef.updateLocation();
+      }
+      this.event = NO_EVENT;
+    }, 100);
   }
 
   /**
@@ -1622,7 +1628,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /**
    * Sets the height of the view containers based on either the rows allowed to render or the data size.
    */
-  private updateGridContainerHeight(): void {
+  /*private updateGridContainerHeight(): void {
     if (this.gridService.nVisibleRows) {
       if (isDevMode()) {
         console.info("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
@@ -1630,21 +1636,24 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       let gridHeight: number = this.gridContainer.nativeElement.offsetHeight;
       let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
-      let height: number = 0;
-      if (this.gridService.getNVisibleRows() <= 0) {
-        height = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
+      let contentHeight: number = 0;
+
+      if (this.height > 0) {
+        contentHeight = gridHeight - headerHeight;
+      } else if (this.gridService.getNVisibleRows() <= 0) {
+        contentHeight = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
       } else {
-        height = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
+        contentHeight = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
       }
 
       this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + height) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", height + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", height + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + height) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + height) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentHeight) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentHeight + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentHeight + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + contentHeight) + "px");
+      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + contentHeight) + "px");
     }
-  }
+  }*/
 
   /**
    * Calculate the sizes of the containers and column header sizes.  The basic principle is that the grid always fills
@@ -1665,9 +1674,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
       titleHeight = this.gridContainer.nativeElement.querySelector("#title-bar").offsetHeight;
     } catch (error) {}
 
-    let headerHeight: number = 0;
+    let headerHeight: number = this.rowHeight;
     try {
-      headerHeight = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
+      //headerHeight = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
     } catch (error) {}
 
     let footerHeight: number = 0;
@@ -1676,7 +1685,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     } catch (error) {}
 
     contentViewHeight = 0;
-    if (this.height) {
+    if (this.height > 0) {
       contentViewHeight = this.height - titleHeight - headerHeight - footerHeight;
     } else {
       if (this.gridService.getNVisibleRows() <= 0) {
@@ -1689,6 +1698,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentViewHeight) + "px");
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentViewHeight + "px");
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentViewHeight + "px");
+    this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-container"), "min-height", contentViewHeight + "px");
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + contentViewHeight) + "px");
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + contentViewHeight) + "px");
     gridHeight = this.gridContainer.nativeElement.offsetHeight;
@@ -1882,7 +1892,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: scroll: " + scroll);
       }
     }
-    //this.changeDetectorRef.detectChanges();
+
+    // Force column headers to redraw based on new width calculations.
+    this.changeDetectorRef.detectChanges();
     this.updateGridContainerHeightAndColumnSizes();
 
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");

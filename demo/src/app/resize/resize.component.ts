@@ -215,6 +215,82 @@ import {DataGeneratorService} from "../services/data-generator.service";
     </div>
 
     <div class="card">
+      <div class="card-header">
+        <h4>Fixed Height No Data</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Sets the grid height to 100px.  The grid content sets itself accordingly.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right" container="body">Show Config</button>
+          <ng-template #config5>
+            <pre>
+              &lt;hci-grid
+                [data]="nodata"
+                [columns]="columns"
+                [height]="100"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name Long Title"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
+        <div style="width: 100%;">
+          <hci-grid [data]="nodata"
+                    [columns]="columns"
+                    [height]="100">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>Fixed Height No Data Scroll</h4>
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          Sets the grid height to 100px.  The grid content sets itself accordingly.
+        </div>
+        <div class="card-text">
+          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right" container="body">Show Config</button>
+          <ng-template #config5>
+            <pre>
+              &lt;hci-grid
+                [data]="nodata"
+                [columns]="columns"
+                [height]="100"&gt;
+              &lt;/hci-grid&gt;
+              
+              Columns:
+              field: "idPatient", name: "ID", visible: false
+              field: "lastName", name: "Last Name Long Title"
+              field: "middleName", name: "Middle Name"
+              field: "firstName", name: "First Name"
+              field: "dob", name: "Date of Birth", dataType: "date"
+              field: "gender", name: "Gender"
+              field: "address", name: "Address"
+            </pre>
+          </ng-template>
+        </div>
+        <div style="width: 200px;">
+          <hci-grid [data]="nodata"
+                    [columns]="columns"
+                    [height]="100">
+          </hci-grid>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-header mb-3">
         <h4>Full Width</h4>
       </div>
@@ -236,6 +312,7 @@ export class ResizeDemoComponent {
 
     dataSize: number = 250;
     data: Object[];
+    nodata: Object[] = [];
 
     columns: any[] = [
         { field: "idPatient", name: "ID", visible: false },

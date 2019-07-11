@@ -17,7 +17,6 @@
 
 #grid-container.spreadsheet #main-content {
   border-left: black 1px solid;
-  border-right: black 1px solid;
   border-bottom: black 1px solid;
 }
 
@@ -27,7 +26,9 @@
 
 #grid-container.spreadsheet #left-view {}
 
-#grid-container.spreadsheet #right-view {}
+#grid-container.spreadsheet #right-view {
+  border-right: black 1px solid;
+}
 
 #grid-container.spreadsheet #left-header-view{
   border-top: black 1px solid;
@@ -35,6 +36,7 @@
 
 #grid-container.spreadsheet #right-header-view{
   border-top: black 1px solid;
+  border-right: black 1px solid;
 }
 
 #grid-container.spreadsheet .hci-grid-header {
