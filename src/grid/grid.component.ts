@@ -709,10 +709,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.gridService.getEventSubject().subscribe((event: any) => {
-      if (event && event.type === "filter" && event.status === "complete") {
-        this.outputDataFiltered.emit(event);
-      } else if (event && event.type === "sort" && event.status === "complete") {
-        this.outputDataSorted.emit(event);
+      if (this.initialized) {
+        if (event && event.type === "filter" && event.status === "complete") {
+          this.outputDataFiltered.emit(event);
+        } else if (event && event.type === "sort" && event.status === "complete") {
+          this.outputDataSorted.emit(event);
+        }
       }
     });
 
@@ -721,7 +723,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     });
 
     this.gridService.getFilterEventSubject().subscribe((filters: HciFilterDto[]) => {
-      this.outputFilterEvent.emit(filters);
+      if (this.initialized) {
+        this.outputFilterEvent.emit(filters);
+      }
     });
 
     /* Get initial page Info */
@@ -1752,7 +1756,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let column of this.columnMap.get("VISIBLE")) {
         column.renderWidth = 0;
         if (column.width > 0) {
-          column.renderWidth = Math.max(column.width, column.minWidth);
+          column.renderWidth = Math.floor(Math.max(column.width, column.minWidth));
           availableWidth = availableWidth - column.renderWidth;
         }
       }
@@ -1821,7 +1825,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     fixedWidth = Math.floor(fixedWidth);
     nonFixedWidth = Math.floor(nonFixedWidth);
-    let rightViewWidth: number = gridWidth - Math.max(fixedWidth, fixedMinWidth);
+    let rightViewWidth: number = Math.floor(gridWidth - Math.max(fixedWidth, fixedMinWidth));
+
+    e = this.gridContainer.nativeElement.querySelector("#title-bar");
+    this.renderer.setStyle(e, "width", (gridWidth + 1) + "px");
+
+    e = this.gridContainer.nativeElement.querySelector("#grid-footer");
+    this.renderer.setStyle(e, "width", (gridWidth + 1) + "px");
 
     e = this.gridContainer.nativeElement.querySelector("#left-view");
     this.renderer.setStyle(e, "width", fixedWidth + "px");
@@ -1835,10 +1845,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(e, "height", (this.rowHeight * this.gridData.length) + "px");
 
     e = this.gridContainer.nativeElement.querySelector("#header-content");
-    this.renderer.setStyle(e, "width", gridWidth);
+    this.renderer.setStyle(e, "width", gridWidth + "px");
     e = this.gridContainer.nativeElement.querySelector("#right-header-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");
-    this.renderer.setStyle(e, "width", (gridWidth - Math.max(fixedWidth, fixedMinWidth)) + "px");
+    this.renderer.setStyle(e, "width", rightViewWidth + "px");
 
     e = this.gridContainer.nativeElement.querySelector("#right-view");
     this.renderer.setStyle(e, "margin-left", Math.max(fixedWidth, fixedMinWidth) + "px");

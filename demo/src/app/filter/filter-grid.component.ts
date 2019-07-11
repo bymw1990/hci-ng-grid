@@ -182,10 +182,12 @@ export class FilterGridComponent {
 
   grid1FilterEvent(event: HciFilterDto[]): void {
     this.event1a = event;
+    this.changeDetectorRef.detectChanges();
   }
 
   grid1DataFiltered(event: any): void {
     this.event1b = event;
+    this.changeDetectorRef.detectChanges();
   }
 
   customSort(a: any, b: any, sortInfo: HciSortDto[], column: Column): number {
@@ -200,7 +202,9 @@ export class FilterGridComponent {
 
   customFilter(value: any, filters: HciFilterDto[], column: Column): boolean {
     for (let filterInfo of filters) {
-      if (column.choiceMap.get(value).toString().toLowerCase().indexOf(column.choiceMap.get(filterInfo.value).toString().toLowerCase()) === -1) {
+      if (!value) {
+        return false;
+      } else if (column.choiceMap.get(value).toString().toLowerCase().indexOf(column.choiceMap.get(filterInfo.value).toString().toLowerCase()) === -1) {
         return false;
       }
     }
