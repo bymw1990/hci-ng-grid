@@ -533,6 +533,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   /* Timers and data to determine the difference between single and double clicks. */
   clickTimer: any;
   scrollTimer: any;
+  resizeTimer: any;
   singleClickCancel: boolean = false;
 
   /* The height of cell rows which is used to calculate the total grid size. */
@@ -763,7 +764,12 @@ export class GridComponent implements OnChanges, AfterViewInit {
       }
 
       if (iw !== this.iFrameWidth[0] && Math.abs(this.iFrameWidth[1] - iw) > 2) {
-        this.doRender();
+        if (this.resizeTimer) {
+          clearTimeout(this.resizeTimer);
+        }
+        this.resizeTimer = setTimeout(() => {
+          this.renderCellsAndData();
+        }, 50);
       }
       if (iw !== this.iFrameWidth[1]) {
         this.iFrameWidth[0] = this.iFrameWidth[1];
