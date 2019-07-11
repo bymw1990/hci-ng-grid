@@ -457,20 +457,20 @@ const SCROLL: number = 1;
 })
 export class GridComponent implements OnChanges, AfterViewInit {
 
-  @ViewChild("mainContentHeaderContainer", { read: ViewContainerRef, static: false }) headerContainer: ViewContainerRef;
-  @ViewChild("mainContentPopupContainer", { read: ViewContainerRef, static: false }) popupContainer: ViewContainerRef;
-  @ViewChild("mainContentNewRowContainer", { read: ViewContainerRef, static: false }) newRowContainer: ViewContainerRef;
-  @ViewChild("leftCellEditContainer", { read: ViewContainerRef, static: false }) leftCellEditContainer: ViewContainerRef;
-  @ViewChild("rightCellEditContainer", { read: ViewContainerRef, static: false }) rightCellEditContainer: ViewContainerRef;
-  @ViewChild("copypastearea", {static: false}) copypastearea: any;
-  @ViewChild("gridContainer", {static: false}) gridContainer: ElementRef;
-  @ViewChild("busyOverlay", {static: false}) busyOverlay: ElementRef;
-  @ViewChild("loadingOverlay", {static: false}) loadingOverlay: ElementRef;
-  @ViewChild("emptyContent", {static: false}) emptyContent: ElementRef;
-  @ViewChild("focuser1", {static: false}) focuser1: ElementRef;
-  @ViewChild("focuser2", {static: false}) focuser2: ElementRef;
-  @ViewChild("rightRowContainer", {static: false}) rightRowContainer: ElementRef;
-  @ViewChild("iframeSensor", {static: false}) iframeSensor: ElementRef;
+  @ViewChild("mainContentHeaderContainer", { read: ViewContainerRef, static: true }) headerContainer: ViewContainerRef;
+  @ViewChild("mainContentPopupContainer", { read: ViewContainerRef, static: true }) popupContainer: ViewContainerRef;
+  @ViewChild("mainContentNewRowContainer", { read: ViewContainerRef, static: true }) newRowContainer: ViewContainerRef;
+  @ViewChild("leftCellEditContainer", { read: ViewContainerRef, static: true }) leftCellEditContainer: ViewContainerRef;
+  @ViewChild("rightCellEditContainer", { read: ViewContainerRef, static: true }) rightCellEditContainer: ViewContainerRef;
+  @ViewChild("copypastearea", {static: true}) copypastearea: any;
+  @ViewChild("gridContainer", {static: true}) gridContainer: ElementRef;
+  @ViewChild("busyOverlay", {static: true}) busyOverlay: ElementRef;
+  @ViewChild("loadingOverlay", {static: true}) loadingOverlay: ElementRef;
+  @ViewChild("emptyContent", {static: true}) emptyContent: ElementRef;
+  @ViewChild("focuser1", {static: true}) focuser1: ElementRef;
+  @ViewChild("focuser2", {static: true}) focuser2: ElementRef;
+  @ViewChild("rightRowContainer", {static: true}) rightRowContainer: ElementRef;
+  @ViewChild("iframeSensor", {static: true}) iframeSensor: ElementRef;
 
   @Input("data") boundData: Object[];
   @Input("dataCall") onExternalDataCall: (externalInfo: HciGridDto) => Observable<HciDataDto>;
@@ -573,6 +573,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
   private iFrameWidth: number[] = [0, 0];
 
+  private renderDelay: boolean = false;
   private updateSelectedRowsTimeout: any;
 
   constructor(private el: ElementRef,
@@ -625,8 +626,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
       this.gridService.paging = this.gridService.paging;
       this.columnMap = this.gridService.getColumnMapSubject().getValue();
-      /*this.gridService.initData();
-      this.doRender();*/
+      /*this.gridService.initData();*/
+
       if (this.onExternalDataCall) {
         this.gridService.doExternalDataCall();
       } else {
@@ -850,6 +851,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.registerEventListeners();
     this.initialized = true;
+
+    this.doRender();
 
     this.changeDetectorRef.detectChanges();
   }
@@ -1692,7 +1695,14 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
 
     let e = this.gridContainer.nativeElement;
-    let gridWidth: number =  this.el.nativeElement.offsetWidth;
+    let gridWidth: number = this.el.nativeElement.offsetWidth;
+
+    if (gridWidth === 0 && !this.renderDelay) {
+      this.renderDelay = true;
+      this.doRender(100);
+      return;
+    }
+    this.renderDelay = false;
 
     this.renderer.setStyle(this.gridContainer.nativeElement, "width", gridWidth + "px");
     let insideGridWidth: number = gridWidth;
@@ -1872,7 +1882,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
         console.debug("hci-grid: " + this.id + ": renderCellsAndData: scroll: " + scroll);
       }
     }
-    this.changeDetectorRef.detectChanges();
+    //this.changeDetectorRef.detectChanges();
     this.updateGridContainerHeightAndColumnSizes();
 
     let leftContainer: HTMLElement = this.gridContainer.nativeElement.querySelector("#left-container");
