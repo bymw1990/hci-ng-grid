@@ -15,7 +15,7 @@ module.exports = function(env) {
 
   return {
     stats: "errors-only",
-    devtool: "source-map",
+    devtool: "none",
     mode: (environment == "'production'") ? "production" : "development",
 
     entry: {
