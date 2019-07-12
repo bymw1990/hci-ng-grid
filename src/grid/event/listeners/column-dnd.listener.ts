@@ -48,7 +48,7 @@ export class ColumnDndListener extends EventListener implements MouseDownListene
       for (let theme of this.gridService.getThemes()) {
         this.renderer.addClass(this.clone, theme);
       }
-      this.renderer.setStyle(this.clone, "z-index", 9999);
+      this.renderer.setStyle(this.clone, "z-index", 9500);
       this.renderer.setStyle(this.clone, "position", "fixed");
       this.grid.getRenderer().appendChild(document.body, this.clone);
 
@@ -109,14 +109,14 @@ export class ColumnDndListener extends EventListener implements MouseDownListene
   }
 
   mouseOut(event: MouseEvent): boolean {
-    let id: string = (<HTMLElement>event.target).id;
-
-    if (isDevMode()) {
-      console.debug("ColumnDndListener.mouseOut: " + (<HTMLElement>event.target).id);
-    }
-
     if (this.dragging) {
-      if (id.startsWith("header-") || id === "") {
+      let target: HTMLElement = <HTMLElement>(<HTMLElement>event.target).closest("hci-column-header");
+
+      if (isDevMode()) {
+        console.debug("ColumnDndListener.mouseOut: " + ((target) ? target.id : "Not a header"));
+      }
+
+      if (target) {
         return false;
       }
 

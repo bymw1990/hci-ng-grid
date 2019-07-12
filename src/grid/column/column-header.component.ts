@@ -175,7 +175,7 @@ export class ColumnHeaderComponent {
     }
 
     if (this.showPopup) {
-      event.stopPropagation();
+      //event.stopPropagation();
 
       this.popup = this.renderer.createElement("div");
       this.renderer.addClass(this.popup, "hci-grid");
@@ -186,7 +186,7 @@ export class ColumnHeaderComponent {
       this.renderer.addClass(this.popup, "column-header-tooltip");
       this.renderer.setStyle(this.popup, "height", this.el.nativeElement.offsetHeight);
       this.renderer.setStyle(this.popup, "position", "absolute");
-      this.renderer.setStyle(this.popup, "z-index", "9999");
+      this.renderer.setStyle(this.popup, "z-index", "9000");
       this.renderer.setStyle(this.popup, "left", (event.clientX + 5) + "px");
       this.renderer.setStyle(this.popup, "top", (event.clientY + 5) + "px");
       this.renderer.appendChild(this.popup, this.renderer.createText(this.column.name));
@@ -197,7 +197,7 @@ export class ColumnHeaderComponent {
 
   onMouseOut(event: MouseEvent): void {
     if (this.showPopup) {
-      event.stopPropagation();
+      //event.stopPropagation();
 
       this.renderer.removeChild(document.body, this.popup);
     }
