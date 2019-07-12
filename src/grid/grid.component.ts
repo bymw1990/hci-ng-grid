@@ -217,7 +217,7 @@ const SCROLL: number = 1;
            (click)="$event.stopPropagation()">
         <div *ngIf="paging.pageSize > 0 || addNewRowButtonLocation === 'footer'" class="grid-footer">
           <div *ngIf="paging.numPages > 0"
-               class="ml-1"
+               class="ml-1 mr-auto"
                style="font-weight: bold;">
             Page {{paging.page + 1}} of {{paging.numPages}}
           </div>
@@ -236,7 +236,7 @@ const SCROLL: number = 1;
           </div>
           <div *ngIf="addNewRowButtonLocation === 'footer'"
                (click)="addNewRow()"
-               class="add-new-row-btn mr-1">
+               class="add-new-row-btn ml-auto mr-1">
             <i class="fas fa-plus"></i>
           </div>
         </div>
