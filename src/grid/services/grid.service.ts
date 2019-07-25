@@ -891,7 +891,6 @@ export class GridService {
 
       this.paging.setPage(0);
 
-      //this.externalInfoObserved.next(new HciGridDto(this.filters, (this.externalSorting) ? this.sorts : undefined, this.paging));
       if (this.selectedRowGroup) {
         this.doExternalDataCallGroupBy();
       } else {
@@ -1468,7 +1467,6 @@ export class GridService {
     this.setNVisibleRows();
 
     if (this.externalPaging) {
-      //this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, (this.externalSorting) ? this.sorts : null, this.paging));
       if (this.selectedRowGroup) {
         this.doExternalDataCallGroupBy();
       } else {
@@ -1494,7 +1492,6 @@ export class GridService {
     });
 
     if (this.externalSorting) {
-      //this.externalInfoObserved.next(new HciGridDto((this.externalFiltering) ? this.filters : null, this.sorts, (this.externalPaging) ? this.paging : null));
       if (this.selectedRowGroup) {
         this.doExternalDataCallGroupBy();
       } else {

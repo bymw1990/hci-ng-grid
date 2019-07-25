@@ -175,8 +175,6 @@ export class ColumnHeaderComponent {
     }
 
     if (this.showPopup) {
-      //event.stopPropagation();
-
       this.popup = this.renderer.createElement("div");
       this.renderer.addClass(this.popup, "hci-grid");
       let themes: string[] = this.gridService.getConfigSubject().getValue().theme.split(" ");
@@ -197,8 +195,6 @@ export class ColumnHeaderComponent {
 
   onMouseOut(event: MouseEvent): void {
     if (this.showPopup) {
-      //event.stopPropagation();
-
       this.renderer.removeChild(document.body, this.popup);
     }
   }
