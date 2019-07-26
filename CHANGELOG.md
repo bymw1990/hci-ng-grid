@@ -1,7 +1,9 @@
 # Change Log
 
 ## 5.0.0
-    - To Angular 8, rxjs 6, ng-bootstrap 4.2
+    - To Angular 8, rxjs 6, ng-bootstrap 5.
+    - Handle row grouping, refactor grid DTO usage and external data calls.
+    - Grid DTO to separate project.
 
 ## [4.0.0](https://github.com/HuntsmanCancerInstitute-RISR/hci-ng-grid/tree/v4.0.0)
     - Add new rows of data.
