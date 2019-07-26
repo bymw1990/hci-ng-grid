@@ -22,6 +22,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
           to fetch dictionaries, you would want the second option.
         </div>
         <div class="card-text">
+          Last name is set to choiceAuto: true.  This means that choices are created based upon the available data.  So
+          this should only be used for a data bound array.
+        </div>
+        <div class="card-text">
           Also to note that this demo uses an external data call with a 100-900 ms delay and the choiceUrl has a 250-750 ms
           delay.  This is important because the grid waits for the choiceUrl response before finalizing configuration and
           the column configuration is needed before the data can be prepared.  I have three choiceUrl columns here to make
