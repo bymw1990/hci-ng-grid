@@ -1175,7 +1175,12 @@ export class GridService {
         } else if (this.columns[j].isUtility) {
           row.add(new Cell({value: false}));
         } else {
-          row.add(new Cell({value: this.getField(this.originalData[i], this.columns[j].field), key: i}));
+          let value: any = this.getField(this.originalData[i], this.columns[j].field);
+          row.add(new Cell({value: value, key: i}));
+
+          if (this.columns[j].choiceAuto) {
+            this.columns[j].addChoice(value, value);
+          }
         }
       }
 

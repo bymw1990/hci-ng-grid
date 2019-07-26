@@ -40,6 +40,7 @@ export class Column {
     choices: [],
     choiceValue: "value",
     choiceDisplay: "display",
+    choiceAuto: false,
     formatterParserConfig: {},
     formatterParser: FormatterParser,
     editConfig: {},
@@ -82,6 +83,7 @@ export class Column {
   choiceValue: string = "value";
   choiceDisplay: string = "display";
   choiceUrl: string;
+  choiceAuto: boolean = false;
 
   formatterParserConfig: any = {};
   formatterParser: Type<FormatterParser> = FormatterParser;
@@ -258,6 +260,12 @@ export class Column {
       this.viewRenderer = object.viewRenderer;
     }
 
+    if (object.choiceAuto !== undefined) {
+      this.choiceAuto = object.choiceAuto;
+      if (this.choiceAuto) {
+        this.dataType = "choice";
+      }
+    }
     if (object.choiceValue) {
       this.choiceValue = object.choiceValue;
     }
@@ -319,6 +327,21 @@ export class Column {
 
     if (!this.sortFunction) {
       this.sortFunction = this.createDefaultSortFunction();
+    }
+  }
+
+  clearChoices(): void {
+    this.choices = [];
+    this.choiceMap.clear();
+  }
+
+  addChoice(key: any, value: any): void {
+    if (!this.choiceMap.has(key)) {
+      this.choiceMap.set(key, value);
+      let choice: any = {};
+      choice[this.choiceValue] = key;
+      choice[this.choiceDisplay] = value;
+      this.choices.push(choice);
     }
   }
 

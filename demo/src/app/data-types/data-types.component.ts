@@ -3,7 +3,7 @@ import {Component, HostBinding} from "@angular/core";
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
 
-import {TextFilterRenderer} from "hci-ng-grid";
+import {SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 import {HciDataDto, HciGridDto} from "hci-ng-grid-dto";
 
 import {DataGeneratorService} from "../services/data-generator.service";
@@ -49,7 +49,7 @@ export class DataTypesDemoComponent {
   dataCall1: (externalInfo: HciGridDto) => {};
   columns1: any[] = [
     { field: "idPatient", name: "ID", dataType: "number", visible: true },
-    { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
+    { field: "lastName", name: "Last Name", choiceAuto: true, filterRenderer: SelectFilterRenderer},
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
     { field: "genderDict", name: "Gender", choices: [{v: 1, d: "F"}, {v: 2, d: "M"}, {v: 3, d: "U"}], choiceValue: "v", choiceDisplay: "d" },
     { field: "genderDict", name: "Gender Url", choiceUrl: "/api/dictionary/gender", choiceValue: "value", choiceDisplay: "display" },

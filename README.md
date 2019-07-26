@@ -11,7 +11,7 @@
 
 ```
 "dependencies": {
-    "hci-ng-grid": "5.0.0-beta.3"
+    "hci-ng-grid": "5.0.0-beta.4"
 }
 ```
 ```
@@ -413,10 +413,6 @@ following are examples of built in filters.
         choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ],
         filterRenderer: SelectFilterRenderer
     }
-
-## Known Issues
-
-* Row Groups works upon load, but breaks when filtering is introduced.
 
 ## TODOs
 
