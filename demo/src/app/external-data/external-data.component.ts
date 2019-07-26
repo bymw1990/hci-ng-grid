@@ -115,6 +115,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </ng-template>
         </div>
         <p>
+          External filter, sort.  Internal paging.
           <hci-grid [columns]="columns"
                     [dataCall]="onExternalDataCall2"
                     [externalFiltering]="true"
@@ -124,6 +125,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </hci-grid>
         </p>
         <p>
+          Internal filter, sort, paging.
           <hci-grid [columns]="columns"
                     [dataCall]="onExternalDataCall2"
                     [externalFiltering]="false"

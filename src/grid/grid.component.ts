@@ -234,10 +234,10 @@ const SCROLL: number = 1;
             <span (click)="doPageNext()" class="pl-3 pr-3"><span class="fas fa-forward"></span></span>
             <span (click)="doPageLast()"><span class="fas fa-fast-forward"></span></span>
           </div>
-          <div *ngIf="addNewRowButtonLocation === 'footer'"
-               (click)="addNewRow()"
-               class="add-new-row-btn ml-auto mr-1">
-            <i class="fas fa-plus"></i>
+          <div class="add-new-row-btn ml-auto mr-1">
+            <div *ngIf="addNewRowButtonLocation === 'footer'" (click)="addNewRow()" class="justify-content-end">
+              <i class="fas fa-plus"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -743,7 +743,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     /* Can't use boundData and onExternalDataCall.  If onExternalDataCall provided, use that, otherwise use boundData. */
     if (this.onExternalDataCall) {
-      //this.gridService.externalInfoObserved.next(new HciGridDto(undefined, undefined, this.paging));
       this.gridService.doExternalDataCall();
     } else if (this.boundData) {
       this.gridService.setOriginalData(this.boundData);
