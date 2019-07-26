@@ -123,6 +123,15 @@ import {DataGeneratorService} from "../services/data-generator.service";
                     [pageSize]="10">
           </hci-grid>
         </p>
+        <p>
+          <hci-grid [columns]="columns"
+                    [dataCall]="onExternalDataCall2"
+                    [externalFiltering]="false"
+                    [externalSorting]="false"
+                    [externalPaging]="false"
+                    [pageSize]="10">
+          </hci-grid>
+        </p>
       </div>
     </div>
     
@@ -197,7 +206,7 @@ export class ExternalDataComponent implements OnInit {
 
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataGeneratorService.generateExternalData1(this.dataSize);
     this.dataGeneratorService.generateExternalData2(this.dataSize);
 
@@ -207,19 +216,27 @@ export class ExternalDataComponent implements OnInit {
   }
 
   grid1FilterEvent(event: HciFilterDto[]): void {
-    this.event1a = event;
+    of(undefined).pipe(delay(0)).subscribe(() => {
+      this.event1a = event;
+    });
   }
 
   grid1DataFiltered(event: any): void {
-    this.event1b = event;
+    of(undefined).pipe(delay(0)).subscribe(() => {
+      this.event1b = event;
+    });
   }
 
   grid1SortEvent(event: HciSortDto[]): void {
-    this.event1c = event;
+    of(undefined).pipe(delay(0)).subscribe(() => {
+      this.event1c = event;
+    });
   }
 
   grid1DataSorted(event: any): void {
-    this.event1d = event;
+    of(undefined).pipe(delay(0)).subscribe(() => {
+      this.event1d = event;
+    });
   }
 
   public handleExternalDataCall1(externalInfo: HciGridDto): Observable<HciDataDto> {
