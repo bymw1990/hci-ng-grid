@@ -1,6 +1,6 @@
 {
   "name": "hci-ng-grid",
-  "version": "5.0.0-beta.4",
+  "version": "5.0.0-beta.5",
   "description": "Comprehensive angular grid component",
   "keywords": [
     "angular",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@ng-bootstrap/ng-bootstrap": "5.0.x",
     "bootstrap": ">=4.3.1 <4.4.0",
-    "hci-ng-grid-dto": "1.0.0-beta.4",
+    "hci-ng-grid-dto": "1.0.x",
     "moment": ">=2.19.3"
   },
   "devDependencies": {

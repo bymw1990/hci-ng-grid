@@ -1216,8 +1216,6 @@ export class GridService {
       }
     }
 
-    console.debug(rowGroup);
-
     if (this.externalGrouping) {
       if (rowGroup.expanded) {
         this.setSelectedRowGroup(rowGroup);
