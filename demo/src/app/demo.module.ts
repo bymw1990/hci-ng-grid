@@ -9,7 +9,6 @@ import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
-import {PrismModule} from "@ngx-prism/core";
 
 import {GridModule} from "hci-ng-grid";
 
@@ -82,7 +81,6 @@ import {NewRowDemo} from "./new-row/new-row.component";
       { path: "validation", component: ValidationComponent },
     ], {useHash: true}),
     NgbModule,
-    PrismModule,
     GridModule.forRoot()
   ],
   declarations: [
