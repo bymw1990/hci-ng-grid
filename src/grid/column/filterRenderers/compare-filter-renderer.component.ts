@@ -12,22 +12,20 @@ import {FilterRenderer} from "./filter-renderer";
 @Component({
   selector: "hci-grid-compare-filter",
   template: `
-    <div class="d-flex flex-nowrap"
-         (mousedown)="stop($event)"
+    <div (mousedown)="stop($event)"
          (mouseup)="stop($event)"
          (click)="stop($event)"
-         style="padding: .5rem 0; background-color: white; border: black 1px solid;"
+         style="display: flex; flex-wrap: nowrap; padding: .5rem 0; background-color: white; border: black 1px solid;"
          [style.width.px]="width"
          [style.background-color]="valid ? 'inherit' : '#ffccaa;'">
       <div class="parent">
-        <div class="d-flex flex-nowrap"
-             style="margin-bottom: 10px; align-items: center; width: 100%;">
+        <div style="display: flex; flex-wrap: nowrap; margin-bottom: 10px; align-items: center; width: 100%;">
           <select [ngModel]="operator" (ngModelChange)="operatorChange($event)" class="operator">
             <option *ngFor="let o of options" [ngValue]="o.value" [selected]="o.value === operator">
               {{ o.display }}
             </option>
           </select>
-          <div class="d-flex justify-content-end" style="align-items: center; margin-left: auto; margin-right: 10px;">
+          <div style="display: flex; justify-content: end; align-items: center; margin-left: auto; margin-right: 10px;">
             <div *ngIf="changed" (click)="filter()" class="fade-in-out" style="color: green;">
               <i class="fas fa-check-circle fa-lg l-gap"></i>
             </div>
@@ -47,7 +45,7 @@ import {FilterRenderer} from "./filter-renderer";
         
         <ng-container *ngIf="column.dataType.indexOf('date-') === 0">
           <div class="form-group">
-            <div class="input-group flex-nowrap" (click)="stop($event)">
+            <div class="input-group" style="flex-wrap: nowrap;" (click)="stop($event)">
               <input [ngModel]="lowValue"
                      (ngModelChange)="valueChange($event)"
                      [placeholder]="column.format"
@@ -55,7 +53,7 @@ import {FilterRenderer} from "./filter-renderer";
                      class="form-control value inputs" />
             </div>
             <div *ngIf="operator === 'B' || operator === 'O'"
-                 class="input-group flex-nowrap">
+                 class="input-group" >
               <input
                   [ngModel]="highValue"
                   (ngModelChange)="highValueChange($event)"

@@ -12,17 +12,16 @@ import {FilterRenderer} from "./filter-renderer";
 @Component({
   selector: "hci-grid-select-filter",
   template: `
-    <div class="d-flex flex-nowrap"
-         (mousedown)="stop($event)"
+    <div (mousedown)="stop($event)"
          (mouseup)="stop($event)"
          (click)="stop($event)"
          [style.width.px]="width"
-         style="padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
+         style="display: flex; flex-wrap: nowrap; padding: .5rem 0; background-color: white; border: black 1px solid; position: absolute;">
       <div class="parent">
-        <div class="d-flex flex-nowrap" style="margin-bottom: 8px; align-items: center; width: 100%;">
+        <div style="display: flex; flex-wrap: nowrap; margin-bottom: 8px; align-items: center; width: 100%;">
           <button class="btn btn-primary" (click)="selectAll()">Select All</button>
           <button class="btn btn-secondary l-gap" (click)="deselectAll()">Deselect All</button>
-          <div class="d-flex justify-content-end" style="align-items: center; margin-left: auto; margin-right: 10px;">
+          <div style="display: flex; justify-content: end; align-items: center; margin-left: auto; margin-right: 10px;">
             <div (click)="filter()" class="fade-in-out" style="color: green;" [style.display]="changed ? 'inherit' : 'none'">
               <i class="fas fa-check-circle fa-lg l-gap"></i>
             </div>
@@ -41,7 +40,7 @@ import {FilterRenderer} from "./filter-renderer";
         </div>
         
         <div class="form-group choice-list">
-          <div *ngFor="let choice of column.choices" class="input-group flex-nowrap" (click)="valueChange(choice[column.choiceValue])">
+          <div *ngFor="let choice of column.choices" class="input-group" style="flex-wrap: nowrap;" (click)="valueChange(choice[column.choiceValue])">
             <input type="checkbox" id="choiceCheckbox" [ngModel]="choice.selected" class="form-control" />
             <label class="form-check-label" for="choiceCheckbox">{{choice[column.choiceDisplay]}}</label>
           </div>

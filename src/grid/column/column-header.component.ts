@@ -18,9 +18,8 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
 @Component({
   selector: "hci-column-header",
   template: `
-    <div class="d-flex flex-nowrap"
-         (click)="doSort($event)"
-         style="width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
+    <div (click)="doSort($event)"
+         style="display: flex; flex-wrap: nowrap; width: inherit; align-items: center; padding-left: 8px; margin-top: auto; margin-bottom: auto;">
       <span id="header-text"
             class="hci-grid-header-text"
             (mouseover)="onMouseOver($event)"
@@ -30,7 +29,8 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
       <span id="hidden-header-text" style="visibility: hidden; position: absolute;">
         {{ column.name }}
       </span>
-      <div class="d-flex flex-nowrap sort-icon">
+      <div class="sort-icon"
+           style="display: flex; flex-wrap: nowrap;">
         <div [id]="'filter-' + column.id" *ngIf="column.filterRenderer">
           <a id="filterDropdownToggle"
              (click)="$event.stopPropagation(); showFilter();"
@@ -39,7 +39,7 @@ import {FilterRenderer} from "./filterRenderers/filter-renderer";
             <i class="fas fa-filter"></i>
           </a>
         </div>
-        <div [id]="'sort-' + column.id" *ngIf="column.sortable" class="ml-1 sort-icon" [class.primary]="firstSort">
+        <div [id]="'sort-' + column.id" *ngIf="column.sortable" class="sort-icon" [class.primary]="firstSort">
           <span *ngIf="asc === 1"><span class="fas fa-arrow-alt-circle-up"></span></span>
           <span *ngIf="asc === -1"><span class="fas fa-arrow-alt-circle-down"></span></span>
         </div>

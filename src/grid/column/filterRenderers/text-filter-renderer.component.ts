@@ -7,12 +7,11 @@ import {FilterRenderer} from "./filter-renderer";
 @Component({
   selector: "hci-grid-text-filter",
   template: `
-    <div class="d-flex flex-nowrap"
-         (mousedown)="stop($event)"
+    <div (mousedown)="stop($event)"
          (mouseup)="stop($event)"
          (click)="stop($event)"
          [style.width.px]="width"
-         style="align-items: center; padding: 5px; background-color: white; border: black 1px solid; position: absolute;">
+         style="display: flex; flex-wrap: nowrap; align-items: center; padding: 5px; background-color: white; border: black 1px solid; position: absolute;">
       <input #input
              [ngModel]="filters[0].value"
              (ngModelChange)="valueChange($event)"

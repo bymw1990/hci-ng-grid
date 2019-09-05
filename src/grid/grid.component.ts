@@ -87,7 +87,7 @@ const SCROLL: number = 1;
       <div id="title-bar"
            [class.hidden]="!config.title && !configurable && addNewRowButtonLocation !== 'title-bar'">
         <div class="title-bar" *ngIf="config.title || configurable">
-          <div class="flex-grow-1">{{config.title}}</div>
+          <div style="flex-grow: 1;">{{config.title}}</div>
           <div *ngIf="addNewRowButtonLocation === 'title-bar'"
                (click)="addNewRow()"
                class="add-new-row-btn">
@@ -183,7 +183,8 @@ const SCROLL: number = 1;
                [style.top.px]="rowHeight">
             <button class="btn btn-save m-1" (click)="saveNewRow()">Save</button>
             <button class="btn btn-cancel m-1" (click)="cancelNewRow()">Cancel</button>
-            <div class="d-flex new-row-message"
+            <div class="new-row-message"
+                 style="display: flex;"
                  [class.ml-3]="newRowMessage"
                  [class.mr-3]="newRowMessage">
               {{newRowMessage}}
@@ -452,6 +453,34 @@ const SCROLL: number = 1;
 
     .adding-new-row #new-row-options {
       display: flex;
+    }
+    
+    .mr-auto {
+      margin-right: auto;
+    }
+    
+    .ml-auto {
+      margin-left: auto;
+    }
+    
+    .m-1 {
+      margin: 0.25rem;
+    }
+    
+    .ml-3 {
+      margin-left: 1rem;
+    }
+    
+    .ml-1 {
+      margin-left: 0.25rem;
+    }
+    
+    .mr-1 {
+      margin-right: 0.25rem;
+    }
+
+    .mr-3 {
+      margin-right: 1rem;
     }
   `]
 })

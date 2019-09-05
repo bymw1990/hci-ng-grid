@@ -19,7 +19,7 @@ import {Dictionary} from "../model/dictionary.interface";
       </div>
       <ng-container *ngIf="state === 1">
         <div class="panel">
-          <div class="cfg-row d-flex flex-nowrap">
+          <div class="cfg-row" style="display: flex; flex-wrap: nowrap;">
             <div class="label">Title</div>
             <div class="input">
               <input type="text" [ngModel]="config.title" (ngModelChange)="update('title', $event)">
@@ -57,7 +57,7 @@ import {Dictionary} from "../model/dictionary.interface";
                                      (modelChange)="updateArray('fixedColumns', $event)"></hci-grid-multi-choice>
             </div>
           </div>
-          <div class="cfg-row d-flex flex-nowrap">
+          <div class="cfg-row" style="display: flex; flex-wrap: nowrap;">
             <div class="label">Page Size</div>
             <div class="input">
               <input type="number" [ngModel]="config.pageSize" (ngModelChange)="update('pageSize', $event)" pattern="[0-9]+">
@@ -69,7 +69,7 @@ import {Dictionary} from "../model/dictionary.interface";
               <hci-grid-multi-choice [model]="config.pageSizes" (modelChange)="updateArray('pageSizes', $event)" [sort]="number"></hci-grid-multi-choice>
             </div>
           </div>
-          <div class="cfg-row d-flex flex-nowrap">
+          <div class="cfg-row" style="display: flex; flex-wrap: nowrap;">
             <div class="label">Visible Rows</div>
             <div class="input">
               <input type="number" [ngModel]="config.nVisibleRows" (ngModelChange)="update('nVisibleRows', $event)">
@@ -91,10 +91,10 @@ import {Dictionary} from "../model/dictionary.interface";
           <div class="cfg-row">
             <div class="label">Position</div>
             <div class="input">
-              <span (click)="updateSortOrder(selectedColumn.field, -2)" class="pad-right"><i class="fas fa-fast-backward"></i></span>
-              <span (click)="updateSortOrder(selectedColumn.field, -1)" class="pad-right"><i class="fas fa-play" data-fa-transform="rotate-180"></i></span>
-              <span (click)="updateSortOrder(selectedColumn.field, 1)" class="pad-right"><i class="fas fa-play"></i></span>
-              <span (click)="updateSortOrder(selectedColumn.field, 2)" class="pad-right"><i class="fas fa-fast-forward"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, -2)" class="pr-2"><i class="fas fa-fast-backward"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, -1)" class="pr-2"><i class="fas fa-play" data-fa-transform="rotate-180"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, 1)" class="pr-2"><i class="fas fa-play"></i></span>
+              <span (click)="updateSortOrder(selectedColumn.field, 2)" class="pr-2"><i class="fas fa-fast-forward"></i></span>
             </div>
           </div>
           <div class="cfg-row">
@@ -175,13 +175,8 @@ import {Dictionary} from "../model/dictionary.interface";
         border: red 2px solid;
       }
 
-      .right {
-        margin-left: auto;
-        margin-right: 0px;
-      }
-      
-      .pad-right {
-        margin-right: 10px;
+      .pr-2 {
+        padding-right: 0.5rem;
       }
       
       .cfg-row {
