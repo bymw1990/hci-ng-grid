@@ -2,13 +2,13 @@
  * Copyright (c) 2016 Huntsman Cancer Institute at the University of Utah, Confidential and Proprietary
  */
 import {NgModule} from "@angular/core";
-import {BrowserModule} from "@angular/platform-browser";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CommonModule} from "@angular/common";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
-
-import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 import {GridModule} from "hci-ng-grid";
 
@@ -47,10 +47,12 @@ import {NewRowDemo} from "./new-row/new-row.component";
 
 @NgModule({
   imports: [
-    BrowserModule,
+    BrowserAnimationsModule,
     CommonModule,
     FormsModule,
     HttpClientModule,
+    MatMenuModule,
+    MatTooltipModule,
     RouterModule.forRoot([
       { path: "", redirectTo: "/home", pathMatch: "full" },
       { path: "alerts", component: AlertsGridComponent },
@@ -80,7 +82,6 @@ import {NewRowDemo} from "./new-row/new-row.component";
       { path: "theming", component: ThemingComponent },
       { path: "validation", component: ValidationComponent },
     ], {useHash: true}),
-    NgbModule,
     GridModule.forRoot()
   ],
   declarations: [

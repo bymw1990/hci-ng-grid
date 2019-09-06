@@ -29,19 +29,19 @@ import {Component, EventEmitter, Input, isDevMode, Output} from "@angular/core";
         </ng-container>
       </div>
       <div *ngIf="choices">
-        <div class="input" ngbDropdown #cfgMultiDropdown="ngbDropdown">
-          <a id="cfgMultiDropdown" class="dropdown-toggle" ngbDropdownToggle>
+        <div class="input">
+          <a [matMenuTriggerFor]="cfgMultiDropdown">
             <span (click)="$event.stopPropagation(); cfgMultiDropdown.open();">
               <i class="fas fa-plus fa-lg"></i>
             </span>
           </a>
-          <ul ngbDropdownMenu aria-labelledby="cfgMultiDropdown" class="dropdown-menu pad">
+          <mat-menu #cfgMultiDropdown="matMenu" class="pad">
             <ng-container *ngFor="let choice of choices">
               <li (click)="addChoice(choice); cfgMultiDropdown.close();">
                 {{choice[display]}}
               </li>
             </ng-container>
-          </ul>
+          </mat-menu>
         </div>
       </div>
     </div>

@@ -22,9 +22,9 @@ declare const VERSION: string;
         <div class="mr-3">
           <button class="btn btn-outline-primary white" routerLink="/docs">Documentation</button>
         </div>
-        <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-outline-primary white" id="routeList" ngbDropdownToggle>Select A Demo</button>
-          <div ngbDropdownMenu class="dropdown-menu" style="max-height: 400px; overflow-y: auto; left: auto; right: 0;" aria-labelledby="routeList">
+        <div class="d-inline-block">
+          <button class="btn btn-outline-primary white" [matMenuTriggerFor]="routeList">Select A Demo</button>
+          <mat-menu #routeList="matMenu">
             <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/busy">Busy</a>
@@ -50,7 +50,7 @@ declare const VERSION: string;
             <a class="dropdown-item" routerLink="/simple">Simple</a>
             <a class="dropdown-item" routerLink="/theming">Themes</a>
             <a class="dropdown-item" routerLink="/validation">Validation</a>
-          </div>
+          </mat-menu>
         </div>
       </div>
     </div>

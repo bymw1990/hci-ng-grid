@@ -21,10 +21,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </div>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <div [innerHTML]="config1Html"></div>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [data]="data1"
@@ -54,10 +54,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <a class="btn btn-primary" (click)="deleteSelectedRows2()" style="margin-left: 10px;">Delete Selected Rows</a>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config2>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
+          <mat-menu #config2="matMenu">
             <div [innerHTML]="config2Html"></div>
-          </ng-template>
+          </mat-menu>
         </div>
         <div>
           <hci-grid #grid2
@@ -90,10 +90,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <a class="btn btn-primary" (click)="deleteSelectedRows3()" style="margin-left: 10px;">Delete Selected Rows</a>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config3>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config3">Show Config</button>
+          <mat-menu #config3="matMenu">
             <div [innerHTML]="config3Html"></div>
-          </ng-template>
+          </mat-menu>
         </div>
         <div>
           <hci-grid #grid3
@@ -112,10 +112,10 @@ import {DataGeneratorService} from "../services/data-generator.service";
       </div>
       <div class="card-body">
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config4>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config4">Show Config</button>
+          <mat-menu #config4="matMenu">
             <div [innerHTML]="config4Html"></div>
-          </ng-template>
+          </mat-menu>
         </div>
         <div>
           <hci-grid #grid4

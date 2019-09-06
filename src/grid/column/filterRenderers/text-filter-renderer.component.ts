@@ -20,7 +20,7 @@ import {FilterRenderer} from "./filter-renderer";
       <div (click)="valueClear()"
            placement="top"
            container="body"
-           ngbTooltip="Clear Filter"
+           matTooltip="Clear Filter"
            style="padding-left: 5px; padding-right: 5px; color: red;">
         <i class="fas fa-times-circle fa-lg"></i>
       </div>
@@ -28,7 +28,7 @@ import {FilterRenderer} from "./filter-renderer";
            (click)="toggleShared()"
            placement="top"
            container="body"
-           ngbTooltip="Share Filter with other Grids"
+           matTooltip="Share Filter with other Grids"
            [style.color]="shared ? 'green' : 'red'"
            style="padding-left: 5px; padding-right: 5px;">
         <i class="fas fa-share-alt-square fa-lg"></i>

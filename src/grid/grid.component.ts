@@ -94,13 +94,13 @@ const SCROLL: number = 1;
             <i class="fas fa-plus"></i>
           </div>
           <ng-container *ngIf="configurable">
-            <div class="right" ngbDropdown placement="bottom-right">
-              <a id="config-dropdown-toggle" class="dropdown-toggle no-arrow" ngbDropdownToggle>
+            <div class="right">
+              <a [matMenuTriggerFor]="configDropdownToggle">
                 <i class="fas fa-cog fa-lg"></i>
               </a>
-              <ul ngbDropdownMenu id="config-dropdown-menu" aria-labelledby="config-dropdown-toggle" class="dropdown-menu">
+              <mat-menu #configDropdownToggle="matMenu">
                 <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
-              </ul>
+              </mat-menu>
             </div>
           </ng-container>
         </div>

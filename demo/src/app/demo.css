@@ -98,16 +98,6 @@ div .card-text {
   color: gray;
 }
 
-ngb-popover-window {
-  max-width: 800px !important;
-  width: 800px;
-}
-
-ngb-popover-window div.popover-body {
-  max-height: 350px;
-  overflow-y: auto;
-}
-
 .code-heading {
   font-size: 1.25rem;
   font-weight: 600;

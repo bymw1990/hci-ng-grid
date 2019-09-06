@@ -17,8 +17,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           {{cellSaveOutput}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data1"
@@ -40,7 +40,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 {{"{"}} type: RowDblClickListener {{"}"}}
               ];
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [data]="data1"
@@ -66,8 +66,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           {{rowSaveOutput}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config2>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
+          <mat-menu #config2="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data1"
@@ -86,7 +86,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "path.nPath", name: "# Lab Path"
               ];
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [data]="data1"

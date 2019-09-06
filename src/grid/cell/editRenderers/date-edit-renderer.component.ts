@@ -1,7 +1,6 @@
 import {Component, ElementRef, isDevMode, ViewChild} from "@angular/core";
 
 import * as moment from "moment";
-import {NgbDatepicker, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
 
 import {CellEditRenderer} from "./cell-edit-renderer";
 import {Point} from "../../utils/point";
@@ -10,7 +9,8 @@ import {Cell} from "../cell";
 @Component({
   selector: "hci-grid-date-edit",
   template: `
-    <ngb-datepicker #datepicker
+      <!-- TODO to material -->
+    <!--<ngb-datepicker #datepicker
                     [ngModel]="value"
                     (ngModelChange)="onModelChange($event)"
                     (mouseup)="stop($event)"
@@ -18,7 +18,7 @@ import {Cell} from "../cell";
                     (click)="onClick($event)"
                     (keydown)="onKeyDown($event)"
                     class="edit-renderer">
-    </ngb-datepicker>
+    </ngb-datepicker>-->
   `,
   styles: [ `
 
@@ -32,7 +32,9 @@ import {Cell} from "../cell";
 export class DateEditRenderer extends CellEditRenderer {
 
   @ViewChild("datepicker", {read: ElementRef, static: true}) datepickerEl: ElementRef;
-  @ViewChild("datepicker", {static: true}) datepicker: NgbDatepicker;
+
+  // TODO: DataConvert date NgbDateStruct to Material
+  @ViewChild("datepicker", {static: true}) datepicker: any;
 
   /**
    * Upon creation of the datepicker, focus on it to enable key nav.
@@ -47,12 +49,18 @@ export class DateEditRenderer extends CellEditRenderer {
     this.value = value;
   }
 
+  /**
+   * TODO: DataConvert date NgbDateStruct to Material
+   *
+   * @param value
+   * @returns {boolean}
+   */
   saveData(value?: any): boolean {
     if (!value) {
       value = this.value;
     }
 
-    let newValue: any = this.ngbDateToString(<NgbDateStruct>value);
+    let newValue: any = this.ngbDateToString(value);
 
     if (this.data.value !== newValue) {
       let oldValue: any = this.data.value;
@@ -87,11 +95,16 @@ export class DateEditRenderer extends CellEditRenderer {
     }
   }
 
+  /**
+   * TODO: DataConvert date NgbDateStruct to Material
+   *
+   * @param {Cell} data
+   */
   setData(data: Cell) {
     this.data = data;
 
     let date: any = moment(this.data.value);
-    this.value = <NgbDateStruct>{
+    this.value = {
       year: +date.year(),
       month: +date.month() + 1,
       day: +date.date()
@@ -105,10 +118,12 @@ export class DateEditRenderer extends CellEditRenderer {
    * which is the NgbDateStruct.  To handle this, you need to convert the NgbDateStruct to a iso8601 date, then create
    * a moment out of that.  Then you can use whatever the formatter is to format it.  Then you can take that and parse it.
    *
+   * TODO: DataConvert date NgbDateStruct to Material
+   *
    * @param date
    * @returns {any}
    */
-  private ngbDateToString(date: NgbDateStruct): string {
+  private ngbDateToString(date: any): string {
     if (date === undefined || date === null) {
       return undefined;
     } else if (!date.year || !date.month || !date.day) {

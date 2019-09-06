@@ -19,8 +19,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           modify input cell values and check bound data changes<br />
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [title]="'Fixed Grid'"
@@ -40,9 +40,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "citystatezip", name: "City, State Zip", minWidth: 300
               field: "phone", name: "Phone", filterRenderer: TextFilterRenderer
             </pre>
-          </ng-template>
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
-          <ng-template #data1>
+          </mat-menu>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="data1">Show Bound Data</button>
+          <mat-menu #data1="matMenu">
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>
               <span style="width: 100px;">firstName</span>
@@ -63,7 +63,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               <span style="width: 150px;">{{row.address}}</span>
               <span style="width: 150px;">{{row.phone}}</span>
             </div>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [title]="'Fixed Grid'"

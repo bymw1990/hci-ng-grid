@@ -32,7 +32,7 @@ import {HciFilterDto} from "hci-ng-grid-dto";
                  (click)="toggleShared()"
                  placement="top"
                  container="body"
-                 ngbTooltip="Share Filter with other Grids"
+                 matTooltip="Share Filter with other Grids"
                  [style.color]="shared ? 'green' : 'red'">
               <i class="fas fa-share-alt-square fa-lg l-gap"></i>
             </div>

@@ -19,8 +19,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
             modify input cell values and check bound data changes<br />
           </div>
           <div class="card-text">
-            <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-            <ng-template #config1>
+            <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+            <mat-menu #config1="matMenu">
               <pre>
                 &lt;hci-grid
                   [title]="'Spreadsheet Grid'"
@@ -38,9 +38,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 field: "nLabs", name: "# Labs"
                 field: "nLabPath", name: "# Lab Path"
               </pre>
-            </ng-template>
-            <button type="button" class="btn btn-outline-primary" [ngbPopover]="dataConfig1" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
-            <ng-template #dataConfig1>
+            </mat-menu>
+            <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="configData1">Show Bound Data</button>
+            <mat-menu #configData1="matMenu">
               <div class="d-flex flex-nowrap" style="font-weight: bold;">
                 <span style="width: 100px;">idPatient</span>
                 <span style="width: 100px;">firstName</span>
@@ -57,7 +57,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 <span style="width: 100px;">{{row.nLabs}}</span>
                 <span style="width: 200px;">{{row.path.nPath}}</span>
               </div>
-            </ng-template>
+            </mat-menu>
           </div>
           <div>
             <hci-grid [title]="'Spreadsheet Grid'"

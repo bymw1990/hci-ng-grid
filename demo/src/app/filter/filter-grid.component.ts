@@ -30,8 +30,8 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           Data Filtered Event: {{event1b | json}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [title]="'Filter Grid'"
@@ -52,7 +52,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
               field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {{"{"}}value: "Female", display: "Female"{{"}"}}, {{"{"}}value: "Male", display: "Male"{{"}"}} ], filterRenderer: SelectFilterRenderer
               field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [title]="'Filter Grid'"
@@ -79,8 +79,8 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
           configuration as an example.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config2>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
+          <mat-menu #config2="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="filteredData"
@@ -120,7 +120,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
                 return true;
               {{"}"}}
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [data]="filteredData2"

@@ -15,8 +15,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           in the object.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config3>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config3">Show Config</button>
+          <mat-menu #config3="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data3"
@@ -26,7 +26,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 ]&gt;
               &lt;/hci-grid&gt;
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [data]="data3"
@@ -49,8 +49,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Typical data input passed in bulk, but with a 5s delay in receiving the data.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config4>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config4">Show Config</button>
+          <mat-menu #config4="matMenu">
             <pre>
               &lt;hci-grid
                 [title]="'Simple Grid Delayed'"
@@ -58,7 +58,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 [columns]="columns4"&gt;
               &lt;/hci-grid&gt;
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [title]="'Simple Grid Delayed'"

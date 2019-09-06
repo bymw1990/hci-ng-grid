@@ -4,8 +4,7 @@
 import {ANALYZE_FOR_ENTRY_COMPONENTS, ModuleWithProviders, NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-
-import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import {MatMenuModule} from "@angular/material/menu";
 
 import {GridComponent} from "./grid.component";
 import {ColumnHeaderComponent} from "./column/column-header.component";
@@ -28,7 +27,7 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule
+    MatMenuModule
   ],
   declarations: [
     GridComponent,

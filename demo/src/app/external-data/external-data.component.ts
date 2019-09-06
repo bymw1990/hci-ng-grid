@@ -37,8 +37,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Data Sorted Event: {{event1d | json}}
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [columns]="columns"
@@ -62,7 +62,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [columns]="columns"
@@ -91,8 +91,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           which leaves the paging to the grid.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [columns]="columns"
@@ -112,7 +112,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           External filter, sort.  Internal paging.
@@ -146,8 +146,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           With a delay of 1s, an empty array is returned.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [columns]="columns"
@@ -167,7 +167,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [columns]="columns"

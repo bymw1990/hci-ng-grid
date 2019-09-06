@@ -16,8 +16,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Cells can be selected as a 2d array and the data copied.  Columns will be delimited with a \t and rows will be
           delimited with \n.  Similarly, pasted data will be parsed with \n and then with \t.  This is how spreadsheet tools
           such as Excel expect data when copy/pasting multiple cells.<br />
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="configTemplate" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #configTemplate>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="configTemplate">Show Config</button>
+          <mat-menu #configTemplate="matMenu">
             <pre>
               &lt;hci-grid
                 [title]="'Copy Paste Grid'"
@@ -34,9 +34,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "nLabs", name: "# Labs"
               field: "path.nPath", name: "# Path"
             </pre>
-          </ng-template>
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="dataTemplate" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
-          <ng-template #dataTemplate>
+          </mat-menu>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="dataTemplate">Show Bound Data</button>
+          <mat-menu #dataTemplate="matMenu">
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>
               <span style="width: 100px;">firstName</span>
@@ -45,7 +45,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               <span style="width: 100px;">nLabs</span>
               <span style="width: 200px;">nPathLabs</span>
             </div>
-            <div *ngFor="let row of copyPasteData" class="d-flex flex-nowrap">
+            <div *ngFor="let row of data" class="d-flex flex-nowrap">
               <span style="width: 100px;">{{row.idPatient}}</span>
               <span style="width: 100px;">{{row.firstName}}</span>
               <span style="width: 100px;">{{row.lastName}}</span>
@@ -53,7 +53,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               <span style="width: 100px;">{{row.nLabs}}</span>
               <span style="width: 200px;">{{row.nPathLabs}}</span>
             </div>
-          </ng-template>
+          </mat-menu>
         </div>
         <div class="card-text">
           <span style="font-size: larger; font-weight: bold;">To copy</span>

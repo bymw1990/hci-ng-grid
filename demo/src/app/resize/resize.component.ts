@@ -18,8 +18,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </div>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data"
@@ -37,7 +37,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div [style.width.px]="width">
           <hci-grid [data]="data"
@@ -62,8 +62,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <button (click)="width2 = 800">800</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config2>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
+          <mat-menu #config2="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data"
@@ -81,7 +81,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div [style.width.px]="width2">
           <hci-grid [data]="data"
@@ -102,8 +102,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Test grid resizing when the parent is 100% and changed by window resize.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config3" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config3>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config3">Show Config</button>
+          <mat-menu #config3="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data"
@@ -121,7 +121,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div style="width: 100%;">
           <hci-grid [data]="data"
@@ -146,8 +146,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <button (click)="showGrid4 = !showGrid4">Toggle Grid</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config4" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config4>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config4">Show Config</button>
+          <mat-menu #config4="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data"
@@ -165,7 +165,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div style="width: 100%;">
           <hci-grid *ngIf="showGrid4"
@@ -185,8 +185,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Sets the grid height to 100px.  The grid content sets itself accordingly.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config5>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config5">Show Config</button>
+          <mat-menu #config5="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data"
@@ -203,7 +203,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div style="width: 100%;">
           <hci-grid [data]="data"
@@ -223,8 +223,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Sets the grid height to 100px.  The grid content sets itself accordingly.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config5>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config5">Show Config</button>
+          <mat-menu #config5="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="nodata"
@@ -241,7 +241,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div style="width: 100%;">
           <hci-grid [data]="nodata"
@@ -261,8 +261,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Sets the grid height to 100px.  The grid content sets itself accordingly.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config5" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config5>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config5">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="nodata"
@@ -279,7 +279,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div style="width: 200px;">
           <hci-grid [data]="nodata"

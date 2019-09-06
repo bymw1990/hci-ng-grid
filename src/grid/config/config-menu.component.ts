@@ -27,17 +27,17 @@ import {Dictionary} from "../model/dictionary.interface";
           </div>
           <div class="cfg-row">
             <div class="label">Theme</div>
-            <div class="input" ngbDropdown #themeDropdown="ngbDropdown">
-              <a id="themeDropdown" class="dropdown-toggle" ngbDropdownToggle>
+            <div class="input">
+              <a [matMenuTriggerFor]="themeDropdown">
                 {{getDisplay(themeChoices, config.theme)}}
               </a>
-              <ul ngbDropdownMenu aria-labelledby="themeDropdown" class="dropdown-menu pad">
+              <mat-menu #themeDropdown="matMenu" class="pad">
                 <ng-container *ngFor="let theme of themeChoices">
                   <li (click)="update('theme', theme.value); themeDropdown.close();">
                     {{theme.display}}
                   </li>
                 </ng-container>
-              </ul>
+              </mat-menu>
             </div>
           </div>
           <div class="cfg-row">

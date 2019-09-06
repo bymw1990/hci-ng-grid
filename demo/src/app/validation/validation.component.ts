@@ -16,8 +16,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
             are not saved.
           </div>
           <div class="card-text">
-            <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-            <ng-template #config1>
+            <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+            <mat-menu #config1="matMenu">
               <pre>
                 &lt;hci-grid
                   [title]="'Validation Grid'"
@@ -35,9 +35,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 field: "nLabs", name: "# Labs", editConfig: pattern: /^[0-9]1$/
                 field: "path.nPath", name: "# Lab Path", editConfig: pattern: /^[0-9]1,2$/
               </pre>
-            </ng-template>
-            <button type="button" class="btn btn-outline-primary" [ngbPopover]="data1" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
-            <ng-template #data1>
+            </mat-menu>
+            <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="data1">Show Bound Data</button>
+            <mat-menu #data1="matMenu">
               <div class="d-flex flex-nowrap" style="font-weight: bold;">
                 <span style="width: 100px;">idPatient</span>
                 <span style="width: 100px;">firstName</span>
@@ -46,7 +46,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 <span style="width: 100px;">nLabs</span>
                 <span style="width: 200px;">nPathLabs</span>
               </div>
-              <div *ngFor="let row of editData" class="d-flex flex-nowrap">
+              <div *ngFor="let row of data" class="d-flex flex-nowrap">
                 <span style="width: 100px;">{{row.idPatient}}</span>
                 <span style="width: 100px;">{{row.firstName}}</span>
                 <span style="width: 100px;">{{row.lastName}}</span>
@@ -54,7 +54,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 <span style="width: 100px;">{{row.nLabs}}</span>
                 <span style="width: 200px;">{{row.path.nPath}}</span>
               </div>
-            </ng-template>
+            </mat-menu>
           </div>
           <div>
             <hci-grid [title]="'Validation Grid'"

@@ -19,8 +19,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Add a new row of data to the grid.  Try saving with a last name of "Error" to see what a http response might look like.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data"
@@ -42,7 +42,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "gender", name: "Gender"
               field: "address", name: "Address"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <div>
           <hci-grid [data]="data"

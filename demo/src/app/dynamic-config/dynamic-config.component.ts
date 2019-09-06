@@ -23,8 +23,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           config output.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config0" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config0>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config0">Show Config</button>
+          <mat-menu #config0="matMenu">
             <pre>
               &lt;hci-grid
                 #grid1
@@ -37,7 +37,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
                 [pageSizes]="[5, 10, 25]"&gt;
               &lt;/hci-grid&gt;
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid #grid1
@@ -66,8 +66,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <button class="btn btn-primary" (click)="setColumnsA2()">Columns 2</button>
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config2>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
+          <mat-menu #config2="matMenu">
             <pre>
               &lt;hci-grid
                 [title]="'Dynamic Columns Row Select'"
@@ -89,7 +89,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "firstName", name: "First Name"
               field: "middleName", name: "Middle Name"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [title]="'Dynamic Columns Row Select'"
@@ -114,8 +114,8 @@ import {DataGeneratorService} from "../services/data-generator.service";
           <input [(ngModel)]="value" placeholder="value" />
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config2" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config2>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
+          <mat-menu #config2="matMenu">
             <pre>
               &lt;hci-grid
                 [data]="data3"
@@ -127,7 +127,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "lastName", name: "Last Name"
               field: "firstName", name: "First Name"
             </pre>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid #grid3

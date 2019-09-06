@@ -22,8 +22,8 @@ import {TextFilterRenderer} from "hci-ng-grid";
           Create a new column that is an aggregate of other columns.  In this case first and last name.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
             <pre>
               &lt;hci-grid
                 [title]="'Group Grid'"
@@ -43,9 +43,9 @@ import {TextFilterRenderer} from "hci-ng-grid";
               field: "address", name: "Address"
               field: "phone", name: "Phone"
             </pre>
-          </ng-template>
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="bound1" popoverTitle="Bound Data" placement="right" container="body">Show Bound Data</button>
-          <ng-template #bound1>
+          </mat-menu>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="bound1">Show Bound Data</button>
+          <mat-menu #bound1="matMenu">
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>
               <span style="width: 100px;">firstName</span>
@@ -56,7 +56,7 @@ import {TextFilterRenderer} from "hci-ng-grid";
               <span style="width: 150px;">address</span>
               <span style="width: 150px;">phone</span>
             </div>
-            <div *ngFor="let row of groupData" class="d-flex flex-nowrap">
+            <div *ngFor="let row of data1" class="d-flex flex-nowrap">
               <span style="width: 100px;">{{row.idPatient}}</span>
               <span style="width: 100px;">{{row.firstName}}</span>
               <span style="width: 100px;">{{row.middleName}}</span>
@@ -66,7 +66,7 @@ import {TextFilterRenderer} from "hci-ng-grid";
               <span style="width: 150px;">{{row.address}}</span>
               <span style="width: 150px;">{{row.phone}}</span>
             </div>
-          </ng-template>
+          </mat-menu>
         </div>
         <p>
           <hci-grid [data]="data1"

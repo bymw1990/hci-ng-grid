@@ -32,9 +32,9 @@ import {DataGeneratorService} from "../services/data-generator.service";
           sure that the column initialization is properly waiting for all requests.
         </div>
         <div class="card-text">
-          <button type="button" class="btn btn-outline-primary" [ngbPopover]="config1" popoverTitle="Config" placement="right" container="body">Show Config</button>
-          <ng-template #config1>
-          </ng-template>
+          <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
+          <mat-menu #config1="matMenu">
+          </mat-menu>
         </div>
         <p>
           <hci-grid [title]="'Filter Grid'"
