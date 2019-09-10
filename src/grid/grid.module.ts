@@ -16,7 +16,6 @@ import {TextEditRenderer} from "./cell/editRenderers/text-edit-renderer.componen
 import {TextFilterRenderer} from "./column/filterRenderers/text-filter-renderer.component";
 import {CompareFilterRenderer} from "./column/filterRenderers/compare-filter-renderer.component";
 import {ChoiceEditRenderer} from "./cell/editRenderers/choice-edit-renderer.component";
-import {DateEditRenderer} from "./cell/editRenderers/date-edit-renderer.component";
 import {SelectFilterRenderer} from "./column/filterRenderers/select-filter-renderer.component";
 import {BigTextPopup} from "./cell/viewPopupRenderer/bigtext-popup.component";
 import {ConfigMenuComponent} from "./config/config-menu.component";
@@ -37,7 +36,6 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
     IsFixedPipe,
     IsRowVisiblePipe,
     TextEditRenderer,
-    DateEditRenderer,
     ChoiceEditRenderer,
     TextFilterRenderer,
     SelectFilterRenderer,
@@ -48,7 +46,6 @@ import {ConfigMultiChoiceComponent} from "./config/config-multi-choice.component
   ],
   entryComponents: [
     TextEditRenderer,
-    DateEditRenderer,
     ChoiceEditRenderer,
     TextFilterRenderer,
     SelectFilterRenderer,

@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, HostBinding} from "@angular/core";
 
-import {ChoiceEditRenderer, Column, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {ChoiceEditRenderer, Column, CompareFilterRenderer, TextEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 import {HciFilterDto, HciSortDto} from "hci-ng-grid-dto";
 
 import {DataGeneratorService} from "../services/data-generator.service";
@@ -48,7 +48,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
               field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
-              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
+              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer
               field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {{"{"}}value: "Female", display: "Female"{{"}"}}, {{"{"}}value: "Male", display: "Male"{{"}"}} ], filterRenderer: SelectFilterRenderer
               field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer
             </pre>
@@ -93,7 +93,7 @@ import {DictionaryFilterRenderer} from "./dictionary-filter.component";
               field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
-              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
+              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer
               field: "genderDict",
                 name: "Gender",
                 dataType: "choice",
@@ -146,7 +146,7 @@ export class FilterGridComponent {
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
-    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer },
     { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number", filterRenderer: CompareFilterRenderer }
   ];

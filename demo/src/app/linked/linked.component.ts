@@ -1,6 +1,9 @@
 import {Component, HostBinding} from "@angular/core";
 
-import {ChoiceEditRenderer, CompareFilterRenderer, DateEditRenderer, SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {
+  ChoiceEditRenderer, CompareFilterRenderer, SelectFilterRenderer, TextEditRenderer,
+  TextFilterRenderer
+} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -69,7 +72,7 @@ export class LinkedDemoComponent {
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
-    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer },
     { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];
@@ -80,7 +83,7 @@ export class LinkedDemoComponent {
     { field: "lastName", name: "Last Name", filterRenderer: TextFilterRenderer },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
-    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer },
     { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];

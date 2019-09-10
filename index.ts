@@ -19,7 +19,6 @@ export {ClickView} from "./src/grid/cell/viewRenderers/click-view";
 
 export {CellEditRenderer} from "./src/grid/cell/editRenderers/cell-edit-renderer";
 export {TextEditRenderer} from "./src/grid/cell/editRenderers/text-edit-renderer.component";
-export {DateEditRenderer} from "./src/grid/cell/editRenderers/date-edit-renderer.component";
 export {ChoiceEditRenderer} from "./src/grid/cell/editRenderers/choice-edit-renderer.component";
 
 export {FilterRenderer} from "./src/grid/column/filterRenderers/filter-renderer";

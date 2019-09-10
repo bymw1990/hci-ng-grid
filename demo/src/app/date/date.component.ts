@@ -1,6 +1,6 @@
 import {Component, HostBinding} from "@angular/core";
 
-import {CompareFilterRenderer, DateEditRenderer} from "hci-ng-grid";
+import {CompareFilterRenderer, TextEditRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -45,8 +45,8 @@ export class DateDemoComponent {
     { field: "idPatient", name: "ID", template: "LabelCell" },
     { field: "lastName", name: "Last Name", template: "LabelCell" },
     { field: "firstName", name: "First Name", template: "LabelCell" },
-    { field: "dob", name: "DoB ISO8601", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
-    { field: "dobms", name: "DoB MS", dataType: "date-ms", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer }
+    { field: "dob", name: "DoB ISO8601", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "dobms", name: "DoB MS", dataType: "date-ms", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer }
   ];
 
   constructor(private dataGeneratorService: DataGeneratorService) {

@@ -1,6 +1,6 @@
 import {Component, HostBinding} from "@angular/core";
 
-import {CompareFilterRenderer, DateEditRenderer, TextFilterRenderer} from "hci-ng-grid";
+import {CompareFilterRenderer, TextEditRenderer, TextFilterRenderer} from "hci-ng-grid";
 
 import {DataGeneratorService} from "../services/data-generator.service";
 
@@ -34,7 +34,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               field: "lastName", name: "Last Name"
               field: "middleName", name: "Middle Name"
               field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer
-              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer
+              field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer
               field: "gender", name: "Gender"
               field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer
               field: "citystatezip", name: "City, State Zip", minWidth: 300
@@ -88,7 +88,7 @@ export class FixedGridComponent {
     { field: "lastName", name: "Last Name" },
     { field: "middleName", name: "Middle Name" },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
-    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer },
     { field: "gender", name: "Gender" },
     { field: "address", name: "Address", minWidth: 300, filterRenderer: TextFilterRenderer },
     { field: "citystatezip", name: "City, State Zip", minWidth: 300 },

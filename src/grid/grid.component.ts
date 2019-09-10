@@ -1433,7 +1433,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
           }
           j = j + 1;
         }
-        if (!allowPaste) {
+        if (allowPaste !== 0) {
           break;
         }
 

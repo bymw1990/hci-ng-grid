@@ -1,7 +1,7 @@
 import {Component, HostBinding, ViewChild} from "@angular/core";
 
 import {
-  CheckRowSelectView, ChoiceEditRenderer, ClickRowSelectListener, CompareFilterRenderer, DateEditRenderer,
+  CheckRowSelectView, ChoiceEditRenderer, ClickRowSelectListener, CompareFilterRenderer, TextEditRenderer,
   GridComponent, SelectFilterRenderer, TextFilterRenderer
 } from "hci-ng-grid";
 
@@ -149,7 +149,7 @@ export class DynamicConfigGridComponent {
     { field: "lastName", name: "Last Name", widthPercent: 40 },
     { field: "middleName", name: "Middle Name", widthPercent: 10 },
     { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
-    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: DateEditRenderer, filterRenderer: CompareFilterRenderer },
+    { field: "dob", name: "Date of Birth", dataType: "date", editRenderer: TextEditRenderer, filterRenderer: CompareFilterRenderer },
     { field: "gender", name: "Gender", editRenderer: ChoiceEditRenderer, choices: [ {value: "Female", display: "Female"}, {value: "Male", display: "Male"} ], filterRenderer: SelectFilterRenderer },
     { field: "nLabs", name: "# Labs", dataType: "number" },
   ];
