@@ -22,7 +22,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
-          <mat-menu #config1="matMenu">
+          <mat-menu #config1="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [columns]="columns"
@@ -74,7 +74,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
-          <mat-menu #config2="matMenu">
+          <mat-menu #config2="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [columns]="columns"

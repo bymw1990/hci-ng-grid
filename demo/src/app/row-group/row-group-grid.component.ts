@@ -23,7 +23,7 @@ import {TextFilterRenderer} from "hci-ng-grid";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
-          <mat-menu #config1="matMenu">
+          <mat-menu #config1="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [title]="'Group Grid'"
@@ -45,7 +45,7 @@ import {TextFilterRenderer} from "hci-ng-grid";
             </pre>
           </mat-menu>
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="bound1">Show Bound Data</button>
-          <mat-menu #bound1="matMenu">
+          <mat-menu #bound1="matMenu" class="config">
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>
               <span style="width: 100px;">firstName</span>

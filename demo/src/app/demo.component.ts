@@ -24,7 +24,7 @@ declare const VERSION: string;
         </div>
         <div class="d-inline-block">
           <button class="btn btn-outline-primary white" [matMenuTriggerFor]="routeList">Select A Demo</button>
-          <mat-menu #routeList="matMenu">
+          <mat-menu #routeList="matMenu" class="config">
             <a class="dropdown-item" routerLink="/">Home</a>
             <a class="dropdown-item" routerLink="/alerts">Alerts</a>
             <a class="dropdown-item" routerLink="/busy">Busy</a>

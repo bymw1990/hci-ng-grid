@@ -17,7 +17,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           delimited with \n.  Similarly, pasted data will be parsed with \n and then with \t.  This is how spreadsheet tools
           such as Excel expect data when copy/pasting multiple cells.<br />
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="configTemplate">Show Config</button>
-          <mat-menu #configTemplate="matMenu">
+          <mat-menu #configTemplate="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [title]="'Copy Paste Grid'"
@@ -36,7 +36,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
             </pre>
           </mat-menu>
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="dataTemplate">Show Bound Data</button>
-          <mat-menu #dataTemplate="matMenu">
+          <mat-menu #dataTemplate="matMenu" class="config">
             <div class="d-flex flex-nowrap" style="font-weight: bold;">
               <span style="width: 100px;">idPatient</span>
               <span style="width: 100px;">firstName</span>

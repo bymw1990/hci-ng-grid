@@ -16,7 +16,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config3">Show Config</button>
-          <mat-menu #config3="matMenu">
+          <mat-menu #config3="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [data]="data3"
@@ -50,7 +50,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config4">Show Config</button>
-          <mat-menu #config4="matMenu">
+          <mat-menu #config4="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [title]="'Simple Grid Delayed'"

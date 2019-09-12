@@ -17,7 +17,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           </div>
           <div class="card-text">
             <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
-            <mat-menu #config1="matMenu">
+            <mat-menu #config1="matMenu" class="config">
               <pre>
                 &lt;hci-grid
                   [title]="'Validation Grid'"
@@ -37,7 +37,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
               </pre>
             </mat-menu>
             <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="data1">Show Bound Data</button>
-            <mat-menu #data1="matMenu">
+            <mat-menu #data1="matMenu" class="config">
               <div class="d-flex flex-nowrap" style="font-weight: bold;">
                 <span style="width: 100px;">idPatient</span>
                 <span style="width: 100px;">firstName</span>

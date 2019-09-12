@@ -24,7 +24,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config0">Show Config</button>
-          <mat-menu #config0="matMenu">
+          <mat-menu #config0="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 #grid1
@@ -67,7 +67,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
-          <mat-menu #config2="matMenu">
+          <mat-menu #config2="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [title]="'Dynamic Columns Row Select'"
@@ -115,7 +115,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         </div>
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
-          <mat-menu #config2="matMenu">
+          <mat-menu #config2="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [data]="data3"

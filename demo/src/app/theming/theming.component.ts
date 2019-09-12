@@ -15,7 +15,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           This is the default theme which borders every cell.<br />
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
-          <mat-menu #config1="matMenu">
+          <mat-menu #config1="matMenu" class="config">
             <pre>
               &lt;hci-grid [data]="data1"
                        [columns]="columns"
@@ -52,7 +52,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Force overriding of the theme to one that doesn't exist will show the default which has no borders or
           decorations of any kind.  If implementing your own theme, this is your starting point.<br />
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config2">Show Config</button>
-          <mat-menu #config2="matMenu">
+          <mat-menu #config2="matMenu" class="config">
             <pre>
               &lt;hci-grid [data]="data2"
                        [columns]="columns"
@@ -88,7 +88,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           view renderers can be added to provide some flare.  In this case we color text and add an icon if number values
           are outside of a range.<br />
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config3">Show Config</button>
-          <mat-menu #config3="matMenu">
+          <mat-menu #config3="matMenu" class="config">
             <pre>
               &lt;hci-grid [title]="'Demographics Report'"
                         [data]="data3"
@@ -127,7 +127,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
           Take an existing theme and in your app's css, override specific parts.  In this case, change coloring of the
           report theme.<br />
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config4">Show Config</button>
-          <mat-menu #config4="matMenu">
+          <mat-menu #config4="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [title]="'Demographics Report'"
@@ -174,7 +174,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           Creating our own theme which makes the font larger.<br />
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="newTheme">Show Config</button>
-          <mat-menu #newTheme="matMenu">
+          <mat-menu #newTheme="matMenu" class="config">
             <pre>
               &lt;hci-grid
                 [title]="'Demographics Report'"

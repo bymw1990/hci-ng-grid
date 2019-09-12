@@ -103,6 +103,10 @@ div .card-text {
   font-weight: 600;
 }
 
+.mat-menu-panel.config {
+  max-width: none;
+}
+
 pre.language-html {
   background-color: #eeeeee;
   border: gray 1px solid;
