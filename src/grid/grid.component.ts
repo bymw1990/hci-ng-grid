@@ -98,7 +98,7 @@ const SCROLL: number = 1;
               <a [matMenuTriggerFor]="configDropdownToggle">
                 <i class="fas fa-cog fa-lg"></i>
               </a>
-              <mat-menu #configDropdownToggle="matMenu">
+              <mat-menu #configDropdownToggle="matMenu" class="menu-lg">
                 <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
               </mat-menu>
             </div>
@@ -481,6 +481,10 @@ const SCROLL: number = 1;
 
     .mr-3 {
       margin-right: 1rem;
+    }
+        
+    ::ng-deep .mat-menu-panel.menu-lg {
+      max-width: none;
     }
   `]
 })
@@ -1662,36 +1666,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.rowHeight = 30;
     }
   }
-
-  /**
-   * Sets the height of the view containers based on either the rows allowed to render or the data size.
-   */
-  /*private updateGridContainerHeight(): void {
-    if (this.gridService.nVisibleRows) {
-      if (isDevMode()) {
-        console.info("hci-grid: " + this.id + ": updateGridContainerHeight.nVisibleRows: " + this.gridService.getNVisibleRows());
-      }
-
-      let gridHeight: number = this.gridContainer.nativeElement.offsetHeight;
-      let headerHeight: number = this.gridContainer.nativeElement.querySelector("#header-content").offsetHeight;
-      let contentHeight: number = 0;
-
-      if (this.height > 0) {
-        contentHeight = gridHeight - headerHeight;
-      } else if (this.gridService.getNVisibleRows() <= 0) {
-        contentHeight = Math.max(this.rowHeight * 3, this.gridData.length * this.rowHeight);
-      } else {
-        contentHeight = Math.max(this.rowHeight * 3, this.gridService.getNVisibleRows() * this.rowHeight);
-      }
-
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-loading"), "height", gridHeight + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#main-content"), "height", (headerHeight + contentHeight) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#left-view"), "height", contentHeight + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#right-view"), "height", contentHeight + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector("#hci-grid-busy"), "height", (headerHeight + contentHeight) + "px");
-      this.renderer.setStyle(this.gridContainer.nativeElement.querySelector(".empty-content"), "height", (headerHeight + contentHeight) + "px");
-    }
-  }*/
 
   /**
    * Calculate the sizes of the containers and column header sizes.  The basic principle is that the grid always fills
