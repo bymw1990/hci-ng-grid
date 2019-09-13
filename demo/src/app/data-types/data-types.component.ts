@@ -2,11 +2,13 @@ import {Component, HostBinding} from "@angular/core";
 
 import {of} from "rxjs";
 import {delay} from "rxjs/operators";
+import * as prism from "prismjs";
 
 import {SelectFilterRenderer, TextFilterRenderer} from "hci-ng-grid";
 import {HciDataDto, HciGridDto} from "hci-ng-grid-dto";
 
 import {DataGeneratorService} from "../services/data-generator.service";
+import {SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: "filter-grid",
@@ -34,6 +36,7 @@ import {DataGeneratorService} from "../services/data-generator.service";
         <div class="card-text">
           <button type="button" class="btn btn-outline-primary" [matMenuTriggerFor]="config1">Show Config</button>
           <mat-menu #config1="matMenu" class="config">
+            <div [innerHTML]="config1Code"></div>
           </mat-menu>
         </div>
         <p>
@@ -61,9 +64,33 @@ export class DataTypesDemoComponent {
     { field: "stateDict", name: "State Url", choiceUrl: "/api/dictionary/states", choiceValue: "value", choiceDisplay: "display" }
   ];
 
+  config1Code: SafeHtml;
+  config1Html: string = `
+    <hci-grid [title]="'Filter Grid'"
+              [dataCall]="dataCall1"
+              [columns]="columns1">
+    </hci-grid>
+  `;
+  config1Json: string = `
+    columns1: any[] = [
+      { field: "idPatient", name: "ID", dataType: "number", visible: true },
+      { field: "lastName", name: "Last Name", choiceAuto: true, filterRenderer: SelectFilterRenderer},
+      { field: "firstName", name: "First Name", filterRenderer: TextFilterRenderer },
+      { field: "genderDict", name: "Gender", choices: [{v: 1, d: "F"}, {v: 2, d: "M"}, {v: 3, d: "U"}], choiceValue: "v", choiceDisplay: "d" },
+      { field: "genderDict", name: "Gender Url", choiceUrl: "/api/dictionary/gender", choiceValue: "value", choiceDisplay: "display" },
+      { field: "raceDict", name: "Race Url", choiceUrl: "/api/dictionary/race", choiceValue: "value", choiceDisplay: "display" },
+      { field: "stateDict", name: "State Url", choiceUrl: "/api/dictionary/states", choiceValue: "value", choiceDisplay: "display" }
+    ];
+  `;
+
   constructor(private dataGeneratorService: DataGeneratorService) {}
 
   ngOnInit() {
+    this.config1Code = "<pre><code>"
+        + prism.highlight(this.config1Html, prism.languages["html"])
+        + prism.highlight(this.config1Json, prism.languages["js"])
+        + "</code></pre>";
+
     this.dataCall1 = (externalInfo: HciGridDto) => {
       return of(new HciDataDto(this.dataGeneratorService.getData(250), externalInfo)).pipe(delay(Math.random() * 900 + 100));
     };
