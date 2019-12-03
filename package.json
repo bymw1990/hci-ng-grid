@@ -1,6 +1,6 @@
 {
   "name": "hci-ng-grid",
-  "version": "5.0.0",
+  "version": "5.0.3",
   "description": "Comprehensive angular grid component",
   "keywords": [
     "angular",
@@ -41,7 +41,8 @@
   ],
   "dependencies": {
     "hci-ng-grid-dto": "1.0.x",
-    "moment": ">=2.19.3"
+    "moment": ">=2.19.3",
+    "rxjs-compat": "^6.5.3"
   },
   "devDependencies": {
     "@angular/animations": ">=8.0.0 <10.0.0",

@@ -3,8 +3,8 @@ import {
   ViewContainerRef
 } from "@angular/core";
 
-import {of} from "Rxjs";
-import {delay} from "Rxjs/operators";
+import { of } from 'rxjs';
+import { delay } from 'rxjs/internal/operators';
 
 import {HciFilterDto, HciSortDto} from "hci-ng-grid-dto";
 
