@@ -16,6 +16,7 @@ export {CellViewRenderer} from "./src/grid/cell/viewRenderers/cell-view-renderer
 export {CellNumberRangeView} from "./src/grid/cell/viewRenderers/cell-number-range-view";
 export {CheckRowSelectView} from "./src/grid/cell/viewRenderers/check-row-select-view";
 export {ClickView} from "./src/grid/cell/viewRenderers/click-view";
+export {CellCheckView} from "./src/grid/cell/viewRenderers/cell-check-view";
 
 export {CellEditRenderer} from "./src/grid/cell/editRenderers/cell-edit-renderer";
 export {TextEditRenderer} from "./src/grid/cell/editRenderers/text-edit-renderer.component";
