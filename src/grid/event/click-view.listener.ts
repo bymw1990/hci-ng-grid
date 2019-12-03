@@ -23,7 +23,22 @@ export class ClickViewListener extends EventListener implements ClickListener {
         console.debug("outputRowClick Emit: " + key);
       }
       //this.grid.updateSelectedRows(new Range(location, location), true);
-      this.grid.outputRowClick.emit(key);
+     
+      // if the element is a checkbox emit whether the checkbox is checked or unchecked
+      if (idElement.nodeName.toLowerCase() === 'input') {
+          let inputElement = <HTMLInputElement> document.getElementById(idElement.id);
+          if (inputElement.type.toLowerCase() === 'checkbox') {
+              let pair: any = {};
+              pair[key] = inputElement.checked; 
+              this.grid.outputRowClick.emit(pair); 
+          }
+          else {
+              this.grid.outputRowClick.emit(key);
+          }
+      }
+      else {
+          this.grid.outputRowClick.emit(key);
+      }
       return true;
     } else {
       return false;
