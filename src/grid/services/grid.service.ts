@@ -35,9 +35,11 @@ export class GridService {
     pageSize: -1,
     pageSizes: [10, 25, 50],
     nVisibleRows: -1,
-    isMaximized: false,
+    isMaximized: undefined,
     busyTemplate: undefined
   };
+
+  wasMaximized: boolean = false;
 
   config: any = {};
   configSubject: BehaviorSubject<any> = new BehaviorSubject<any>(GridService.defaultConfig);
@@ -238,11 +240,18 @@ export class GridService {
     if (config.isMaximized !== undefined) {
       console.log("Config maximized setting sent as " + config.isMaximized);
       this.isMaximized = config.isMaximized;
-    } else {
-      this.isMaximized = false;
-      config.isMaximized = false;
-      this.config.isMaximized = false;
+      this.config.isMaximized = config.isMaximized;
+      if(this.config.isMaximized === true) {
+        this.nVisibleRowsBeforeMaximized = this.paging.pageSize;
+        this.paging.pageSize = Math.floor(window.innerHeight / 36);
+          if(this.gridElement !== undefined) {
+            this.gridElement.scrollIntoView({behavior : "smooth" });
+          }
+      }else {
+        this.paging.pageSize = this.nVisibleRowsBeforeMaximized;
+      }
     }
+
     if (config.nVisibleRows !== undefined) {
       this.nVisibleRows = config.nVisibleRows;
     }
@@ -291,29 +300,37 @@ export class GridService {
       this.configSubject.next(this.config);
     }
 
-    this.setNVisibleRows();
-
-    if(this.config.isMaximized === false) {
-      console.log("Grid has been maximized");
-      this.nVisibleRowsBeforeMaximized = this.config.nVisibleRows === 0 || this.config.nVisibleRows === -1 ? 6 : this.config.nVisibleRows;
-      console.log("nVisibleRowsBeforeMaximized being set as " + this.nVisibleRowsBeforeMaximized);
-      this.nVisibleRows = Math.floor(window.innerHeight) / 36;
-      console.log("Number of visible rows found as" );
-      console.log(this.nVisibleRows);
-      this.config.nVisibleRows = this.nVisibleRows;
-      this.paging.pageSize = this.nVisibleRows;
-    } else if(this.config.isMaximized === true) {
-      console.log("Grid has been minimized");
-      this.paging.pageSize = this.nVisibleRowsBeforeMaximized;
-      this.nVisibleRows = this.nVisibleRowsBeforeMaximized;
-      this.config.nVisibleRows = this.nVisibleRows;
-      if(this.gridElement !== undefined) {
-        this.gridElement.scrollIntoView({behavior : "smooth" });
-      }
-    }
-    // else if (this.config.isMaximized === undefined) {
-    //   this.config.nVisibleRows = this.config.nVisibleRows === 0 ? 10 : this.config.nVisibleRows;
+    // if(this.config.isMaximized === undefined) {
+    //     this.nVisibleRows = Math.floor(window.innerHeight/ 36);
+    //     //this.paging.pageSize = this.nVisibleRows;
+    //     return;
     // }
+    //
+    // if(this.config.isMaximized === true) {
+    //   console.log("Grid has been maximized");
+    //   if(this.nVisibleRowsBeforeMaximized === 0) {
+    //     this.nVisibleRows = Math.floor(window.innerHeight/ 36);
+    //   }
+    //   else {
+    //     this.nVisibleRows = -1;
+    //   }
+    //   this.paging.pageSize = this.nVisibleRows;
+    //   if(this.gridElement !== undefined) {
+    //     this.gridElement.scrollIntoView({behavior : "smooth" });
+    //   }
+    //
+    // } else if(this.config.isMaximized === false) {
+    //   console.log("Grid has been minimized");
+    //   this.nVisibleRowsBeforeMaximized = 6; //this.config.nVisibleRows === 0 || this.config.nVisibleRows === -1 ? 6 : this.config.nVisibleRows;
+    //   console.log("nVisibleRowsBeforeMaximized being set as " + this.nVisibleRowsBeforeMaximized);
+    //   //let maximmumRowsInTheScreen = Math.floor(window.innerHeight/ 36);
+    //   //console.log("Max number of visible rows we can fit " + maximmumRowsInTheScreen );
+    //   this.nVisibleRows = this.nVisibleRowsBeforeMaximized ;
+    //   this.paging.pageSize = this.nVisibleRowsBeforeMaximized ;
+    //
+    // }
+
+    this.setNVisibleRows();
 
   }
 
