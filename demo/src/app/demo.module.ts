@@ -92,7 +92,7 @@ import {NewRowDemo} from "./new-row/new-row.component";
     DateDemoComponent,
     DemoComponent,
     DictionaryFilterRenderer,
-   // DocsComponent,
+    //DocsComponent,
     DynamicConfigGridComponent,
     EditGridComponent,
     EmptyGridComponent,

@@ -95,6 +95,18 @@ const SCROLL: number = 1;
           </div>
           <ng-container *ngIf="configurable">
             <div class="right">
+              <a>
+                <i class="fas fa-plus fa-lg"></i>
+              </a>
+              <a>
+                <i class="fas fa-trash-o fa-lg"></i>
+              </a>
+              <a>
+                <i class="fas fa-eye fa-lg"></i>
+              </a>
+              <a>
+                <i class="fas fa-expand-alt fa-lg"></i>
+              </a>
               <a [matMenuTriggerFor]="configDropdownToggle">
                 <i class="fas fa-cog fa-lg"></i>
               </a>
