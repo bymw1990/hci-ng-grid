@@ -96,19 +96,19 @@ const SCROLL: number = 1;
           <ng-container *ngIf="configurable">
             <div class="right">
               <a>
-                <i class="fas fa-plus fa-lg"></i>
+                <i class="fas fa-plus fa-lg mx-2"></i>
               </a>
               <a>
-                <i class="fas fa-trash-o fa-lg"></i>
+                <i class="fas fa-trash fa-lg mx-2"></i>
               </a>
               <a>
-                <i class="fas fa-eye fa-lg"></i>
+                <i class="fas fa-eye fa-lg mx-2 "></i>
               </a>
-              <a>
-                <i class="fas fa-expand-alt fa-lg"></i>
+              <a (click)="update('isMaximized', !config.isMaximized)">
+                <i class="fas fa-expand fa-lg mx-2"></i>
               </a>
               <a [matMenuTriggerFor]="configDropdownToggle">
-                <i class="fas fa-cog fa-lg"></i>
+                <i class="fas fa-cog fa-lg mx-2"></i>
               </a>
               <mat-menu #configDropdownToggle="matMenu" class="menu-lg">
                 <hci-grid-config-menu [grid]="this"></hci-grid-config-menu>
@@ -1023,6 +1023,17 @@ export class GridComponent implements OnChanges, AfterViewInit {
         this.mouseOutListeners.push(instance);
       }
     }
+  }
+
+  update(key: string, value: any) {
+    if (isDevMode()) {
+      console.debug("ConfigMenuComponent.update: " + key);
+      console.debug(value);
+    }
+
+    let config = {};
+    config[key] = value;
+    this.getGridService().updateConfig(config);
   }
 
   public getBusySubject(): Subject<boolean> {
