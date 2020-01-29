@@ -35,8 +35,11 @@ export class GridService {
     pageSize: -1,
     pageSizes: [10, 25, 50],
     nVisibleRows: -1,
+    isMaximized: undefined,
     busyTemplate: undefined
   };
+
+  wasMaximized: boolean = false;
 
   config: any = {};
   configSubject: BehaviorSubject<any> = new BehaviorSubject<any>(GridService.defaultConfig);
@@ -54,6 +57,7 @@ export class GridService {
   externalSorting: boolean = false;
   externalPaging: boolean = false;
   pageSizes: number[] = [10, 25, 50];
+  isMaximized : boolean = false;
   nVisibleRows: number = -1;
   newRowPostCall: (newRow: any) => Observable<any>;
 
@@ -118,6 +122,8 @@ export class GridService {
   private nConfigWait: number = 0;
   private configWaitSubjects: Subject<boolean>[] = [];
   private configWaitSubscriptions: Subscription[] = [];
+
+  private nVisibleRowsBeforeMaximized : number = 0;
 
   private configSet: boolean = false;
 
@@ -231,6 +237,21 @@ export class GridService {
     if (config.pageSizes !== undefined) {
       this.pageSizes = config.pageSizes;
     }
+    if (config.isMaximized !== undefined) {
+      console.log("Config maximized setting sent as " + config.isMaximized);
+      this.isMaximized = config.isMaximized;
+      this.config.isMaximized = config.isMaximized;
+      if(this.config.isMaximized === true) {
+        this.nVisibleRowsBeforeMaximized = this.paging.pageSize;
+        this.paging.pageSize = Math.floor(window.innerHeight / 36);
+          if(this.gridElement !== undefined) {
+            this.gridElement.scrollIntoView({behavior : "smooth" });
+          }
+      }else {
+        this.paging.pageSize = this.nVisibleRowsBeforeMaximized;
+      }
+    }
+
     if (config.nVisibleRows !== undefined) {
       this.nVisibleRows = config.nVisibleRows;
     }
@@ -269,8 +290,6 @@ export class GridService {
 
     this.initializeSorts();
 
-    this.setNVisibleRows();
-
     this.configSet = true;
     this.setAutoPageSize();
 
@@ -280,6 +299,39 @@ export class GridService {
     } else {
       this.configSubject.next(this.config);
     }
+
+    // if(this.config.isMaximized === undefined) {
+    //     this.nVisibleRows = Math.floor(window.innerHeight/ 36);
+    //     //this.paging.pageSize = this.nVisibleRows;
+    //     return;
+    // }
+    //
+    // if(this.config.isMaximized === true) {
+    //   console.log("Grid has been maximized");
+    //   if(this.nVisibleRowsBeforeMaximized === 0) {
+    //     this.nVisibleRows = Math.floor(window.innerHeight/ 36);
+    //   }
+    //   else {
+    //     this.nVisibleRows = -1;
+    //   }
+    //   this.paging.pageSize = this.nVisibleRows;
+    //   if(this.gridElement !== undefined) {
+    //     this.gridElement.scrollIntoView({behavior : "smooth" });
+    //   }
+    //
+    // } else if(this.config.isMaximized === false) {
+    //   console.log("Grid has been minimized");
+    //   this.nVisibleRowsBeforeMaximized = 6; //this.config.nVisibleRows === 0 || this.config.nVisibleRows === -1 ? 6 : this.config.nVisibleRows;
+    //   console.log("nVisibleRowsBeforeMaximized being set as " + this.nVisibleRowsBeforeMaximized);
+    //   //let maximmumRowsInTheScreen = Math.floor(window.innerHeight/ 36);
+    //   //console.log("Max number of visible rows we can fit " + maximmumRowsInTheScreen );
+    //   this.nVisibleRows = this.nVisibleRowsBeforeMaximized ;
+    //   this.paging.pageSize = this.nVisibleRowsBeforeMaximized ;
+    //
+    // }
+
+    this.setNVisibleRows();
+
   }
 
   initializeSorts(pushSubject: boolean = true, asc: boolean = true): void {
@@ -376,24 +428,24 @@ export class GridService {
     if (this.configWaitSubjects.length > 0) {
       for (let subject of this.configWaitSubjects) {
         this.configWaitSubscriptions.push(
-          subject.subscribe((waiting: boolean) => {
-            if (!waiting) {
-              this.nConfigWait--;
+            subject.subscribe((waiting: boolean) => {
+              if (!waiting) {
+                this.nConfigWait--;
 
-              if (this.nConfigWait === 0) {
-                for (let subscription of this.configWaitSubscriptions) {
-                  if (subscription) {
-                    subscription.unsubscribe();
+                if (this.nConfigWait === 0) {
+                  for (let subscription of this.configWaitSubscriptions) {
+                    if (subscription) {
+                      subscription.unsubscribe();
+                    }
                   }
+
+                  this.configWaitSubjects = [];
+                  this.configWaitSubscriptions = [];
+
+                  onComplete();
                 }
-
-                this.configWaitSubjects = [];
-                this.configWaitSubscriptions = [];
-
-                onComplete();
               }
-            }
-          })
+            })
         );
       }
     } else {
@@ -438,18 +490,18 @@ export class GridService {
         // Push a callback to request an array of choices from the choiceUrl.
         this.pushConfigWait((subject: Subject<boolean>) => {
           this.http.get(column.choiceUrl).subscribe((choices: any) => {
-            if (choices && choices !== null) {
-              column.setChoices(choices);
-            } else {
-              console.warn("hci-ng-grid: No choice data from: " + column.choiceUrl);
-              column.setChoices([]);
-            }
-            subject.next(false);
-          },
-          (error) => {
-            console.error(error);
-            column.setChoices([]);
-          });
+                if (choices && choices !== null) {
+                  column.setChoices(choices);
+                } else {
+                  console.warn("hci-ng-grid: No choice data from: " + column.choiceUrl);
+                  column.setChoices([]);
+                }
+                subject.next(false);
+              },
+              (error) => {
+                console.error(error);
+                column.setChoices([]);
+              });
         });
       }
     }
@@ -1778,14 +1830,14 @@ export class GridService {
       this.busySubject.next(true);
 
       this.newRowPostCall(this.newRow.data)
-        .pipe(finalize(() => {
-          this.newRowPostCallFinally(this);
-        }))
-        .subscribe((newRow: any) => {
-          this.newRowPostCallSuccess(newRow, this);
-        }, (error: any) => {
-          this.newRowPostCallError(error, this);
-        });
+          .pipe(finalize(() => {
+            this.newRowPostCallFinally(this);
+          }))
+          .subscribe((newRow: any) => {
+            this.newRowPostCallSuccess(newRow, this);
+          }, (error: any) => {
+            this.newRowPostCallError(error, this);
+          });
     } else {
       this.originalData.push(this.newRow.data);
       this.initData();
