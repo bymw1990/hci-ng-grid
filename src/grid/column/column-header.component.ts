@@ -146,6 +146,10 @@ export class ColumnHeaderComponent {
 
   ngAfterViewInit(): void {
     this.changeDetectorRef.detectChanges();
+    if(this.column.reverseDefaultSort) {
+      this.doDefaultReverseSort();
+      this.column.reverseDefaultSort = !this.column.reverseDefaultSort;
+    }
   }
 
   showFilter() {
@@ -167,6 +171,13 @@ export class ColumnHeaderComponent {
     } else if (this.column.sort) {
       this.gridService.addSort(this.column.field);
     }
+  }
+
+  // call the sort function twice, because the first time
+  // only sorts it out with ascendance.
+  doDefaultReverseSort() {
+    this.gridService.addSort(this.column.field);
+    this.gridService.addSort(this.column.field);
   }
 
   onMouseOver(event: MouseEvent): void {
