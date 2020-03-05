@@ -599,6 +599,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
   doRenderSubscription: Subscription;
 
   newRowMessage: string;
+  gridCellHighlight: boolean = false;
 
   private newRow: Row;
 
@@ -2003,6 +2004,13 @@ export class GridComponent implements OnChanges, AfterViewInit {
         return;
       }
 
+      let dataCells = this.gridData[i].cells;
+      for (let i = 0; i < dataCells.length; i++ ){
+        if(typeof dataCells[i].value === "boolean"){
+          this.gridCellHighlight = dataCells[i].value;
+        }
+      }
+
       for (let column of this.columnMap.get("LEFT_VISIBLE")) {
         cell = this.gridData[i].get(column.id);
         if (column.isUtility) {
@@ -2034,12 +2042,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
             this.createCell(rRow, column, cell, i, column.id, "");
           }
         } else if (cell) {
-          this.createCell(rRow, column, cell, i, column.id, cell.value, undefined, reverse);
+          this.createCell(rRow, column, cell, i, column.id, cell.value, undefined, reverse, this.gridCellHighlight);
         } else {
           //console.warn("hci-grid: " + this.id + ": renderCellsAndData: No cell for: " + column.field);
         }
       }
-
       if (i === end) {
         break;
       }
@@ -2056,7 +2063,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let column of this.columnMap.get("LEFT_VISIBLE")) {
         cell = this.newRow.get(column.id);
         if (!column.isUtility && column.field !== "GROUP_BY") {
-          this.createNewCell(lRow, column, cell, column.id, cell.value);
+          this.createNewCell(lRow, column, cell, column.id, cell.value, this.gridCellHighlight);
         }
       }
 
@@ -2064,7 +2071,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
       for (let column of this.columnMap.get("MAIN_VISIBLE")) {
         cell = this.newRow.get(column.id);
         if (!column.isUtility && column.field !== "GROUP_BY") {
-          this.createNewCell(rRow, column, cell, column.id, cell.value);
+          this.createNewCell(rRow, column, cell, column.id, cell.value, this.gridCellHighlight);
         }
       }
     }
@@ -2130,7 +2137,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
    * @param {number} j The cell number.
    * @param {string} value The original value to display after formatting.
    */
-  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, rowGroup: RowGroup = undefined, reverse: boolean = false): void {
+  private createCell(row: HTMLElement, column: Column, cell: Cell, i: number, j: number, value: string, rowGroup: RowGroup = undefined, reverse: boolean = false, gcHighlight?: boolean): void {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell-" + i + "-" + j);
     this.renderer.addClass(eCell, "hci-grid-cell");
@@ -2149,6 +2156,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     if (rowGroup) {
       this.renderer.addClass(eCell, "group-key");
       this.renderer.addClass(eCell, "group-key-" + rowGroup.groupKey);
+    }
+    if (gcHighlight) {
+      this.renderer.addClass(eCell, "highlighted");
     }
 
     // if (this.boundData.)
@@ -2182,7 +2192,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
     return row;
   }
 
-  private createNewCell(row: HTMLElement, column: Column, cell: Cell, j: number, value: string, reverse?: boolean): void {
+  private createNewCell(row: HTMLElement, column: Column, cell: Cell, j: number, value: string, reverse?: boolean, gcHighlight?: boolean): void {
     let eCell = this.renderer.createElement("div");
     this.renderer.setAttribute(eCell, "id", "cell--1-" + j);
     this.renderer.addClass(eCell, "hci-grid-cell");
@@ -2191,6 +2201,9 @@ export class GridComponent implements OnChanges, AfterViewInit {
     }
     if (value === undefined && column.editConfig.required) {
       this.renderer.addClass(eCell, "ng-invalid");
+    }
+    if (gcHighlight) {
+      this.renderer.addClass(eCell, "highlighted");
     }
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
