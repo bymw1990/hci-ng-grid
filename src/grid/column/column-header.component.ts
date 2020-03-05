@@ -173,8 +173,8 @@ export class ColumnHeaderComponent {
     }
   }
 
-  // call the sort function twice, because the first time
-  // only sorts it out with ascendance.
+  // Call the sort function twice, because
+  // the first time only sorts it out with ascendance.
   doDefaultReverseSort() {
     this.gridService.addSort(this.column.field);
     this.gridService.addSort(this.column.field);

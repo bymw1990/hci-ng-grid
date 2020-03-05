@@ -706,6 +706,11 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.gridService.setOriginalData(this.boundData);
       this.gridService.initData();
       this.gridService.getBusySubject().next(false);
+      let od = this.gridService.getPreparedData();
+      if(isDevMode()) {
+        console.log("Original data set: "+ od);
+      }
+
     });
 
     /* Subscribe to loading change.  Update the loading boolean. */
@@ -2145,6 +2150,8 @@ export class GridComponent implements OnChanges, AfterViewInit {
       this.renderer.addClass(eCell, "group-key");
       this.renderer.addClass(eCell, "group-key-" + rowGroup.groupKey);
     }
+
+    // if (this.boundData.)
     this.renderer.setStyle(eCell, "position", "absolute");
     this.renderer.setStyle(eCell, "display", "flex");
     this.renderer.setStyle(eCell, "flex-wrap", "nowrap");
