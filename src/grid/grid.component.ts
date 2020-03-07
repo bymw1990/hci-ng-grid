@@ -664,7 +664,7 @@ export class GridComponent implements OnChanges, AfterViewInit {
 
     this.gridService.getConfigSubject().subscribe((config: any) => {
       if (isDevMode()) {
-        console.info("hci-grid: " + this.id + ": getConfigSubect().subscribe");
+        console.info("hci-grid: " + this.id + ": getConfigSubject().subscribe");
       }
 
       this.config = config;
