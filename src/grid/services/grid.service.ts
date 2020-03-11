@@ -1235,7 +1235,11 @@ export class GridService {
           }
         }
       }
-
+      // Add another cell for the row highlight feature
+      let highlightFeature = this.getField(this.originalData[i], "highlightGridCell");
+      if(typeof highlightFeature === "boolean" ){
+        row.add(new Cell({value: highlightFeature, key: i }));
+      }
       this.preparedData.push(row);
     }
   }

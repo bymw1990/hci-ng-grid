@@ -2004,12 +2004,10 @@ export class GridComponent implements OnChanges, AfterViewInit {
         return;
       }
 
+      // Access the cells array in the gridData object to get
+      // the last value from item (gridCellHighlight)
       let dataCells = this.gridData[i].cells;
-      for (let i = 0; i < dataCells.length; i++ ){
-        if(typeof dataCells[i].value === "boolean"){
-          this.gridCellHighlight = dataCells[i].value;
-        }
-      }
+      this.gridCellHighlight = dataCells[dataCells.length - 1].value;
 
       for (let column of this.columnMap.get("LEFT_VISIBLE")) {
         cell = this.gridData[i].get(column.id);
