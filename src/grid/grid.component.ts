@@ -1611,6 +1611,15 @@ export class GridComponent implements OnChanges, AfterViewInit {
   }
 
   /**
+   * Remove the selected class from all selected cells.
+   */
+  public clearSelectedComponents(): void {
+    let els: HTMLElement[] = this.gridContainer.nativeElement.querySelector("#grid-content").querySelectorAll(".selected");
+    for (let el of els) {
+      this.renderer.removeClass(el, "selected");
+    }
+  }
+  /**
    * Updates the configuration object based on the @Inputs.  This allows the user to configure the grid based on a
    * combination of config and @Input settings.
    */
@@ -2233,16 +2242,6 @@ export class GridComponent implements OnChanges, AfterViewInit {
     this.clearSelectedComponents();
     this.renderer.addClass(e, "selected");
     this.createCellComponent(e);
-  }
-
-  /**
-   * Remove the selected class from all selected cells.
-   */
-  private clearSelectedComponents(): void {
-    let els: HTMLElement[] = this.gridContainer.nativeElement.querySelector("#grid-content").querySelectorAll(".selected");
-    for (let el of els) {
-      this.renderer.removeClass(el, "selected");
-    }
   }
 
   /**
